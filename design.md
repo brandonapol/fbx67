@@ -31,7 +31,9 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Lucy.** Eli's sister. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
 
-**The pilot.** Bush pilot on Lucy's crashed flight. Complicity TBD.
+**Wade's mother.** Back home in Texas. Wade writes to her all year; she is his moral compass. He can be honest with her or lie to her, and she has no way to check (she's in Texas), which is the point: lying to her is free, so choosing honesty means something.
+
+**The pilot.** Bush pilot on Lucy's crashed flight. Ambiguous, then innocent. He looks suspicious during the crash chapter (e.g. took a cash charter, changed the route), but he was paid to fly, not to crash. The ambiguity must be explicitly resolved on screen (a scene or document that clears him) so it never reads as a dropped thread. He is the city councilman's nephew. Not close to his uncle, but the connection is enough to make the player suspicious. The clearing beat: Wade's wreck-reading shows the sabotage was done on the ground before the pilot took the plane.
 
 **Side romance (Wade).** Casual, elsewhere in the story. Candidates: bar waitress/musician, hospital nurse, daughter of the oil landman or city councilman.
 
@@ -57,15 +59,15 @@ Eli and Lucy's family filed a Native allotment application for their fish camp d
 
 1. The geologist was on the family's side. Oil interests were using his survey data to grab land before Native claims settled. He died on his way to give proof to Lucy.
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
-3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing.
+3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. Eli is the one who catches on.
 4. The cabin collapse used explosives from Eielson's munitions stock, traced to Wade's signature. He is being set up as the fall guy.
 5. (Optional) Eli was at the cabin the night of the flood. He's hiding something, but not what the player assumes.
 
-## Lucy's Confession (options, undecided)
+## Lucy's Confession
 
-- **Warning.** She finds proof the frame-up targets Wade and tells him the truth because he's about to be buried. ("I picked you because you had access. Now they've picked you too.") Current lean, possibly mixed with Test.
-- **Test.** She tells him on purpose to see what he does; his reaction is recorded by the endings system.
-- **Player knows first.** Her chapters reveal it; she tells Wade later on her own terms.
+- **When.** Late Act 3, after the crash, once Wade has read the sabotaged wreck and the frame-up (Twist 4) is coming together.
+- **How.** Under duress. Wade is angry and about to act on it, and his plan assumes Lucy's loyalty. She has to tell him before he commits, because the move only works (or only stays survivable) if he knows the truth. ("I picked you because you had access. Now they've picked you too.")
+- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (e.g. blowing his safe for the stolen allotment file; exact act TBD) and assumes Lucy has his back. She lets him vent. When he actually starts getting ready to do it, she intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
 - Rule: the confession is never romantic or gratitude-driven.
 
 ## Endings
@@ -78,7 +80,9 @@ Driven by player morals and early-game choices.
 
 ## Systems
 
-- **Letters home.** Wade writes to family in Texas; doubles as journal/save system. Military mail is read by superiors, and anything written can be used later to frame Eli or trap Wade.
+- **Letters home.** Wade and his mother write back and forth all year; doubles as journal/save system. Each letter is a chance to tell her the truth or lie. Her replies react to what he tells her, not what really happened. Writing-choice mechanism TBD. 
+  - **The CO reads Wade's mail.** Neither Wade nor Lucy knows; most players won't expect it either. This is how Twist 3 works: Wade accidentally lets slip something in a letter to his mother that the CO isn't supposed to know. The CO acts on it, and Eli notices that decision and realizes the CO knows something he shouldn't. That is how the protagonists find out.
+  - Fact-check: routine censorship of personal mail was mostly a wartime practice; peacetime airmen in 1967 probably weren't censored as policy. Easy fix that keeps the plot: the CO does it quietly and off the books, so the realism holds up for players who know the history.
 - **Stealth.** Primary mode in town and on base.
 - **Survival.** Cold, light, calories, frostbite; seasons change the map (flood, freeze, dark, breakup).
 - **Crafting/tinkering.** Munitions skills: flares, noisemakers, small charges (ice jams, doors), lock tools, engine thawing, one sketchy homemade flamethrower. Same tools serve help or harm.
@@ -95,8 +99,9 @@ Driven by player morals and early-game choices.
 
 ## Open Questions
 
-- Lucy's confession setup (see above)
-- Pilot: complicit, innocent victim, or ambiguous
+- Letter-writing choice mechanism
+- What exactly Wade leaks in the letter, and what decision the CO makes that tips off Eli
+- Wade's exact rash act against the councilman (safe job or otherwise)
 - Main face of the villains
 - When the player learns Lucy was using Wade
 - Side romance pick and whether it pulls toward betrayal
