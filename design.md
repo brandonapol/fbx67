@@ -29,7 +29,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Eli.** Local Athabascan man, Wade's friend. Funny, proud, angry underneath. Knows the rivers and country. Never drinks at any point in the game.
 
-**Lucy.** Eli's sister. Left-handed (a possible brief red herring when the left-handed clue appears). Hates cigarettes, which puts her at odds with Wade. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
+**Lucy.** Eli's sister. Hates cigarettes, which puts her at odds with Wade. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
 
 **Wade's mother.** Back home in Texas. Wade writes to her all year; she is his moral compass. He can be honest with her or lie to her, and she has no way to check (she's in Texas), which is the point: lying to her is free, so choosing honesty means something.
 
@@ -40,23 +40,23 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Jake Bueller (the straight-arrow mechanic).** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
 
-**The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. A straight arrow who can't be bought; arrests the crooked mechanic in Act 3 and keeps him safe in custody.
+**The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. The incorruptible one: can't be bought, arrests Curly in Act 3, and keeps him safe in custody.
 
-**Inspector Barnette.** Investigator looking into the frontier chaos from early in the game. A fictional descendant of E.T. Barnette, who founded Fairbanks as a trading post and left town in disgrace after his bank collapsed. Carries a chip on his shoulder about the family name and wants to be the law his ancestor wasn't. First name TBD. After the barfight he ties Wade to the crooked mechanic and decides he hates Wade, and he keeps turning up throughout the game. Agency and exact title TBD.
+**Inspector Barnette.** Investigator looking into the frontier chaos from early in the game. A fictional descendant of E.T. Barnette, who founded Fairbanks as a trading post and left town in disgrace after his bank collapsed. Carries a chip on his shoulder about the family name and wants to be the law his ancestor wasn't. First name TBD. Swamped by the flood, he's the one who rushes the geologist's death through as an accident. Every time Wade and Lucy dig, they make him look bad; after the barfight he also ties Wade to Curly. He decides he hates Wade and keeps turning up throughout the game. Honest but wrong. In the best ending he swallows his pride and makes the arrest himself. Agency and exact title TBD.
   - Fact-check: E.T. Barnette details (trading post 1901, bank collapse and embezzlement charges around 1911, left Fairbanks) and whether real descendants exist who might object.
   - Fact-check: who would investigate in 1967 Fairbanks (Fairbanks PD detective, the newly renamed Alaska State Troopers, a federal agent) and what title fits.
 
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
-- **The oil landman.** The ultimate villain. Orders things done but never gets his own hands dirty; uses everyone else.
-- **The city councilman.** Holds the family's land. Complicit; degree of guilt TBD. Uncle of the bush pilot.
-- **Wade's CO.** Reads Wade's mail and feeds the oil men. Complicit; degree of guilt TBD.
+- **The land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims; Lucy trusts him and hands him evidence. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
+- **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew is the pilot on the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
+- **Wade's CO.** Motive: a cushy oil company job when he retires. Reads Wade's mail off the books to learn what Wade knows, and controls the munitions paperwork, forging Wade's signature on the missing charges. Twists 3 and 4 are both him.
 - **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
-  - **The murder (Aug 1967):** during the flood, Curly offers his friend the geologist a skiff ride across the water to Lucy. He takes him to a flooded cabin instead, holds him under, and leaves the body tied to submerged debris. The proof the geologist carried disappears. The knot is a cowboy bowline, the left-handed version of the bowline that Texas ranch hands tie: the lefty-Texan clue (briefly points at Lucy, who's left-handed, and Wade, who's Texan).
+  - **The murder (Aug 1967):** during the flood, Curly offers his friend the geologist a skiff ride across the water to Lucy. He takes him to a flooded cabin instead, holds him under, and leaves the body tied to submerged debris. The proof the geologist carried disappears. Two separate clues: the knot is a cowboy bowline, the version of the bowline Texas ranch hands tie (points at a Texan, briefly including Wade); and Joan noticed bruising on the body consistent with a left-handed grip holding him under.
     - Fact-check: the cowboy bowline's name, handedness, and association with Texas/ranch work; 1967 flood death toll.
   - **Act 1:** in the barfight, hauled in and let go; the cops already know him.
   - **Fair-play clues before the bow:** he casually ties a cowboy bowline in front of Wade while doing some job; and he gets drunk and lets slip to Jake Bueller how he's planning to get out of town (money coming, a way out), which Jake later passes along to Wade.
   - **Act 3:** after the crash, he realizes the landman is cleaning up loose ends and he's next. He breaks into a cabin and steals a new left-handed hunting bow as preemptive self-defense, figuring a killing with a bow would be harder to trace to him than a rifle. The Native cop arrests him for the burglary.
-  - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
+  - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is how Wade learns Curly is a lefty; with the knot and Joan's bruising, it clicks.
   - Fact-check: left-handed hunting bows were available in 1967 (Bear Archery and others likely made them); bowhunting in 1960s Alaska.
 
 Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their family, and language.
@@ -65,22 +65,27 @@ Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their fami
 
 Eli and Lucy's family filed a Native allotment application for their fish camp decades ago. The paperwork vanished. A white settler now on the city council holds title. The geologist's survey data shows why that land suddenly matters.
 
+Why a fish camp near Fairbanks matters to oil found ~400 miles north: the geologist's data is an early insider read on Prudhoe (the discovery well wasn't drilled out until winter 1967-68 and wasn't public until 1968), and the fish camp sits on the river crossing and gravel source any future haul road or pipeline north would need. The landman is buying ahead of information nobody else has. The Act 4 Prudhoe announcement is the player's "oh, that's why."
+  - Fact-check: Prudhoe discovery well timeline; gravel's role in North Slope road/pipeline construction; plausible route geography near Fairbanks.
+
 ## Barfight Ensemble
 
 Goal: introduce as many characters as possible in one chaotic Act 1 scene, then tie them back in later (or cut).
 - Confirmed: Wade, Eli, Curly Boone, the Native cop, Inspector Barnette (arrives in the aftermath).
-- Candidates: Jake Bueller, Joan Halvorsen (patching people up afterward), the pilot, the councilman or landman watching from a booth, Wade's rescue-team buddy.
+- Candidates: Jake Bueller, Joan Halvorsen (patching people up afterward), the pilot, the councilman, the land lawyer (as a friendly face, not a suspect).
 
 ## Structure (one year, four seasons)
 
-**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body drowned in a flooded cabin, tied to submerged debris; ruled an accident ("tangled in a line in the current"). Lucy disagrees. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
+**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body drowned in a flooded cabin, tied to submerged debris; Barnette, overwhelmed by the flood, rushes it through as an accident ("tangled in a line in the current"). Lucy disagrees. Lucy needs base access because the geologist's survey relied on Air Force aerial photography, and the originals are on base.
+  - Fact-check: Air Force aerial photo coverage of Interior Alaska in the 1950s-60s and where originals were kept. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
 
-**Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, oil men's hotel bar. Spying, eavesdropping, document theft, tailing.
+**Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, hotel bars. Spying, eavesdropping, document theft, tailing. Lucy's Anchorage chapter happens here (land office records, the land lawyer, post-earthquake city). Freeze-up grounds bush planes while they switch from floats to skis, which is why the survey-camp flight has to wait until deep winter.
+  - Fact-check: float-to-ski changeover timing for Interior bush planes.
 
-**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and the pilot survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through a buddy on it. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with the pilot (a quiet bonding beat with the man the player suspects), and that's when he notices the damage that tells him the plane was sabotaged.
+**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and the pilot survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through Jake Bueller, who volunteers on searches. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with the pilot (a quiet bonding beat with the man the player suspects), and that's when he notices the damage that tells him the plane was sabotaged.
   - Broken arm: carries into later chapters (one-handed climbing and crafting, no guitar for a while). Extent TBD.
   - Idea: lighting up near a wreck that might be leaking fuel is its own tension beat.
-  - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali; Anchorage side trip (oil offices, land lawyers, post-earthquake city).
+  - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali.
 
 **Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. At breakup, someone blows an ice jam with Eielson charges signed out under Wade's name, flooding out the family's fish camp and wiping out the signs of use and occupancy their allotment claim depends on. What Wade knows now matters. Endings.
   - Fact-check: dynamiting ice jams on Interior rivers in the 1960s; whether 1906 Act allotments required proof of use and occupancy (likely five years, per the 1956 amendment).
@@ -89,15 +94,15 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 1. The geologist was on the family's side. Oil interests were using his survey data to grab land before Native claims settled. He died on his way to give proof to Lucy.
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
-3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. Eli is the one who catches on.
-4. Eielson munitions are going missing under Wade's signature. Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
+3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. The worst leak: Wade tells Mom the date of Lucy's survey-camp flight. The CO passes it on, and Curly rigs the plane. Eli catches on because only four people knew the date: Eli, Lucy, the pilot, and Wade.
+4. Eielson munitions are going missing under Wade's forged signature (the CO's work). Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
 5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because he was trespassing: the councilman, who holds title to the family's fish camp, had banished him from the land, and Eli went back in the flood to retrieve his own belongings. Illegal only because of the stolen land claim. The player assumes he's guilty; the truth is he's a reluctant witness. In the bad ending, the trespass puts him near the murder scene and he's wrongfully imprisoned.
 
 ## Lucy's Confession
 
 - **When.** Late Act 3, after the crash, once Wade has read the sabotaged wreck and the frame-up (Twist 4) is coming together.
 - **How.** Under duress. Wade is angry and about to act on it, and his plan assumes Lucy's loyalty. She has to tell him before he commits, because the move only works (or only stays survivable) if he knows the truth. ("I picked you because you had access. Now they've picked you too.")
-- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (e.g. blowing his safe for the stolen allotment file; exact act TBD) and assumes Lucy has his back. She lets him vent. When he actually starts getting ready to do it, she intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
+- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (e.g. blowing his safe for the stolen allotment file; exact act TBD) and assumes Lucy has his back. She lets him vent. When he actually starts getting ready to do it, one-armed in a cast, she realizes how reckless he's become and intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
 - Rule: the confession is never romantic or gratitude-driven.
 
 ## Endings
@@ -113,10 +118,9 @@ Two strands (Wade's loyalty, and the evidence/justice trail) wind through the ga
 
 **Wade is good.** Eli and Lucy survive and stay out of jail. Joan ends up with someone else. The family's land claim survives.
 
-**Wade is in the middle.** Variants, depending on the path:
-- **Partial justice.** Curly and the councilman go down, but the landman walks and the oil money arrives anyway. Bittersweet and historically honest.
-- **Double agent.** Wade pretends to sell out to the landman to get him on the record. Works only if he's been honest with Lucy and Eli; if he's lied to them, it collapses into real betrayal.
-- **Burn it down.** The gritty path: Wade uses his munitions skills for revenge and becomes the dangerous airman Barnette always said he was.
+**Wade is in the middle.** One ending with flavors: Curly and some conspirators go down, but the landman walks and the oil money arrives anyway. Bittersweet and historically honest. Flavor depends on path, e.g. **burn it down** (Wade uses his munitions skills for revenge and becomes the dangerous airman Barnette always said he was).
+
+**Double agent** is a route, not an ending: Wade pretends to sell out to the landman to get him on the record. If he's been honest with Lucy and Eli, it lands in the good ending (and is the road to the hidden best outcome); if he's lied to them, it collapses into the bad one.
 
 **Wade is bad.** The landman pays Wade to keep quiet. Wade gets Joan, the payoff, and some land (the irony being that it's land). Eli ends up wrongfully imprisoned, tied to what he was doing on the water the night of the flood (Twist 5).
 
@@ -169,10 +173,10 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 ## Open Questions
 
 - Letter-writing choice mechanism
-- What exactly Wade leaks in the letter, and what decision the CO makes that tips off Eli
 - Wade's exact rash act against the councilman (safe job or otherwise)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
-- Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
+- The land lawyer: name, how Lucy meets him, early scenes that make him likable, the clue trail that exposes him
+- The geologist: name and presence (journals, reel-to-reel tapes at the survey camp)
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
 - Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
@@ -180,7 +184,6 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Title
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
-- Native cop's larger role beyond the arrest
 - Smoking mechanics: which hooks to keep
 
 ## Continuing in Claude Code
