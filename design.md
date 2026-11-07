@@ -149,7 +149,7 @@ After the crash:
 
 The Act 4 ice jam plays out according to these choices rather than being its own decision point.
 
-**How they combine.** Decisions 1-3 (before the crash) set Wade's leaning and decide which routes stay open (e.g. whether Curly is alive and trusting enough for the confession route). Decisions 4-7 (after the crash) pick the ending. Players can redeem themselves or fall late; early choices shape details and epilogues.
+**How they combine.** Decisions 1-3 (before the crash) set Wade's leaning and decide which routes stay open (e.g. whether Curly is alive and trusting enough for the confession route). Decisions 4-7 (after the crash) pick the ending. Players can redeem themselves or fall late; early choices shape details and epilogues. This is deliberate and fits Wade as a complicated character: early sins (blaming Eli, leaking the flight date) color the story but don't lock anyone out, and a late turn in either direction is honored. Requirement: every key decision must be legible as a moral dilemma in the moment, so players who fail can work out why and find the best run on a replay.
 
 ### How the land lawyer gets exposed
 
