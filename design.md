@@ -6,7 +6,7 @@ Targets: Browser first; Steam later via Electron wrapper
 
 ## Pitch
 
-A grounded stealth-and-survival mystery set in Fairbanks, Alaska, from the Chena River flood of August 1967 to the Prudhoe Bay oil announcement in spring 1968: the last year before oil money changed Alaska. A bored young airman from Texas befriends a local Athabascan brother and sister, and a drowned geologist turns out to be the first casualty in a fight over who will own the land the oil runs under.
+A grounded stealth-and-survival mystery set in Fairbanks, Alaska, from the Chena River flood of August 1967 to the Prudhoe Bay oil announcement in spring 1968: the last year before oil money changed Alaska. A bored young airman from Texas befriends a local Athabascan brother and sister, and a drowned geologist turns out to be the first casualty in a fight over who will own the land the road to the oil has to cross.
 
 Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShock Infinite (place-as-character, companion bond, layered twists).
 
@@ -46,7 +46,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
   - Fact-check: Alaska State Troopers' 1967 renaming, investigator ranks/titles, and Trooper vs. Fairbanks PD jurisdiction in town.
 
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
-- **Franklin Ashby, the land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims. In the prologue, the geologist mentions to Wade at the bar that there's "a lawyer who's helping me do right by the Native families": a throwaway nice detail that is actually the first clue. The landman fooled the geologist too. Lucy trusts him because the geologist did, and hands him evidence. Why players like him: he helps Wade personally (gets him out of the drunk tank after the barfight, talks Barnette down, and Wade owes him), and he genuinely wins small claims for other Native families, so his reputation is earned, which makes the betrayal worse. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
+- **Franklin Ashby, the land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims. In the prologue, the geologist mentions to Wade at the bar that there's "a lawyer who's helping me do right by the Native families": a throwaway nice detail that is actually the first clue. The landman fooled the geologist too. Lucy trusts him because the geologist did, and hands him evidence. His interest in Wade is the same as Lucy's: an airman with base access is useful, a dark mirror of Twist 2. Why players like him: he helps Wade personally (gets him out of the drunk tank after the barfight, talks Barnette down, and Wade owes him), and he genuinely wins small claims for other Native families, so his reputation is earned, which makes the betrayal worse. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
 - **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew Jake was flying the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
 - **Wade's CO.** Feels trapped in his career and wants to retire into money; an oil company job is waiting if he plays along. Reads Wade's mail off the books to learn what Wade knows, and controls the munitions paperwork, forging Wade's signature on the missing charges. Twists 3 and 4 are both him.
 - **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Keeps the geologist's charter plane running and ferried him to field sites all summer, so he knows the survey camp, the flight schedules, and what the data means. Hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
@@ -96,7 +96,7 @@ Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. Th
 
 ## Twists
 
-1. The geologist was on the family's side. Oil interests were using his survey data to grab land before Native claims settled. He died on his way to give proof to Lucy.
+1. The geologist was on the family's side. Owen was contracted, through Ashby it turns out, with oil money to survey routes and gravel north. He realized his data was being used to grab Native land before claims settled and turned to Lucy. He died on his way to give her proof. After the murder Curly stripped the survey camp, but Owen had cached his real notes and tapes somewhere only Lucy knew about, from a letter he'd sent her. That's why the plane is rigged: Lucy coming back means the cache is found.
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
 3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. The worst possible leak: Wade tells Mom the date of Lucy's survey-camp flight. The crash happens in every playthrough; the leak decides whose fault it is. If Wade leaked it, the CO passed it on and Curly rigged the plane in time: it's Wade's fault, Eli suspects Wade (only four people knew the date: Eli, Lucy, Jake, and Wade), and that guilt runs through Act 4. If Wade didn't leak, Curly learned the date by watching Jake prep the plane at the airfield: Wade is innocent and Eli trusts him.
 4. Eielson munitions are going missing under Wade's forged signature (the CO's work). Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
@@ -121,13 +121,13 @@ Two strands (Wade's loyalty, and the evidence/justice trail) wind through the ga
 
 ### Three real endings
 
-**Wade is good.** Eli and Lucy survive and stay out of jail. Joan ends up with someone else. The family's land claim survives.
+**Wade is good.** Eli and Lucy survive and stay out of jail. Joan ends up with someone else. The family's land claim survives. Ashby is publicly exposed and called back Outside by the company, but never sees a cell.
 
 **Wade is in the middle.** One ending with flavors: Curly and some conspirators go down, but the landman walks and the oil money arrives anyway. Bittersweet and historically honest. Flavor depends on path, e.g. **burn it down** (Wade uses his munitions skills for revenge and becomes the dangerous airman Barnette always said he was).
 
-**Double agent** is a route, not an ending: Wade pretends to sell out to the landman to get him on the record. If he's been honest with Lucy and Eli, it lands in the good ending (and is the road to the hidden best outcome); if he's lied to them, it collapses into the bad one.
+**Double agent** is a route, not an ending: Wade pretends to sell out to the landman to get him on the record. If he's been honest with Lucy and Eli (decision 4: kept quiet; decision 5: stayed), it lands in the good ending (and is the road to the hidden best outcome); if he's lied to them, it collapses into the bad one.
 
-**Wade is bad.** The landman pays Wade to keep quiet. Wade gets Joan, the payoff, and some land (the irony being that it's land). Eli ends up wrongfully imprisoned, tied to what he was doing on the water the night of the flood (Twist 5).
+**Wade is bad.** Ashby wins. The landman pays Wade to keep quiet. Wade gets Joan, the payoff, and some land (the irony being that it's land). Eli ends up wrongfully imprisoned, tied to what he was doing on the water the night of the flood (Twist 5). Eli's imprisonment happens if Wade reported or used Eli's trespass (decision 4) or took the offer (decision 6).
 
 ### What decides it
 
@@ -137,12 +137,15 @@ Before the crash:
 1. **Barfight aftermath.** Questioned by Barnette, Wade covers for Eli, blames Eli, or throws in with Curly.
 2. **The letter leak.** What Wade tells Mom about the investigation (honest, vague, or a lie) decides what the CO learns. Above all: whether he mentions Lucy's flight date, which decides whether the crash is his fault (see Twist 3). The crash happens either way.
 3. **Curly's escape plan.** When Jake passes on Curly's drunken getaway talk: warn Lucy, confront Curly, or let it go.
+   - Warn Lucy: she tips the Native cop, who's watching Curly and grabs him at the Act 3 burglary before anyone gets hurt. Curly is alive, grateful, and willing to talk (opens the confession route).
+   - Confront Curly: he panics and runs early. Still arrested, but hostile; won't talk.
+   - Let it go: arrested late and bitter; won't talk.
 
 After the crash:
 4. **Eli's trespass.** After Lucy nearly dies, Eli stops protecting himself and tells Wade he saw the skiff, and that he was trespassing on the banished land. Wade keeps quiet, reports it, or uses it as leverage.
 5. **After the confession.** Wade stays with Lucy, walks, or turns on her.
 6. **The landman's offer.** Money, land, and a way out for silence: take it, refuse it, or fake taking it (double agent).
-7. **Testifying.** Wade goes on the record against the CO and the landman at the cost of his career, or doesn't.
+7. **Testifying.** Wade goes on the record, or doesn't. Two arenas: the Air Force inquiry into the missing munitions, where testifying against the CO risks Wade's own court-martial since it's his signature; and, if Barnette's case gets there, a state grand jury against Ashby.
 
 The Act 4 ice jam plays out according to these choices rather than being its own decision point.
 
@@ -164,12 +167,17 @@ Per-character beats that vary within each ending: Eli, Lucy, Curly, Barnette, Jo
 
 ### Hidden best outcome
 
-The landman can be arrested, but only with near-flawless play: the right evidence, the right trust, the right timing. Expected to take 2-3 varied playthroughs to find. One scenario also lets Wade save Curly.
+Ashby in handcuffs, arrested by Barnette. Expected to take 2-3 varied playthroughs to find. Requires all of:
+- Decision 3: warned Lucy (Curly alive and talking; this is the scenario where Wade saves Curly).
+- Decision 4: kept Eli's trespass quiet. Decision 5: stayed with Lucy.
+- Decision 6: refused or faked the offer. Decision 7: testified.
+- The councilman flips: Wade shared the wreck evidence with Jake, who confronts his uncle (a smaller choice after the crash).
+- The CO is stopped or caught at the ice jam.
 
 ## Systems
 
 - **Letters home.** Wade and his mother write back and forth all year; doubles as journal/save system. Each letter is a chance to tell her the truth or lie. Her replies react to what he tells her, not what really happened. Each letter has three or four topics (work, friends, the investigation, how he's doing); for each the player picks a line: honest, softened, or a lie. The assembled letter reads like a real one, and the dangerous leak is visible as a choice, which is the tension. 
-  - **The CO reads Wade's mail.** Neither Wade nor Lucy knows; most players won't expect it either. This is how Twist 3 works: Wade accidentally lets slip something in a letter to his mother that the CO isn't supposed to know. The CO acts on it, and Eli notices that decision and realizes the CO knows something he shouldn't. That is how the protagonists find out.
+  - **The CO reads Wade's mail.** Neither Wade nor Lucy knows; most players won't expect it either. This is how Twist 3 works: Wade lets slip something in a letter to his mother that the CO isn't supposed to know, and the CO acts on it. If Wade leaked the flight date, Eli, running fuel out to the bush strip, sees the CO's staff car there the night before the flight: a base officer at a civilian strip at night. Wade realizes the only way the CO could know was his letter. If Wade never leaked the date, the protagonists find out later and more slowly: smaller leaks about the investigation turn up in the CO's files during a heist.
   - Fact-check: routine censorship of personal mail was mostly a wartime practice; peacetime airmen in 1967 probably weren't censored as policy. Easy fix that keeps the plot: the CO does it quietly and off the books, so the realism holds up for players who know the history.
 - **Stealth.** Primary mode in town and on base.
 - **Spying (core).**
