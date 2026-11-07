@@ -27,6 +27,8 @@ Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShoc
 
 All historical and technical claims are tracked in [docs/fact-checks.md](docs/fact-checks.md) (issue #3), with verdicts, sources, and recommended changes. Its plot recommendations are not adopted yet.
 
+Accuracy bar: plausible to someone who lived in Fairbanks then, not archival precision. Dates drifting by a few months (for example exactly when Prudhoe was announced or sized) are fine. Fix things that would break immersion for a local or misrepresent the Lower Tanana people; treat the rest of the fact-check findings as optional polish.
+
 ## Cast
 
 **Wade Pruett.** 19, Air Force munitions airman at Eielson, from the plains outside Lubbock, first time away from home, never seen snow. Tinkerer and guitar player. Bored, likable, easy to use. Drinks, smokes. Water-skied behind his cousins' boat. Can turn gritty or bad depending on player choices. Partly inspired by a real Eielson munitions airman who built homemade flamethrowers for his kids.
