@@ -442,7 +442,15 @@ Lucy steps out of the dark before you get there. She must have followed you.
 
 She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.
 
-"They've been building you for weeks. You're the fall guy." She takes a breath. "And you should know something else. I picked you in August because you had base access. That's why. I needed somebody inside, and you were easy. It's not why now. But it's why then."
+"They've been building you for weeks. You're the fall guy."
+
+She doesn't look at you for a long moment. When she does, her voice is flat, the way people talk when they've rehearsed something and it still won't come out right.
+
+"Why you, Wade? Out of every airman on that base. I've been asking myself since I opened this folder, and I know why." She holds up her hand before you can speak. "In August I told everybody about you. The girls at the office. Mr. Ashby, every time he came by about the claim. People at the Chiefs' meeting. A good-hearted Texas boy from munitions who'd do anything I asked. I was proud of myself. I thought I'd finally found a way in."
+
+Her voice breaks on the next part, and she makes it keep going.
+
+"Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."
 
   1. Stay. "Then we finish this. Together."
   2. Walk away. You're done being anybody's tool.

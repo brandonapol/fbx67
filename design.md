@@ -84,7 +84,7 @@ The claim rests on proof of use. A BLM land examiner's summer field check of the
 ## Twists
 
 1. Owen was on the family's side and died bringing Lucy proof. His real notes survived in a cache only Lucy knew about, which is why her plane was rigged.
-2. Lucy befriended Wade for base access. The friendship became real later.
+2. Lucy put the target on Wade. In August, proud of finding an ally with base access, she told everyone about him, Ashby included. That's how the conspirators picked Wade as their fall guy. The using-him-for-access part is obvious by Act 2; the twist is that her using him is how he got framed.
 3. The Major reads Wade's mail. If Wade wrote Mama the flight date, his letter is how the saboteurs knew; if not, Curly learned it watching Jake prep the plane. The crash happens either way; the leak decides whose fault it is.
 4. Demolition charges go missing under Wade's forged signature. He's the fall guy, and the charges blow the ice jam.
 5. Eli saw a skiff at the cabin the night of the flood while trespassing on his own family's land. A reluctant witness, not a suspect.
@@ -92,7 +92,7 @@ The claim rests on proof of use. A BLM land examiner's summer field check of the
 
 ## Lucy's Confession
 
-Late Act 3. Wade, furious, picks a rash plan against Tolliver (blow his safe one-armed, burn his cabin, confront him at gunpoint) or stays out of it. Lucy intercepts at the same point regardless, with the Major's files: the forged sign-outs and copies of his letters. Then: "I picked you in August because you had base access. It's not why now. But it's why then." Never romantic or gratitude-driven. The player learns it when Wade does.
+Late Act 3. Wade, furious, picks a rash plan against Tolliver (blow his safe one-armed, burn his cabin, confront him at gunpoint) or stays out of it. Lucy intercepts at the same point regardless, with the Major's files: the forged sign-outs and copies of his letters. Then the real confession: why him, out of every airman on the base. In August she bragged about her good-hearted Texas airman to anyone who'd listen (the office, the Chiefs' meeting, Mr. Ashby every time he came by about the claim), and somebody she told passed his name along. "Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too." Ashby is named only in passing among others: a fair clue, not a spoiler; she doesn't suspect him yet. Never romantic or gratitude-driven. The player learns it when Wade does.
 
 ## Endings
 
