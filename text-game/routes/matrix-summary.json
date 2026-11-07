@@ -1,0 +1,9 @@
+{
+  "decisionCombinations": 31104,
+  "byEnding": {
+    "bad": 23040,
+    "middle": 5760,
+    "good": 2256,
+    "best": 48
+  }
+}
