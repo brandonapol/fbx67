@@ -144,6 +144,15 @@ After the crash:
 
 The Act 4 ice jam plays out according to these choices rather than being its own decision point.
 
+### How the land lawyer gets exposed
+
+Three arrangements, each growing out of a different route through the story.
+
+- **A. Paper route (Lucy's).** Default path toward the good ending. During a heist, Wade or Lucy finds a document in the CO's files that Lucy gave only to the lawyer. Eli's flight-date deduction lines up with it: the CO had no reason to care about Lucy's flight unless someone asked him. After the crash, the geologist's reel-to-reel tapes from the survey camp have him doubting the lawyer the week before he died. Lucy knows, but on paper alone it's circumstantial: Wade testifying (decision 7) is what makes it public.
+- **B. Confession route (Curly's).** Road to the hidden best outcome. Wade kept Curly alive and earned some trust (acted on the escape-plan tip, handled the arrest well). Scared and in custody, Curly names the man who paid him. The councilman flips over Jake's crash: a second witness. Barnette swallows his pride and makes the arrest.
+- **C. Offer route (Wade's).** Bad ending and double agent. The lawyer comes to Wade with the offer (decision 6) himself; being bought is how Wade learns who's at the top. Take it: he knows and keeps quiet (bad ending). Fake taking it: he gets the lawyer on the record (double agent).
+- **No route finished.** Middle ending: Lucy suspects him, can't prove it, and he walks.
+
 ### Epilogues
 
 Per-character beats that vary within each ending: Eli, Lucy, Curly, Barnette, Joan, Jake, the councilman, the CO, the landman, Mom (her last letter reflects what Wade told her vs. what happened).
@@ -186,7 +195,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Letter-writing choice mechanism
 - Wade's exact rash act against the councilman (safe job or otherwise)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
-- The land lawyer: name, early scenes that make him likable, the clue trail that exposes him
+- The land lawyer: name, early scenes that make him likable
 - The geologist: name and presence (journals, reel-to-reel tapes at the survey camp)
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
