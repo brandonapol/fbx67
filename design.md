@@ -200,7 +200,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
 - Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
-- Endings: how the seven decisions combine into good/middle/bad; which early choices map to which late-game changes; what the landman-arrest run requires; the scenario where Wade saves Curly
+- Endings: how the seven decisions combine into good/middle/bad, and which early choices map to which late-game changes
 - Title
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
