@@ -7,11 +7,12 @@
     "explore": "node --max-old-space-size=6144 src/explore.ts --strict",
     "verify": "node src/verify.ts --trials 2000",
     "matrix": "node src/matrix.ts --out routes/matrix.json",
-    "golden": "node src/matrix.ts --golden routes/golden.json",
+    "golden": "node src/matrix.ts --golden routes/golden.json --write-summary routes/matrix-summary.json",
     "route": "node src/matrix.ts --where",
-    "test:unit": "node --test src/logic.test.ts",
+    "test:unit": "node --test src/*.test.ts",
+    "test:matrix": "node src/matrix.ts --check routes/matrix-summary.json",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && npm run test:unit && npm run verify && npm run explore"
+    "test": "npm run typecheck && npm run test:unit && npm run test:matrix && npm run verify && npm run explore"
   },
   "devDependencies": {
     "typescript": "^5.6.0",
