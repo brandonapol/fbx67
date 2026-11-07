@@ -65,7 +65,7 @@ check/attribution: ## Fail if a pull request's title, description or commits car
 	@[[ -n "$(PR)" ]] || { echo "Usage: make check/attribution PR=<pull request number>"; exit 1; }
 	@command -v gh >/dev/null || { echo "Install the GitHub CLI and run gh auth login (in CI, set GH_TOKEN)."; exit 1; }
 	@gh pr view "$(PR)" --json title,body,commits \
-		--jq '"title: " + .title, (.body | split("\n")[] | "description: " + .), (.commits[] | "commit \(.oid[0:8]): " + (.messageHeadline, (.messageBody | split("\n")[])))' |
+		--jq '"title: " + .title, (.body | split("\n")[] | "description: " + .), (.commits[] | "commit \(.oid[0:8]): " + (.messageHeadline, (.messageBody | split("\n")[])))' | \
 		ATTRIBUTION_FIX="Edit the pull request title or description, or reword the commit and push. Then re-run this check." scripts/check-attribution.bash
 
 check/markdown: ## markdownlint on docs (needs npx)
