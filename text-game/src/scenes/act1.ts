@@ -131,7 +131,7 @@ You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes o
     act,
     title: 'The Drunk Tank',
     text: () => `
-The whole bar picks sides. Curly jumps in on yours, roaring about Texas. ${N.cop} of Fairbanks PD, a Native officer people say has never taken a dollar from anybody, hauls you, Eli, and Curly in together. He knows Curly by name.
+The whole bar picks sides. Curly jumps in on yours, roaring about Texas. ${N.cop} of Fairbanks PD hauls you, Eli, and Curly out to the car. He knows Curly by name. On the way, Curly presses a folded twenty into the officer's hand, friendly as anything. The officer tucks it back into Curly's shirt pocket without looking at it and shuts the door.
 
 In the morning ${N.barnette} comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
 
