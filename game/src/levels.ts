@@ -1,7 +1,7 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 
-export type SpaceId = 'bar' | 'room' | 'camp'
+export type SpaceId = 'bar' | 'room' | 'camp' | 'flood'
 
 export type Season = 'summer' | 'flood'
 
@@ -176,10 +176,34 @@ export const camp: Space = {
     { id: 'stove', x: 5.6, z: -0.5, r: 1.1, prompt: 'Hold E: hide the notes under the floorboards behind the cook-tent stove' },
     { id: 'cache', x: 9.2, z: 3.8, r: 1.1, prompt: 'Hold E: hide the notes in the old meat cache on stilts' },
     { id: 'marker', x: 1.8, z: -8.1, r: 1.1, prompt: 'Hold E: bury the ammo can under the survey marker' },
+    { id: 'plane', x: -7.6, z: 4.6, r: 1.6, prompt: 'Fly home with Curly' },
   ],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp }
+export const flood: Space = {
+  id: 'flood',
+  name: 'High water',
+  season: 'flood',
+  size: { w: 20, d: 16 },
+  ground: '#5b4a33',
+  spawn: vec(0, 6.4),
+  props: [
+    ...edges(20, 16),
+    { box: { x: 0, z: -1.5, w: 20, d: 13 }, h: 0.35, color: '#6b5a3c', solid: true },
+    { box: { x: 0, z: 7.6, w: 6, d: 0.6 }, h: 0.9, color: '#8b7a62', solid: true, occludes: true },
+    { box: { x: 1.4, z: 7.25, w: 1.1, d: 0.1 }, h: 0.5, y: 0.9, color: '#ffc27a', glow: true },
+    { box: { x: -5, z: -1, w: 2, d: 4.2 }, h: 0.8, color: '#3e5a6e' },
+    { box: { x: 6.5, z: -4.5, w: 0.3, d: 0.3 }, h: 4, color: '#3a3a3a' },
+    { box: { x: 6.5, z: -4.5, w: 0.5, d: 0.3 }, h: 0.3, y: 4, color: '#ffd28a', glow: true },
+    { box: { x: 0.2, z: 3.4, w: 1.4, d: 3.4 }, h: 0.45, y: 0.3, color: '#6a6f72' },
+  ],
+  figures: [
+    { id: 'hooded', at: vec(0.2, 2.4), facing: Math.PI, coat: '#c9a73a', skin: '#c9a73a', hair: '#c9a73a', height: 1.8, hood: true },
+  ],
+  spots: [{ id: 'skiff', x: 0.2, z: 4.6, r: 1.4, prompt: 'Get in the skiff' }],
+}
+
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood }
 
 export const owenLook = owen
 
