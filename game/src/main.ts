@@ -1,27 +1,142 @@
-import * as pc from 'playcanvas'
+import './style.css'
+import type { Game, Input } from './prologue.ts'
+import { focus, interact, press, start, tick } from './prologue.ts'
+import { createView } from './render.ts'
+import { spaces } from './levels.ts'
+import type { Vec } from './world.ts'
+import { distance, sub, vec } from './world.ts'
 
-const canvas = document.getElementById('scene')
-if (!(canvas instanceof HTMLCanvasElement)) throw new Error('missing #scene')
+const $ = <T extends HTMLElement>(id: string): T => {
+  const el = document.getElementById(id)
+  if (!el) throw new Error(`missing #${id}`)
+  return el as T
+}
 
-const app = new pc.Application(canvas, { mouse: new pc.Mouse(canvas), keyboard: new pc.Keyboard(window) })
-app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW)
-app.setCanvasResolution(pc.RESOLUTION_AUTO)
-window.addEventListener('resize', () => app.resizeCanvas())
+const canvas = $<HTMLCanvasElement>('scene')
+const promptEl = $<HTMLButtonElement>('prompt')
+const panelEl = $('panel')
+const titleEl = $('panel-title')
+const textEl = $('panel-text')
+const buttonsEl = $('panel-buttons')
+const placeEl = $('place')
 
-const camera = new pc.Entity('camera')
-camera.addComponent('camera', { clearColor: new pc.Color(0.95, 0.73, 0.54), fov: 45 })
-camera.setPosition(0, 8, 9)
-camera.lookAt(0, 0, 0)
-app.root.addChild(camera)
+const view = createView(canvas)
 
-const sun = new pc.Entity('sun')
-sun.addComponent('light', { type: 'directional', color: new pc.Color(1, 0.79, 0.54), castShadows: true })
-sun.setLocalEulerAngles(76, 200, 0)
-app.root.addChild(sun)
+const keys = new Set<string>()
+const live: { g: Game; target?: Vec; touchHold: boolean; shown?: unknown } = { g: start(), touchHold: false }
 
-const ground = new pc.Entity('ground')
-ground.addComponent('render', { type: 'box' })
-ground.setLocalScale(30, 0.1, 30)
-app.root.addChild(ground)
+const act = (f: (g: Game) => Game): void => {
+  live.g = f(live.g)
+  live.target = undefined
+}
 
-app.start()
+const choose = (id: string): void => {
+  act((g) => press(g, id))
+}
+
+const renderPanel = (g: Game): void => {
+  if (live.shown === g.panel) return
+  live.shown = g.panel
+  panelEl.hidden = !g.panel
+  document.body.dataset.panel = g.panel ? 'open' : ''
+  if (!g.panel) return
+  panelEl.dataset.kind = g.panel.kind
+  titleEl.textContent = g.panel.title
+  textEl.replaceChildren(
+    ...g.panel.text.split(/\n\s*\n/).map((para) => Object.assign(document.createElement('p'), { textContent: para.trim() })),
+  )
+  buttonsEl.replaceChildren(
+    ...g.panel.buttons.map((b, i) => {
+      const el = document.createElement('button')
+      el.type = 'button'
+      el.dataset.id = b.id
+      el.innerHTML = `<span class="key">${i + 1}</span>`
+      el.append(b.label)
+      el.addEventListener('click', () => choose(b.id))
+      return el
+    }),
+  )
+  buttonsEl.querySelector('button')?.focus({ preventScroll: true })
+}
+
+const renderHud = (g: Game): void => {
+  const f = focus(g)
+  promptEl.hidden = !f
+  promptEl.innerHTML = f ? `<span class="key">E</span>${f.prompt}` : ''
+  placeEl.textContent = spaces[g.space].name
+  renderPanel(g)
+}
+
+const direction = (): Vec => {
+  const x = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0)
+  const z = (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) - (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0)
+  if (x || z) {
+    live.target = undefined
+    return vec(x, z)
+  }
+  if (live.target && distance(live.target, live.g.pos) > 0.15) return sub(live.target, live.g.pos)
+  live.target = undefined
+  return vec(0, 0)
+}
+
+const input = (): Input => ({
+  dir: direction(),
+  hold: keys.has('KeyE') || keys.has('Space') || live.touchHold,
+  limit: live.target ? distance(live.target, live.g.pos) : undefined,
+})
+
+window.addEventListener('keydown', (e) => {
+  if (e.repeat) return
+  keys.add(e.code)
+  const g = live.g
+  if (g.panel) {
+    const n = Number(e.key)
+    const b = Number.isInteger(n) && n > 0 ? g.panel.buttons[n - 1] : e.code === 'Enter' ? g.panel.buttons[0] : undefined
+    if (b) {
+      e.preventDefault()
+      choose(b.id)
+    }
+    return
+  }
+  if (e.code === 'KeyE' || e.code === 'Space') {
+    e.preventDefault()
+    act(interact)
+  }
+})
+window.addEventListener('keyup', (e) => keys.delete(e.code))
+window.addEventListener('blur', () => keys.clear())
+
+promptEl.addEventListener('pointerdown', (e) => {
+  e.preventDefault()
+  live.touchHold = true
+  act(interact)
+})
+const release = () => {
+  live.touchHold = false
+}
+promptEl.addEventListener('pointerup', release)
+promptEl.addEventListener('pointerleave', release)
+promptEl.addEventListener('pointercancel', release)
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (live.g.panel) return
+  const r = canvas.getBoundingClientRect()
+  const hit = view.groundAt(e.clientX - r.left, e.clientY - r.top)
+  if (hit) live.target = vec(hit.x, hit.z)
+})
+
+view.app.on('update', (dtRaw: number) => {
+  const dt = Math.min(dtRaw, 0.1)
+  live.g = tick(live.g, input(), dt)
+  view.sync(live.g, dt)
+  renderHud(live.g)
+})
+
+Object.assign(window, {
+  __prologue: {
+    game: () => live.g,
+    walkTo: (x: number, z: number) => {
+      live.target = vec(x, z)
+    },
+  },
+})
