@@ -16,6 +16,8 @@ Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShoc
 - **Prudhoe Bay discovery, announced 1968.** State lease sale in 1969 brought in ~$900M. The game ends right before the money arrives.
 - **Native land claims.** Federal freeze on land transfers pending Native claims (mid/late 1960s). Alaska Federation of Natives formed 1966. Native newspaper published in Fairbanks.
 - **1906 Native Allotment Act.** Up to 160 acres per applicant; many applications lost, stalled, or rejected while others filed on the same land.
+- **Lower Tanana people.** Fairbanks sits on Lower Tanana (Tanana Athabascan) land at the Chena and Tanana rivers. Minto and Nenana are Lower Tanana villages with fish camps along the rivers. In 1915 Judge Wickersham met the Tanana chiefs in Fairbanks about land, an early land-claims moment. The Tanana Chiefs Conference (organized in the early 1960s) pressed Interior land claims in the period of the game.
+  - Fact-check: Tanana Chiefs Conference founding date and 1967-68 activity; Minto's history in the 1960s (the village relocated around 1969-71 after repeated flooding); the 1915 meeting details.
 - **Rampart Dam proposal (backdrop).** Would have flooded Yukon Flats Athabascan villages; dead by ~1967.
 - **Eielson AFB.** Est. 1943 as Mile 26 Satellite Field, Eielson AFB from 1948, ~26 miles from Fairbanks. 1960s: F-102/F-106 interceptor detachment (1960-69), SAC bomber/tanker staging facilities, Army brigades training on site, frequent Eielson rescue missions.
 - **Anchorage.** Still rebuilding from the 1964 Good Friday earthquake. Off-screen only; referenced in reports and dialogue.
@@ -26,7 +28,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Smokes. Water-skied growing up, behind his better-off cousins' boat on a Texas reservoir. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
 
-**Eli.** Local Athabascan man, Wade's friend. Funny, proud, angry underneath. River freighter: runs freight and people by riverboat between Fairbanks and the villages, knows every slough, and his boat is a lifeline in the flood. Does odd jobs in winter when the boat is iced in. Hears everything up and down the river, which makes him a natural source of errands for Wade. Never drinks at any point in the game.
+**Eli.** Lower Tanana Athabascan, from a family out of Minto, living and working in Fairbanks. Wade's friend. Funny, proud, angry underneath. River freighter: runs freight and people by riverboat between Fairbanks and the villages, knows every slough, and his boat is a lifeline in the flood. Does odd jobs in winter when the boat is iced in. Hears everything up and down the river, which makes him a natural source of errands for Wade. Never drinks at any point in the game.
 
 **Lucy.** Eli's sister. Hates cigarettes, which puts her at odds with Wade. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
 
@@ -60,7 +62,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
   - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is how Wade learns Curly is a lefty; with the knot and Joan's bruising, it clicks.
   - Fact-check: left-handed hunting bows were available in 1967 (Bear Archery and others likely made them); bowhunting in 1960s Alaska.
 
-Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their family, and language.
+Cultural note: Eli and Lucy are Lower Tanana. Bring in Lower Tanana writers/consultants (for example through Tanana Chiefs Conference or Minto and Nenana community members) for Eli, Lucy, their family, the fish camp, and any language. Do not invent language, customs, clan or family details before that. A hostile playtest flagged that Eli currently reads as a function (river guide, a secret for Wade to trade) and the Native officer never speaks; both need consultant-informed depth.
 
 ## The Real Wrong
 
@@ -210,7 +212,8 @@ Ashby in handcuffs, arrested by Barnette. Expected to take 2-3 varied playthroug
 ## Open Questions
 
 - Endings: the specific late-game changes each early choice causes
-- Native cop's name (from Athabascan consultants)
+- Native cop's name, and whether he is Lower Tanana or from elsewhere in the Interior (from consultants)
+- Eli's own goal and a scene where he acts without Wade; a speaking role for the Native officer (with consultants)
 - Smoking mechanics: which hooks to keep
 - Heat system: whether the two lawmen track it separately (heat is readable through Dottie)
 - Dottie's real name

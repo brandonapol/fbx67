@@ -73,7 +73,7 @@ const epilogues = (s: State): readonly string[] => {
   const won = e === 'best' || e === 'good'
   return [
     `ELI: ${eliLine(s)}`,
-    `LUCY: ${e === 'bad' ? 'Loses her job at the land office. Keeps the case files in a trunk for the rest of her life.' : e === 'middle' ? 'Keeps working the claim, one lost form at a time.' : 'Goes to work for the Alaska Federation of Natives on the claims settlement.'}${s.lucyHeat > 0 && e !== 'bad' ? ' Barnette never does put a name to the woman seen on the base.' : ''}`,
+    `LUCY: ${e === 'bad' ? 'Loses her job at the land office. Keeps the case files in a trunk for the rest of her life.' : e === 'middle' ? 'Keeps working the claim, one lost form at a time.' : 'Goes to work for the Tanana Chiefs on the claims settlement.'}${s.lucyHeat > 0 && e !== 'bad' ? ' Barnette never does put a name to the woman seen on the base.' : ''}`,
     `CURLY: ${curlyLine(s)}`,
     `JAKE: ${s.sharedWreck ? 'Flies again by fall, knowing it wasn\'t his fault.' : 'Spends a year thinking he nearly killed Lucy. Flies again eventually.'}`,
     `TOLLIVER: ${tolliverLine(s, won)}`,

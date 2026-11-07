@@ -7,7 +7,7 @@ const act = 'Prologue' as const
 const talkRest = `
 When Wade asks what you do, you tell him the truth, or most of it: you map where a road could someday cross the rivers north of here, and where the gravel is to build it.
 
-"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Native families out there. There's a lawyer in town helping me with that."
+"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Lower Tanana families out there, the Minto people with camps on the river. There's a lawyer in town helping me with that."
 
 Curly checks his watch. "Plane's ready for the morning, Owen."`
 

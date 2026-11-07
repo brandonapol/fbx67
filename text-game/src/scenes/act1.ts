@@ -23,7 +23,7 @@ Your sergeant puts you on a sandbag line. Across the street, a riverboat is pull
     act,
     title: 'The Cabin',
     text: (s) => `
-${s.eliTrust > 0 ? 'The boatman, Eli, owes you one, and he says so.' : 'That evening the boatman, Eli, needs a strong back, and your sergeant lends you out.'} Eli runs freight on the river and knows every slough in the flood. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
+${s.eliTrust > 0 ? 'The boatman, Eli, owes you one, and he says so.' : 'That evening the boatman, Eli, needs a strong back, and your sergeant lends you out.'} Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
 It's a man, held under by a line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
 

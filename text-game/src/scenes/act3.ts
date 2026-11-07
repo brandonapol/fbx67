@@ -186,7 +186,7 @@ A letter from Mama is waiting at the hospital desk. ${mamaReply(1)(s)}`,
     text: (s) => `
 Eli finds you in the hospital parking lot, smoking one-handed in the cold. ${s.eliTrust > 0 ? 'He\'s been carrying something since August.' : 'You are the last person he wants to tell. But Lucy nearly died, and you were on that hill, and there is nobody else.'}
 
-"The night of the flood, I was out on the fish camp. Our fish camp. Tolliver's had me banned off it for two years, says he'll have me arrested if I set foot there. I went back for my father's things before the water took them.
+"The night of the flood, I was out on the fish camp. Our fish camp. My grandfather's, and his mother's before him. Tolliver's had me banned off it for two years, says he'll have me arrested if I set foot there. I went back for my father's things before the water took them.
 
 "Coming back, I saw a skiff tied up at the cabin where we found Owen. I didn't say anything, because then I'd have to say what I was doing out there."
 
