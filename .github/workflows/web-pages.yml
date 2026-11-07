@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - web/**
+      - game/**
       - text-game/src/**
       - .github/workflows/web-pages.yml
   workflow_dispatch:
@@ -34,13 +35,20 @@ jobs:
         with:
           node-version-file: text-game/.nvmrc
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: |
+            web/package-lock.json
+            game/package-lock.json
 
       - name: Install
-        run: npm ci
+        working-directory: .
+        run: |
+          make setup/text
+          make setup/web
+          make setup/game
 
-      - name: Build
-        run: npm run build
+      - name: Build the text build with the engine build under play/
+        working-directory: .
+        run: make build/pages
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
