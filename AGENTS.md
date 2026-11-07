@@ -47,6 +47,7 @@ Use the existing targets rather than crafting shell commands. If an action needs
 | `make setup`            | `npm ci` in both packages and the git hooks                           |
 | `make check`            | the whole gate: typecheck, unit, verify, matrix, web typecheck, routes |
 | `make check/fast`       | typecheck and unit tests for the packages with staged files           |
+| `make check/attribution PR=<n>` | fail if a pull request carries AI attribution                 |
 | `make test/text/unit`   | unit tests and golden route replay                                    |
 | `make test/text/explore`| the exhaustive sweep (~15 s, 1.5 GB heap)                             |
 | `make generate/routes`  | regenerate golden transcripts and `routes/matrix-summary.json`        |
@@ -124,6 +125,9 @@ you changed text. Leave the sweep and the long verify to CI unless you are repro
 - **Branch off `main`.** `feat/<issue>-short-description`, `fix/<issue>-short-description`,
   `chore/<issue>-short-description`. Agent sessions may be handed a branch name; use the one given.
 - **Linear history.** Rebase on `main`, never merge `main` into a branch. One focused commit per PR is the norm.
+- **No AI attribution.** Commits and pull requests carry no `Co-authored-by` trailer naming Claude or an
+  `anthropic.com` address, no "Generated with Claude Code" footer, and no `claude.ai/code` session link. The
+  `commit-msg` hook rejects them in commits and the `check-attribution` CI job rejects them in pull requests.
 - **Commit subjects** are imperative, under 80 characters, American spelling. A body explains why, wrapped at 120.
 - **Pull requests** fill in [`.github/pull_request_template.md`](.github/pull_request_template.md) and carry
   `Closes #N` for the issue they finish. A PR that finishes part of an issue says `Part of #N`.
