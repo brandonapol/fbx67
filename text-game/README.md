@@ -61,7 +61,7 @@ Runs, in order:
 - `src/engine.ts`: pure step/replay/render.
 - `src/liveness.ts`: which state fields are dead after which scene; used only by the explorer, guarded by `verify`.
 - `src/explore.ts`, `src/matrix.ts`, `src/verify.ts`: analysis tools.
-- `src/names.ts`: all character names in one place. Placeholders still to be decided: the Fairbanks PD officer (from Athabascan consultants), the CO, the councilman's first name, and Dottie.
+- `src/names.ts`: all character names in one place. Placeholders still to be decided: the Fairbanks PD officer (from Athabascan consultants), the CO, the councilman's first name, Dottie, and Hank the bartender.
 
 ## Design rules encoded here
 

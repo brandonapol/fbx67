@@ -13,4 +13,5 @@ export const N = {
   councilman: 'Councilman Ray Tolliver',
   bar: 'the Silver Pan',
   gossip: 'Dottie Vinson',
+  bartender: 'Hank Lyle',
 } as const

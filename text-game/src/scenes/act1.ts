@@ -100,6 +100,12 @@ She looks at you a beat too long.`,
     text: () => `
 The water goes down. The mud doesn't. Saturday night the Silver Pan is packed: Curly at the bar, ${N.jake} the bush pilot folded into a booth, Eli nursing a soda.
 
+${N.bartender} has run the Pan since statehood. He slides you a beer and gives you the speech he gives every new airman, whether they want it or not.
+
+"Three things about this town, son. One: the law keeps score. Every time a Trooper hears your name, he believes you a little less, and once he's done believing you, he's done. Two: people here remember who stood with them and who didn't. Three: nothing you say stays where you said it. Dottie down at the Northern Lights Café hears it all by morning. You ever want to know where you stand, buy a cup of her coffee and ask."
+
+He wipes the bar. "That's the speech. Drink your beer.
+
 A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
 
 The floor is slick with mud. There's a hot stove, a moose rack on the wall, and a lot of bottles.`,

@@ -7,7 +7,7 @@ const headline = (s: State): string => {
   if (e === 'best')
     return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} The family's allotment is restored. The fish camp is theirs again.`
   if (e === 'good')
-    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without more witnesses standing behind it, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.`
+    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.`
   if (e === 'bad') {
     if (s.offer === 'fake')
       return `You tried to play Ashby, but you'd already burned the people who could have backed you up.${s.testified ? ' You testified anyway. Nobody believed which side you were on.' : ''} The grand jury never sees a case. Ashby wins.`
@@ -52,12 +52,12 @@ const barnetteLine = (s: State): string =>
   ending(s) === 'best'
     ? 'Makes the biggest arrest of his career and never once thanks you.'
     : s.heat > HEAT_LIMIT
-      ? 'Never believed a word you said, and told the grand jury so. He might have made the arrest if he had.'
+      ? 'Never believed a word you said, and told the grand jury so. He might have arrested Ashby if he had.'
       : !s.testified
-        ? 'Asked you once to stand up in front of a grand jury. You didn\'t. Without you, he couldn\'t make the arrest.'
+        ? 'Asked you once to stand up in front of a grand jury. You didn\'t. Without you, he never got to arrest Ashby.'
         : s.leakedFlightDate
-        ? 'Ashby\'s lawyers kept asking how the date of that flight got from an airman\'s letter home to a saboteur. Every time, the room looked at you. He couldn\'t make the arrest.'
-        : 'Liked you more than he let on. Without more of a case, he couldn\'t make the arrest he wanted.'
+        ? 'Ashby\'s lawyers kept asking how the date of that flight got from an airman\'s letter home to a saboteur. Every time, the room looked at you. He never got to arrest Ashby.'
+        : 'Liked you more than he let on. Without more of a case, he never got the arrest he wanted: Ashby.'
 
 const tolliverLine = (s: State, won: boolean): string =>
   s.sharedWreck
