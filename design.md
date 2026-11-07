@@ -19,7 +19,6 @@ Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShoc
 - **Rampart Dam proposal (backdrop).** Would have flooded Yukon Flats Athabascan villages; dead by ~1967.
 - **Eielson AFB.** Est. 1943 as Mile 26 Satellite Field, Eielson AFB from 1948, ~26 miles from Fairbanks. 1960s: F-102/F-106 interceptor detachment (1960-69), SAC bomber/tanker staging facilities, Army brigades training on site, frequent Eielson rescue missions.
 - **Anchorage.** Still rebuilding from the 1964 Good Friday earthquake. Off-screen only; referenced in reports and dialogue.
-- **Alaska Railroad.** Runs past Denali (then Mount McKinley National Park).
 
 To verify before writing dialogue: exact munitions unit names and job titles at Eielson in 1967; which units responded to the 1967 flood; land freeze dates.
 
@@ -38,7 +37,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
   - Fact-check: which hospital served Fairbanks in 1967 (likely St. Joseph's) and how the flood hit it.
 
 **Jake Bueller (the straight-arrow mechanic and pilot).** Bush plane mechanic and pilot. Inspired by a real Fairbanks friend, a mechanic and medevac pilot: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction. He flies Lucy to the survey camp in Act 3 and goes down with her. He is the city councilman's nephew and doesn't get along with his uncle, which gives the player a flicker of doubt about their informant.
-  - As the pilot he looks briefly suspicious during the crash chapter, then is cleared on screen: Wade's wreck-reading shows the sabotage was done on the ground before Jake took the plane. The ambiguity must be explicitly resolved so it never reads as a dropped thread.
+  - As the pilot he looks briefly suspicious during the crash chapter, then is cleared on screen: Wade spots the tampered fuel system, proving the water was added on the ground on purpose, not left by a pilot who skipped his preflight. The ambiguity must be explicitly resolved so it never reads as a dropped thread.
 
 **The Native cop.** Fairbanks PD, Alaska Native. Overlapping jurisdiction with Barnette and different instincts: they cooperate when it's convenient and fight over turf otherwise. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. The incorruptible one: can't be bought, arrests Curly in Act 3, and keeps him safe in custody.
 
@@ -86,19 +85,20 @@ Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. Th
 **Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, hotel bars. Spying, eavesdropping, document theft, tailing. Anchorage happens off-screen: Lucy's trips there (land office records, the land lawyer) are reported back, not played. Freeze-up grounds bush planes while they switch from floats to skis, which is why the survey-camp flight has to wait until deep winter.
   - Fact-check: float-to-ski changeover timing for Interior bush planes.
 
-**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and Jake survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through his own base connections: the searchers need a munitions man for flares and signal charges. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with Jake (a quiet beat with the man the player briefly suspects), and that's when he notices the damage that tells him the plane was sabotaged.
+**Act 3 — Deep winter.** Lucy and Jake fly to Owen's survey camp in the hills north of Fairbanks, toward the Yukon crossing, where he was scouting the gravel and river crossings a road north would need. She recovers his notes, samples, and reel-to-reel tapes. On the flight home the plane goes down with the evidence aboard. The sabotage: water in the fuel, which freezes in the lines in deep cold, a classic Alaskan crash cause that looks like pilot error (Jake supposedly skipped draining the fuel sumps), which is why Jake looks briefly guilty.
+  - Fact-check: water-in-fuel icing as a winter bush-plane crash cause; sump draining practice in 1960s light aircraft. Lucy (playable) and Jake survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through his own base connections: the searchers need a munitions man for flares and signal charges. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with Jake (a quiet beat with the man the player briefly suspects), and that's when he spots the deliberately loosened sump drain or doctored fuel cap that proves the water was put there on purpose.
   - Broken arm: carries into later chapters (one-handed climbing and crafting, no guitar for a while). Extent TBD.
   - Idea: lighting up near a wreck that might be leaking fuel is its own tension beat.
-  - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along.
+  - Fact-check: who actually ran a 1967 winter crash search north of Fairbanks (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along.
 
-**Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. At breakup, someone blows an ice jam with Eielson charges signed out under Wade's name, flooding out the family's fish camp and wiping out the signs of use and occupancy their allotment claim depends on. What Wade knows now matters. Endings.
+**Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. At breakup, the CO, trapped and desperate for his payout, blows an ice jam himself with the Eielson charges he forged out under Wade's name, flooding out the family's fish camp and wiping out the signs of use and occupancy their allotment claim depends on. This is the CO's hands-on villain moment and the Act 4 set piece: a confrontation on the river ice at breakup, where Wade can stop him, catch him, or fail to (outcome follows the decisions, not its own choice). What Wade knows now matters. Endings.
   - Fact-check: dynamiting ice jams on Interior rivers in the 1960s; whether 1906 Act allotments required proof of use and occupancy (likely five years, per the 1956 amendment).
 
 ## Twists
 
 1. The geologist was on the family's side. Oil interests were using his survey data to grab land before Native claims settled. He died on his way to give proof to Lucy.
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
-3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. The worst leak: Wade tells Mom the date of Lucy's survey-camp flight. The CO passes it on, and Curly rigs the plane. Eli catches on because only four people knew the date: Eli, Lucy, Jake, and Wade.
+3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. The worst possible leak: Wade tells Mom the date of Lucy's survey-camp flight. The crash happens in every playthrough; the leak decides whose fault it is. If Wade leaked it, the CO passed it on and Curly rigged the plane in time: it's Wade's fault, Eli suspects Wade (only four people knew the date: Eli, Lucy, Jake, and Wade), and that guilt runs through Act 4. If Wade didn't leak, Curly learned the date by watching Jake prep the plane at the airfield: Wade is innocent and Eli trusts him.
 4. Eielson munitions are going missing under Wade's forged signature (the CO's work). Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
 5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because he was trespassing: the councilman, who holds title to the family's fish camp, had banished him from the land, and Eli went back in the flood to retrieve his own belongings. Illegal only because of the stolen land claim. The player assumes he's guilty; the truth is he's a reluctant witness. He tells Wade after the crash, once Lucy nearly dies (decision 4). In the bad ending, the trespass puts him near the murder scene and he's wrongfully imprisoned.
 
@@ -135,7 +135,7 @@ Seven key decision points, not a running meter. Smaller choices change details a
 
 Before the crash:
 1. **Barfight aftermath.** Questioned by Barnette, Wade covers for Eli, blames Eli, or throws in with Curly.
-2. **The letter leak.** What Wade tells Mom about the investigation (honest, vague, or a lie) decides what the CO learns and how bad Twist 3 gets.
+2. **The letter leak.** What Wade tells Mom about the investigation (honest, vague, or a lie) decides what the CO learns. Above all: whether he mentions Lucy's flight date, which decides whether the crash is his fault (see Twist 3). The crash happens either way.
 3. **Curly's escape plan.** When Jake passes on Curly's drunken getaway talk: warn Lucy, confront Curly, or let it go.
 
 After the crash:
@@ -152,7 +152,7 @@ The Act 4 ice jam plays out according to these choices rather than being its own
 
 Three arrangements, each growing out of a different route through the story.
 
-- **A. Paper route (Lucy's).** Default path toward the good ending. During a heist, Wade or Lucy finds a document in the CO's files that Lucy gave only to the lawyer. Eli's flight-date deduction lines up with it: the CO had no reason to care about Lucy's flight unless someone asked him. After the crash, the geologist's reel-to-reel tapes from the survey camp have him doubting the lawyer the week before he died. Lucy knows, but on paper alone it's circumstantial: Wade testifying (decision 7) is what makes it public.
+- **A. Paper route (Lucy's).** Default path toward the good ending. During a heist, Wade or Lucy finds a document in the CO's files that Lucy gave only to the lawyer. If Wade leaked the flight date, Eli's deduction lines up with it: the CO had no reason to care about Lucy's flight unless someone asked him. After the crash, the geologist's reel-to-reel tapes from the survey camp have him doubting the lawyer the week before he died. Lucy knows, but on paper alone it's circumstantial: Wade testifying (decision 7) is what makes it public.
 - **B. Confession route (Curly's).** Road to the hidden best outcome. Wade kept Curly alive and earned some trust (acted on the escape-plan tip, handled the arrest well). Scared and in custody, Curly names the man who paid him. The councilman flips over Jake's crash: a second witness. Barnette swallows his pride and makes the arrest.
 - **C. Offer route (Wade's).** Bad ending and double agent. The lawyer comes to Wade with the offer (decision 6) himself; being bought is how Wade learns who's at the top. Take it: he knows and keeps quiet (bad ending). Fake taking it: he gets the lawyer on the record (double agent).
 - **Curly's murder of Owen** follows the route: confession route, it comes out in court as part of taking down Ashby; paper route, he's convicted of the burglary only and the murder stays a secret Wade, Lucy, and Eli carry; offer route, Ashby's money makes it disappear.
@@ -191,7 +191,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 ## Tech Notes
 
 - Engine-only PlayCanvas with TypeScript so agents can work entirely in the repo (the hosted editor isn't agent-friendly).
-- Dense downtown hub plus discrete levels (Eielson, Denali crash site) instead of a full open world, to keep browser loading sane.
+- Dense downtown hub plus discrete levels (Eielson, the northern crash site) instead of a full open world, to keep browser loading sane.
 - Steam: Electron for consistent Chromium; Tauri on Linux uses WebKitGTK, which can differ on WebGL/WebGPU.
 - Multi-agent Saddle split candidates: narrative/lore, level layout, systems, QA.
 
