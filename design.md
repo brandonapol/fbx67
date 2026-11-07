@@ -40,7 +40,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **The straight-arrow mechanic.** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
 
-**The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. Role in the plot TBD.
+**The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. A straight arrow who can't be bought; arrests the crooked mechanic in Act 3 and keeps him safe in custody.
 
 **The inspector.** Investigator looking into the frontier chaos from early in the game. After the barfight he ties Wade to the crooked mechanic and decides he hates Wade, and he keeps turning up throughout the game. Agency and exact title TBD.
   - Fact-check: who would investigate in 1967 Fairbanks (Fairbanks PD detective, the newly renamed Alaska State Troopers, a federal agent) and what title fits.
@@ -49,7 +49,10 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 - **The oil landman.** The ultimate villain. Orders things done but never gets his own hands dirty; uses everyone else.
 - **The city councilman.** Holds the family's land. Complicit; degree of guilt TBD. Uncle of the bush pilot.
 - **Wade's CO.** Reads Wade's mail and feeds the oil men. Complicit; degree of guilt TBD.
-- **The crooked mechanic.** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. Arrested partway through the game for burglarizing someone's cabin, caught with a new left-handed hunting bow. The arrest keeps him alive, since the landman was about to get rid of him as a loose end. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
+- **The crooked mechanic.** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
+  - **Act 1:** in the barfight, hauled in and let go; the cops already know him.
+  - **Act 3:** after the crash, he realizes the landman is cleaning up loose ends and he's next. He breaks into a cabin and steals a new left-handed hunting bow as preemptive self-defense, figuring a killing with a bow would be harder to trace to him than a rifle. The Native cop arrests him for the burglary.
+  - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
   - Fact-check: left-handed hunting bows were available in 1967 (Bear Archery and others likely made them); bowhunting in 1960s Alaska.
 
 Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their family, and language.
@@ -126,16 +129,16 @@ Driven by player morals and early-game choices.
 - Letter-writing choice mechanism
 - What exactly Wade leaks in the letter, and what decision the CO makes that tips off Eli
 - Wade's exact rash act against the councilman (safe job or otherwise)
-- Crooked mechanic: when he's arrested relative to the crash, whether he rigged Lucy's plane before his arrest or someone else did, and what left-handed evidence is at the geologist's cabin
+- Crooked mechanic: what left-handed evidence is at the geologist's cabin
 - Fair-play clues pointing at the crooked mechanic before the bow (the player should be able to suspect him early)
-- Whether the landman still comes after the crooked mechanic later (in jail or on release), and whether the Eli-rescue/public-exposure choice survives
+- Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
 - When the player learns Lucy was using Wade
 - The nurse: name, and whether she pulls Wade toward betrayal
 - Eli's secret (Twist 5): keep or cut, and what it is
 - Title
 - Names: crooked mechanic, inspector, Native cop, straight-arrow mechanic, nurse
-- Native cop's role in the plot
+- Native cop's larger role beyond the arrest
 - Smoking mechanics: which hooks to keep
 
 ## Continuing in Claude Code
