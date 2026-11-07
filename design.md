@@ -42,12 +42,12 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **The Native cop.** Fairbanks PD, Alaska Native. Overlapping jurisdiction with Barnette and different instincts: they cooperate when it's convenient and fight over turf otherwise. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. The incorruptible one: can't be bought, arrests Curly in Act 3, and keeps him safe in custody.
 
-**Inspector Barnette.** Alaska State Trooper investigator (the force had just been renamed in 1967), with statewide reach. Looking into the frontier chaos from early in the game. A fictional descendant of E.T. Barnette, who founded Fairbanks as a trading post and left town in disgrace after his bank collapsed. Carries a chip on his shoulder about the family name and wants to be the law his ancestor wasn't. First name TBD. Swamped by the flood, he's the one who rushes the geologist's death through as an accident. Every time Wade and Lucy dig, they make him look bad; after the barfight he also ties Wade to Curly. He decides he hates Wade and keeps turning up throughout the game. Honest but wrong. In the best ending he swallows his pride and makes the arrest himself. Agency and exact title TBD.
+**Inspector Vernon Barnette.** Alaska State Trooper investigator (the force had just been renamed in 1967), with statewide reach. Looking into the frontier chaos from early in the game. A fictional descendant of E.T. Barnette, who founded Fairbanks as a trading post and left town in disgrace after his bank collapsed. Carries a chip on his shoulder about the family name and wants to be the law his ancestor wasn't. Swamped by the flood, he's the one who rushes the geologist's death through as an accident. Every time Wade and Lucy dig, they make him look bad; after the barfight he also ties Wade to Curly. He decides he hates Wade and keeps turning up throughout the game. Honest but wrong. In the best ending he swallows his pride and makes the arrest himself. Agency and exact title TBD.
   - Fact-check: E.T. Barnette details (trading post 1901, bank collapse and embezzlement charges around 1911, left Fairbanks) and whether real descendants exist who might object.
   - Fact-check: Alaska State Troopers' 1967 renaming, investigator ranks/titles, and Trooper vs. Fairbanks PD jurisdiction in town.
 
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
-- **The land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims. In the prologue, the geologist mentions to Wade at the bar that there's "a lawyer who's helping me do right by the Native families": a throwaway nice detail that is actually the first clue. The landman fooled the geologist too. Lucy trusts him because the geologist did, and hands him evidence. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
+- **Franklin Ashby, the land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims. In the prologue, the geologist mentions to Wade at the bar that there's "a lawyer who's helping me do right by the Native families": a throwaway nice detail that is actually the first clue. The landman fooled the geologist too. Lucy trusts him because the geologist did, and hands him evidence. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
 - **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew Jake was flying the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
 - **Wade's CO.** Feels trapped in his career and wants to retire into money; an oil company job is waiting if he plays along. Reads Wade's mail off the books to learn what Wade knows, and controls the munitions paperwork, forging Wade's signature on the missing charges. Twists 3 and 4 are both him.
 - **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Keeps the geologist's charter plane running and ferried him to field sites all summer, so he knows the survey camp, the flight schedules, and what the data means. Hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
@@ -76,7 +76,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 ## Structure (one year, four seasons)
 
-**Prologue — The geologist (summer 1967, before the flood).** The player starts as the geologist. He meets Wade at a bar, introduced by Curly Boone, his charter mechanic-pilot and Wade's fellow Texan: friendly small talk, nothing ominous. All three share the first scene. The player learns the town, the controls, and likes this guy before he dies. Wade's first friend in Fairbanks is the first casualty.
+**Prologue — The geologist (summer 1967, before the flood).** The player starts as the geologist, Dr. Owen Marsh. He meets Wade at a bar, introduced by Curly Boone, his charter mechanic-pilot and Wade's fellow Texan: friendly small talk, nothing ominous. All three share the first scene. The player learns the town, the controls, and likes this guy before he dies. Wade's first friend in Fairbanks is the first casualty.
 
 
 **Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body drowned in a flooded cabin, tied to submerged debris; Barnette, overwhelmed by the flood, rushes it through as an accident ("tangled in a line in the current"). Lucy disagrees. Lucy needs base access because the geologist's survey relied on Air Force aerial photography, and the originals are on base.
@@ -195,14 +195,13 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Letter-writing choice mechanism
 - Wade's exact rash act against the councilman (safe job or otherwise)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
-- The land lawyer: name, early scenes that make him likable
-- The geologist: name and presence (journals, reel-to-reel tapes at the survey camp)
+- Ashby: early scenes that make him likable
+- Owen Marsh's presence after the prologue (journals, reel-to-reel tapes at the survey camp)
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
 - Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
 - Endings: how the seven decisions combine into good/middle/bad, and which early choices map to which late-game changes
 - Title
-- Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
 - Smoking mechanics: which hooks to keep
 - Heat system: how heat rises and cools, and whether the two lawmen track it separately
