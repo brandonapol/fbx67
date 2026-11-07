@@ -29,7 +29,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Eli.** Local Athabascan man, Wade's friend. Funny, proud, angry underneath. Knows the rivers and country. Never drinks at any point in the game.
 
-**Lucy.** Eli's sister. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
+**Lucy.** Eli's sister. Left-handed (a possible brief red herring when the left-handed clue appears). Hates cigarettes, which puts her at odds with Wade. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
 
 **Wade's mother.** Back home in Texas. Wade writes to her all year; she is his moral compass. He can be honest with her or lie to her, and she has no way to check (she's in Texas), which is the point: lying to her is free, so choosing honesty means something.
 
@@ -38,11 +38,14 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 **The nurse (Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. Whether she pulls him toward betrayal is TBD.
   - Fact-check: which hospital served Fairbanks in 1967 (likely St. Joseph's) and how the flood hit it.
 
+**The straight-arrow mechanic.** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
+
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
 - **The oil landman.** The ultimate villain. Orders things done but never gets his own hands dirty; uses everyone else.
 - **The city councilman.** Holds the family's land. Complicit; degree of guilt TBD. Uncle of the bush pilot.
 - **Wade's CO.** Reads Wade's mail and feeds the oil men. Complicit; degree of guilt TBD.
-- **The local friend (placeholder).** Introduced early as a likable local. A friend of the geologist and hungry for money, he sold the geologist out to the landman. In Act 4 the landman moves to have him killed as a loose end. Wade figures out the whole scheme just in time, and Eli saves him. Player choices decide whether the rescue also exposes his betrayal publicly or keeps it quiet.
+- **The crooked mechanic.** A bush plane mechanic, introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. Arrested partway through the game for burglarizing someone's cabin, caught with a new left-handed hunting bow. The arrest keeps him alive, since the landman was about to get rid of him as a loose end. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
+  - Fact-check: left-handed hunting bows were available in 1967 (Bear Archery and others likely made them); bowhunting in 1960s Alaska.
 
 Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their family, and language.
 
@@ -112,7 +115,9 @@ Driven by player morals and early-game choices.
 - Letter-writing choice mechanism
 - What exactly Wade leaks in the letter, and what decision the CO makes that tips off Eli
 - Wade's exact rash act against the councilman (safe job or otherwise)
-- The local friend: who he is (job, how Wade meets him early) and how the player can catch on before the reveal
+- Crooked mechanic: when he's arrested relative to the crash, whether he rigged Lucy's plane before his arrest or someone else did, and what left-handed evidence is at the geologist's cabin
+- Fair-play clues pointing at the crooked mechanic before the bow (the player should be able to suspect him early)
+- Whether the landman still comes after the crooked mechanic later (in jail or on release), and whether the Eli-rescue/public-exposure choice survives
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
 - When the player learns Lucy was using Wade
 - The nurse: name, and whether she pulls Wade toward betrayal
