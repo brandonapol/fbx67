@@ -49,6 +49,7 @@ export const sceneIds = [
   'a3_search',
   'a3_ski_down',
   'a3_ski_up',
+  'a3_arm',
   'a3_wreck',
   'a3_home',
   'a3_curly',

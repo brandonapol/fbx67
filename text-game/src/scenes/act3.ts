@@ -109,7 +109,7 @@ Near the last known heading, the team splits up to cover more ground. You're on 
 The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
 
 Then you smell smoke.`,
-    choices: () => [{ label: 'Follow it.', next: 'a3_wreck' }],
+    choices: () => [{ label: 'Follow it.', next: 'a3_arm' }],
   },
   {
     id: 'a3_ski_up',
@@ -119,16 +119,26 @@ Then you smell smoke.`,
 Climbing on skis is nothing like water skiing. You sweat through your layers, and then the sweat starts to freeze. Your toes go numb and stay that way.
 
 Then you smell smoke.`,
-    choices: () => [{ label: 'Follow it.', next: 'a3_wreck' }],
+    choices: () => [{ label: 'Follow it.', next: 'a3_arm' }],
+  },
+  {
+    id: 'a3_arm',
+    act,
+    title: 'The Wreck',
+    text: () => `
+The plane is on its side in a stand of black spruce, one wing folded under it. A thread of smoke from a fire in the lee of the fuselage. Lucy is alive, waving you off the slope.
+
+You don't listen. You plant your skis and reach down into the cabin to haul her up by the arm, and the snow under your skis gives way. You go down hard against the fuselage with your right arm under you.
+
+You hear it before you feel it: a crack like green wood. Then you feel it.`,
+    choices: () => [{ label: 'Yell. Then let Lucy deal with it.', next: 'a3_wreck' }],
   },
   {
     id: 'a3_wreck',
     act,
     title: 'The Wreck',
     text: () => `
-You find them on the hillside. You try to haul Lucy up out of the fuselage, the snow gives, and you hear your own forearm snap.
-
-Lucy splints your arm, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
+Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
 
 Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
