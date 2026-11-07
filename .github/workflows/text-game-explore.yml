@@ -1,0 +1,63 @@
+name: text-game explore
+
+on:
+  pull_request:
+    paths:
+      - text-game/src/**
+      - text-game/package.json
+      - text-game/package-lock.json
+      - text-game/.nvmrc
+      - .github/workflows/text-game-explore.yml
+  push:
+    branches: [main]
+    paths:
+      - text-game/src/**
+      - text-game/package.json
+      - text-game/package-lock.json
+      - text-game/.nvmrc
+      - .github/workflows/text-game-explore.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: text-game-explore-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+    working-directory: text-game
+
+jobs:
+  explore:
+    runs-on: ${{ vars.TEXT_GAME_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: text-game/.nvmrc
+          cache: npm
+          cache-dependency-path: text-game/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Exhaustive sweep
+        run: |
+          mkdir -p reports
+          npm run -s explore > reports/explore.json
+
+      - name: Summary
+        if: always()
+        run: |
+          [ -s reports/explore.json ] || exit 0
+          {
+            echo '### Exhaustive sweep'
+            echo '```json'
+            cat reports/explore.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
