@@ -10,7 +10,7 @@ export const prologue: readonly Scene[] = [
     act,
     title: 'The Silver Pan, July 1967',
     text: () => `
-You are ${N.owen}, a geologist, two summers into a contract surveying gravel and river crossings north of Fairbanks. The midnight sun is still up at eleven. ${N.bar} smells like beer and wet wool.
+You are ${N.owen}, a geologist, two summers into a contract surveying gravel and river crossings north of Fairbanks. The midnight sun is still up at eleven. The Silver Pan smells like beer and wet wool.
 
 ${N.curly}, the mechanic who keeps your charter plane flying, waves you over. Beside him is a skinny kid in an Air Force haircut with a guitar case at his feet.
 
@@ -32,12 +32,10 @@ Wade talks about water skiing behind his cousins' boat, and about how quiet the 
 
 When Wade asks what you do, you tell him the truth, or most of it: you map where a road could someday cross the rivers north of here, and where the gravel is to build it.
 
-"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Native families out there. There's a lawyer in town, ${N.ashby}, helping me with that. Good man."
+"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Native families out there. There's a lawyer in town helping me with that."
 
 Curly checks his watch. "Plane's ready for the morning, Owen."`,
-    choices: () => [
-      { label: 'Say goodnight and walk back to your room.', next: 'p_letter' },
-    ],
+    choices: () => [{ label: 'Say goodnight and walk back to your room.', next: 'p_letter' }],
   },
   {
     id: 'p_letter',
@@ -46,9 +44,9 @@ Curly checks his watch. "Plane's ready for the morning, Owen."`,
     text: () => `
 In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel sits right on the best crossing. A fish camp. The family's allotment application vanished years ago.
 
-You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. If anything happens, she should know where the real notes are. You will cache them at the survey camp before freeze-up.
+You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp. While he refuels at the creek, you will hide the real notes and tapes. If anything happens to you, she should know where.
 
-Where do you tell her to look?`,
+Where do you hide them?`,
     choices: () => [
       { label: 'Under the floorboards behind the cook-tent stove.', apply: set({ owenCache: 'stove' }), next: 'p_end' },
       { label: 'In the old meat cache up on stilts.', apply: set({ owenCache: 'cache' }), next: 'p_end' },
@@ -60,7 +58,9 @@ Where do you tell her to look?`,
     act,
     title: 'High Water',
     text: () => `
-You seal the letter and mail it in the morning. A month later the rain starts and does not stop. By the second week of August the Chena is over its banks, and Curly is at your door with a skiff, offering a ride across the water to Lucy.
+You mail the letter, fly north, hide the notes, and fly home. Curly never sees.
+
+A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept, and Curly is at your door with a skiff, offering a ride.
 
 You climb in.`,
     choices: () => [{ label: 'Continue.', next: 'a1_flood' }],

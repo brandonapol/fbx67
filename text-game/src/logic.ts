@@ -18,7 +18,7 @@ export const honestWithFriends = (s: State): boolean =>
 
 export const doubleAgentWorks = (s: State): boolean => s.offer === 'fake' && honestWithFriends(s)
 
-export const iceJam = (s: State): IceJam => (honestWithFriends(s) ? 'stopped' : 'blown')
+export const iceJam = (s: State): IceJam => (honestWithFriends(s) && s.offer !== 'take' ? 'stopped' : 'blown')
 
 export const barnetteTrustsWade = (s: State): boolean => s.heat <= HEAT_LIMIT
 

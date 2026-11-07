@@ -1,7 +1,7 @@
 import type { Scene } from '../types.ts'
 import { N } from '../names.ts'
 import { addEvidence, has, set } from '../state.ts'
-import { councilmanFlips, curlyTalks, iceJam } from '../logic.ts'
+import { councilmanFlips, curlyTalks, doubleAgentWorks, iceJam } from '../logic.ts'
 
 const act = 'Act 4: Breakup' as const
 
@@ -13,11 +13,45 @@ export const act4: readonly Scene[] = [
     text: (s) => `
 March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on the Arctic coast, maybe the biggest field in North America.
 
-Everybody in Fairbanks suddenly knows why a road north matters. And why a fish camp on the best river crossing matters.
+Everybody in Fairbanks suddenly knows why a road north matters, and why the best river crossing on the way matters. It runs straight through Eli and Lucy's fish camp.
 
-${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to Owen\'s tapes.' : 'Lucy listens to Owen\'s tapes without you. Eli tells you about it later, flatly.'} On the last reel, recorded a week before he died, Owen sounds tired: "Ashby wants the data early. Before the claims settle. I don't understand why a man helping the families needs it early."
+${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to Owen\'s tapes.' : 'Lucy listens to Owen\'s tapes without you. Eli tells you about it later, flatly.'} On the last reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
-Then Lucy finds a page in the Major's files: a land-office memo she gave to exactly one person outside her office. ${N.ashby}.${s.leakedFlightDate ? ' And the Major had no reason to care when a land clerk flew anywhere, unless someone asked him to find out.' : ''}`,
+Lucy plays it three times. She doesn't say who she thinks "he" is.`,
+    choices: () => [{ label: 'Continue.', next: 'a4_offer' }],
+  },
+  {
+    id: 'a4_offer',
+    act,
+    title: 'The Offer',
+    text: (s) => `
+${N.ashby} invites you to lunch at the hotel. He orders for both of you.${has(s, 'hotelTalk') ? ' When he leans in and lowers his voice, you know it. The quiet man at the bar in October. "Before is what counts."' : ''}
+
+"Wade, I'm going to be honest, because I like you. There's going to be a lot of money in this country now. The Air Force is going to court-martial somebody for those missing charges, and every page has your name on it. I can make those pages go away.
+
+"There's a parcel on the river with your name on it, too, if you want it. A future. That nice nurse. All you have to do is nothing."
+
+It was him. The lawyer helping the families. The man Owen trusted.`,
+    choices: () => [
+      { label: 'Take the money.', apply: set({ offer: 'take' }), next: 'a4_curly' },
+      { label: 'Refuse. Walk out.', apply: set({ offer: 'refuse' }), next: 'a4_curly' },
+      { label: 'Say you need a day to think. Then come back wired, and get him talking.', apply: set({ offer: 'fake' }), next: 'a4_wire' },
+    ],
+  },
+  {
+    id: 'a4_wire',
+    act,
+    title: 'The Wire',
+    text: (s) =>
+      doubleAgentWorks(s)
+        ? `
+Lucy tapes a pocket recorder inside your cast, with a microphone up your sleeve. Eli parks across from the hotel in case it goes bad.
+
+At the second lunch you shake Ashby's hand and say yes. He relaxes and tells you more than he should: the survey money, the Major's pension, Curly, the plane. The tape runs out just as he picks up the check.`
+        : `
+You have nobody to wire you. ${s.afterConfession === 'stay' ? 'Eli won\'t look at you since what you did with his secret, and Lucy won\'t do it without him.' : 'Lucy won\'t answer her door.'} You buy a pocket recorder at the Army-Navy store and tape it in your cast yourself.
+
+At the second lunch you shake Ashby's hand and say yes. He pats your cast, smiles, and talks about the weather for an hour. When you play the tape back, it's mostly silverware.`,
     choices: () => [{ label: 'Continue.', next: 'a4_curly' }],
   },
   {
@@ -33,25 +67,7 @@ Curly asks for you by name. In the visiting room he looks ten years older.
         : `
 You try to see Curly in jail. He won't come out of his cell. The guard says he told the Trooper he'd rather rot than talk to anybody.`,
     choices: (s) => [
-      { label: 'Continue.', apply: curlyTalks(s) ? addEvidence('curlyNamesAshby') : undefined, next: 'a4_offer' },
-    ],
-  },
-  {
-    id: 'a4_offer',
-    act,
-    title: 'The Offer',
-    text: () => `
-${N.ashby} invites you to lunch at the hotel. He orders for both of you.
-
-"Wade, I'm going to be honest, because I like you. There's going to be a lot of money in this country now. The Air Force is going to court-martial somebody for those missing charges, and every page has your name on it. I can make those pages go away.
-
-"There's a parcel on the river with your name on it, too, if you want it. A future. A nice girl. All you have to do is nothing."
-
-So that's who it was the whole time.`,
-    choices: () => [
-      { label: 'Take the money.', apply: set({ offer: 'take' }), next: 'a4_jake' },
-      { label: 'Refuse. Walk out.', apply: set({ offer: 'refuse' }), next: 'a4_jake' },
-      { label: 'Shake his hand. Let him think he bought you, and get him talking.', apply: set({ offer: 'fake' }), next: 'a4_jake' },
+      { label: 'Continue.', apply: curlyTalks(s) ? addEvidence('curlyNamesAshby') : undefined, next: 'a4_jake' },
     ],
   },
   {
@@ -61,11 +77,11 @@ So that's who it was the whole time.`,
     text: (s) =>
       councilmanFlips(s)
         ? `
-Jake is up on crutches. He went to see his uncle.
+Jake is up on crutches. Because you showed him the sump drain on that hillside, he knows the crash wasn't his fault. He went to see his uncle, Ray Tolliver.
 
 "I told him somebody put water in my fuel, Wade. I told him I almost died. He didn't know. He knew about the land. He didn't know about the plane." Jake looks out the window. "He's going to talk to the Trooper."`
         : `
-Jake is up on crutches. He still thinks the crash was his fault, that he missed a sump drain in the cold. He won't fly again this year. His uncle sends flowers.`,
+Jake is up on crutches. Nobody ever told him about the sump drain, so he still thinks the crash was his fault, that he missed it in the cold. He won't fly again this year. His uncle, Ray Tolliver, sends flowers.`,
     choices: (s) => [
       { label: 'Continue.', apply: councilmanFlips(s) ? addEvidence('councilmanFlips') : undefined, next: 'a4_icejam' },
     ],
@@ -74,18 +90,18 @@ Jake is up on crutches. He still thinks the crash was his fault, that he missed 
     id: 'a4_icejam',
     act,
     title: 'Breakup',
-    text: (s) =>
-      iceJam(s) === 'stopped'
-        ? `
-May. The river ice is groaning. Eli hears from a freighter downriver that a man in an Air Force parka has been walking the jam above the fish camp.
+    text: (s) => `
+May. The river ice is groaning. If the ice jam above the fish camp is blown, the water will take the smokehouse, the drying racks, the cabin, the graves: every sign that the family has used that land for generations. An allotment claim lives or dies on proof of use. Without it, the claim is just paper.
 
-Eli knows that stretch of river better than anyone alive. You get there in his boat at dawn, through the floes, and find ${N.co} on the ice with a satchel of charges signed out in your name.
+${
+      iceJam(s) === 'stopped'
+        ? `Eli hears from a freighter downriver that a man in an Air Force parka has been walking the jam. Eli knows that stretch of river better than anyone alive. You get there in his boat at dawn, through the floes, and find ${N.co} on the ice with a satchel of charges signed out in your name.
 
 He looks at you and sits down on the ice. He's tired. He wanted to retire to Florida with a boat.`
-        : `
-May. In the middle of the night the ice jam above the fish camp goes up with a sound like artillery. The water comes through and takes the smokehouse, the drying racks, the cabin, the graves. Every sign that the family ever lived there is under the river.
+        : `In the middle of the night the jam goes up with a sound like artillery. From the bluff, too late, you see a man in an Air Force parka running for a car with base plates. By morning the fish camp is under the river.
 
-By morning, Barnette has the demolition sign-outs. Every page says Wade Pruett.`,
+By noon, ${N.barnette} has the demolition sign-outs. Every page says Wade Pruett.`
+    }`,
     choices: () => [{ label: 'Continue.', next: 'a4_testify' }],
   },
   {
@@ -93,9 +109,9 @@ By morning, Barnette has the demolition sign-outs. Every page says Wade Pruett.`
     act,
     title: 'On the Record',
     text: (s) => `
-There's an Air Force inquiry into the missing charges, and ${N.barnette} has taken a case to a state grand jury.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
+${N.barnette} comes to see you himself. He hates this, and he says so. There's an Air Force inquiry into the missing charges, and he's taken a case to a state grand jury. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: ${N.ashby}.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
 
-They want you. Testifying against your commander, with your own name on every sign-out sheet, could get you court-martialed.${s.offer === 'take' ? '\n\nAshby\'s money is already in a bank in Seattle.' : ''}`,
+He wants you. Testifying against your commander, with your own name on every sign-out sheet, could get you court-martialed.${s.offer === 'take' ? '\n\nAshby\'s money is already in a bank in Seattle.' : ''}`,
     choices: (s) =>
       s.offer === 'take'
         ? [{ label: 'Say nothing. You\'ve been paid.', apply: set({ testified: false }), next: 'end' }]

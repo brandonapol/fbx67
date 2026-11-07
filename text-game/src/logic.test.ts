@@ -59,6 +59,7 @@ test('ice jam is stopped only when honest with friends', () => {
   assert.equal(iceJam(base), 'stopped')
   assert.equal(iceJam(w({ eliTrespass: 'leverage' })), 'blown')
   assert.equal(iceJam(w({ afterConfession: 'walk' })), 'blown')
+  assert.equal(iceJam(w({ offer: 'take' })), 'blown')
 })
 
 test('Eli is jailed if his trespass is used or the offer is taken', () => {

@@ -10,7 +10,7 @@ export const act1: readonly Scene[] = [
     act,
     title: 'Drowned Town',
     text: () => `
-You are ${N.wade} Pruett. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
+You are ${N.wade} Pruett again: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
 Your sergeant puts you on a sandbag line. Across the street, a riverboat is pulling elders off a porch. The man at the tiller is about your age, and he's shorthanded.`,
     choices: () => [
@@ -23,41 +23,69 @@ Your sergeant puts you on a sandbag line. Across the street, a riverboat is pull
     act,
     title: 'The Cabin',
     text: (s) => `
-${s.eliTrust > 0 ? 'The boatman, Eli, owes you one.' : 'That evening the boatman, Eli, needs a strong back and your sergeant lends you out.'} He knows every slough in the flood. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
+${s.eliTrust > 0 ? 'The boatman, Eli, owes you one, and he says so.' : 'That evening the boatman, Eli, needs a strong back, and your sergeant lends you out.'} Eli runs freight on the river and knows every slough in the flood. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
 It's a man, held under by a line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
 
 The line is tied off in a cowboy bowline, the backward way your uncle's ranch hands tied them back home.`,
     choices: () => [
-      { label: 'Point out the knot to Eli. Nobody tangles into a bowline.', apply: pipe(addEvidence('knot'), eliTrust(1)), next: 'a1_ruling' },
+      { label: 'Point out the knot to Eli. Nobody tangles into a bowline.', apply: pipe(addEvidence('knot'), eliTrust(1)), next: 'a1_knot' },
       { label: 'Say nothing. Cut him loose and get him to the hospital.', apply: addEvidence('knot'), next: 'a1_ruling' },
     ],
+  },
+  {
+    id: 'a1_knot',
+    act,
+    title: 'Eli Looks',
+    text: () => `
+Eli looks at the knot for a long time.
+
+"Nobody ties himself to a sawhorse," he says quietly. "Remember that knot, Texas."`,
+    choices: () => [{ label: 'Help him get Owen into the boat.', next: 'a1_ruling' }],
   },
   {
     id: 'a1_ruling',
     act,
     title: 'An Accident',
     text: () => `
-${N.barnette} of the State Troopers has six drownings and a town underwater. He looks at Owen for about a minute.
+${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his great-grandfather founded this town and skipped out on it with everybody's money. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
 
 "Tangled in a line in the current. Accident." He signs it and moves on.
 
 At the hospital, a nurse named ${N.joan} is cleaning up in a hallway full of cots.`,
     choices: () => [
-      { label: 'Ask Joan if anything about the body looked wrong.', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_lucy' },
-      { label: 'Make her laugh. She looks like she needs it.', apply: joan(2), next: 'a1_lucy' },
+      { label: 'Ask Joan if anything about the body looked wrong.', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_joan_ask' },
+      { label: 'Make her laugh. She looks like she needs it.', apply: pipe(addEvidence('bruising'), joan(2)), next: 'a1_joan_laugh' },
     ],
+  },
+  {
+    id: 'a1_joan_ask',
+    act,
+    title: 'Joan',
+    text: () => `
+Joan lowers her voice. Bruises on his left shoulder and the side of his neck, she says, like a hand held him down. A left hand, from behind. "Nobody asked me," she says. "So I didn't say."`,
+    choices: () => [{ label: 'Continue.', next: 'a1_lucy' }],
+  },
+  {
+    id: 'a1_joan_laugh',
+    act,
+    title: 'Joan',
+    text: () => `
+She laughs despite herself. As you're leaving she catches your sleeve.
+
+"Your friend from the cabin. He had bruises on his left shoulder and neck, like somebody's left hand held him down. Nobody asked me. I thought somebody should know."`,
+    choices: () => [{ label: 'Continue.', next: 'a1_lucy' }],
   },
   {
     id: 'a1_lucy',
     act,
     title: 'The Land Office',
-    text: (s) => `
-${s.evidence.includes('bruising') ? 'Joan lowers her voice: bruises on his left shoulder and neck, like a hand held him down. A left hand. ' : ''}Eli takes you to the land office, where his sister ${N.lucy} is hauling wet ledgers up a staircase.
+    text: () => `
+Eli takes you to the land office, where his sister ${N.lucy} is hauling wet ledgers up a staircase. You light a cigarette. She takes it out of your mouth and drops it in a puddle without a word.
 
-She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned.
+She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. The camp can't be reached until the rivers freeze and the planes go on skis.
 
-"The survey he was doing relied on Air Force aerial photographs," she says. "The originals are on your base. I can't get onto your base."
+"He was working with a lawyer, ${N.ashby}, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The originals are on your base. I can't get onto your base."
 
 She looks at you a beat too long.`,
     choices: () => [
@@ -70,23 +98,32 @@ She looks at you a beat too long.`,
     act,
     title: 'Saturday at the Silver Pan',
     text: () => `
-The water goes down. The mud doesn't. Saturday night ${N.bar} is packed: Curly at the bar, ${N.jake} the bush pilot folded into a booth, Eli nursing a soda.
+The water goes down. The mud doesn't. Saturday night the Silver Pan is packed: Curly at the bar, ${N.jake} the bush pilot folded into a booth, Eli nursing a soda.
 
-A drunk calls Eli something ugly. Eli doesn't move. You do.
+A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
 
 The floor is slick with mud. There's a hot stove, a moose rack on the wall, and a lot of bottles.`,
     choices: () => [
-      { label: 'Shove him into the stove.', next: 'a1_tank' },
+      { label: 'Shove the drunk into the stove.', next: 'a1_tank' },
       { label: 'Grab the moose rack off the wall.', next: 'a1_tank' },
       { label: 'Break a bottle and hope that ends it.', apply: heat(1), next: 'a1_tank' },
+      { label: 'Stay in your seat. Not your fight.', apply: eliTrust(-1), next: 'a1_tank_sat' },
     ],
+  },
+  {
+    id: 'a1_tank_sat',
+    act,
+    title: 'Not Your Fight',
+    text: () => `
+You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.`,
+    choices: () => [{ label: 'Continue.', next: 'a1_tank' }],
   },
   {
     id: 'a1_tank',
     act,
     title: 'The Drunk Tank',
     text: () => `
-It does not end it. The whole bar picks sides. Eli pulls you out from under three men, and ${N.cop} of Fairbanks PD hauls you, Eli, and Curly Boone in together. The officer knows Curly by name.
+The whole bar picks sides. Curly jumps in on yours, roaring about Texas. ${N.cop} of Fairbanks PD, a Native officer people say has never taken a dollar from anybody, hauls you, Eli, and Curly in together. He knows Curly by name.
 
 In the morning ${N.barnette} comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
 
@@ -104,9 +141,9 @@ In the morning ${N.barnette} comes to the cell. He wants to know who started it,
     text: (s) => `
 ${s.barfight === 'blameEli' ? 'Eli stays in the cell when they let you out. He does not look at you.' : s.barfight === 'sideCurly' ? 'Curly claps you on the back on the way out. Barnette writes your name next to his.' : 'Barnette lets you both go, but he writes your name down.'}
 
-A man in a good coat is waiting at the desk. ${N.ashby}, attorney. He paid your fine.
+A man in a good coat is at the desk, talking Barnette down in a calm voice until Barnette tears up the charge sheet. ${N.ashby}, attorney. He paid your fine, and there's no record.
 
-"Owen spoke well of you," he says. "He spoke well of everybody. I'm trying to finish what he started for the Native families. If you ever need anything, you come see me."`,
+"Owen spoke well of you," he says. "He spoke well of everybody. I'm finishing what he started for the Native families. With these claims, timing is everything." He gives you his card. "If you ever need anything, you come see me."`,
     choices: () => [{ label: 'Thank him.', next: 'a1_letter' }],
   },
   {
@@ -118,9 +155,9 @@ Dear Mama,
 
 You sit on your bunk with a pen. Mama will want to know about the flood. You are not sure how much to tell her about the dead man, the fight, or the night in jail.`,
     choices: () => [
-      { label: 'Tell her all of it. The body, the fight, the jail.', apply: mom('honest'), next: 'a2_photos' },
-      { label: 'Tell her about the flood and that you made some friends.', apply: mom('soft'), next: 'a2_photos' },
-      { label: 'Tell her it\'s boring up here and you\'re fine.', apply: mom('lie'), next: 'a2_photos' },
+      { label: 'Tell her all of it. The body, the fight, the jail.', apply: mom('honest'), next: 'a2_major' },
+      { label: 'Tell her about the flood and that you made some friends.', apply: mom('soft'), next: 'a2_major' },
+      { label: 'Tell her it\'s boring up here and you\'re fine.', apply: mom('lie'), next: 'a2_major' },
     ],
   },
 ]

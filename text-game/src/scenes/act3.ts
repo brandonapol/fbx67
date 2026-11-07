@@ -72,7 +72,7 @@ You get a fire going in the lee of the fuselage and pack spruce boughs under Jak
     act,
     title: 'The Search',
     text: () => `
-You are Wade again. When Jake's plane doesn't come back, the rescue team out of Eielson needs a munitions man for flares and signal charges. You make sure it's you.
+You are Wade again. When Jake's plane doesn't come back, the rescue team out of Eielson needs a munitions man for flares and signal charges. Your sergeant sends you.
 
 They hand you cross-country skis. You grew up water skiing. How hard can it be?
 
@@ -111,11 +111,11 @@ You find them on the hillside. You try to haul Lucy up out of the fuselage, the 
 
 Lucy splints your arm, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
 
-Later, by the fire, you light a cigarette and pass it to Jake. Lucy looks at you like you're something she stepped in.
+Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
-Jake points the cigarette at the engine cowling. "Look at the sump drain." It's backed out a quarter turn and wired so it looks tight. Somebody put water in the fuel on purpose.`,
+You wander over to the engine to get away from her look. You know hardware. The fuel sump drain is backed out a quarter turn and safety-wired so it looks tight. Water didn't get in by accident. Somebody put it there.`,
     choices: () => [
-      { label: 'Tell Jake what it means: somebody wanted this plane down. He should know.', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
+      { label: 'Wake Jake and show him. It wasn\'t his fault, and he should know someone wanted this plane down.', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
       { label: 'Keep it to yourself until you know who.', apply: addEvidence('wreckProof'), next: 'a3_home' },
     ],
   },
@@ -153,14 +153,14 @@ ${s.curlyPlan === 'warn' ? `Because Lucy passed on Jake's tip, ${N.cop} has been
 He'd stolen a brand-new hunting bow. A left-handed one.${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
 
 Curly is safe in a cell, where nobody can arrange an accident for him. The officer can't be bought, and Curly knows it.`,
-    choices: () => [{ label: 'Go find Eli.', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],
+    choices: () => [{ label: 'Continue.', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],
   },
   {
     id: 'a3_eli',
     act,
     title: 'What Eli Saw',
-    text: () => `
-Eli finds you in the hospital parking lot, smoking one-handed in the cold. He's been carrying something since August.
+    text: (s) => `
+Eli finds you in the hospital parking lot, smoking one-handed in the cold. ${s.eliTrust > 0 ? 'He\'s been carrying something since August.' : 'You are the last person he wants to tell. But Lucy nearly died, and you were on that hill, and there is nobody else.'}
 
 "The night of the flood, I was out on the fish camp. Our fish camp. Tolliver's had me banned off it for two years, says he'll have me arrested if I set foot there. I went back for my father's things before the water took them.
 
@@ -180,13 +180,14 @@ He's telling you something that could put him in jail.`,
     text: (s) => `
 Lucy nearly died. Jake can't walk. Your arm is in a cast.${has(s, 'hotelTalk') ? ' And you heard Tolliver yourself in that hotel bar: "my land, my title."' : ''}
 
-Tolliver holds the fish camp. Tolliver wants it to stay his. As far as you can see, Tolliver did this.
+Tolliver holds the fish camp. Lucy has always said the family's original application was never lost, just pulled from the files, and Tolliver is the one who'd want it kept. As far as you can see, Tolliver did this.
 
 You tell Lucy you're going to do something about it. She lets you talk.`,
     choices: () => [
       { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
       { label: 'Burn down his hunting cabin.', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
       { label: 'Find him and put a gun in his face until he talks.', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
+      { label: 'Stay out of it. Not your fight, not your land.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
     ],
   },
   {
@@ -194,7 +195,7 @@ You tell Lucy you're going to do something about it. She lets you talk.`,
     act,
     title: 'One-Handed',
     text: () => `
-You sign out a demolition kit for "training," one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
+You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
     choices: () => [{ label: 'Go.', apply: heat(1), next: 'a3_confession' }],
   },
   {
@@ -214,22 +215,46 @@ You borrow a rifle from a guy in the barracks who doesn't ask questions, and you
     choices: () => [{ label: 'Go.', apply: heat(1), next: 'a3_confession' }],
   },
   {
+    id: 'a3_rash_none',
+    act,
+    title: 'Barracks',
+    text: () => `
+You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight somebody knocks on the window. It's Lucy, and she's been running.`,
+    choices: () => [{ label: 'Let her in.', next: 'a3_confession' }],
+  },
+  {
     id: 'a3_confession',
     act,
     title: 'Lucy',
-    text: () => `
-Lucy steps out of the dark before you get there. She must have followed you.
+    text: (s) => `
+${s.rashPlan === 'none' ? '"Barnette is going to arrest you," she says. "Maybe tomorrow."' : 'Lucy steps out of the dark before you get there. She must have followed you.\n\n"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'}
 
-"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."
-
-She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them.
+She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Including the letter where you told Mama the date of Lucy\'s flight.' : ''}
 
 "They've been building you for weeks. You're the fall guy." She takes a breath. "And you should know something else. I picked you in August because you had base access. That's why. I needed somebody inside, and you were easy. It's not why now. But it's why then."`,
     choices: () => [
       { label: 'Stay. "Then we finish this. Together."', apply: set({ afterConfession: 'stay' }), next: 'a3_joan' },
-      { label: 'Walk away. You\'re done being anybody\'s tool.', apply: set({ afterConfession: 'walk' }), next: 'a3_joan' },
-      { label: 'Turn on her. If she used you, you can use her.', apply: set({ afterConfession: 'turn' }), next: 'a3_joan' },
+      { label: 'Walk away. You\'re done being anybody\'s tool.', apply: set({ afterConfession: 'walk' }), next: 'a3_walk' },
+      { label: 'Turn on her. If she used you, you can use her.', apply: set({ afterConfession: 'turn' }), next: 'a3_turn' },
     ],
+  },
+  {
+    id: 'a3_walk',
+    act,
+    title: 'Done',
+    text: () => `
+You hand her the folder back and walk out into the dark. She doesn't call after you. For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
+    choices: () => [{ label: 'Continue.', next: 'a3_joan' }],
+  },
+  {
+    id: 'a3_turn',
+    act,
+    title: 'Trade',
+    text: () => `
+The next morning you go to ${N.barnette}. You tell him who the Native woman on the base was, and that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were her idea of a frame.
+
+Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are in an evidence locker.`,
+    choices: () => [{ label: 'Continue.', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat + 2 }), next: 'a3_joan' },],
   },
   {
     id: 'a3_joan',

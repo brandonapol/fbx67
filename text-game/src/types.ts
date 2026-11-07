@@ -27,7 +27,7 @@ export type State = Readonly<{
   coJob?: 'wade' | 'lucy'
   curlyPlan?: 'warn' | 'confront' | 'ignore'
   eliTrespass?: 'quiet' | 'report' | 'leverage'
-  rashPlan?: 'safe' | 'burn' | 'gunpoint'
+  rashPlan?: 'safe' | 'burn' | 'gunpoint' | 'none'
   afterConfession?: 'stay' | 'walk' | 'turn'
   offer?: 'take' | 'refuse' | 'fake'
   testified?: boolean

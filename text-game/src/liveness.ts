@@ -23,9 +23,9 @@ const rules: readonly Rule[] = [
   { after: 'a2_hotel', apply: dropEvidence('aerialPhotos') },
   { after: 'a2_flight', apply: drop('coJob') },
   { after: 'a3_curly', apply: dropEvidence('knot', 'bruising', 'curlyKnot', 'curlyLefty', 'staffCar', 'wreckProof') },
-  { after: 'a3_rash', apply: dropEvidence('hotelTalk') },
+  { after: 'a4_offer', apply: dropEvidence('hotelTalk') },
   { after: 'a3_eli', apply: (s) => ({ ...s, eliTrust: s.eliTrust >= 3 ? 3 : 0 }) },
-  { after: 'a3_rash_gun', apply: (s) => ({ ...s, heat: s.heat <= HEAT_LIMIT ? 0 : HEAT_LIMIT + 1 }) },
+  { after: 'a3_rash_none', apply: (s) => ({ ...s, heat: s.heat <= HEAT_LIMIT ? 0 : HEAT_LIMIT + 1 }) },
   {
     after: 'a3_joan',
     apply: (s) => ({
@@ -34,7 +34,7 @@ const rules: readonly Rule[] = [
       momHonesty: s.momHonesty >= 2 ? 2 : s.momHonesty <= -2 ? -2 : 0,
     }),
   },
-  { after: 'a4_news', apply: (s) => ({ ...s, leakedFlightDate: false }) },
+  { after: 'a3_confession', apply: (s) => ({ ...s, leakedFlightDate: false }) },
 ]
 
 export const canonical = (s: State): State =>
