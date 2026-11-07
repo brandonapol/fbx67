@@ -2,8 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replay } from '../../text-game/src/engine.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { available, interact, press, seen, start, still, tick } from './prologue.ts'
-import { hold, holdWhenSafe, holdWhenWatched, routes, talk, walk } from './drive.ts'
+import { available, focus, interact, press, seen, start, still, tick } from './prologue.ts'
+import { back, hold, holdWhenSafe, holdWhenWatched, routes, talk, walk } from './drive.ts'
 
 const spots = ['stove', 'cache', 'marker'] as const
 
@@ -53,6 +53,15 @@ test('letting go of E stops hiding without sending anything', () => {
   const walked = walk(released, [[5.6, 1.5]])
   assert.equal(walked.hiding, undefined)
   assert.equal(walked.story.owenCache, undefined)
+})
+
+test('the plane only takes Owen home once the notes are hidden', () => {
+  const camp = atCamp()
+  assert.ok(!available(camp).some((i) => i.id === 'plane'))
+  const hidden = holdWhenSafe(walk(camp, routes.cache))
+  const home = walk(hidden, back('cache'))
+  assert.equal(focus(home)?.id, 'plane')
+  assert.equal(interact(home).space, 'flood')
 })
 
 test('Curly cannot see through the cook tent', () => {

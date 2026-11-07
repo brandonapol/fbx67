@@ -11,7 +11,7 @@ export const HIDE_TIME = 2.4
 
 export type Button = Readonly<{ id: string; label: string }>
 
-export type Panel = Readonly<{ kind: 'story' | 'busted'; title: string; text: string; buttons: readonly Button[] }>
+export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end'; title: string; text: string; buttons: readonly Button[] }>
 
 export type Hiding = Readonly<{ spot: CacheSpot; progress: number }>
 
@@ -82,7 +82,8 @@ const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 export const available = (g: Game): readonly Interactable[] =>
   spaces[g.space].spots.filter((i) => {
     if (g.space === 'bar') return i.id === 'door' ? talked(g) : i.id === 'hank' ? g.story.scene === 'p_bar' : true
-    if (g.space === 'camp') return g.hidden === undefined
+    if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
+    if (g.space === 'flood') return g.story.scene === 'p_end'
     return true
   })
 
@@ -99,6 +100,13 @@ const busted = (g: Game): Game => ({
   panel: { kind: 'busted', title: 'Busted', text: 'Curly turns around. That was way too obvious.', buttons: [{ id: 'retry', label: 'Try again' }] },
 })
 
+const endCard = (g: Game): Panel => ({
+  kind: 'end',
+  title: 'End of the prologue',
+  text: 'Act 1 continues in the text build, where you play Wade.',
+  buttons: [{ id: 'continue', label: 'Continue as Wade' }],
+})
+
 export const interact = (g: Game): Game => {
   const target = focus(g)
   if (!target) return g
@@ -110,7 +118,11 @@ export const interact = (g: Game): Game => {
     if (id === 'door') return { ...enter(sendNote(g, 'goodnight'), 'room') }
   }
   if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, [], [{ id: 'fly', label: 'Sleep. Fly north with Curly in the morning.' }]) }
-  if (g.space === 'camp' && isSpot(id)) return { ...g, hiding: { spot: id, progress: 0 } }
+  if (g.space === 'camp') {
+    if (isSpot(id)) return { ...g, hiding: { spot: id, progress: 0 } }
+    if (id === 'plane') return enter(g, 'flood')
+  }
+  if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
 
@@ -118,9 +130,11 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
   if (button === 'fly') return enter(g, 'camp')
   if (button === 'retry') return { ...enter(g, 'camp'), busts: g.busts }
+  if (button === 'continue') return g
   if (button.startsWith('note:')) {
     const note = button.slice(5)
     const next = sendNote(g, note)
+    if (note === 'continue') return { ...next, panel: endCard(next) }
     return { ...next, panel: storyPanel(next.story, [], [close('Back to the table.')]) }
   }
   return g
@@ -146,3 +160,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   const facing = moving ? Math.atan2(input.dir.x, input.dir.z) : g.facing
   return hide({ ...g, t, pos, facing }, input, dt)
 }
+
+export const ended = (g: Game): boolean => g.panel?.kind === 'end'
+
+export const textBuildHash = (g: Game): string => `#path=${g.path.join(',')}`
