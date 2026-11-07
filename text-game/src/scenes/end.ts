@@ -7,15 +7,17 @@ const headline = (s: State): string => {
   if (e === 'best')
     return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} The family's allotment is restored. The fish camp is theirs again.`
   if (e === 'good')
-    return `Your testimony and Lucy's paper trail make the front page. ${N.ashby} is never charged, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.`
+    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without more witnesses standing behind it, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.`
   if (e === 'bad') {
     if (s.offer === 'fake')
       return `You tried to play Ashby, but you'd already burned the people who could have backed you up.${s.testified ? ' You testified anyway. Nobody believed which side you were on.' : ''} The grand jury never sees a case. Ashby wins.`
+    if (s.offer === 'take' && s.testified)
+      return `You testified anyway, with Ashby's money in a Seattle bank. His lawyers found the account in an afternoon, and after that nobody heard a word you said. Ashby wins.`
     if (s.offer === 'take')
       return `Ashby keeps his word. Within a week the sign-out sheets vanish from the evidence room, and the Air Force inquiry closes without a name. A parcel on the river is deeded to Wade Pruett. Ashby wins.`
     return `You sold Lucy to Barnette, and with her investigation in an evidence locker, Ashby never needed to buy you.${s.testified ? ' Your testimony goes nowhere. You\'re the airman who turned in his friends; nobody trusts a word.' : ''} Ashby wins.`
   }
-  const lead = `Some of them go down. The Major is quietly discharged, and Curly goes to prison for the burglary. ${N.ashby} walks.`
+  const lead = `Some of them go down. ${iceJam(s) === 'stopped' ? 'The Major is court-martialed' : 'The Major is quietly discharged'}, and Curly goes to prison. ${N.ashby} walks.`
   const f = middleFlavor(s)
   return f === 'burn'
     ? `${lead} One night that spring his office burns to the studs, and nobody can prove who did it. Barnette always said you were dangerous.`
@@ -28,7 +30,7 @@ const eliLine = (s: State): string => {
   if (!eliJailed(s))
     return `${s.eliTrust >= 3 ? 'Back on the river by June. He names his new boat after Owen.' : 'Back on the river by June. He nods at you on the street, but he doesn\'t stop to talk.'}${s.leakedFlightDate ? ' He never mentions your letter to your mother again. He doesn\'t have to.' : ''}`
   if (s.eliTrespass === 'report') return 'Your report puts him on the banished land the night Owen died. He serves two years for something he only witnessed.'
-  if (s.eliTrespass === 'leverage') return 'You traded his secret when you needed something. It puts him on the banished land the night Owen died, and he serves two years for something he only witnessed.'
+  if (s.eliTrespass === 'leverage') return 'You held his secret like a card. When Barnette leaned on you, you played it. It puts him on the banished land the night Owen died, and he serves two years for something he only witnessed.'
   return 'Ashby\'s money finds a witness who puts Eli on the banished land the night Owen died. He serves two years for something he only witnessed.'
 }
 
@@ -40,7 +42,7 @@ const curlyLine = (s: State): string => {
       ? 'His statement goes missing from the evidence room. Convicted of burglary only. He dies in prison two years later of "pneumonia."'
       : 'Convicted of burglary. The murder is never charged. He dies in prison two years later of "pneumonia."'
   return s.curlyPlan === 'warn'
-    ? 'He named Ashby and was ready to say it in court. Without more of the case behind him, it never got that far. Convicted of burglary only.'
+    ? 'He named Ashby and was ready to say it in court. A confessed murderer with no corroboration doesn\'t get far against a lawyer like Ashby. He gets life, alone.'
     : s.curlyPlan === 'confront'
       ? 'Arrested after he bolted. After you came at him over that steak, he never trusted anyone again, and he never says a word. Convicted of burglary only.'
       : 'Arrested half-starved and furious. Nobody saw it coming in time, and he never says a word. Convicted of burglary only.'
@@ -51,7 +53,9 @@ const barnetteLine = (s: State): string =>
     ? 'Makes the biggest arrest of his career and never once thanks you.'
     : s.heat > HEAT_LIMIT
       ? 'Never believed a word you said, and told the grand jury so. He might have made the arrest if he had.'
-      : s.leakedFlightDate
+      : !s.testified
+        ? 'Asked you once to stand up in front of a grand jury. You didn\'t. Without you, he couldn\'t make the arrest.'
+        : s.leakedFlightDate
         ? 'Ashby\'s lawyers kept asking how the date of that flight got from an airman\'s letter home to a saboteur. Every time, the room looked at you. He couldn\'t make the arrest.'
         : 'Liked you more than he let on. Without more of a case, he couldn\'t make the arrest he wanted.'
 

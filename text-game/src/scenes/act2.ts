@@ -6,7 +6,7 @@ import { askGossip, gossip } from './gossip.ts'
 const act = 'Act 2: Freeze-up' as const
 
 const coChoices = (_: State): readonly Choice[] => [
-  { label: 'Do it.', next: 'a2_co_heist' },
+  { label: 'Search the Major\'s cabinet tonight.', next: 'a2_co_heist' },
   { label: 'Refuse. That\'s your own CO. You\'d hang for it.', apply: set({ coJob: 'lucy' }), next: 'a2_co_lucy' },
 ]
 
@@ -49,7 +49,7 @@ You know the lab clerk takes a long lunch. You also know the duty sergeant locks
     text: () => `
 The records room is floor-to-ceiling drawers. The photos are filed by flight line and frame number, and the index card for the river north of town lists three drawers.`,
     choices: () => [
-      { label: 'Cross-check the frame numbers against the map grid first. You only pull what you need, but it takes most of his lunch.', apply: pipe(addEvidence('aerialPhotos'), heat(1)), next: 'a2_hotel' },
+      { label: 'Cross-check the frame numbers against the map grid first. You only pull what you need, but it takes time you might not have.', apply: pipe(addEvidence('aerialPhotos'), heat(1)), next: 'a2_hotel' },
       { label: 'Pull all three drawers fast and sort it out later. It\'ll leave a mess somebody notices.', apply: pipe(addEvidence('aerialPhotos'), heat(2)), next: 'a2_hotel' },
     ],
   },
@@ -81,7 +81,7 @@ Tolliver sounds like a man with a lot to lose. You can't tell if any of it means
     act,
     title: 'The Major\'s Office',
     text: (s) => `
-${has(s, 'hotelTalk') ? 'Lucy makes you repeat the quiet man\'s words twice. "Before is what counts. Somebody knows the timing of the claims better than Tolliver does."\n\n' : ''}Lucy has been reading Owen's flight logs. Every survey charter he flew had to be cleared through Eielson's airspace control. The base knew his schedule all summer. Somebody on the base knew where Owen would be.
+${has(s, 'hotelTalk') ? 'Lucy makes you repeat the quiet man\'s words twice. "Before is what counts. Somebody knows the timing of the claims better than Tolliver does."\n\n' : ''}${s.eliTrust <= -2 ? 'Lucy doesn\'t like you, and she doesn\'t pretend to. But you\'re the only one she knows with a base pass.\n\n' : ''}Lucy has been going through Owen's paperwork. His access to the Air Force photographs was signed off by your squadron commander, and every survey report Owen filed went across that same desk. Somebody on the base knew exactly what Owen had found.
 
 She wants the files in your commander's office. ${N.co} keeps a locked cabinet he never lets the clerk touch.
 
@@ -133,7 +133,7 @@ He ties it off without looking: a cowboy bowline, backward, the way the ranch ha
 
 "Wade! Come by Saturday, we'll get a steak. My treat. Money's good this year."`,
     choices: () => [
-      { label: 'Take him up on it.', apply: addEvidence('curlyKnot'), next: 'a2_steak' },
+      { label: 'Take Curly up on the steak.', apply: addEvidence('curlyKnot'), next: 'a2_steak' },
       { label: 'Make an excuse.', apply: addEvidence('curlyKnot'), next: 'a2_jake' },
     ],
   },
@@ -203,7 +203,7 @@ ${s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of 
     act,
     title: 'Letter Home: Work',
     text: () => `
-Dear Mama,
+You start another letter: "Dear Mama,"
 
 First, the base. You've had a strange fall.`,
     choices: () => [

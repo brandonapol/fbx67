@@ -16,7 +16,7 @@ March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on
 
 Everybody in Fairbanks suddenly knows why a road north matters, and why the best river crossing on the way matters. It runs straight through Eli and Lucy's fish camp.
 
-${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to Owen\'s tapes.' : 'Lucy listens to Owen\'s tapes without you. Eli tells you about it later, flatly.'} On the last reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
+${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to the last of Owen\'s tapes.' : s.afterConfession === 'turn' ? 'Lucy is suspended and won\'t speak to you. You hear about Owen\'s tapes from Dottie at the café, secondhand.' : 'Lucy listens to the last of Owen\'s tapes without you. Eli tells you about it later, flatly.'} The final reel cracked in the crash, and it took Jake all winter on crutches to splice it. On it, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
 Lucy plays it three times. She doesn't say who she thinks "he" is.
 
@@ -50,7 +50,7 @@ It was him. The lawyer helping the families. The man Owen trusted.`,
         ? `
 Lucy tapes a pocket recorder inside your cast, with a microphone up your sleeve. Eli parks across from the hotel in case it goes bad.
 
-At the second lunch you shake Ashby's hand and say yes. He relaxes and tells you more than he should: the survey money, the Major's pension, Curly, the plane. The tape runs out just as he picks up the check.`
+At the second lunch you shake Ashby's hand and say yes. He relaxes the way men do when they think they've bought you, and brags more than he should: the survey money, the Major's pension, Curly, the plane. The tape runs out just as he picks up the check.`
         : `
 You have nobody to wire you. ${s.afterConfession === 'stay' ? 'Eli won\'t look at you since what you did with his secret, and Lucy won\'t do it without him.' : 'Lucy won\'t answer her door.'} You buy a pocket recorder at the Army-Navy store and tape it in your cast yourself.
 
@@ -112,14 +112,17 @@ By noon, ${N.barnette} has the demolition sign-outs. Every page says Wade Pruett
     act,
     title: 'On the Record',
     text: (s) => `
-${N.barnette} comes to see you himself. He hates this, and he says so. There's an Air Force inquiry into the missing charges, and he's taken a case to a state grand jury. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: ${N.ashby}.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
+${N.barnette} comes to see you himself. He hates this, and he says so. The Air Force's investigators are running their own inquiry into the missing charges, and he's taken a case to a state grand jury. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: ${N.ashby}.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
 
 ${s.heat > HEAT_LIMIT ? 'He doesn\'t believe half of what you say, and he tells you so. You gave him too many reasons this winter.' : 'For the first time since August, he seems to believe you.'}${doubleAgentWorks(s) ? ' He has the tape from your cast.' : ''}
 
 He wants you. Testifying against your commander, with your own name on every sign-out sheet, could get you court-martialed.${s.offer === 'take' ? '\n\nAshby\'s money is already in a bank in Seattle.' : ''}`,
     choices: (s) =>
       s.offer === 'take'
-        ? [{ label: 'Say nothing. You\'ve been paid.', apply: set({ testified: false }), next: 'end' }]
+        ? [
+            { label: 'Say nothing. You\'ve been paid.', apply: set({ testified: false }), next: 'end' },
+            { label: 'Testify anyway, with his money in your account.', apply: set({ testified: true }), next: 'end' },
+          ]
         : [
             { label: 'Testify. All of it.', apply: set({ testified: true }), next: 'end' },
             { label: 'Keep your head down and let it play out.', apply: set({ testified: false }), next: 'end' },

@@ -6,9 +6,9 @@ const visits = ['a2_co_gossip', 'a2_heat_gossip', 'a3_rash_gossip'] as const
 
 const tiers: readonly (readonly string[])[] = [
   [
-    `"Nobody's said your name, hon. Not the Troopers, not the city boys. You're just another airman who tips bad."`,
-    `"Quiet as a church on Monday. Nobody's asking about you."`,
-    `"Funny thing. With everything going on, nobody's said your name at all. Keep it that way."`,
+    `"You're not on anybody's list, hon. Not the Troopers, not the city boys. Just another airman who tips bad."`,
+    `"Barnette's got bigger fish this month. You're not on anybody's list that I've heard."`,
+    `"Funny thing. With everything going on, the law isn't looking at you. Keep it that way."`,
   ],
   [
     `"${N.barnette} was in Tuesday. Asked if I knew a Texas boy who runs with the river Indians. I said I know a lot of Texas boys." She refills your cup. "He's curious. He's not mad yet."`,

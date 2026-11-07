@@ -7,7 +7,7 @@ import { addEvidence, eliTrust, has, heat, joan, lefty, mom, pipe, set, texan } 
 const act = 'Act 3: Deep Winter' as const
 
 const survivalChoices = (_: State): readonly Choice[] => [
-  { label: 'Burn oil-soaked rags in a hubcap for a smoke signal at first light.', next: 'a3_search' },
+  { label: 'Burn oil-soaked rags in a cowling panel for a smoke signal at first light.', next: 'a3_search' },
   { label: 'Stamp a big X in the snow on the open slope.', next: 'a3_search' },
   { label: 'Save everything for the fire and wait.', next: 'a3_search' },
 ]
@@ -16,7 +16,7 @@ const rashChoices = (_: State): readonly Choice[] => [
   { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
   { label: 'Burn down his hunting cabin.', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
   { label: 'Find him and put a gun in his face until he talks.', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
-  { label: 'Don\'t go after Tolliver. Something doesn\'t add up.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
+  { label: 'Don\'t go after Tolliver. Not like this.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
 ]
 
 const dig = (spot: CacheSpot) => (s: State): string => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
@@ -60,7 +60,7 @@ Jake has the engine warm. You take off into the last of the light.`,
     act,
     title: 'Lucy: Engine Out',
     text: () => `
-Forty minutes out, the engine coughs. Then again. Jake swears and works the primer. "Fuel's icing," he says. "I drained those sumps, Lucy, I swear to God I drained them."
+Forty minutes out, the engine coughs. Then again. Jake swears and works the primer. "Fuel's icing," he says. "I drained the sumps, Lucy, I swear to God. Nothing came out but a little gas."
 
 The engine quits. He puts the plane into a stand of black spruce on a hillside, and the world turns over.
 
@@ -89,7 +89,7 @@ You work the bent seat frame off Jake's leg with your bare hands and tie off the
   {
     id: 'a3_search',
     act,
-    title: 'The Search',
+    title: 'Wade: The Search',
     text: () => `
 You are Wade again. When Jake's plane doesn't come back, the rescue team out of Eielson needs a munitions man for flares and signal charges. Your sergeant sends you.
 
@@ -132,7 +132,7 @@ Lucy splints your arm, makes you eat, and tells you exactly what to do to stay a
 
 Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
-You wander over to the engine to get away from her look. You know hardware. The fuel sump drain is backed out a quarter turn and safety-wired so it looks tight. Water didn't get in by accident. Somebody put it there.`,
+You wander over to the engine to get away from her look. You know hardware. The fuel cap gasket has been cut, and the sump bowl is solid ice. And the sump drain is jammed with a sliver of wood, wired so it looks clean: when Jake drained it on preflight, nothing could come out but the little gas above the plug. Somebody poured water in this tank and made sure Jake couldn't find it.`,
     choices: () => [
       { label: 'Wake Jake and show him. It wasn\'t his fault. And if Jake knew, he might make his uncle Ray listen.', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
       { label: 'Keep it to yourself until you know who.', apply: addEvidence('wreckProof'), next: 'a3_home' },
@@ -156,10 +156,13 @@ Eli meets you at the hospital. He's been asking around the strip.
 "Curly was hanging around Jake's plane the whole week before they flew, watching him fuel up and load it. He knew when it was going. Nobody had to tell him."`,
     choices: (s) => [
       {
-        label: s.leakedFlightDate ? 'Tell Eli the truth about the letter.' : 'Ask Eli what he wants to do.',
+        label: s.leakedFlightDate ? 'Tell Eli the truth: you put the date in a letter to your mother.' : 'Tell Eli you\'ll back whatever he wants to do.',
         apply: s.leakedFlightDate ? pipe(addEvidence('staffCar'), eliTrust(-1)) : eliTrust(1),
         next: 'a3_curly',
       },
+      ...(s.leakedFlightDate
+        ? [{ label: 'Lie. "I never told a soul."', apply: pipe(addEvidence('staffCar'), eliTrust(-2)), next: 'a3_curly' }]
+        : [{ label: 'Tell Eli to leave it to the police.', next: 'a3_curly' }]),
     ],
   },
   {
@@ -169,7 +172,7 @@ Eli meets you at the hospital. He's been asking around the strip.
     text: (s) => `
 ${s.curlyPlan === 'warn' ? `Lucy took Jake's tip straight to ${N.cop}, the one man at Fairbanks PD nobody has ever bought. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Two weeks after the crash, ${N.cop} arrests Curly for breaking into a hunting cabin. By then he's half-starved and furious at everybody.`}
 
-He'd stolen a brand-new hunting bow. A left-handed one.${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
+He'd stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won't say.${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
 
 Curly is safe in a cell, where nobody can arrange an accident for him. The officer can't be bought, and Curly knows it.
 
@@ -244,7 +247,7 @@ You go back to the barracks and lie on your bunk and tell yourself it isn't your
     act,
     title: 'Lucy',
     text: (s) => `
-${s.rashPlan === 'none' ? '"Barnette is going to arrest you," she says. "Maybe tomorrow."' : 'Lucy steps out of the dark before you get there. She must have followed you.\n\n"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'}
+${s.rashPlan === 'none' ? '"Barnette is building a case on you," she says. "Not tomorrow. But he\'s building it."' : 'Lucy steps out of the dark before you get there. She must have followed you.\n\n"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'}
 
 She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Including the letter where you told Mama the date of Lucy\'s flight.' : ''}
 
@@ -284,7 +287,7 @@ Before you start, Joan reads you the letter from Mama that came Tuesday.
 
 ${mamaReply(0)(s)}
 
-Dear Mama,`,
+Joan uncaps her pen. "Dear Mama," she says. "Go on."`,
     choices: () => [
       { label: 'Tell Mama the truth: the crash, the arm, the danger.', apply: pipe(mom('honest'), joan(1)), next: 'a4_news' },
       { label: 'Tell her you slipped on the ice and broke your arm.', apply: pipe(mom('soft'), joan(1)), next: 'a4_news' },

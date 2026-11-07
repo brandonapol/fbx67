@@ -8,7 +8,7 @@ export const act1: readonly Scene[] = [
   {
     id: 'a1_flood',
     act,
-    title: 'Drowned Town',
+    title: 'Wade: Drowned Town',
     text: () => `
 You are ${N.wade} Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
@@ -41,7 +41,7 @@ The line is tied off in a cowboy bowline, the backward way your uncle's ranch ha
 Eli looks at the knot for a long time.
 
 "Nobody ties himself to a sawhorse," he says quietly. "Remember that knot, Texas."`,
-    choices: () => [{ label: 'Help him get Owen into the boat.', next: 'a1_ruling' }],
+    choices: () => [{ label: 'Help Eli lift Owen\'s body into the boat.', next: 'a1_ruling' }],
   },
   {
     id: 'a1_ruling',
@@ -83,13 +83,13 @@ She laughs despite herself. As you're leaving she catches your sleeve.
     text: () => `
 Eli takes you to the land office, where his sister ${N.lucy} is hauling wet ledgers up a staircase. You light a cigarette. She takes it out of your mouth and drops it in a puddle without a word.
 
-She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. The camp can't be reached until the rivers freeze and the planes go on skis.
+She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on tundra tires off a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
 
 "He was working with a lawyer, ${N.ashby}, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The originals are on your base. I can't get onto your base."
 
 She looks at you a beat too long.`,
     choices: () => [
-      { label: '"I can get you the photos."', apply: eliTrust(1), next: 'a1_barfight' },
+      { label: '"I can get you Owen\'s aerial photos."', apply: eliTrust(1), next: 'a1_barfight' },
       { label: '"I don\'t know. I could get in a lot of trouble."', next: 'a1_barfight' },
     ],
   },
@@ -143,7 +143,7 @@ ${s.barfight === 'blameEli' ? 'Eli stays in the cell when they let you out. He d
 
 A man in a good coat is at the desk, talking Barnette down in a calm voice until Barnette tears up the charge sheet. ${N.ashby}, attorney. He paid your fine, and there's no record.
 
-"Owen spoke well of you," he says. "He spoke well of everybody. I'm finishing what he started for the Native families. With these claims, timing is everything." He gives you his card. "If you ever need anything, you come see me."`,
+"Owen spoke well of you," he says. You met Owen exactly once. "He spoke well of everybody. I'm finishing what he started for the Native families. With these claims, timing is everything." He gives you his card. "If you ever need anything, you come see me."`,
     choices: () => [{ label: 'Thank him.', next: 'a1_letter' }],
   },
   {
@@ -151,9 +151,9 @@ A man in a good coat is at the desk, talking Barnette down in a calm voice until
     act,
     title: 'Letter Home',
     text: () => `
-Dear Mama,
+You sit on your bunk with a pen. Mama will want to know about the flood. You are not sure how much to tell her about the dead man, the fight, or the night in jail.
 
-You sit on your bunk with a pen. Mama will want to know about the flood. You are not sure how much to tell her about the dead man, the fight, or the night in jail.`,
+You write: "Dear Mama,"`,
     choices: () => [
       { label: 'Tell her all of it. The body, the fight, the jail.', apply: mom('honest'), next: 'a2_major' },
       { label: 'Tell her about the flood and that you made some friends.', apply: mom('soft'), next: 'a2_major' },
