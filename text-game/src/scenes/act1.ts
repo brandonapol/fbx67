@@ -104,7 +104,7 @@ ${N.bartender} has run the Pan since statehood. He slides you a beer and gives y
 
 "Three things about this town, son. One: the law keeps score. Every time a Trooper hears your name, he believes you a little less, and once he's done believing you, he's done. Two: people here remember who stood with them and who didn't. Three: nothing you say stays where you said it. Dottie down at the Northern Lights Café hears it all by morning. You ever want to know where you stand, buy a cup of her coffee and ask."
 
-He wipes the bar. "That's the speech. Drink your beer.
+He wipes the bar. "That's the speech. Drink your beer."
 
 A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
 

@@ -28,7 +28,7 @@ node src/cli.ts --choices 1,2,1 --last
 
 ## Find a route
 
-`npm run matrix` writes `routes/matrix.json`: one runnable path for every combination of plot decisions (19,440 rows, generated, not committed).
+`npm run matrix` writes `routes/matrix.json`: one runnable path for every combination of plot decisions (about 31,000 rows, generated, not committed).
 
 Query it for a path that matches any combination of decisions:
 
