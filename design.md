@@ -40,6 +40,11 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **The straight-arrow mechanic.** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
 
+**The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. Role in the plot TBD.
+
+**The inspector.** Investigator looking into the frontier chaos from early in the game. After the barfight he ties Wade to the crooked mechanic and decides he hates Wade, and he keeps turning up throughout the game. Agency and exact title TBD.
+  - Fact-check: who would investigate in 1967 Fairbanks (Fairbanks PD detective, the newly renamed Alaska State Troopers, a federal agent) and what title fits.
+
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
 - **The oil landman.** The ultimate villain. Orders things done but never gets his own hands dirty; uses everyone else.
 - **The city councilman.** Holds the family's land. Complicit; degree of guilt TBD. Uncle of the bush pilot.
@@ -53,9 +58,15 @@ Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their fami
 
 Eli and Lucy's family filed a Native allotment application for their fish camp decades ago. The paperwork vanished. A white settler now on the city council holds title. The geologist's survey data shows why that land suddenly matters.
 
+## Barfight Ensemble
+
+Goal: introduce as many characters as possible in one chaotic Act 1 scene, then tie them back in later (or cut).
+- Confirmed: Wade, Eli, the crooked mechanic, the Native cop, the inspector (arrives in the aftermath).
+- Candidates: the straight-arrow mechanic, the nurse (patching people up afterward), the pilot, the councilman or landman watching from a booth, Wade's rescue-team buddy.
+
 ## Structure (one year, four seasons)
 
-**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body in a collapsed cabin; ruled an accident. Lucy disagrees. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. Teaches stealth and survival systems in flooded streets.
+**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body in a collapsed cabin; ruled an accident. Lucy disagrees. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
 
 **Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, oil men's hotel bar. Spying, eavesdropping, document theft, tailing.
 
@@ -123,6 +134,8 @@ Driven by player morals and early-game choices.
 - The nurse: name, and whether she pulls Wade toward betrayal
 - Eli's secret (Twist 5): keep or cut, and what it is
 - Title
+- Names: crooked mechanic, inspector, Native cop, straight-arrow mechanic, nurse
+- Native cop's role in the plot
 - Smoking mechanics: which hooks to keep
 
 ## Continuing in Claude Code
