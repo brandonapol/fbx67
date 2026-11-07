@@ -4,6 +4,7 @@ SHELL := bash
 
 TEXT := text-game
 WEB := web
+GAME := game
 VERIFY_TRIALS ?= 2000
 VERIFY_SEED ?= 0
 STAGED = git diff --cached --name-only --diff-filter=ACMR
@@ -12,8 +13,8 @@ STAGED = git diff --cached --name-only --diff-filter=ACMR
 help:
 	@grep -E '^[a-zA-Z0-9/_-]+:.*## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*## "}; {printf "  %-28s %s\n", $$1, $$2}'
 
-.PHONY: setup setup/text setup/web setup/hooks
-setup: setup/text setup/web setup/hooks ## Install every package and the git hooks
+.PHONY: setup setup/text setup/web setup/game setup/hooks
+setup: setup/text setup/web setup/game setup/hooks ## Install every package and the git hooks
 
 setup/text: ## npm ci in text-game
 	cd $(TEXT) && npm ci
@@ -21,15 +22,19 @@ setup/text: ## npm ci in text-game
 setup/web: ## npm ci in web
 	cd $(WEB) && npm ci
 
+setup/game: ## npm ci in game
+	cd $(GAME) && npm ci
+
 setup/hooks: ## Point git at the repo's hooks (pre-commit runs check/fast)
 	git config core.hooksPath git/hooks
 
-.PHONY: check check/fast check/text check/web check/markdown check/routes
-check: check/text check/web check/routes ## The whole gate CI runs on a pull request
+.PHONY: check check/fast check/text check/web check/game check/markdown check/routes
+check: check/text check/web check/game check/routes ## The whole gate CI runs on a pull request
 
 check/fast: ## Seconds: typecheck and unit tests for whichever package has staged files
 	@if $(STAGED) | grep -q '^$(TEXT)/'; then $(MAKE) --no-print-directory check/text/typecheck test/text/unit; fi
 	@if $(STAGED) | grep -q '^$(WEB)/'; then $(MAKE) --no-print-directory check/web; fi
+	@if $(STAGED) | grep -q '^$(GAME)/'; then $(MAKE) --no-print-directory check/game/typecheck test/game/unit; fi
 
 check/text: check/text/typecheck test/text/unit test/text/verify test/text/matrix ## Typecheck, unit, verify, matrix
 
@@ -39,6 +44,18 @@ check/text/typecheck: ## tsc --noEmit on text-game
 
 check/web: ## Typecheck web
 	cd $(WEB) && npm run -s typecheck
+
+check/game: check/game/typecheck test/game/unit build/game ## Typecheck, unit-test and build the engine build
+
+.PHONY: check/game/typecheck test/game/unit test/game/smoke
+check/game/typecheck: ## tsc on game
+	cd $(GAME) && npm run -s typecheck
+
+test/game/unit: ## Mission logic and story parity tests
+	cd $(GAME) && npm run -s test
+
+test/game/smoke: build/game ## Play the prologue end to end in headless Chromium
+	cd $(GAME) && npm run -s smoke
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden
@@ -51,7 +68,7 @@ check/markdown: ## markdownlint on docs (needs npx)
 test: test/text/unit ## Unit tests and golden replay
 
 test/text/unit: ## node --test on text-game
-	cd $(TEXT) && npm run -s test:unit
+	cd $(TEXT) && node --test --test-reporter=dot src/*.test.ts
 
 test/text/verify: ## Randomized check that liveness pruning is safe
 	cd $(TEXT) && node src/verify.ts --trials $(VERIFY_TRIALS) --seed $(VERIFY_SEED)
@@ -66,7 +83,7 @@ test/text/explore: ## Exhaustive sweep of every reachable state (~15 s, 1.5 GB)
 generate/routes: ## Regenerate golden transcripts and the matrix summary
 	cd $(TEXT) && npm run -s golden
 
-.PHONY: play serve/web build/web
+.PHONY: play serve/web build/web serve/game build/game build/pages
 play: ## Play the text build in the terminal
 	cd $(TEXT) && npm run -s play
 
@@ -75,3 +92,13 @@ serve/web: ## Vite dev server for the browser build
 
 build/web: ## Production build of web/ into web/dist
 	cd $(WEB) && npm run build
+
+serve/game: ## Vite dev server for the engine build
+	cd $(GAME) && npm run dev
+
+build/game: ## Production build of game/ into game/dist
+	cd $(GAME) && npx vite build
+
+build/pages: build/web build/game ## The Pages site: web/dist with the engine build under play/
+	rm -rf $(WEB)/dist/play
+	cp -r $(GAME)/dist $(WEB)/dist/play
