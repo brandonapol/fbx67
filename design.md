@@ -1,4 +1,4 @@
-# Fairbanks 1967 — Design Draft v0.1
+# Second Rush — Design Draft v0.2
 
 Working title: Second Rush
 Engine: PlayCanvas (engine-only, TypeScript, glTF pipeline)
@@ -23,7 +23,7 @@ Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShoc
 
 To verify before writing dialogue: exact munitions unit names and job titles at Eielson in 1967; which units responded to the 1967 flood; land freeze dates.
 
-## Cast (placeholder names)
+## Cast
 
 **Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Smokes. Water-skied growing up, behind his better-off cousins' boat on a Texas reservoir. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
 
@@ -80,7 +80,8 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 
 **Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body drowned in a flooded cabin, tied to submerged debris; Barnette, overwhelmed by the flood, rushes it through as an accident ("tangled in a line in the current"). Lucy disagrees. Lucy needs base access because the geologist's survey relied on Air Force aerial photography, and the originals are on base.
-  - Fact-check: Air Force aerial photo coverage of Interior Alaska in the 1950s-60s and where originals were kept. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
+Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
+  - Fact-check: Air Force aerial photo coverage of Interior Alaska in the 1950s-60s and where originals were kept.
 
 **Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, hotel bars. Spying, eavesdropping, document theft, tailing. Anchorage happens off-screen: Lucy's trips there (land office records, the land lawyer) are reported back, not played. Freeze-up grounds bush planes while they switch from floats to skis, which is why the survey-camp flight has to wait until deep winter.
   - Fact-check: float-to-ski changeover timing for Interior bush planes.
@@ -88,7 +89,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 **Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and Jake survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through his own base connections: the searchers need a munitions man for flares and signal charges. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with Jake (a quiet beat with the man the player briefly suspects), and that's when he notices the damage that tells him the plane was sabotaged.
   - Broken arm: carries into later chapters (one-handed climbing and crafting, no guitar for a while). Extent TBD.
   - Idea: lighting up near a wreck that might be leaking fuel is its own tension beat.
-  - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali.
+  - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along.
 
 **Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. At breakup, someone blows an ice jam with Eielson charges signed out under Wade's name, flooding out the family's fish camp and wiping out the signs of use and occupancy their allotment claim depends on. What Wade knows now matters. Endings.
   - Fact-check: dynamiting ice jams on Interior rivers in the 1960s; whether 1906 Act allotments required proof of use and occupancy (likely five years, per the 1956 amendment).
@@ -105,7 +106,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 - **When.** Late Act 3, after the crash, once Wade has read the sabotaged wreck and the frame-up (Twist 4) is coming together.
 - **How.** Under duress. Wade is angry and about to act on it, and his plan assumes Lucy's loyalty. She has to tell him before he commits, because the move only works (or only stays survivable) if he knows the truth. ("I picked you because you had access. Now they've picked you too.")
-- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (whom he wrongly believes is the top villain) and assumes Lucy has his back. The player chooses the plan, and each one is its own short preparation adventure: e.g. blow the councilman's safe one-armed for the stolen allotment file (which isn't even there; Ashby has it), burn his hunting cabin, or confront him at gunpoint. Whatever the plan, Lucy intercepts at the same point with the same result; what changes is what the player chose to become on the way there. She lets him vent. When he actually starts getting ready to do it, one-armed in a cast, she realizes how reckless he's become and intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
+- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (whom he wrongly believes is the top villain) and assumes Lucy has his back. The player chooses the plan, and each one is its own short preparation adventure: e.g. blow the councilman's safe one-armed for the stolen allotment file (which isn't even there; Ashby has it), burn his hunting cabin, or confront him at gunpoint. She lets him vent. When he actually starts carrying it out, one-armed in a cast, she realizes how reckless he's become and intercepts him. Whatever the plan, she intercepts at the same point with the same result; what changes is what the player chose to become on the way there. She tells him the truth because any crime he commits now is exactly what the frame-up needs (Twist 4), and Eielson explosives in his hands most of all.
 - **Reveal timing.** The player learns it at the same moment Wade does. Lucy's playable chapters are honest but never show her motive, so on a replay her early scenes read completely differently.
 - Rule: the confession is never romantic or gratitude-driven.
 
