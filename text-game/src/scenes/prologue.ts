@@ -25,9 +25,9 @@ ${N.curly}, the mechanic who keeps your charter plane flying, waves you over. Be
 
 The kid grins and shakes your hand like he means it.`,
     choices: () => [
-      { label: 'Ask Wade about Texas.', next: 'p_talk_texas' },
-      { label: 'Ask Wade what a munitions man does all day.', next: 'p_talk_munitions' },
-      { label: 'Buy the table a round.', next: 'p_talk_round' },
+      { label: 'Ask Wade about Texas.', note: 'texas', next: 'p_talk_texas' },
+      { label: 'Ask Wade what a munitions man does all day.', note: 'munitions', next: 'p_talk_munitions' },
+      { label: 'Buy the table a round.', note: 'round', next: 'p_talk_round' },
     ],
   },
   {
@@ -37,7 +37,7 @@ The kid grins and shakes your hand like he means it.`,
     text: () => `
 Wade lights up. He grew up on the plains outside Lubbock, water skiing behind his cousins' boat on the reservoir every summer. He misses the heat. Curly laughs at everything.
 ${talkRest}`,
-    choices: () => [{ label: 'Say goodnight and walk back to your room.', next: 'p_letter' }],
+    choices: () => [{ label: 'Say goodnight and walk back to your room.', note: 'goodnight', next: 'p_letter' }],
   },
   {
     id: 'p_talk_munitions',
@@ -46,7 +46,7 @@ ${talkRest}`,
     text: () => `
 "Mostly counting things," Wade says. "Bombs, flares, charges. Counting them out, counting them back, signing for them." He grins. "You'd be amazed how much paper one bomb makes." Curly laughs at everything.
 ${talkRest}`,
-    choices: () => [{ label: 'Say goodnight and walk back to your room.', next: 'p_letter' }],
+    choices: () => [{ label: 'Say goodnight and walk back to your room.', note: 'goodnight', next: 'p_letter' }],
   },
   {
     id: 'p_talk_round',
@@ -55,7 +55,7 @@ ${talkRest}`,
     text: () => `
 The round makes you friends with half the bar. Wade tunes his guitar and plays a slow Hank Williams song badly and happily, and Curly laughs at everything.
 ${talkRest}`,
-    choices: () => [{ label: 'Say goodnight and walk back to your room.', next: 'p_letter' }],
+    choices: () => [{ label: 'Say goodnight and walk back to your room.', note: 'goodnight', next: 'p_letter' }],
   },
   {
     id: 'p_letter',
@@ -68,9 +68,9 @@ You write to ${N.lucy}, the clerk at the land office who has been asking the que
 
 Where do you hide them?`,
     choices: () => [
-      { label: 'Hide the notes under the floorboards behind the cook-tent stove.', apply: set({ owenCache: 'stove' }), next: 'p_end' },
-      { label: 'Hide the notes in the old meat cache up on stilts.', apply: set({ owenCache: 'cache' }), next: 'p_end' },
-      { label: 'Hide the notes in an ammo can buried under the survey marker.', apply: set({ owenCache: 'marker' }), next: 'p_end' },
+      { label: 'Hide the notes under the floorboards behind the cook-tent stove.', note: 'stove', apply: set({ owenCache: 'stove' }), next: 'p_end' },
+      { label: 'Hide the notes in the old meat cache up on stilts.', note: 'cache', apply: set({ owenCache: 'cache' }), next: 'p_end' },
+      { label: 'Hide the notes in an ammo can buried under the survey marker.', note: 'marker', apply: set({ owenCache: 'marker' }), next: 'p_end' },
     ],
   },
   {
@@ -83,6 +83,6 @@ You mail the letter, fly north, hide the notes, and fly home. Curly never sees.
 A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
 
 You climb in.`,
-    choices: () => [{ label: 'Continue.', next: 'a1_flood' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a1_flood' }],
   },
 ]
