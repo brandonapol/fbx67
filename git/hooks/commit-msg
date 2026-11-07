@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Rejects AI attribution in the commit message. Install: make setup/hooks
+set -euo pipefail
+
+sed '/^# *-\{1,\} *>8 *-\{1,\}/,$d' "$1" | git stripspace --strip-comments |
+  ATTRIBUTION_FIX="Remove those lines and commit again." "$(git rev-parse --show-toplevel)/scripts/check-attribution.bash"

@@ -38,6 +38,22 @@ jobs:
           base: ${{ github.event.merge_group.base_sha || github.event.pull_request.base.sha }}
           ref: ${{ github.event.merge_group.head_sha || github.sha }}
 
+  check-attribution:
+    # Merge queue and manual runs have no pull request to read, so this runs on pull requests only.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Job-level permissions replace the workflow's; pull-requests: read lets gh read the pull request.
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check for AI attribution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: make check/attribution PR=${{ github.event.pull_request.number }}
+
   check-text:
     needs: changes
     if: needs.changes.outputs.text == 'true' || (github.event_name != 'pull_request' && github.event_name != 'merge_group')

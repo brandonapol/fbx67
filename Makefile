@@ -24,7 +24,7 @@ setup/web: ## npm ci in web
 setup/hooks: ## Point git at the repo's hooks (pre-commit runs check/fast)
 	git config core.hooksPath git/hooks
 
-.PHONY: check check/fast check/text check/web check/markdown check/routes
+.PHONY: check check/fast check/text check/web check/markdown check/routes check/attribution
 check: check/text check/web check/routes ## The whole gate CI runs on a pull request
 
 check/fast: ## Seconds: typecheck and unit tests for whichever package has staged files
@@ -43,6 +43,13 @@ check/web: ## Typecheck web
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden
 	git diff --exit-code -- $(TEXT)/routes || { echo "routes/ is stale: run make generate/routes and commit"; exit 1; }
+
+check/attribution: ## Fail if a pull request's title, description or commits carry AI attribution (PR=number)
+	@[[ -n "$(PR)" ]] || { echo "Usage: make check/attribution PR=<pull request number>"; exit 1; }
+	@command -v gh >/dev/null || { echo "Install the GitHub CLI and run gh auth login (in CI, set GH_TOKEN)."; exit 1; }
+	@gh pr view "$(PR)" --json title,body,commits \
+		--jq '"title: " + .title, (.body | split("\n")[] | "description: " + .), (.commits[] | "commit \(.oid[0:8]): " + (.messageHeadline, (.messageBody | split("\n")[])))' |
+		ATTRIBUTION_FIX="Edit the pull request title or description, or reword the commit and push. Then re-run this check." scripts/check-attribution.bash
 
 check/markdown: ## markdownlint on docs (needs npx)
 	npx --yes markdownlint-cli2 "**/*.md" "#**/node_modules" "#**/dist"
