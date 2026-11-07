@@ -175,6 +175,7 @@ Ashby in handcuffs, arrested by Barnette. Expected to take 2-3 varied playthroug
 - Decision 6: refused or faked the offer. Decision 7: testified.
 - The councilman flips: Wade shared the wreck evidence with Jake, who confronts his uncle (a smaller choice after the crash).
 - The CO is stopped or caught at the ice jam.
+- Decision 2: Wade never told Mama the flight date. The letters are the game's most signposted danger, so they carry real weight in the best run.
 
 ## Systems
 

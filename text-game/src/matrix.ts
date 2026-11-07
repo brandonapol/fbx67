@@ -25,13 +25,13 @@ const sigOf = (prev: Sig, s: State): Sig => ({
   barfight: s.barfight ?? prev.barfight,
   coJob: s.coJob ?? prev.coJob,
   leakedFlightDate: prev.leakedFlightDate || s.leakedFlightDate,
-  curlyPlan: s.curlyPlan,
-  eliTrespass: s.eliTrespass,
-  rashPlan: s.rashPlan,
-  afterConfession: s.afterConfession,
-  offer: s.offer,
-  testified: s.testified,
-  sharedWreck: s.sharedWreck,
+  curlyPlan: prev.curlyPlan ?? s.curlyPlan,
+  eliTrespass: prev.eliTrespass ?? s.eliTrespass,
+  rashPlan: prev.rashPlan ?? s.rashPlan,
+  afterConfession: prev.afterConfession ?? s.afterConfession,
+  offer: prev.offer ?? s.offer,
+  testified: prev.testified ?? s.testified,
+  sharedWreck: prev.sharedWreck || s.sharedWreck,
 })
 
 const sigKey = (g: Sig): string =>

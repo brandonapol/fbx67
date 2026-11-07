@@ -38,7 +38,8 @@ export const isBest = (s: State): boolean =>
   s.testified === true &&
   councilmanFlips(s) &&
   iceJam(s) === 'stopped' &&
-  barnetteTrustsWade(s)
+  barnetteTrustsWade(s) &&
+  !leakIsWadesFault(s)
 
 export const isGood = (s: State): boolean => !isBad(s) && !isBest(s) && paperRouteComplete(s)
 
@@ -71,6 +72,7 @@ export const missingForBest = (s: State): readonly string[] =>
     [s.testified !== true, 'decision 7 did not testify'],
     [!councilmanFlips(s), 'wreck evidence not shared with Jake'],
     [!barnetteTrustsWade(s), `heat ${s.heat} above ${HEAT_LIMIT}`],
+    [leakIsWadesFault(s), 'told Mama the flight date'],
   ]
     .filter(([miss]) => miss)
     .map(([, why]) => why as string)

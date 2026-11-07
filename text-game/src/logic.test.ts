@@ -32,6 +32,7 @@ test('each missing best gate drops to good or middle, never best', () => {
     { curlyPlan: 'ignore' },
     { sharedWreck: false },
     { heat: HEAT_LIMIT + 1 },
+    { leakedFlightDate: true },
   ]
   variants.forEach((v) => assert.equal(ending(w(v)), 'good', JSON.stringify(v)))
 })

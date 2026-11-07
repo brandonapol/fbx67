@@ -51,7 +51,9 @@ const barnetteLine = (s: State): string =>
     ? 'Makes the biggest arrest of his career and never once thanks you.'
     : s.heat > HEAT_LIMIT
       ? 'Never believed a word you said, and told the grand jury so. He might have made the arrest if he had.'
-      : 'Liked you more than he let on. Without more of a case, he couldn\'t make the arrest he wanted.'
+      : s.leakedFlightDate
+        ? 'Ashby\'s lawyers kept asking how the date of that flight got from an airman\'s letter home to a saboteur. Every time, the room looked at you. He couldn\'t make the arrest.'
+        : 'Liked you more than he let on. Without more of a case, he couldn\'t make the arrest he wanted.'
 
 const tolliverLine = (s: State, won: boolean): string =>
   s.sharedWreck
