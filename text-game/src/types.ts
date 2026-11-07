@@ -45,6 +45,7 @@ export type State = Readonly<{
 
 export type Choice = Readonly<{
   label: string
+  note?: string
   apply?: (s: State) => State
   next: SceneId | ((s: State) => SceneId)
 }>

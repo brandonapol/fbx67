@@ -1,11 +1,10 @@
 import stills from 'virtual:stills'
-import { HEAT_LIMIT } from '../../text-game/src/logic.ts'
-import { BOUNDS } from '../../text-game/src/state.ts'
-import type { Act, SceneId, State } from '../../text-game/src/types.ts'
+import { weather } from '../../text-game/src/story.ts'
+import type { Act, SceneId } from '../../text-game/src/types.ts'
 
 export type Season = 'flood' | 'freeze' | 'winter' | 'breakup'
 
-export type Weather = 'clear' | 'dusk' | 'night'
+export type { Weather } from '../../text-game/src/story.ts'
 
 const seasons: Readonly<Record<Act, Season>> = {
   Prologue: 'flood',
@@ -18,8 +17,7 @@ const seasons: Readonly<Record<Act, Season>> = {
 
 export const seasonOf = (act: Act): Season => seasons[act]
 
-export const weatherOf = (s: State): Weather =>
-  s.heat > HEAT_LIMIT || s.eliTrust <= BOUNDS.eliTrust[0] ? 'night' : s.heat >= HEAT_LIMIT - 1 || s.eliTrust < 0 ? 'dusk' : 'clear'
+export const weatherOf = weather
 
 export const stillUrl = (id: SceneId): string | undefined => {
   const file = stills[id]
