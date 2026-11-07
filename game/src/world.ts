@@ -48,3 +48,36 @@ export const nearest = (pos: Vec, items: readonly Interactable[]): Interactable 
   items
     .filter((i) => distance(pos, i) <= i.r)
     .reduce<Interactable | undefined>((best, i) => (!best || distance(pos, i) < distance(pos, best) ? i : best), undefined)
+
+const segmentHitsBox = (a: Vec, b: Vec, box: Box): boolean => {
+  const [x0, x1, z0, z1] = [box.x - box.w / 2, box.x + box.w / 2, box.z - box.d / 2, box.z + box.d / 2]
+  const d = sub(b, a)
+  const slab = (p: number, dp: number, lo: number, hi: number): readonly [number, number] | undefined => {
+    if (Math.abs(dp) < 1e-12) return p >= lo && p <= hi ? [-Infinity, Infinity] : undefined
+    const [t0, t1] = [(lo - p) / dp, (hi - p) / dp]
+    return [Math.min(t0, t1), Math.max(t0, t1)]
+  }
+  const sx = slab(a.x, d.x, x0, x1)
+  const sz = slab(a.z, d.z, z0, z1)
+  if (!sx || !sz) return false
+  const enter = Math.max(sx[0], sz[0], 0)
+  const exit = Math.min(sx[1], sz[1], 1)
+  return enter <= exit
+}
+
+export const lineOfSight = (from: Vec, to: Vec, occluders: readonly Box[]): boolean =>
+  !occluders.some((b) => segmentHitsBox(from, to, b))
+
+export type Watcher = Readonly<{ at: Vec; facing: number; range: number; halfAngle: number }>
+
+export const angleTo = (from: Vec, to: Vec): number => Math.atan2(to.x - from.x, to.z - from.z)
+
+export const angleBetween = (a: number, b: number): number => {
+  const d = (((b - a) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI
+  return Math.abs(d)
+}
+
+export const sees = (w: Watcher, target: Vec, occluders: readonly Box[]): boolean =>
+  distance(w.at, target) <= w.range &&
+  angleBetween(w.facing, angleTo(w.at, target)) <= w.halfAngle &&
+  lineOfSight(w.at, target, occluders)

@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, interact, press, start, tick } from './prologue.ts'
+import { HIDE_TIME, focus, interact, press, start, tick } from './prologue.ts'
 import { createView } from './render.ts'
 import { spaces } from './levels.ts'
 import type { Vec } from './world.ts'
@@ -19,6 +19,8 @@ const titleEl = $('panel-title')
 const textEl = $('panel-text')
 const buttonsEl = $('panel-buttons')
 const placeEl = $('place')
+const barEl = $('hidebar')
+const barFill = $('hidebar-fill')
 
 const view = createView(canvas)
 
@@ -61,9 +63,11 @@ const renderPanel = (g: Game): void => {
 
 const renderHud = (g: Game): void => {
   const f = focus(g)
-  promptEl.hidden = !f
+  promptEl.hidden = !f || !!g.hiding
   promptEl.innerHTML = f ? `<span class="key">E</span>${f.prompt}` : ''
   placeEl.textContent = spaces[g.space].name
+  barEl.hidden = !g.hiding
+  barFill.style.width = `${Math.min(100, ((g.hiding?.progress ?? 0) / HIDE_TIME) * 100)}%`
   renderPanel(g)
 }
 
