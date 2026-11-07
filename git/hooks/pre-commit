@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+make --no-print-directory check/fast || { echo "pre-commit: make check/fast failed. Fix it, or run the failing target on its own to see why."; exit 1; }
