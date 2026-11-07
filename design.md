@@ -25,7 +25,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 ## Cast (placeholder names)
 
-**Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
+**Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Smokes. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
 
 **Eli.** Local Athabascan man, Wade's friend. Funny, proud, angry underneath. Knows the rivers and country. Never drinks at any point in the game.
 
@@ -51,7 +51,8 @@ Eli and Lucy's family filed a Native allotment application for their fish camp d
 
 **Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, oil men's hotel bar. Spying, eavesdropping, document theft, tailing.
 
-**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and the pilot survive one to two days in the wreck before the search party finds them. Wade arrives out of his depth and has to be told what to do to stay alive. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali; Anchorage side trip (oil offices, land lawyers, post-earthquake city).
+**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and the pilot survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through a buddy on it. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth and has to be told what to do to stay alive.
+  - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali; Anchorage side trip (oil offices, land lawyers, post-earthquake city).
 
 **Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. What Wade knows now matters. Endings.
 
@@ -85,6 +86,8 @@ Driven by player morals and early-game choices.
   - Fact-check: routine censorship of personal mail was mostly a wartime practice; peacetime airmen in 1967 probably weren't censored as policy. Easy fix that keeps the plot: the CO does it quietly and off the books, so the realism holds up for players who know the history.
 - **Stealth.** Primary mode in town and on base.
 - **Survival.** Cold, light, calories, frostbite; seasons change the map (flood, freeze, dark, breakup).
+- **Skiing.** Cross-country skis for the Act 3 rescue search. Wade has never seen snow, so he starts out clumsy and gets better.
+- **Smoking.** Wade smokes. Possible hooks (TBD): lighter and matches as a fire source, cigarettes as social currency on base and in bars, cravings vs. stamina in the cold, smoke or a lit cigarette giving away his position in stealth.
 - **Crafting/tinkering.** Munitions skills: flares, noisemakers, small charges (ice jams, doors), lock tools, engine thawing, one sketchy homemade flamethrower. Same tools serve help or harm.
 - **Music.** Guitar as social stealth: house parties, bars, fish camp, access to rooms a uniform can't enter.
 - **Combat.** Rare and grounded. Barfight is the chaos showcase: mud, hot stove, moose rack, bottles, slippery floor, regulars picking sides. Losing has consequences (drunk tank, recognized by a cop).
@@ -107,6 +110,7 @@ Driven by player morals and early-game choices.
 - Side romance pick and whether it pulls toward betrayal
 - Eli's secret (Twist 5): keep or cut, and what it is
 - Title
+- Smoking mechanics: which hooks to keep
 
 ## Continuing in Claude Code
 
