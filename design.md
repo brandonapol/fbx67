@@ -1,0 +1,108 @@
+# Fairbanks 1967 — Design Draft v0.1
+
+Working title: TBD
+Engine: PlayCanvas (engine-only, TypeScript, glTF pipeline)
+Targets: Browser first; Steam later via Electron wrapper
+
+## Pitch
+
+A grounded stealth-and-survival mystery set in Fairbanks, Alaska, from the Chena River flood of August 1967 to the Prudhoe Bay oil announcement in spring 1968: the last year before oil money changed Alaska. A bored young airman from Texas befriends a local Athabascan brother and sister, and a drowned geologist turns out to be the first casualty in a fight over who will own the land the oil runs under.
+
+Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShock Infinite (place-as-character, companion bond, layered twists).
+
+## Historical Backbone
+
+- **Chena River flood, August 1967.** Most of Fairbanks underwater. Opening act.
+- **Prudhoe Bay discovery, announced 1968.** State lease sale in 1969 brought in ~$900M. The game ends right before the money arrives.
+- **Native land claims.** Federal freeze on land transfers pending Native claims (mid/late 1960s). Alaska Federation of Natives formed 1966. Native newspaper published in Fairbanks.
+- **1906 Native Allotment Act.** Up to 160 acres per applicant; many applications lost, stalled, or rejected while others filed on the same land.
+- **Rampart Dam proposal (backdrop).** Would have flooded Yukon Flats Athabascan villages; dead by ~1967.
+- **Eielson AFB.** Est. 1943 as Mile 26 Satellite Field, Eielson AFB from 1948, ~26 miles from Fairbanks. 1960s: F-102/F-106 interceptor detachment (1960-69), SAC bomber/tanker staging facilities, Army brigades training on site, frequent Eielson rescue missions.
+- **Anchorage.** Still rebuilding from the 1964 Good Friday earthquake.
+- **Alaska Railroad.** Runs past Denali (then Mount McKinley National Park).
+
+To verify before writing dialogue: exact munitions unit names and job titles at Eielson in 1967; which units responded to the 1967 flood; land freeze dates.
+
+## Cast (placeholder names)
+
+**Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
+
+**Eli.** Local Athabascan man, Wade's friend. Funny, proud, angry underneath. Knows the rivers and country. Never drinks at any point in the game.
+
+**Lucy.** Eli's sister. Clerk at the land office; the real brain of the investigation. Fully independent. Bush-competent, at least as capable as any pilot at winter survival. Not a love interest for Wade. Never a victim of a white-savior arc.
+
+**The pilot.** Bush pilot on Lucy's crashed flight. Complicity TBD.
+
+**Side romance (Wade).** Casual, elsewhere in the story. Candidates: bar waitress/musician, hospital nurse, daughter of the oil landman or city councilman.
+
+**Villains.** Some mix of the city councilman holding the family's land, an oil company landman, and Wade's commanding officer at Eielson. Main face TBD.
+
+Cultural note: bring in Athabascan writers/consultants for Eli, Lucy, their family, and language.
+
+## The Real Wrong
+
+Eli and Lucy's family filed a Native allotment application for their fish camp decades ago. The paperwork vanished. A white settler now on the city council holds title. The geologist's survey data shows why that land suddenly matters.
+
+## Structure (one year, four seasons)
+
+**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body in a collapsed cabin; ruled an accident. Lucy disagrees. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. Teaches stealth and survival systems in flooded streets.
+
+**Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, oil men's hotel bar. Spying, eavesdropping, document theft, tailing.
+
+**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and the pilot survive one to two days in the wreck before the search party finds them. Wade arrives out of his depth and has to be told what to do to stay alive. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali; Anchorage side trip (oil offices, land lawyers, post-earthquake city).
+
+**Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. What Wade knows now matters. Endings.
+
+## Twists
+
+1. The geologist was on the family's side. Oil interests were using his survey data to grab land before Native claims settled. He died on his way to give proof to Lucy.
+2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
+3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing.
+4. The cabin collapse used explosives from Eielson's munitions stock, traced to Wade's signature. He is being set up as the fall guy.
+5. (Optional) Eli was at the cabin the night of the flood. He's hiding something, but not what the player assumes.
+
+## Lucy's Confession (options, undecided)
+
+- **Warning.** She finds proof the frame-up targets Wade and tells him the truth because he's about to be buried. ("I picked you because you had access. Now they've picked you too.") Current lean, possibly mixed with Test.
+- **Test.** She tells him on purpose to see what he does; his reaction is recorded by the endings system.
+- **Player knows first.** Her chapters reveal it; she tells Wade later on her own terms.
+- Rule: the confession is never romantic or gratitude-driven.
+
+## Endings
+
+Driven by player morals and early-game choices.
+
+- **Betrayal.** Wade gives up his friends for promotion, money, a ticket home.
+- **Complicity.** Earlier choices (where he was, who he was with, what he wrote) trap him in the murder cover-up.
+- **Sacrifice.** Wade exposes everything at personal cost (career, freedom, maybe life); the family gets their land back.
+
+## Systems
+
+- **Letters home.** Wade writes to family in Texas; doubles as journal/save system. Military mail is read by superiors, and anything written can be used later to frame Eli or trap Wade.
+- **Stealth.** Primary mode in town and on base.
+- **Survival.** Cold, light, calories, frostbite; seasons change the map (flood, freeze, dark, breakup).
+- **Crafting/tinkering.** Munitions skills: flares, noisemakers, small charges (ice jams, doors), lock tools, engine thawing, one sketchy homemade flamethrower. Same tools serve help or harm.
+- **Music.** Guitar as social stealth: house parties, bars, fish camp, access to rooms a uniform can't enter.
+- **Combat.** Rare and grounded. Barfight is the chaos showcase: mud, hot stove, moose rack, bottles, slippery floor, regulars picking sides. Losing has consequences (drunk tank, recognized by a cop).
+- **Lucy.** Companion in town (people and paper puzzles, paired with Wade's physical problem-solving) and playable in her own chapters: land office records puzzle, Anchorage, crash survival.
+
+## Tech Notes
+
+- Engine-only PlayCanvas with TypeScript so agents can work entirely in the repo (the hosted editor isn't agent-friendly).
+- Dense downtown hub plus discrete levels (Eielson, Denali crash site, Anchorage) instead of a full open world, to keep browser loading sane.
+- Steam: Electron for consistent Chromium; Tauri on Linux uses WebKitGTK, which can differ on WebGL/WebGPU.
+- Multi-agent Saddle split candidates: narrative/lore, level layout, systems, QA.
+
+## Open Questions
+
+- Lucy's confession setup (see above)
+- Pilot: complicit, innocent victim, or ambiguous
+- Main face of the villains
+- When the player learns Lucy was using Wade
+- Side romance pick and whether it pulls toward betrayal
+- Eli's secret (Twist 5): keep or cut, and what it is
+- Title
+
+## Continuing in Claude Code
+
+Use the AskUserQuestion tool to interview me about the open questions in this doc, one or two questions at a time with concrete options. Ask about history I might not know when it affects a decision, and flag anything that needs fact-checking. After each answer, update this file and remove resolved items from Open Questions.
