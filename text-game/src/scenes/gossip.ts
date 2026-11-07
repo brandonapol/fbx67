@@ -2,14 +2,34 @@ import type { Act, Choice, Scene, State } from '../types.ts'
 import { N } from '../names.ts'
 import { HEAT_LIMIT } from '../logic.ts'
 
-const lawTalk = (s: State): string =>
-  s.heat === 0
-    ? `"Nobody's said your name, hon. Not the Troopers, not the city boys. You're just another airman who tips bad."`
-    : s.heat < HEAT_LIMIT
-      ? `"${N.barnette} was in Tuesday. Asked if I knew a Texas boy who runs with the river Indians. I said I know a lot of Texas boys." She refills your cup. "He's curious. He's not mad yet."`
-      : s.heat === HEAT_LIMIT
-        ? `"Vernon Barnette's got your name written down, hon. I saw it on his napkin. He's the kind who believes a man right up until the day he doesn't. You're close to that day."`
-        : `"Vernon Barnette sat right where you're sitting and said your name three times in one cup of coffee. If he hauled you in tomorrow, he wouldn't believe a word you said, not even the true ones. Lay low, or don't count on him for anything."`
+const visits = ['a2_co_gossip', 'a2_heat_gossip', 'a3_rash_gossip'] as const
+
+const tiers: readonly (readonly string[])[] = [
+  [
+    `"Nobody's said your name, hon. Not the Troopers, not the city boys. You're just another airman who tips bad."`,
+    `"Quiet as a church on Monday. Nobody's asking about you."`,
+    `"Funny thing. With everything going on, nobody's said your name at all. Keep it that way."`,
+  ],
+  [
+    `"${N.barnette} was in Tuesday. Asked if I knew a Texas boy who runs with the river Indians. I said I know a lot of Texas boys." She refills your cup. "He's curious. He's not mad yet."`,
+    `"Barnette asked about you again. Just asking. He's the type who files things away."`,
+    `"Barnette's still curious about you. Curious isn't trouble. Not yet."`,
+  ],
+  [
+    `"Vernon Barnette's got your name written down, hon. I saw it on his napkin. He's the kind who believes a man right up until the day he doesn't. You're close to that day."`,
+    `"Barnette's got a little notebook now, and your name's in it. One more thing and he's done believing you."`,
+    `"You're right at the edge with Barnette, hon. One more reason and he'll never take your word on anything."`,
+  ],
+  [
+    `"Vernon Barnette sat right where you're sitting and said your name three times in one cup of coffee. If he hauled you in tomorrow, he wouldn't believe a word you said, not even the true ones. Lay low, or don't count on him for anything."`,
+    `"Barnette's past curious. He thinks you're dirty. Whatever you tell him now, he'll assume it's a lie."`,
+    `"I'll be honest, hon. Barnette wouldn't believe you if you told him it was snowing. You've used up his patience."`,
+  ],
+]
+
+const tierOf = (heat: number): number => (heat === 0 ? 0 : heat < HEAT_LIMIT ? 1 : heat === HEAT_LIMIT ? 2 : 3)
+
+const lawTalk = (s: State, id: string): string => tiers[tierOf(s.heat)][Math.max(0, visits.indexOf(id as (typeof visits)[number]))]
 
 const lucyTalk = (s: State): string =>
   s.lucyHeat > 0
@@ -35,7 +55,7 @@ export const gossip = (id: string, act: Act, choicesFrom: (s: State) => readonly
   text: (s) => `
 ${intros[id] ?? intros.a2_co_gossip}
 
-${lawTalk(s)}${lucyTalk(s)}
+${lawTalk(s, id)}${lucyTalk(s)}
 
 ${outros[id] ?? outros.a2_co_gossip}`,
   choices: choicesFrom,

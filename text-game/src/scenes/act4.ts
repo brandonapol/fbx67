@@ -2,7 +2,7 @@ import { mamaReply } from './mama.ts'
 import type { Scene } from '../types.ts'
 import { N } from '../names.ts'
 import { addEvidence, has, set } from '../state.ts'
-import { councilmanFlips, curlyTalks, doubleAgentWorks, iceJam } from '../logic.ts'
+import { HEAT_LIMIT, councilmanFlips, curlyTalks, doubleAgentWorks, iceJam } from '../logic.ts'
 
 const act = 'Act 4: Breakup' as const
 
@@ -38,7 +38,7 @@ It was him. The lawyer helping the families. The man Owen trusted.`,
     choices: () => [
       { label: 'Take the money.', apply: set({ offer: 'take' }), next: 'a4_curly' },
       { label: 'Refuse. Walk out.', apply: set({ offer: 'refuse' }), next: 'a4_curly' },
-      { label: 'Say you need a day to think. Then come back wired, and get him talking.', apply: set({ offer: 'fake' }), next: 'a4_wire' },
+      { label: 'Say you need a day to think. Then come back wired and get him talking. You\'ll need Lucy and Eli to back you.', apply: set({ offer: 'fake' }), next: 'a4_wire' },
     ],
   },
   {
@@ -113,6 +113,8 @@ By noon, ${N.barnette} has the demolition sign-outs. Every page says Wade Pruett
     title: 'On the Record',
     text: (s) => `
 ${N.barnette} comes to see you himself. He hates this, and he says so. There's an Air Force inquiry into the missing charges, and he's taken a case to a state grand jury. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: ${N.ashby}.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
+
+${s.heat > HEAT_LIMIT ? 'He doesn\'t believe half of what you say, and he tells you so. You gave him too many reasons this winter.' : 'For the first time since August, he seems to believe you.'}${doubleAgentWorks(s) ? ' He has the tape from your cast.' : ''}
 
 He wants you. Testifying against your commander, with your own name on every sign-out sheet, could get you court-martialed.${s.offer === 'take' ? '\n\nAshby\'s money is already in a bank in Seattle.' : ''}`,
     choices: (s) =>

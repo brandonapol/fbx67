@@ -31,10 +31,12 @@ const rules: readonly Rule[] = [
     apply: (s) => ({
       ...s,
       joan: s.joan >= 3 ? 3 : 0,
-      momHonesty: s.momHonesty >= 2 ? 2 : s.momHonesty <= -2 ? -2 : 0,
     }),
   },
-  { after: 'a3_confession', apply: (s) => ({ ...s, leakedFlightDate: false }) },
+  { after: 'a3_joan', apply: (s) => ({ ...s, momHonesty: Math.max(-2, Math.min(2, s.momHonesty)) }) },
+  { after: 'a3_confession', apply: (s) => ({ ...s, rashPlan: s.rashPlan === 'burn' ? 'burn' : 'safe' }) },
+  { after: 'a3_turn', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat > 0 ? 1 : 0 }) },
+  { after: 'a4_testify', apply: dropEvidence('curlyNamesAshby', 'councilmanFlips') },
 ]
 
 export const canonical = (s: State): State =>

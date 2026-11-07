@@ -1,4 +1,3 @@
-import { mamaReply } from './mama.ts'
 import { N } from '../names.ts'
 import { addEvidence, eliTrust, has, heat, mom, pipe, set } from '../state.ts'
 import type { Choice, Scene, State } from '../types.ts'
@@ -50,8 +49,8 @@ You know the lab clerk takes a long lunch. You also know the duty sergeant locks
     text: () => `
 The records room is floor-to-ceiling drawers. The photos are filed by flight line and frame number, and the index card for the river north of town lists three drawers.`,
     choices: () => [
-      { label: 'Cross-check the frame numbers against the map grid first. Slow, but you only pull what you need.', apply: pipe(addEvidence('aerialPhotos'), heat(1)), next: 'a2_hotel' },
-      { label: 'Pull all three drawers fast and sort it out later.', apply: pipe(addEvidence('aerialPhotos'), heat(2)), next: 'a2_hotel' },
+      { label: 'Cross-check the frame numbers against the map grid first. You only pull what you need, but it takes most of his lunch.', apply: pipe(addEvidence('aerialPhotos'), heat(1)), next: 'a2_hotel' },
+      { label: 'Pull all three drawers fast and sort it out later. It\'ll leave a mess somebody notices.', apply: pipe(addEvidence('aerialPhotos'), heat(2)), next: 'a2_hotel' },
     ],
   },
   {
@@ -74,7 +73,7 @@ October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks
     text: () => `
 Under the music you catch half of it. Tolliver, the councilman, red in the face: "...my land, my title, been my land since '52..." The other man is quieter, with his back to you, and you never see his face. "...after the claims settle it won't matter whose title it is. Before is what counts."
 
-It sounds like Tolliver is the one behind this. You can't tell if any of it means anything.`,
+Tolliver sounds like a man with a lot to lose. You can't tell if any of it means anything.`,
     choices: () => [{ label: 'Pack up and go tell Lucy.', next: 'a2_co_ask' }],
   },
   {
@@ -98,7 +97,7 @@ She wants the files in your commander's office. ${N.co} keeps a locked cabinet h
 The squadron building is dark except for the duty desk. The Major's cabinet has a combination lock. On his desk: the boat photo, the Florida brochure, and a desk calendar with a date two years out circled in red and marked RETIRE.`,
     choices: () => [
       { label: 'Try the circled retirement date as the combination.', apply: pipe(set({ coJob: 'wade' }), addEvidence('coFiles'), heat(1)), next: 'a2_co_found' },
-      { label: 'Force the cabinet with a screwdriver.', apply: pipe(set({ coJob: 'wade' }), addEvidence('coFiles'), heat(2)), next: 'a2_co_found' },
+      { label: 'Force the cabinet with a screwdriver. It\'ll leave marks.', apply: pipe(set({ coJob: 'wade' }), addEvidence('coFiles'), heat(2)), next: 'a2_co_found' },
     ],
   },
   {
@@ -134,9 +133,19 @@ He ties it off without looking: a cowboy bowline, backward, the way the ranch ha
 
 "Wade! Come by Saturday, we'll get a steak. My treat. Money's good this year."`,
     choices: () => [
-      { label: 'Take him up on it.', apply: addEvidence('curlyKnot'), next: 'a2_jake' },
+      { label: 'Take him up on it.', apply: addEvidence('curlyKnot'), next: 'a2_steak' },
       { label: 'Make an excuse.', apply: addEvidence('curlyKnot'), next: 'a2_jake' },
     ],
+  },
+  {
+    id: 'a2_steak',
+    act,
+    title: 'Steak at the Pan',
+    text: () => `
+Saturday, Curly pays for two T-bones out of a roll of twenties thick enough to choke a dog. He talks about Texas, about a boat he's going to buy, about getting out before the next winter.
+
+He only mentions Owen once. "Good man. Shame what the water did." He says it the way you'd say it about weather, and changes the subject.`,
+    choices: () => [{ label: 'Continue.', next: 'a2_jake' }],
   },
   {
     id: 'a2_jake',
@@ -193,9 +202,7 @@ ${s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of 
     id: 'a2_letter_work',
     act,
     title: 'Letter Home: Work',
-    text: (s) => `
-${mamaReply(0)(s)}
-
+    text: () => `
 Dear Mama,
 
 First, the base. You've had a strange fall.`,
@@ -222,7 +229,7 @@ Then your friends. Mama always asks if you're eating and who you eat with.`,
     act,
     title: 'Before the Dark',
     text: (s) => `
-${s.heat >= 3 ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and that land office girl," he says. "I'm watching all three of you."\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
+${s.heat >= 3 ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and that land office girl," he says. "I'm watching all three of you."${s.heat > 3 ? ' He leans in the window. "Next time you tell me something, Pruett, I won\'t believe a word of it."' : ''}\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
     choices: (s) => [...heatChoices(s), askGossip('a2_heat_gossip')],
   },
   gossip('a2_heat_gossip', act, (s) => heatChoices(s)),

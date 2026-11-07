@@ -10,7 +10,7 @@ export const act1: readonly Scene[] = [
     act,
     title: 'Drowned Town',
     text: () => `
-You are ${N.wade} Pruett again: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
+You are ${N.wade} Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
 Your sergeant puts you on a sandbag line. Across the street, a riverboat is pulling elders off a porch. The man at the tiller is about your age, and he's shorthanded.`,
     choices: () => [
@@ -129,7 +129,7 @@ In the morning ${N.barnette} comes to the cell. He wants to know who started it,
 
 "Give me a name and you walk."`,
     choices: () => [
-      { label: 'Cover for Eli. "I started it."', apply: pipe(set({ barfight: 'coverEli' }), eliTrust(2), heat(1)), next: 'a1_ashby' },
+      { label: 'Cover for Eli. "I started it." Barnette won\'t forget your name.', apply: pipe(set({ barfight: 'coverEli' }), eliTrust(2), heat(1)), next: 'a1_ashby' },
       { label: 'Blame Eli. "He threw the first punch."', apply: pipe(set({ barfight: 'blameEli' }), eliTrust(-3)), next: 'a1_ashby' },
       { label: 'Side with Curly. "Ask Curly. He saw it."', apply: pipe(set({ barfight: 'sideCurly' }), heat(1)), next: 'a1_ashby' },
     ],

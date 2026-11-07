@@ -6,11 +6,17 @@ import { addEvidence, eliTrust, has, heat, joan, lefty, mom, pipe, set, texan } 
 
 const act = 'Act 3: Deep Winter' as const
 
+const survivalChoices = (_: State): readonly Choice[] => [
+  { label: 'Burn oil-soaked rags in a hubcap for a smoke signal at first light.', next: 'a3_search' },
+  { label: 'Stamp a big X in the snow on the open slope.', next: 'a3_search' },
+  { label: 'Save everything for the fire and wait.', next: 'a3_search' },
+]
+
 const rashChoices = (_: State): readonly Choice[] => [
   { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
   { label: 'Burn down his hunting cabin.', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
   { label: 'Find him and put a gun in his face until he talks.', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
-  { label: 'Stay out of it. Not your fight, not your land.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
+  { label: 'Don\'t go after Tolliver. Something doesn\'t add up.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
 ]
 
 const dig = (spot: CacheSpot) => (s: State): string => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
@@ -60,21 +66,25 @@ The engine quits. He puts the plane into a stand of black spruce on a hillside, 
 
 When you come to, Jake is pinned and bleeding, the cabin is on its side, and it's getting dark for the next eighteen hours.`,
     choices: () => [
-      { label: 'Build a fire first.', next: 'a3_survive' },
-      { label: 'Get Jake free and stop the bleeding first.', next: 'a3_survive' },
+      { label: 'Build a fire first.', next: 'a3_survive_fire' },
+      { label: 'Get Jake free and stop the bleeding first.', next: 'a3_survive_jake' },
     ],
   },
   {
-    id: 'a3_survive',
+    id: 'a3_survive_fire',
     act,
     title: 'Lucy: The Long Night',
     text: () => `
-You get a fire going in the lee of the fuselage and pack spruce boughs under Jake. The cold doesn't care how smart you are. It only cares what you do next.`,
-    choices: () => [
-      { label: 'Burn oil-soaked rags in a hubcap for a smoke signal at first light.', next: 'a3_search' },
-      { label: 'Stamp a big X in the snow on the open slope.', next: 'a3_search' },
-      { label: 'Save everything for the fire and wait.', next: 'a3_search' },
-    ],
+You get a fire going in the lee of the fuselage first. By the time you get back to Jake, his lips are blue, but the fire is what saves him: you warm your hands and work the seat frame off his leg, and pack spruce boughs under him. The cold doesn't care how smart you are. It only cares what you do next.`,
+    choices: (s) => survivalChoices(s),
+  },
+  {
+    id: 'a3_survive_jake',
+    act,
+    title: 'Lucy: The Long Night',
+    text: () => `
+You work the bent seat frame off Jake's leg with your bare hands and tie off the bleeding with your scarf. By the time you get a fire going in the lee of the fuselage, you can't feel your fingers. The cold doesn't care how smart you are. It only cares what you do next.`,
+    choices: (s) => survivalChoices(s),
   },
   {
     id: 'a3_search',
@@ -120,11 +130,11 @@ You find them on the hillside. You try to haul Lucy up out of the fuselage, the 
 
 Lucy splints your arm, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
 
-Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these. You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
+Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
 You wander over to the engine to get away from her look. You know hardware. The fuel sump drain is backed out a quarter turn and safety-wired so it looks tight. Water didn't get in by accident. Somebody put it there.`,
     choices: () => [
-      { label: 'Wake Jake and show him. It wasn\'t his fault, and he should know someone wanted this plane down.', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
+      { label: 'Wake Jake and show him. It wasn\'t his fault. And if Jake knew, he might make his uncle Ray listen.', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
       { label: 'Keep it to yourself until you know who.', apply: addEvidence('wreckProof'), next: 'a3_home' },
     ],
   },
@@ -157,7 +167,7 @@ Eli meets you at the hospital. He's been asking around the strip.
     act,
     title: 'The Bow',
     text: (s) => `
-${s.curlyPlan === 'warn' ? `Because Lucy passed on Jake's tip, ${N.cop} has been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Two weeks after the crash, ${N.cop} arrests Curly for breaking into a hunting cabin. By then he's half-starved and furious at everybody.`}
+${s.curlyPlan === 'warn' ? `Lucy took Jake's tip straight to ${N.cop}, the one man at Fairbanks PD nobody has ever bought. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Two weeks after the crash, ${N.cop} arrests Curly for breaking into a hunting cabin. By then he's half-starved and furious at everybody.`}
 
 He'd stolen a brand-new hunting bow. A left-handed one.${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
 
@@ -181,7 +191,7 @@ He's telling you something that could put him in jail.`,
     choices: () => [
       { label: 'Keep it between you. "Nobody hears this from me."', apply: pipe(set({ eliTrespass: 'quiet' }), eliTrust(2)), next: 'a3_rash' },
       { label: 'Tell Barnette. A witness is a witness.', apply: pipe(set({ eliTrespass: 'report' }), eliTrust(-3)), next: 'a3_rash' },
-      { label: 'Hold onto it. It might be useful later.', apply: pipe(set({ eliTrespass: 'leverage' }), eliTrust(-1)), next: 'a3_rash' },
+      { label: 'Hold onto it. If it comes to it, it\'s a card you can play.', apply: pipe(set({ eliTrespass: 'leverage' }), eliTrust(-1)), next: 'a3_rash' },
     ],
   },
   {
@@ -189,7 +199,7 @@ He's telling you something that could put him in jail.`,
     act,
     title: 'Enough',
     text: (s) => `
-Lucy nearly died. Jake can't walk. Your arm is in a cast.${has(s, 'hotelTalk') ? ' And you heard Tolliver yourself in that hotel bar: "my land, my title."' : ''}
+${s.eliTrespass === 'leverage' ? 'Eli reads your face before you say a word, and goes cold. He knows exactly what you just decided.\n\n' : s.eliTrespass === 'report' ? 'Eli finds out by evening that you went to Barnette. He doesn\'t come looking for you. That\'s worse.\n\n' : ''}Lucy nearly died. Jake can't walk. Your arm is in a cast.${has(s, 'hotelTalk') ? ' And you heard Tolliver yourself in that hotel bar: "my land, my title."' : ''}
 
 Tolliver holds the fish camp. Lucy has always said the family's original application was never lost, just pulled from the files, and Tolliver is the one who'd want it kept. As far as you can see, Tolliver did this.
 
@@ -267,8 +277,12 @@ Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended fro
     id: 'a3_joan',
     act,
     title: 'Letter Home, Dictated',
-    text: () => `
+    text: (s) => `
 You can't write with your arm in a cast. ${N.joan} comes by on her break and offers to take down a letter for you. She has nice handwriting and she laughs at your spelling when you spell things out loud.
+
+Before you start, Joan reads you the letter from Mama that came Tuesday.
+
+${mamaReply(0)(s)}
 
 Dear Mama,`,
     choices: () => [
