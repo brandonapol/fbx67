@@ -47,12 +47,15 @@ check/web: ## Typecheck web
 
 check/game: check/game/typecheck test/game/unit build/game ## Typecheck, unit-test and build the engine build
 
-.PHONY: check/game/typecheck test/game/unit
+.PHONY: check/game/typecheck test/game/unit test/game/smoke
 check/game/typecheck: ## tsc on game
 	cd $(GAME) && npm run -s typecheck
 
 test/game/unit: ## Mission logic and story parity tests
 	cd $(GAME) && npm run -s test
+
+test/game/smoke: build/game ## Play the prologue end to end in headless Chromium
+	cd $(GAME) && npm run -s smoke
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden
