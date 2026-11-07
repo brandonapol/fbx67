@@ -58,7 +58,7 @@ The records room is floor-to-ceiling drawers. The photos are filed by flight lin
     act,
     title: 'The Hotel Bar',
     text: (s) => `
-${has(s, 'aerialPhotos') ? 'Lucy spreads the photos across her kitchen table next to Owen\'s survey grid. The best crossing on the whole river runs straight through her family\'s fish camp. She goes quiet for a long time.' : 'Lucy doesn\'t say anything when you tell her no. She just nods, and finds another way to get a set of the photos. It takes her a month.'}
+${has(s, 'aerialPhotos') ? 'Lucy spreads the photos across her kitchen table next to Owen\'s survey grid. The best gravel on the lower Chatanika, and the easiest place to put a pipe or a haul road across it, are both on her family\'s fish camp. She goes quiet for a long time.' : 'Lucy doesn\'t say anything when you tell her no. She just nods, and finds another way to get a set of the photos. It takes her a month.'}
 
 October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks with men from Outside. A uniform with a guitar can sit in the corner. A Native woman asking questions cannot.`,
     choices: () => [
@@ -169,7 +169,7 @@ By morning ${N.barnette} has a description: a Native woman seen leaving a squadr
     text: (s) => `
 November. Planes are coming off floats and going onto skis, so nobody is flying anywhere for weeks. You find Curly at the bush strip lashing a tarp over a wing.
 
-He ties it off without looking: a cowboy bowline, backward, the way the ranch hands did it.${has(s, 'knot') ? '\n\nYou have seen that knot before. Tied to a drowned sawhorse.' : ''}
+He ties it off without looking, with yellow braided line off a coil on his workbench: a bowline, backward, the tail outside the loop.${has(s, 'knot') ? '\n\nYou have seen that knot before. There\'s a piece of it in your footlocker, cut off a drowned sawhorse, in the same yellow line.' : ''}
 
 "Wade! Come by Saturday, we'll get a steak. My treat. Money's good this year."`,
     choices: () => [
@@ -223,7 +223,7 @@ You ask Curly straight out where his money is coming from. The smile stays on hi
     text: () => `
 Curly sets his fork down very carefully.
 
-"Lot of men tie a knot like that, Wade. Lot of Texans." He picks up the check and leaves before his steak comes. You have the feeling you just made a mistake.`,
+"Lot of men tie a knot like that, Wade." He picks up the check and leaves before his steak comes. You have the feeling you just made a mistake.`,
     choices: () => [{ label: 'Continue.', next: 'a2_flight' }],
   },
   {

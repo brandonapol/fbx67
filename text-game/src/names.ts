@@ -7,7 +7,7 @@ export const N = {
   jake: 'Jake Bueller',
   joan: 'Joan Halvorsen',
   ashby: 'Franklin Ashby',
-  barnette: 'Inspector Vernon Barnette',
+  barnette: 'Investigator Vernon Barnette',
   cop: 'Officer Tom Peter',
   co: 'Major Dekker',
   councilman: 'Councilman Ray Tolliver',
