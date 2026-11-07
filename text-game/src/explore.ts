@@ -1,81 +1,187 @@
 import { argv, exit } from 'node:process'
-import { allSceneIds, choicesOf, choose, isEnd } from './engine.ts'
+import { allSceneIds, choicesOf, choose, render } from './engine.ts'
 import { initialState } from './state.ts'
 import { ending, type Ending } from './logic.ts'
-import { canonical, canonicalKey } from './liveness.ts'
+import { canonical } from './liveness.ts'
 import type { State } from './types.ts'
 
-type Trail = Readonly<{ n: number; prev: Trail | null }> | null
+const KEYED = {
+  scene: true,
+  owenCache: true,
+  barfight: true,
+  momHonesty: true,
+  leakedFlightDate: true,
+  coJob: true,
+  curlyPlan: true,
+  eliTrespass: true,
+  rashPlan: true,
+  afterConfession: true,
+  offer: true,
+  testified: true,
+  sharedWreck: true,
+  evidence: true,
+  heat: true,
+  lucyHeat: true,
+  eliTrust: true,
+  joan: true,
+} as const satisfies Record<keyof State, true>
 
-type Node = Readonly<{ state: State; paths: bigint; trail: Trail }>
+const FIELDS = Object.keys(KEYED) as readonly (keyof State)[]
 
-type Tally = { distinctStates: number; paths: bigint; sample: Trail | undefined }
+const known: ReadonlySet<string> = new Set<string>(FIELDS)
 
-const unwind = (t: Trail): readonly number[] => (t ? [...unwind(t.prev), t.n] : [])
+const enc = (v: unknown): string => (v === undefined ? '' : Array.isArray(v) ? v.join('+') : String(v))
+
+const packedKey = (s: State): string => {
+  const stray = Object.keys(s).find((k) => !known.has(k))
+  if (stray !== undefined) throw new Error(`explore key does not cover state field ${stray}`)
+  return FIELDS.map((f) => enc(s[f])).join(',')
+}
 
 const endings: readonly Ending[] = ['best', 'good', 'middle', 'bad']
 
-const tallies: Record<Ending, Tally> = Object.fromEntries(
-  endings.map((e) => [e, { distinctStates: 0, paths: 0n, sample: undefined }]),
-) as Record<Ending, Tally>
+const BROKEN_TEXT = /undefined|NaN|\[object Object\]|\$\{/
 
-const errors: string[] = []
-const scenesSeen = new Set<string>()
-const verbose = argv.includes('--verbose')
+const textProblem = (s: State): string | null => {
+  try {
+    const shown = render(s)
+    const bad = shown.match(BROKEN_TEXT)
+    return bad ? `${s.scene} renders "${bad[0]}"` : null
+  } catch (e) {
+    return `${s.scene} render threw: ${e instanceof Error ? e.message : String(e)}`
+  }
+}
 
-const step = (frontier: ReadonlyMap<string, Node>): Map<string, Node> => {
-  const next = new Map<string, Node>()
-  frontier.forEach((node) => {
-    scenesSeen.add(node.state.scene)
-    if (isEnd(node.state)) {
-      const t = tallies[ending(node.state)]
-      t.distinctStates += 1
-      t.paths += node.paths
-      t.sample ??= node.trail
-      return
+type Graph = {
+  ids: Map<string, number>
+  parent: number[]
+  via: number[]
+  edges: number[][]
+  postorder: number[]
+  endingOf: (Ending | null)[]
+  scenes: Set<string>
+  errors: string[]
+  rendered: number
+}
+
+const trailOf = (g: Graph, id: number): readonly number[] =>
+  id <= 0 ? [] : [...trailOf(g, g.parent[id]), g.via[id]]
+
+const intern = (g: Graph, key: string, parent: number, via: number): [number, boolean] => {
+  const seen = g.ids.get(key)
+  if (seen !== undefined) return [seen, false]
+  const id = g.ids.size
+  g.ids.set(key, id)
+  g.parent.push(parent)
+  g.via.push(via)
+  g.edges.push([])
+  g.endingOf.push(null)
+  return [id, true]
+}
+
+const visit = (g: Graph, id: number, s: State): void => {
+  g.scenes.add(s.scene)
+  g.rendered += 1
+  const broken = textProblem(s)
+  if (broken) g.errors.push(`${broken} (path ${trailOf(g, id).join(',')})`)
+  const choices = choicesOf(s)
+  if (choices.length === 0) {
+    g.endingOf[id] = ending(s)
+    g.postorder.push(id)
+    return
+  }
+  choices.forEach((_, i) => {
+    try {
+      const next = canonical(choose(s, i + 1))
+      const [child, fresh] = intern(g, packedKey(next), id, i + 1)
+      g.edges[id].push(child)
+      if (fresh) visit(g, child, next)
+    } catch (e) {
+      g.errors.push(`${s.scene} choice ${i + 1}: ${e instanceof Error ? e.message : String(e)} (path ${[...trailOf(g, id), i + 1].join(',')})`)
     }
-    choicesOf(node.state).forEach((_, i) => {
-      try {
-        const s = canonical(choose(node.state, i + 1))
-        const k = canonicalKey(s)
-        const prev = next.get(k)
-        next.set(k, prev ? { ...prev, paths: prev.paths + node.paths } : { state: s, paths: node.paths, trail: { n: i + 1, prev: node.trail } })
-      } catch (e) {
-        errors.push(`${node.state.scene} choice ${i + 1}: ${e instanceof Error ? e.message : String(e)} (path ${unwind(node.trail).join(',')})`)
-      }
-    })
   })
-  return next
+  g.postorder.push(id)
 }
 
-const run = (frontier: Map<string, Node>, depth: number, peak: number): { depth: number; peak: number } => {
-  if (frontier.size === 0) return { depth, peak }
-  if (verbose) console.error(`depth ${depth}: ${frontier.size} states`)
-  return run(step(frontier), depth + 1, Math.max(peak, frontier.size))
+const popcount = (m: bigint): number => m.toString(2).split('').filter((c) => c === '1').length
+
+const explore = () => {
+  const g: Graph = {
+    ids: new Map(),
+    parent: [],
+    via: [],
+    edges: [],
+    postorder: [],
+    endingOf: [],
+    scenes: new Set(),
+    errors: [],
+    rendered: 0,
+  }
+  const start = canonical(initialState)
+  const [root] = intern(g, packedKey(start), -1, 0)
+  visit(g, root, start)
+
+  const n = g.ids.size
+  const paths: bigint[] = Array.from({ length: n }, () => 0n)
+  const depths: bigint[] = Array.from({ length: n }, () => 0n)
+  paths[root] = 1n
+  depths[root] = 1n
+  const topological = [...g.postorder].reverse()
+  topological.forEach((id) =>
+    g.edges[id].forEach((child) => {
+      paths[child] += paths[id]
+      depths[child] |= depths[id] << 1n
+    }),
+  )
+
+  const allDepths = depths.reduce((a, m) => a | m, 0n)
+  const maxDepth = allDepths.toString(2).length
+  const widths = Array.from({ length: maxDepth }, (_, d) => depths.reduce((a, m) => a + Number((m >> BigInt(d)) & 1n), 0))
+
+  const ends = g.endingOf.flatMap((e, id) => (e ? [{ id, e }] : []))
+  const tally = (e: Ending) => {
+    const mine = ends.filter((x) => x.e === e)
+    return {
+      distinctStates: mine.reduce((a, x) => a + popcount(depths[x.id]), 0),
+      mergedStates: mine.length,
+      paths: mine.reduce((a, x) => a + paths[x.id], 0n),
+      sample: mine.length ? trailOf(g, mine[0].id).join(',') : '(unreachable)',
+    }
+  }
+  return { g, maxDepth, widths, tallies: endings.map((e) => ({ e, ...tally(e) })) }
 }
 
-const { depth, peak } = run(new Map([[canonicalKey(initialState), { state: initialState, paths: 1n, trail: null }]]), 0, 1)
+const t0 = performance.now()
+const { g, maxDepth, widths, tallies } = explore()
+const seconds = (performance.now() - t0) / 1000
 
-const totalPaths = endings.reduce((a, e) => a + tallies[e].paths, 0n)
-const unreachable = allSceneIds().filter((id) => !scenesSeen.has(id))
+if (argv.includes('--verbose')) widths.forEach((w, d) => console.error(`depth ${d}: ${w} states`))
+
+const totalPaths = tallies.reduce((a, t) => a + t.paths, 0n)
+const unreachable = allSceneIds().filter((id) => !g.scenes.has(id))
 
 console.log(
   JSON.stringify(
     {
       totalPaths: totalPaths.toString(),
-      distinctEndStates: endings.reduce((a, e) => a + tallies[e].distinctStates, 0),
-      maxDepth: depth,
-      peakFrontier: peak,
-      endings: endings.map((e) => ({
-        ending: e,
-        distinctStates: tallies[e].distinctStates,
-        paths: tallies[e].paths.toString(),
-        share: totalPaths ? `${(Number((tallies[e].paths * 10000n) / totalPaths) / 100).toFixed(2)}%` : '0%',
-        sample: tallies[e].sample === undefined ? '(unreachable)' : unwind(tallies[e].sample).join(','),
+      distinctEndStates: tallies.reduce((a, t) => a + t.distinctStates, 0),
+      maxDepth,
+      peakFrontier: Math.max(...widths),
+      mergedStates: g.ids.size,
+      renderedStates: g.rendered,
+      seconds: Number(seconds.toFixed(1)),
+      peakRssMB: Math.round(process.resourceUsage().maxRSS / 1024),
+      endings: tallies.map((t) => ({
+        ending: t.e,
+        distinctStates: t.distinctStates,
+        mergedStates: t.mergedStates,
+        paths: t.paths.toString(),
+        share: totalPaths ? `${(Number((t.paths * 10000n) / totalPaths) / 100).toFixed(2)}%` : '0%',
+        sample: t.sample,
       })),
       unreachableScenes: unreachable,
-      errors: errors.slice(0, 20),
-      errorCount: errors.length,
+      errors: g.errors.slice(0, 20),
+      errorCount: g.errors.length,
     },
     null,
     2,
@@ -83,9 +189,9 @@ console.log(
 )
 
 const failures = [
-  ...(errors.length ? ['choice errors'] : []),
+  ...(g.errors.length ? ['choice or text errors'] : []),
   ...(unreachable.length ? ['unreachable scenes'] : []),
-  ...endings.filter((e) => tallies[e].distinctStates === 0).map((e) => `ending ${e} unreachable`),
+  ...tallies.filter((t) => t.mergedStates === 0).map((t) => `ending ${t.e} unreachable`),
 ]
 
 if (argv.includes('--strict') && failures.length) {

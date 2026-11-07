@@ -33,7 +33,8 @@ const trial = (seed: number): string | null => {
 }
 
 const trials = Number(argv[argv.indexOf('--trials') + 1]) || 2000
-const failures = Array.from({ length: trials }, (_, i) => trial(i + 1)).filter((f): f is string => f !== null)
+const seed = argv.includes('--seed') ? Number(argv[argv.indexOf('--seed') + 1]) || 0 : 0
+const failures = Array.from({ length: trials }, (_, i) => trial(seed + i + 1)).filter((f): f is string => f !== null)
 
-console.log(JSON.stringify({ trials, failures: failures.length, examples: [...new Set(failures)].slice(0, 10) }, null, 2))
+console.log(JSON.stringify({ trials, seed, failures: failures.length, examples: [...new Set(failures)].slice(0, 10) }, null, 2))
 if (failures.length) exit(1)

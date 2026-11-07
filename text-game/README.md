@@ -51,7 +51,19 @@ Runs, in order:
 1. `typecheck`: `tsc --noEmit`.
 2. `test:unit`: truth-table tests for the logic gates, plus golden-route replay.
 3. `verify`: differential test. Plays random games from both the real state and its canonical (pruned) form and asserts identical text and endings. This is what makes the explorer's shortcuts trustworthy.
-4. `explore`: walks every path (about 7 trillion) by merging equivalent states. Fails on any choice error, unreachable scene, or unreachable ending.
+4. `explore`: walks every path (about 50 trillion) by merging equivalent states, and renders each distinct state once. Fails on any choice error, scene text that throws or shows `undefined`/`NaN`, unreachable scene, or unreachable ending. Takes about 15 s and 0.5 GB.
+
+`node src/verify.ts --trials N --seed S` offsets the random seeds. `npm run matrix:check` compares the decision matrix's combination counts with `routes/matrix-summary.json`; after an intended story change, run `npm run matrix:summary` and commit the result.
+
+## CI
+
+GitHub Actions workflows in `../.github/workflows/`, all run from `text-game/` on the Node version in `.nvmrc`:
+
+- `text-game-checks.yml` (PRs and pushes to `main` touching `text-game/`): typecheck, unit tests with golden route replay, `verify` seeded from the run number, and the matrix summary check.
+- `text-game-explore.yml` (PRs and pushes touching `text-game/src/` or dependencies): the exhaustive `explore --strict` sweep with a 1.5 GB heap. The JSON report goes to the job summary.
+- `text-game-nightly.yml` (daily, or run by hand): full sweep, `verify` at 20,000 trials with a rotating seed, and matrix regeneration. Reports, including runtime and peak memory, are uploaded as the `text-game-reports-<run>` artifact.
+
+Jobs run on `ubuntu-latest` unless the repository variable `TEXT_GAME_RUNNER` names another runner label, such as an Actions Runner Controller scale set.
 
 ## Layout
 

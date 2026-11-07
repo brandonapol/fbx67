@@ -1,0 +1,75 @@
+name: text-game nightly
+
+on:
+  schedule:
+    - cron: '23 10 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: text-game-nightly
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+    working-directory: text-game
+
+jobs:
+  nightly:
+    runs-on: ${{ vars.TEXT_GAME_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 45
+    env:
+      VERIFY_TRIALS: 20000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: text-game/.nvmrc
+          cache: npm
+          cache-dependency-path: text-game/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck and unit tests
+        run: |
+          npm run typecheck
+          npm run test:unit
+
+      - name: Exhaustive sweep
+        run: |
+          mkdir -p reports
+          npm run -s explore -- --verbose > reports/explore.json 2> reports/explore-depths.log
+
+      - name: Verify liveness pruning
+        run: node src/verify.ts --trials "$VERIFY_TRIALS" --seed "$(( GITHUB_RUN_NUMBER * VERIFY_TRIALS ))" > reports/verify.json
+
+      - name: Regenerate decision matrix
+        run: |
+          node src/matrix.ts --out reports/matrix.json --check routes/matrix-summary.json > reports/matrix-summary.json
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo '### Nightly'
+            for f in explore verify matrix-summary; do
+              [ -s "reports/$f.json" ] || continue
+              echo "#### $f"
+              echo '```json'
+              grep -v '"sample"' "reports/$f.json"
+              echo '```'
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: text-game-reports-${{ github.run_number }}
+          path: text-game/reports/
+          retention-days: 30
+          if-no-files-found: warn
