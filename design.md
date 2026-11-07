@@ -54,6 +54,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
   - **The murder (Aug 1967):** during the flood, Curly offers his friend the geologist a skiff ride across the water to Lucy. He takes him to a flooded cabin instead, holds him under, and leaves the body tied to submerged debris. The proof the geologist carried disappears. The knot is a cowboy bowline, the left-handed version of the bowline that Texas ranch hands tie: the lefty-Texan clue (briefly points at Lucy, who's left-handed, and Wade, who's Texan).
     - Fact-check: the cowboy bowline's name, handedness, and association with Texas/ranch work; 1967 flood death toll.
   - **Act 1:** in the barfight, hauled in and let go; the cops already know him.
+  - **Fair-play clues before the bow:** he casually ties a cowboy bowline in front of Wade while doing some job; and he gets drunk and lets slip to Jake Bueller how he's planning to get out of town (money coming, a way out), which Jake later passes along to Wade.
   - **Act 3:** after the crash, he realizes the landman is cleaning up loose ends and he's next. He breaks into a cabin and steals a new left-handed hunting bow as preemptive self-defense, figuring a killing with a bow would be harder to trace to him than a rifle. The Native cop arrests him for the burglary.
   - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
   - Fact-check: left-handed hunting bows were available in 1967 (Bear Archery and others likely made them); bowhunting in 1960s Alaska.
@@ -90,7 +91,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
 3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. Eli is the one who catches on.
 4. Eielson munitions are going missing under Wade's signature. Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
-5. (Optional) Eli was at the cabin the night of the flood. He's hiding something, but not what the player assumes.
+5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because speaking up means explaining something else he was doing that night (what, TBD). The player assumes he's guilty; the truth is he's a reluctant witness.
 
 ## Lucy's Confession
 
@@ -133,12 +134,11 @@ Driven by player morals and early-game choices.
 - Letter-writing choice mechanism
 - What exactly Wade leaks in the letter, and what decision the CO makes that tips off Eli
 - Wade's exact rash act against the councilman (safe job or otherwise)
-- Fair-play clues pointing at the crooked mechanic before the bow (the player should be able to suspect him early)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
-- Eli's secret (Twist 5): keep or cut, and what it is
+- Twist 5: what Eli was doing on the water that he doesn't want to explain, and when he finally talks
 - Title
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
