@@ -47,7 +47,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
   - Fact-check: Alaska State Troopers' 1967 renaming, investigator ranks/titles, and Trooper vs. Fairbanks PD jurisdiction in town.
 
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
-- **The land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims; Lucy trusts him and hands him evidence. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
+- **The land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims. In the prologue, the geologist mentions to Wade at the bar that there's "a lawyer who's helping me do right by the Native families": a throwaway nice detail that is actually the first clue. The landman fooled the geologist too. Lucy trusts him because the geologist did, and hands him evidence. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
 - **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew Jake was flying the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
 - **Wade's CO.** Feels trapped in his career and wants to retire into money; an oil company job is waiting if he plays along. Reads Wade's mail off the books to learn what Wade knows, and controls the munitions paperwork, forging Wade's signature on the missing charges. Twists 3 and 4 are both him.
 - **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Keeps the geologist's charter plane running and ferried him to field sites all summer, so he knows the survey camp, the flight schedules, and what the data means. Hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
@@ -186,7 +186,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Letter-writing choice mechanism
 - Wade's exact rash act against the councilman (safe job or otherwise)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
-- The land lawyer: name, how Lucy meets him, early scenes that make him likable, the clue trail that exposes him
+- The land lawyer: name, early scenes that make him likable, the clue trail that exposes him
 - The geologist: name and presence (journals, reel-to-reel tapes at the survey camp)
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
