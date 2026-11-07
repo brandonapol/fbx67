@@ -93,6 +93,13 @@ button {
   font-weight: 600;
 }
 
+a.secondary {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
 .secondary {
   background: var(--panel-raised);
   border: 1px solid var(--line);
