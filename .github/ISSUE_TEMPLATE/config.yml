@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Story canon
+    url: https://github.com/brandonapol/fbx67/blob/main/design.md
+    about: Read the design before filing a story issue. New ideas go in its "Ideas (not yet adopted)" section.

@@ -1,0 +1,58 @@
+name: Feature
+description: Something new the game or the tooling should do.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: What part of the project does this touch?
+      multiple: true
+      options:
+        - Story (text-game scenes)
+        - Core logic (state, gates, engine)
+        - Game (engine build)
+        - Web (text build in the browser)
+        - Art
+        - Audio
+        - CI / tooling
+        - Docs / design
+    validations:
+      required: true
+  - type: dropdown
+    id: act
+    attributes:
+      label: Act
+      multiple: true
+      options:
+        - N/A
+        - Prologue (Owen)
+        - Act 1 (flood)
+        - Act 2 (winter)
+        - Act 3 (Lucy)
+        - Act 4 (breakup)
+        - Endings
+  - type: textarea
+    id: what
+    attributes:
+      label: What should happen?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+  - type: input
+    id: blocked-by
+    attributes:
+      label: Blocked by
+      placeholder: "#12, #13"
+  - type: textarea
+    id: bot-guidance
+    attributes:
+      label: Bot guidance
+      description: Scope limits, files not to touch, related issues, the path or test that proves it.

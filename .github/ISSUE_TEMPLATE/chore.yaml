@@ -1,0 +1,50 @@
+name: Chore
+description: CI, tooling, dependencies, refactors. Nothing a player sees.
+title: "chore: "
+labels: ["chore"]
+body:
+  - type: dropdown
+    id: chore-type
+    attributes:
+      label: Type of chore
+      options:
+        - CI / tooling
+        - Dependency update
+        - Refactor / cleanup
+        - Test coverage
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: What part of the project does this touch?
+      multiple: true
+      options:
+        - Story (text-game scenes)
+        - Core logic (state, gates, engine)
+        - Game (engine build)
+        - Web (text build in the browser)
+        - Art
+        - Audio
+        - CI / tooling
+        - Docs / design
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs doing?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why now?
+  - type: textarea
+    id: bot-guidance
+    attributes:
+      label: Bot guidance
+      description: Scope limits, files not to touch, related issues, the path or test that proves it.

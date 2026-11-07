@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+    ":semanticCommitsDisabled"
+  ],
+  "packageRules": [
+    {
+      "description": "Node is pinned by text-game/.nvmrc; type stripping needs 22.18 or later, so bump it deliberately.",
+      "matchDepNames": ["node"],
+      "enabled": false
+    },
+    {
+      "description": "Group dev tooling so one PR moves typescript, vite and @types together.",
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "dev tooling"
+    }
+  ]
+}

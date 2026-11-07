@@ -1,0 +1,56 @@
+name: Epic
+description: A body of work made of ordered sub-issues.
+title: "[Epic] "
+labels: ["epic"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: What part of the project does this touch?
+      multiple: true
+      options:
+        - Story (text-game scenes)
+        - Core logic (state, gates, engine)
+        - Game (engine build)
+        - Web (text build in the browser)
+        - Art
+        - Audio
+        - CI / tooling
+        - Docs / design
+    validations:
+      required: true
+  - type: dropdown
+    id: act
+    attributes:
+      label: Act
+      multiple: true
+      options:
+        - N/A
+        - Prologue (Owen)
+        - Act 1 (flood)
+        - Act 2 (winter)
+        - Act 3 (Lucy)
+        - Act 4 (breakup)
+        - Endings
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One sentence a person can check on main when the epic is done.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is in, what is out.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] ..."
+    validations:
+      required: true

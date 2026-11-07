@@ -1,6 +1,7 @@
 name: text-game explore
 
 on:
+  merge_group:
   pull_request:
     paths:
       - text-game/src/**
@@ -22,7 +23,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: text-game-explore-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 defaults:
@@ -35,9 +36,9 @@ jobs:
     runs-on: ${{ vars.TEXT_GAME_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: text-game/.nvmrc
           cache: npm
