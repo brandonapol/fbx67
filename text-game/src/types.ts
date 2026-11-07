@@ -1,3 +1,7 @@
+import type { SceneId } from './sceneIds.ts'
+
+export type { SceneId }
+
 export type Act = 'Prologue' | 'Act 1: Flood' | 'Act 2: Freeze-up' | 'Act 3: Deep Winter' | 'Act 4: Breakup' | 'Epilogue'
 
 export type Evidence =
@@ -19,7 +23,7 @@ export type MomLine = 'honest' | 'soft' | 'lie'
 export type CacheSpot = 'stove' | 'cache' | 'marker'
 
 export type State = Readonly<{
-  scene: string
+  scene: SceneId
   owenCache?: CacheSpot
   barfight?: 'coverEli' | 'blameEli' | 'sideCurly'
   momHonesty: number
@@ -42,11 +46,11 @@ export type State = Readonly<{
 export type Choice = Readonly<{
   label: string
   apply?: (s: State) => State
-  next: string | ((s: State) => string)
+  next: SceneId | ((s: State) => SceneId)
 }>
 
 export type Scene = Readonly<{
-  id: string
+  id: SceneId
   act: Act
   title: string
   text: (s: State) => string

@@ -1,23 +1,20 @@
-import { argv, exit } from 'node:process'
-import { readFileSync, writeFileSync } from 'node:fs'
-import { choicesOf, choose, isEnd, replay } from './engine.ts'
+import { argv } from 'node:process'
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { choicesOf, choose, isEnd, render, replay } from './engine.ts'
 import { initialState } from './state.ts'
 import { canonical } from './liveness.ts'
 import { HEAT_LIMIT, ending, missingForBest } from './logic.ts'
+import { flag, int, orExit, value } from './args.ts'
 import type { State } from './types.ts'
 
-type Sig = Readonly<{
-  barfight?: string
-  coJob?: string
-  leakedFlightDate: boolean
-  curlyPlan?: string
-  eliTrespass?: string
-  rashPlan?: string
-  afterConfession?: string
-  offer?: string
-  testified?: boolean
-  sharedWreck: boolean
-}>
+const sigFields = ['barfight', 'coJob', 'leakedFlightDate', 'curlyPlan', 'eliTrespass', 'rashPlan', 'afterConfession', 'offer', 'testified', 'sharedWreck'] as const
+
+type SigField = (typeof sigFields)[number]
+
+type Sig = Readonly<Pick<State, SigField>>
+
+const isSigField = (k: string): k is SigField => sigFields.some((f) => f === k)
 
 type Node = Readonly<{ state: State; sig: Sig; sample: readonly number[] }>
 
@@ -73,54 +70,71 @@ const rows = [...found.values()]
   })
   .sort((a, b) => sigKey(a.decisions).localeCompare(sigKey(b.decisions)))
 
-const where = (argv[argv.indexOf('--where') + 1] ?? '')
-  .split(',')
-  .filter((x) => argv.includes('--where') && x.includes('='))
-  .map((x) => x.split('=') as [string, string])
+type Row = (typeof rows)[number]
 
-const matches = (r: (typeof rows)[number]): boolean =>
-  where.every(([k, v]) =>
-    k === 'ending' ? r.ending === v : k === 'heat' ? r.heat === v : String((r.decisions as Record<string, unknown>)[k]) === v,
-  )
+type Summary = Readonly<{ decisionCombinations: number; byEnding: Readonly<Record<string, number>> }>
 
-const golden = (): readonly (typeof rows)[number][] => {
-  const firstOf = (pred: (r: (typeof rows)[number]) => boolean) => rows.find(pred)
-  const fields = ['barfight', 'coJob', 'leakedFlightDate', 'curlyPlan', 'eliTrespass', 'rashPlan', 'afterConfession', 'offer', 'testified', 'sharedWreck'] as const
+const parseWhere = (raw: string): readonly Readonly<{ k: string; v: string }>[] =>
+  raw
+    .split(',')
+    .filter((x) => x.includes('='))
+    .map((x) => {
+      const [k = '', v = ''] = x.split('=')
+      if (k !== 'ending' && k !== 'heat' && !isSigField(k)) throw new Error(`--where: unknown field "${k}"`)
+      return { k, v }
+    })
+
+const fieldOf = (r: Row, k: string): string =>
+  k === 'ending' ? r.ending : k === 'heat' ? r.heat : isSigField(k) ? String(r.decisions[k]) : ''
+
+const transcript = (path: string): string => replay(path.split(',').map(Number)).map(render).join('\n\n')
+
+const golden = (): readonly Row[] => {
+  const firstOf = (pred: (r: Row) => boolean) => rows.find(pred)
   const perEnding = (['best', 'good', 'middle', 'bad'] as const).map((e) => firstOf((r) => r.ending === e))
-  const perValue = fields.flatMap((f) =>
+  const perValue = sigFields.flatMap((f) =>
     [...new Set(rows.map((r) => String(r.decisions[f])))].map((v) => firstOf((r) => String(r.decisions[f]) === v && r.ending !== 'bad') ?? firstOf((r) => String(r.decisions[f]) === v)),
   )
   const hot = firstOf((r) => r.heat === 'hot' && r.missingForBest.length === 1)
-  return [...new Map([...perEnding, ...perValue, hot].filter((r): r is (typeof rows)[number] => !!r).map((r) => [r.path, r])).values()]
+  return [...new Map([...perEnding, ...perValue, hot].filter((r): r is Row => !!r).map((r) => [r.path, r])).values()]
 }
 
-if (argv.includes('--golden')) writeFileSync(argv[argv.indexOf('--golden') + 1], JSON.stringify(golden(), null, 2) + '\n')
-
-if (argv.includes('--where')) {
-  const limit = Number(argv[argv.indexOf('--limit') + 1]) || 5
-  console.log(JSON.stringify(rows.filter(matches).slice(0, limit), null, 2))
+const writeGolden = (file: string, gs: readonly Row[]): void => {
+  const dir = join(dirname(file), 'transcripts')
+  rmSync(dir, { recursive: true, force: true })
+  mkdirSync(dir, { recursive: true })
+  const entries = gs.map((r, i) => ({ ...r, transcript: `transcripts/${String(i + 1).padStart(2, '0')}-${r.ending}.txt` }))
+  entries.forEach((r) => writeFileSync(join(dirname(file), r.transcript), transcript(r.path) + '\n'))
+  writeFileSync(file, JSON.stringify(entries, null, 2) + '\n')
 }
 
-const counts = rows.reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.ending]: (acc[r.ending] ?? 0) + 1 }), {})
+const summaryOf = (rs: readonly Row[]): Summary => ({
+  decisionCombinations: rs.length,
+  byEnding: rs.reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.ending]: (acc[r.ending] ?? 0) + 1 }), {}),
+})
 
-const out = argv[argv.indexOf('--out') + 1]
-if (argv.includes('--out') && out) writeFileSync(out, JSON.stringify(rows, null, 2))
+const sameSummary = (a: Summary, b: Summary): boolean =>
+  a.decisionCombinations === b.decisionCombinations &&
+  [...new Set([...Object.keys(a.byEnding), ...Object.keys(b.byEnding)])].every((k) => a.byEnding[k] === b.byEnding[k])
 
-console.log(JSON.stringify({ decisionCombinations: rows.length, byEnding: counts, written: argv.includes('--out') ? out : null }, null, 2))
-
-const summary = JSON.stringify(
-  { decisionCombinations: rows.length, byEnding: Object.fromEntries((['best', 'good', 'middle', 'bad'] as const).map((e) => [e, counts[e] ?? 0])) },
-  null,
-  2,
-) + '\n'
-
-if (argv.includes('--summary')) writeFileSync(argv[argv.indexOf('--summary') + 1], summary)
-
-if (argv.includes('--check')) {
-  const file = argv[argv.indexOf('--check') + 1]
-  const committed = readFileSync(file, 'utf8')
-  if (committed !== summary) {
-    console.error(`FAIL: matrix summary differs from ${file}. If the change is intended, run npm run matrix:summary and commit it.\n${summary}`)
-    exit(1)
+await orExit(() => {
+  const summary = summaryOf(rows)
+  const goldenOut = value(argv, '--golden')
+  if (goldenOut) writeGolden(goldenOut, golden())
+  const where = value(argv, '--where')
+  if (where !== undefined) {
+    const conds = parseWhere(where)
+    const limit = int(argv, '--limit', 5)
+    console.log(JSON.stringify(rows.filter((r) => conds.every(({ k, v }) => fieldOf(r, k) === v)).slice(0, limit), null, 2))
   }
-}
+  const out = value(argv, '--out')
+  if (out) writeFileSync(out, JSON.stringify(rows, null, 2))
+  const summaryOut = value(argv, '--write-summary')
+  if (summaryOut) writeFileSync(summaryOut, JSON.stringify(summary, null, 2) + '\n')
+  console.log(JSON.stringify({ ...summary, written: flag(argv, '--out') ? out : null }, null, 2))
+  const check = value(argv, '--check')
+  if (check) {
+    const expected: Summary = JSON.parse(readFileSync(check, 'utf8'))
+    if (!sameSummary(summary, expected)) throw new Error(`Matrix summary differs from ${check}: expected ${JSON.stringify(expected)}`)
+  }
+})

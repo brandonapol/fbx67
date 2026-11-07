@@ -1,8 +1,8 @@
 import { mamaReply } from './mama.ts'
-import type { CacheSpot, Choice, Scene, State } from '../types.ts'
+import type { CacheSpot, Choice, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
-import { addEvidence, eliTrust, has, heat, joan, lefty, mom, pipe, set, texan } from '../state.ts'
+import { addEvidence, eliTrust, has, heat, joan, lefty, lucyHeat, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
 
@@ -19,7 +19,7 @@ const rashChoices = (_: State): readonly Choice[] => [
   { label: 'Don\'t go after Tolliver. Not like this.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
 ]
 
-const dig = (spot: CacheSpot) => (s: State): string => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
+const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
 
 
 export const act3: readonly Scene[] = [
@@ -161,8 +161,8 @@ Eli meets you at the hospital. He's been asking around the strip.
         next: 'a3_curly',
       },
       ...(s.leakedFlightDate
-        ? [{ label: 'Lie. "I never told a soul."', apply: pipe(addEvidence('staffCar'), eliTrust(-2)), next: 'a3_curly' }]
-        : [{ label: 'Tell Eli to leave it to the police.', next: 'a3_curly' }]),
+        ? [{ label: 'Lie. "I never told a soul."', apply: pipe(addEvidence('staffCar'), eliTrust(-2)), next: 'a3_curly' } satisfies Choice]
+        : [{ label: 'Tell Eli to leave it to the police.', next: 'a3_curly' } satisfies Choice]),
     ],
   },
   {
@@ -274,7 +274,7 @@ You hand her the folder back and walk out into the dark. She doesn't call after 
 The next morning you go to ${N.barnette}. You tell him who the Native woman on the base was, and that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were her idea of a frame.
 
 Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are in an evidence locker.`,
-    choices: () => [{ label: 'Continue.', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat + 2 }), next: 'a3_joan' },],
+    choices: () => [{ label: 'Continue.', apply: lucyHeat(2), next: 'a3_joan' }],
   },
   {
     id: 'a3_joan',
