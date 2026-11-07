@@ -3,7 +3,7 @@ import { has, honesty } from './state.ts'
 
 export type Ending = 'best' | 'good' | 'middle' | 'bad'
 
-export type CurlyFate = 'testifies' | 'burglaryOnly' | 'buried'
+export type CurlyFate = 'testifies' | 'convicted' | 'buried' | 'killed'
 
 export type IceJam = 'stopped' | 'blown'
 
@@ -49,9 +49,11 @@ export const ending = (s: State): Ending =>
 export const eliJailed = (s: State): boolean =>
   s.eliTrespass === 'report' || s.eliTrespass === 'leverage' || s.offer === 'take'
 
+export const curlyKilled = (s: State): boolean => s.curlyPlan === 'ignore'
+
 export const curlyFate = (s: State): CurlyFate => {
   const e = ending(s)
-  return e === 'best' ? 'testifies' : e === 'bad' ? 'buried' : 'burglaryOnly'
+  return curlyKilled(s) ? 'killed' : e === 'best' ? 'testifies' : e === 'bad' ? 'buried' : 'convicted'
 }
 
 export const middleFlavor = (s: State): 'burn' | 'walked' | 'silent' =>

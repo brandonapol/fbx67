@@ -68,7 +68,7 @@ Curly asks for you by name. In the visiting room he looks ten years older.
 
 "You kept me alive, Wade. Your friend's tip did. So here it is. Ashby paid me. For Owen, and for the plane. I held Owen under myself. I'm going to hell for that and I know it. But I'm not going there alone."`
         : `
-You try to see Curly in jail. He won't come out of his cell. The guard says he told the Trooper he'd rather rot than talk to anybody.`,
+${s.curlyPlan === 'ignore' ? 'You go out to Birch Hill instead, where they buried Curly in a plot the county paid for. Nobody else came. Whatever he would have said about Owen, about the plane, about who paid him, is under the frozen ground with him.' : 'You try to see Curly in jail. He won\'t come out of his cell. The guard says he told the Trooper he\'d rather rot than talk to anybody.'}`,
     choices: (s) => [
       { label: 'Continue.', apply: curlyTalks(s) ? addEvidence('curlyNamesAshby') : undefined, next: 'a4_jake' },
     ],

@@ -7,7 +7,7 @@ const headline = (s: State): string => {
   if (e === 'best')
     return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} The family's allotment is restored. The fish camp is theirs again.`
   if (e === 'good')
-    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.`
+    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.${eliJailed(s) ? ' Eli watches it from a cell. You won, and you can\'t stand to look at what it cost.' : ''}`
   if (e === 'bad') {
     if (s.offer === 'fake')
       return `You tried to play Ashby, but you'd already burned the people who could have backed you up.${s.testified ? ' You testified anyway. Nobody believed which side you were on.' : ''} The grand jury never sees a case. Ashby wins.`
@@ -17,7 +17,7 @@ const headline = (s: State): string => {
       return `Ashby keeps his word. Within a week the sign-out sheets vanish from the evidence room, and the Air Force inquiry closes without a name. A parcel on the river is deeded to Wade Pruett. Ashby wins.`
     return `You sold Lucy to Barnette, and with her investigation in an evidence locker, Ashby never needed to buy you.${s.testified ? ' Your testimony goes nowhere. You\'re the airman who turned in his friends; nobody trusts a word.' : ''} Ashby wins.`
   }
-  const lead = `Some of them go down. ${iceJam(s) === 'stopped' ? 'The Major is court-martialed' : 'The Major is quietly discharged'}, and Curly goes to prison. ${N.ashby} walks.`
+  const lead = `Some of them go down. ${iceJam(s) === 'stopped' ? 'The Major is court-martialed' : 'The Major is quietly discharged'}${s.curlyPlan === 'ignore' ? '' : ', and Curly goes to prison'}. ${N.ashby} walks.`
   const f = middleFlavor(s)
   return f === 'burn'
     ? `${lead} One night that spring his office burns to the studs, and nobody can prove who did it. Barnette always said you were dangerous.`
@@ -36,6 +36,7 @@ const eliLine = (s: State): string => {
 
 const curlyLine = (s: State): string => {
   const fate = curlyFate(s)
+  if (fate === 'killed') return 'Found dead in a hunting cabin before the police reached him. Ruled a hunting accident. Nobody ever asks Ashby about it.'
   if (fate === 'testifies') return 'Testifies against Ashby and gets life instead of the chair. Nobody arranges an accident.'
   if (fate === 'buried')
     return curlyTalks(s)
@@ -73,7 +74,7 @@ const epilogues = (s: State): readonly string[] => {
   const won = e === 'best' || e === 'good'
   return [
     `ELI: ${eliLine(s)}`,
-    `LUCY: ${e === 'bad' ? 'Loses her job at the land office. Keeps the case files in a trunk for the rest of her life.' : e === 'middle' ? 'Keeps working the claim, one lost form at a time.' : 'Goes to work for the Tanana Chiefs on the claims settlement.'}${s.lucyHeat > 0 && e !== 'bad' ? ' Barnette never does put a name to the woman seen on the base.' : ''}`,
+    `LUCY: ${e === 'bad' ? 'Loses her job at the land office. Keeps the case files in a trunk for the rest of her life.' : e === 'middle' ? 'Keeps working the claim, one lost form at a time.' : (eliJailed(s) ? 'Goes to work for the Tanana Chiefs on the claims settlement. Her brother is in jail because of you, and she never speaks to you again.' : 'Goes to work for the Tanana Chiefs on the claims settlement.')}${s.lucyHeat > 0 && e !== 'bad' ? ' Barnette never does put a name to the woman seen on the base.' : ''}`,
     `CURLY: ${curlyLine(s)}`,
     `JAKE: ${s.sharedWreck ? 'Flies again by fall, knowing it wasn\'t his fault.' : 'Spends a year thinking he nearly killed Lucy. Flies again eventually.'}`,
     `TOLLIVER: ${tolliverLine(s, won)}`,

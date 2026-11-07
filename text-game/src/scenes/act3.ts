@@ -170,11 +170,11 @@ Eli meets you at the hospital. He's been asking around the strip.
     act,
     title: 'The Bow',
     text: (s) => `
-${s.curlyPlan === 'warn' ? `Lucy took Jake's tip straight to ${N.cop}, the one man at Fairbanks PD nobody has ever bought. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Two weeks after the crash, ${N.cop} arrests Curly for breaking into a hunting cabin. By then he's half-starved and furious at everybody.`}
+${s.curlyPlan === 'warn' ? `Lucy took Jake's tip straight to ${N.cop}, the one man at Fairbanks PD nobody has ever bought. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Nobody was watching Curly. Two weeks after the crash, ${N.cop} finds him in a hunting cabin up the Chena Hot Springs road that he'd broken into. He's been dead for days, shot through the chest with his own rifle. ${N.barnette} calls it a hunting accident inside of an hour. It's the second accident this year.`}
 
-He'd stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won't say.${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
+${s.curlyPlan === 'ignore' ? 'Beside him is a brand-new hunting bow, stolen, still strung. A left-handed one. He was waiting for somebody, and somebody came first.' : 'He\'d stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won\'t say.'}${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
 
-Curly is safe in a cell, where nobody can arrange an accident for him. The officer can't be bought, and Curly knows it.
+${s.curlyPlan === 'ignore' ? 'Whatever Curly knew, he took it into the ground at Birch Hill.' : 'Curly is safe in a cell, where nobody can arrange an accident for him. The officer can\'t be bought, and Curly knows it.'}
 
 A letter from Mama is waiting at the hospital desk. ${mamaReply(1)(s)}`,
     choices: () => [{ label: 'Continue.', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],

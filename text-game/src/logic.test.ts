@@ -72,7 +72,9 @@ test('Eli is jailed if his trespass is used or the offer is taken', () => {
 
 test('Curly fate follows the route', () => {
   assert.equal(curlyFate(base), 'testifies')
-  assert.equal(curlyFate(w({ sharedWreck: false })), 'burglaryOnly')
+  assert.equal(curlyFate(w({ sharedWreck: false })), 'convicted')
+  assert.equal(curlyFate(w({ curlyPlan: 'ignore' })), 'killed')
+  assert.equal(curlyFate(w({ curlyPlan: 'ignore', offer: 'take' })), 'killed')
   assert.equal(curlyFate(w({ offer: 'take' })), 'buried')
 })
 
