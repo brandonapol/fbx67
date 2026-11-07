@@ -1,5 +1,5 @@
-import { argv } from 'node:process'
-import { writeFileSync } from 'node:fs'
+import { argv, exit } from 'node:process'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { choicesOf, choose, isEnd, replay } from './engine.ts'
 import { initialState } from './state.ts'
 import { canonical } from './liveness.ts'
@@ -107,3 +107,20 @@ const out = argv[argv.indexOf('--out') + 1]
 if (argv.includes('--out') && out) writeFileSync(out, JSON.stringify(rows, null, 2))
 
 console.log(JSON.stringify({ decisionCombinations: rows.length, byEnding: counts, written: argv.includes('--out') ? out : null }, null, 2))
+
+const summary = JSON.stringify(
+  { decisionCombinations: rows.length, byEnding: Object.fromEntries((['best', 'good', 'middle', 'bad'] as const).map((e) => [e, counts[e] ?? 0])) },
+  null,
+  2,
+) + '\n'
+
+if (argv.includes('--summary')) writeFileSync(argv[argv.indexOf('--summary') + 1], summary)
+
+if (argv.includes('--check')) {
+  const file = argv[argv.indexOf('--check') + 1]
+  const committed = readFileSync(file, 'utf8')
+  if (committed !== summary) {
+    console.error(`FAIL: matrix summary differs from ${file}. If the change is intended, run npm run matrix:summary and commit it.\n${summary}`)
+    exit(1)
+  }
+}
