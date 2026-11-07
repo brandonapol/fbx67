@@ -122,7 +122,20 @@ Two strands (Wade's loyalty, and the evidence/justice trail) wind through the ga
 
 ### What decides it
 
-A handful of key decision points (roughly five or six), not a running meter. Candidates: the barfight aftermath, what Wade does with what he learns from Lucy at the confession, how he answers the landman's offer, whether he covers for Eli's trespass, and what he does at breakup. Smaller choices change details and epilogues, not which of the three endings you get.
+Seven key decision points, not a running meter. Smaller choices change details and epilogues, not which of the three endings you get.
+
+Before the crash:
+1. **Barfight aftermath.** Questioned by Barnette, Wade covers for Eli, blames Eli, or throws in with Curly.
+2. **The letter leak.** What Wade tells Mom about the investigation (honest, vague, or a lie) decides what the CO learns and how bad Twist 3 gets.
+3. **Eli's trespass.** When Wade learns Eli was on the banished land that night: keep quiet, report it, or use it as leverage.
+4. **Curly's escape plan.** When Jake passes on Curly's drunken getaway talk: warn Lucy, confront Curly, or let it go.
+
+After the crash:
+5. **After the confession.** Wade stays with Lucy, walks, or turns on her.
+6. **The landman's offer.** Money, land, and a way out for silence: take it, refuse it, or fake taking it (double agent).
+7. **Testifying.** Wade goes on the record against the CO and the landman at the cost of his career, or doesn't.
+
+The Act 4 ice jam plays out according to these choices rather than being its own decision point.
 
 ### Epilogues
 
@@ -163,7 +176,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
 - Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
-- Endings: lock the list of key decision points; which early choices map to which late-game changes; what the landman-arrest run requires; the scenario where Wade saves Curly
+- Endings: how the seven decisions combine into good/middle/bad; which early choices map to which late-game changes; what the landman-arrest run requires; the scenario where Wade saves Curly
 - Title
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
