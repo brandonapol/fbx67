@@ -105,7 +105,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 - **When.** Late Act 3, after the crash, once Wade has read the sabotaged wreck and the frame-up (Twist 4) is coming together.
 - **How.** Under duress. Wade is angry and about to act on it, and his plan assumes Lucy's loyalty. She has to tell him before he commits, because the move only works (or only stays survivable) if he knows the truth. ("I picked you because you had access. Now they've picked you too.")
-- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (e.g. blowing his safe for the stolen allotment file; exact act TBD) and assumes Lucy has his back. She lets him vent. When he actually starts getting ready to do it, one-armed in a cast, she realizes how reckless he's become and intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
+- **Trigger.** Furious about the crash, Wade blusters about going after the councilman (whom he wrongly believes is the top villain) and assumes Lucy has his back. The player chooses the plan, and each one is its own short preparation adventure: e.g. blow the councilman's safe one-armed for the stolen allotment file (which isn't even there; Ashby has it), burn his hunting cabin, or confront him at gunpoint. Whatever the plan, Lucy intercepts at the same point with the same result; what changes is what the player chose to become on the way there. She lets him vent. When he actually starts getting ready to do it, one-armed in a cast, she realizes how reckless he's become and intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
 - **Reveal timing.** The player learns it at the same moment Wade does. Lucy's playable chapters are honest but never show her motive, so on a replay her early scenes read completely differently.
 - Rule: the confession is never romantic or gratitude-driven.
 
@@ -144,6 +144,8 @@ After the crash:
 7. **Testifying.** Wade goes on the record against the CO and the landman at the cost of his career, or doesn't.
 
 The Act 4 ice jam plays out according to these choices rather than being its own decision point.
+
+**How they combine.** Decisions 1-3 (before the crash) set Wade's leaning and decide which routes stay open (e.g. whether Curly is alive and trusting enough for the confession route). Decisions 4-7 (after the crash) pick the ending. Players can redeem themselves or fall late; early choices shape details and epilogues.
 
 ### How the land lawyer gets exposed
 
@@ -193,11 +195,10 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 
 ## Open Questions
 
-- Wade's exact rash act against the councilman (safe job or otherwise)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Ashby: early scenes that make him likable
 - Owen Marsh's presence after the prologue (journals, reel-to-reel tapes at the survey camp)
-- Endings: how the seven decisions combine into good/middle/bad, and which early choices map to which late-game changes
+- Endings: the specific late-game changes each early choice causes
 - Title
 - Native cop's name (from Athabascan consultants)
 - Smoking mechanics: which hooks to keep
