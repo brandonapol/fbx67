@@ -119,6 +119,7 @@ const cameraOffset: Readonly<Record<Space['id'], readonly [number, number]>> = {
   bar: [6.5, 9],
   room: [4.6, 7],
   camp: [17, 25],
+  flood: [7, 9],
 }
 
 type Built = Readonly<{
