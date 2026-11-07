@@ -160,7 +160,9 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - **Stealth.** Primary mode in town and on base.
 - **Spying (core).**
   - **Eavesdropping.** Overhear conversations through walls, vents, and crowded bars, with music as cover. Partial information; the player fills in the gaps.
-  - **Document theft.** Lift, copy, or photograph files on base, in offices, and at the land office. Lucy reads what Wade steals.
+  - **Document theft.** Both Wade and Lucy steal. Wade lifts files from the CO's office on base; Lucy takes documents from the land office and the offices she can get into. Lift, copy, or photograph. Lucy reads what Wade steals.
+  - **Heist structure.** Each theft is a self-contained job: case the place, get in, solve the room (escape-room-style puzzles: locked drawers, combination safes, filing systems, timed patrols), get out.
+  - **Heat.** Thefts raise heat with the law. Barnette and the Native cop get on the trail; high heat means patrols, questioning, searches, and a chance of capture. Getting caught has consequences rather than a game over (drunk tank, interrogation by Barnette, lost evidence).
 - **Survival.** Cold, light, calories, frostbite; seasons change the map (flood, freeze, dark, breakup).
 - **Skiing.** Cross-country skis for the Act 3 rescue search. Wade has never seen snow, but he grew up water skiing, so he's overconfident. His balance on downhills carries over; kick-and-glide on the flats and climbing don't, and he has to learn those.
 - **Smoking.** Wade smokes. Possible hooks (TBD): lighter and matches as a fire source, cigarettes as social currency on base and in bars, cravings vs. stamina in the cold, smoke or a lit cigarette giving away his position in stealth.
@@ -191,6 +193,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
 - Smoking mechanics: which hooks to keep
+- Heat system: how heat rises and cools, and whether the two lawmen track it separately
 
 ## Continuing in Claude Code
 
