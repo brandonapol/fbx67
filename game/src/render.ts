@@ -104,6 +104,7 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
 
 const cameraOffset: Readonly<Record<Space['id'], readonly [number, number]>> = {
   bar: [6.5, 9],
+  room: [4.6, 7],
 }
 
 type Built = Readonly<{
