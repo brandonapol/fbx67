@@ -102,11 +102,31 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 ## Endings
 
-Driven by player morals and early-game choices.
+### Shape: double helix
 
-- **Betrayal.** Wade gives up his friends for promotion, money, a ticket home.
-- **Complicity.** Earlier choices (where he was, who he was with, what he wrote) trap him in the murder cover-up.
-- **Sacrifice.** Wade exposes everything at personal cost (career, freedom, maybe life); the family gets their land back.
+Two strands (Wade's loyalty, and the evidence/justice trail) wind through the game.
+- **Acts 1-2 (seeding).** Choices and relationships are planted: what Wade tells Mom, who he trusts, what he notices, what he steals, who he drinks with.
+- **Act 3 crash (the center).** The plane crash and Lucy's confession are the crossing point where both strands meet.
+- **Act 3 aftermath - Act 4 (unwinding).** Earlier choices pay off KOTOR-style: specific late-game details change based on early decisions (who's alive, who's in jail, who believes Wade, which evidence exists).
+
+### Three real endings
+
+**Wade is good.** Eli and Lucy survive and stay out of jail. Joan ends up with someone else. The family's land claim survives.
+
+**Wade is in the middle.** Variants, depending on the path:
+- **Partial justice.** Curly and the councilman go down, but the landman walks and the oil money arrives anyway. Bittersweet and historically honest.
+- **Double agent.** Wade pretends to sell out to the landman to get him on the record. Works only if he's been honest with Lucy and Eli; if he's lied to them, it collapses into real betrayal.
+- **Burn it down.** The gritty path: Wade uses his munitions skills for revenge and becomes the dangerous airman Barnette always said he was.
+
+**Wade is bad.** The landman pays Wade to keep quiet. Wade gets Joan, the payoff, and some land (the irony being that it's land). Eli ends up wrongfully imprisoned, tied to what he was doing on the water the night of the flood (Twist 5).
+
+### Epilogues
+
+Per-character beats that vary within each ending: Eli, Lucy, Curly, Barnette, Joan, Jake, the pilot, the councilman, the CO, the landman, Mom (her last letter reflects what Wade told her vs. what happened).
+
+### Hidden best outcome
+
+The landman can be arrested, but only with near-flawless play: the right evidence, the right trust, the right timing. Expected to take 2-3 varied playthroughs to find. One scenario also lets Wade save Curly.
 
 ## Systems
 
@@ -138,7 +158,8 @@ Driven by player morals and early-game choices.
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
-- Twist 5: what Eli was doing on the water that he doesn't want to explain, and when he finally talks
+- Twist 5: what Eli was doing on the water that he doesn't want to explain (it's what gets him jailed in the bad ending), and when he finally talks
+- Endings: which early choices map to which late-game changes; what the landman-arrest run requires; the scenario where Wade saves Curly
 - Title
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
