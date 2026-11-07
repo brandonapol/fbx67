@@ -1,0 +1,42 @@
+name: Story
+description: A scene, a line, a gate, or a plot decision.
+title: "[Story] "
+labels: ["story"]
+body:
+  - type: markdown
+    attributes:
+      value: Canon is design.md. A change to canon needs the user's decision; a change to a scene needs a path.
+  - type: dropdown
+    id: act
+    attributes:
+      label: Act
+      multiple: true
+      options:
+        - N/A
+        - Prologue (Owen)
+        - Act 1 (flood)
+        - Act 2 (winter)
+        - Act 3 (Lucy)
+        - Act 4 (breakup)
+        - Endings
+  - type: input
+    id: path
+    attributes:
+      label: Choice path
+      description: The --choices path that reaches the scene, if there is one.
+      placeholder: "1,2,1"
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: want
+    attributes:
+      label: What it should be
+  - type: textarea
+    id: bot-guidance
+    attributes:
+      label: Bot guidance
+      description: Scope limits, files not to touch, related issues, the path or test that proves it.

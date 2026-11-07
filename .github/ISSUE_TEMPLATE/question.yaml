@@ -1,0 +1,32 @@
+name: Question
+description: A design or history question that needs an answer before work starts.
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: What part of the project does this touch?
+      multiple: true
+      options:
+        - Story (text-game scenes)
+        - Core logic (state, gates, engine)
+        - Game (engine build)
+        - Web (text build in the browser)
+        - Art
+        - Audio
+        - CI / tooling
+        - Docs / design
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Options considered

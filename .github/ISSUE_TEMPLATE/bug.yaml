@@ -1,0 +1,40 @@
+name: Bug
+description: Something that does not work the way it should.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: What part of the project does this touch?
+      multiple: true
+      options:
+        - Story (text-game scenes)
+        - Core logic (state, gates, engine)
+        - Game (engine build)
+        - Web (text build in the browser)
+        - Art
+        - Audio
+        - CI / tooling
+        - Docs / design
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: A choice path, a URL with a path hash, or the failing CI run.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual
+    validations:
+      required: true
+  - type: textarea
+    id: bot-guidance
+    attributes:
+      label: Bot guidance
+      description: Scope limits, files not to touch, related issues, the path or test that proves it.
