@@ -25,7 +25,7 @@ Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShoc
 - **Eielson AFB.** ~26 miles from Fairbanks. 1960s: interceptor detachment, SAC staging, Army training, frequent rescue missions.
 - **Anchorage.** Still rebuilding from the 1964 earthquake. Off-screen only.
 
-All historical and technical claims are tracked in the fact-check pass (issue #3, `docs/fact-checks.md` once it lands).
+All historical and technical claims are tracked in [docs/fact-checks.md](docs/fact-checks.md) (issue #3), with verdicts, sources, and recommended changes. Its plot recommendations are not adopted yet.
 
 ## Cast
 
