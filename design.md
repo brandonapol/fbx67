@@ -18,7 +18,7 @@ Inspirations: Breath of the Wild (traversal, physics, systemic puzzles), BioShoc
 - **1906 Native Allotment Act.** Up to 160 acres per applicant; many applications lost, stalled, or rejected while others filed on the same land.
 - **Rampart Dam proposal (backdrop).** Would have flooded Yukon Flats Athabascan villages; dead by ~1967.
 - **Eielson AFB.** Est. 1943 as Mile 26 Satellite Field, Eielson AFB from 1948, ~26 miles from Fairbanks. 1960s: F-102/F-106 interceptor detachment (1960-69), SAC bomber/tanker staging facilities, Army brigades training on site, frequent Eielson rescue missions.
-- **Anchorage.** Still rebuilding from the 1964 Good Friday earthquake.
+- **Anchorage.** Still rebuilding from the 1964 Good Friday earthquake. Off-screen only; referenced in reports and dialogue.
 - **Alaska Railroad.** Runs past Denali (then Mount McKinley National Park).
 
 To verify before writing dialogue: exact munitions unit names and job titles at Eielson in 1967; which units responded to the 1967 flood; land freeze dates.
@@ -33,12 +33,12 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Wade's mother.** Back home in Texas. Wade writes to her all year; she is his moral compass. He can be honest with her or lie to her, and she has no way to check (she's in Texas), which is the point: lying to her is free, so choosing honesty means something.
 
-**The pilot.** Bush pilot on Lucy's crashed flight. Ambiguous, then innocent. He looks suspicious during the crash chapter (e.g. took a cash charter, changed the route), but he was paid to fly, not to crash. The ambiguity must be explicitly resolved on screen (a scene or document that clears him) so it never reads as a dropped thread. He is the city councilman's nephew. Not close to his uncle, but the connection is enough to make the player suspicious. The clearing beat: Wade's wreck-reading shows the sabotage was done on the ground before the pilot took the plane.
 
 **Joan Halvorsen (the nurse, Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. Whether she pulls him toward betrayal is TBD.
   - Fact-check: which hospital served Fairbanks in 1967 (likely St. Joseph's) and how the flood hit it.
 
-**Jake Bueller (the straight-arrow mechanic).** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
+**Jake Bueller (the straight-arrow mechanic and pilot).** Bush plane mechanic and pilot. Inspired by a real Fairbanks friend, a mechanic and medevac pilot: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction. He flies Lucy to the survey camp in Act 3 and goes down with her.
+  - As the pilot he looks briefly suspicious during the crash chapter, then is cleared on screen: Wade's wreck-reading shows the sabotage was done on the ground before Jake took the plane. The ambiguity must be explicitly resolved so it never reads as a dropped thread.
 
 **The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. The incorruptible one: can't be bought, arrests Curly in Act 3, and keeps him safe in custody.
 
@@ -48,8 +48,8 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
 - **The land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims; Lucy trusts him and hands him evidence. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
-- **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew is the pilot on the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
-- **Wade's CO.** Motive: a cushy oil company job when he retires. Reads Wade's mail off the books to learn what Wade knows, and controls the munitions paperwork, forging Wade's signature on the missing charges. Twists 3 and 4 are both him.
+- **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew (TBD who, now that Jake is the pilot) was on the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
+- **Wade's CO.** Feels trapped in his career and wants to retire into money; an oil company job is waiting if he plays along. Reads Wade's mail off the books to learn what Wade knows, and controls the munitions paperwork, forging Wade's signature on the missing charges. Twists 3 and 4 are both him.
 - **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
   - **The murder (Aug 1967):** during the flood, Curly offers his friend the geologist a skiff ride across the water to Lucy. He takes him to a flooded cabin instead, holds him under, and leaves the body tied to submerged debris. The proof the geologist carried disappears. Two separate clues: the knot is a cowboy bowline, the version of the bowline Texas ranch hands tie (points at a Texan, briefly including Wade); and Joan noticed bruising on the body consistent with a left-handed grip holding him under.
     - Fact-check: the cowboy bowline's name, handedness, and association with Texas/ranch work; 1967 flood death toll.
@@ -72,17 +72,20 @@ Why a fish camp near Fairbanks matters to oil found ~400 miles north: the geolog
 
 Goal: introduce as many characters as possible in one chaotic Act 1 scene, then tie them back in later (or cut).
 - Confirmed: Wade, Eli, Curly Boone, the Native cop, Inspector Barnette (arrives in the aftermath).
-- Candidates: Jake Bueller, Joan Halvorsen (patching people up afterward), the pilot, the councilman, the land lawyer (as a friendly face, not a suspect).
+- Candidates: Jake Bueller, Joan Halvorsen (patching people up afterward), the councilman, the land lawyer (as a friendly face, not a suspect).
 
 ## Structure (one year, four seasons)
+
+**Prologue — The geologist (summer 1967, before the flood).** The player starts as the geologist. He meets Wade at a bar: friendly small talk, nothing ominous. The player learns the town, the controls, and likes this guy before he dies. Wade's first friend in Fairbanks is the first casualty.
+
 
 **Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body drowned in a flooded cabin, tied to submerged debris; Barnette, overwhelmed by the flood, rushes it through as an accident ("tangled in a line in the current"). Lucy disagrees. Lucy needs base access because the geologist's survey relied on Air Force aerial photography, and the originals are on base.
   - Fact-check: Air Force aerial photo coverage of Interior Alaska in the 1950s-60s and where originals were kept. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
 
-**Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, hotel bars. Spying, eavesdropping, document theft, tailing. Lucy's Anchorage chapter happens here (land office records, the land lawyer, post-earthquake city). Freeze-up grounds bush planes while they switch from floats to skis, which is why the survey-camp flight has to wait until deep winter.
+**Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, hotel bars. Spying, eavesdropping, document theft, tailing. Anchorage happens off-screen: Lucy's trips there (land office records, the land lawyer) are reported back, not played. Freeze-up grounds bush planes while they switch from floats to skis, which is why the survey-camp flight has to wait until deep winter.
   - Fact-check: float-to-ski changeover timing for Interior bush planes.
 
-**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and the pilot survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team through Jake Bueller, who volunteers on searches. Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with the pilot (a quiet bonding beat with the man the player suspects), and that's when he notices the damage that tells him the plane was sabotaged.
+**Act 3 — Deep winter.** Lucy flies to the geologist's survey camp in the Alaska Range to recover his notes and samples. The plane goes down. Lucy (playable) and Jake survive one to two days in the wreck before the search party finds them. Wade gets onto the rescue team (how, TBD, now that Jake is in the wreck). Near the crash site the team splits up to search, which opens a survival/exploration section: Wade alone on cross-country skis, moving through the Alaska Range in deep winter. He reaches the wreck out of his depth, breaks his arm trying to get Lucy out, and has to be told what to do to stay alive. While they wait, he shares a cigarette with Jake (a quiet beat with the man the player briefly suspects), and that's when he notices the damage that tells him the plane was sabotaged.
   - Broken arm: carries into later chapters (one-handed climbing and crafting, no guitar for a while). Extent TBD.
   - Idea: lighting up near a wreck that might be leaking fuel is its own tension beat.
   - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali.
@@ -143,7 +146,7 @@ The Act 4 ice jam plays out according to these choices rather than being its own
 
 ### Epilogues
 
-Per-character beats that vary within each ending: Eli, Lucy, Curly, Barnette, Joan, Jake, the pilot, the councilman, the CO, the landman, Mom (her last letter reflects what Wade told her vs. what happened).
+Per-character beats that vary within each ending: Eli, Lucy, Curly, Barnette, Joan, Jake, the councilman, the CO, the landman, Mom (her last letter reflects what Wade told her vs. what happened).
 
 ### Hidden best outcome
 
@@ -161,12 +164,12 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - **Crafting/tinkering.** Munitions skills: flares, noisemakers, small charges (ice jams, doors), lock tools, engine thawing, one sketchy homemade flamethrower. Same tools serve help or harm.
 - **Music.** Guitar as social stealth: house parties, bars, fish camp, access to rooms a uniform can't enter.
 - **Combat.** Rare and grounded. Barfight is the chaos showcase: mud, hot stove, moose rack, bottles, slippery floor, regulars picking sides. Losing has consequences (drunk tank, recognized by a cop).
-- **Lucy.** Companion in town (people and paper puzzles, paired with Wade's physical problem-solving) and playable in her own chapters: land office records puzzle, Anchorage, crash survival.
+- **Lucy.** Companion in town (people and paper puzzles, paired with Wade's physical problem-solving) and playable in her own chapters: land office records puzzle, crash survival.
 
 ## Tech Notes
 
 - Engine-only PlayCanvas with TypeScript so agents can work entirely in the repo (the hosted editor isn't agent-friendly).
-- Dense downtown hub plus discrete levels (Eielson, Denali crash site, Anchorage) instead of a full open world, to keep browser loading sane.
+- Dense downtown hub plus discrete levels (Eielson, Denali crash site) instead of a full open world, to keep browser loading sane.
 - Steam: Electron for consistent Chromium; Tauri on Linux uses WebKitGTK, which can differ on WebGL/WebGPU.
 - Multi-agent Saddle split candidates: narrative/lore, level layout, systems, QA.
 
