@@ -91,7 +91,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
 3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. Eli is the one who catches on.
 4. Eielson munitions are going missing under Wade's signature. Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
-5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because speaking up means explaining something else he was doing that night (what, TBD). The player assumes he's guilty; the truth is he's a reluctant witness.
+5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because he was trespassing: the councilman, who holds title to the family's fish camp, had banished him from the land, and Eli went back in the flood to retrieve his own belongings. Illegal only because of the stolen land claim. The player assumes he's guilty; the truth is he's a reluctant witness. In the bad ending, the trespass puts him near the murder scene and he's wrongfully imprisoned.
 
 ## Lucy's Confession
 
@@ -119,6 +119,10 @@ Two strands (Wade's loyalty, and the evidence/justice trail) wind through the ga
 - **Burn it down.** The gritty path: Wade uses his munitions skills for revenge and becomes the dangerous airman Barnette always said he was.
 
 **Wade is bad.** The landman pays Wade to keep quiet. Wade gets Joan, the payoff, and some land (the irony being that it's land). Eli ends up wrongfully imprisoned, tied to what he was doing on the water the night of the flood (Twist 5).
+
+### What decides it
+
+A handful of key decision points (roughly five or six), not a running meter. Candidates: the barfight aftermath, what Wade does with what he learns from Lucy at the confession, how he answers the landman's offer, whether he covers for Eli's trespass, and what he does at breakup. Smaller choices change details and epilogues, not which of the three endings you get.
 
 ### Epilogues
 
@@ -158,8 +162,8 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
 - When the player learns Lucy was using Wade
 - Joan: whether she pulls Wade toward betrayal
-- Twist 5: what Eli was doing on the water that he doesn't want to explain (it's what gets him jailed in the bad ending), and when he finally talks
-- Endings: which early choices map to which late-game changes; what the landman-arrest run requires; the scenario where Wade saves Curly
+- Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
+- Endings: lock the list of key decision points; which early choices map to which late-game changes; what the landman-arrest run requires; the scenario where Wade saves Curly
 - Title
 - Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
