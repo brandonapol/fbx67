@@ -99,7 +99,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
 3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. The worst leak: Wade tells Mom the date of Lucy's survey-camp flight. The CO passes it on, and Curly rigs the plane. Eli catches on because only four people knew the date: Eli, Lucy, Jake, and Wade.
 4. Eielson munitions are going missing under Wade's forged signature (the CO's work). Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
-5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because he was trespassing: the councilman, who holds title to the family's fish camp, had banished him from the land, and Eli went back in the flood to retrieve his own belongings. Illegal only because of the stolen land claim. The player assumes he's guilty; the truth is he's a reluctant witness. In the bad ending, the trespass puts him near the murder scene and he's wrongfully imprisoned.
+5. Eli was out on the water near the cabin the night of the flood and saw a skiff there. He keeps quiet because he was trespassing: the councilman, who holds title to the family's fish camp, had banished him from the land, and Eli went back in the flood to retrieve his own belongings. Illegal only because of the stolen land claim. The player assumes he's guilty; the truth is he's a reluctant witness. He tells Wade after the crash, once Lucy nearly dies (decision 4). In the bad ending, the trespass puts him near the murder scene and he's wrongfully imprisoned.
 
 ## Lucy's Confession
 
@@ -135,10 +135,10 @@ Seven key decision points, not a running meter. Smaller choices change details a
 Before the crash:
 1. **Barfight aftermath.** Questioned by Barnette, Wade covers for Eli, blames Eli, or throws in with Curly.
 2. **The letter leak.** What Wade tells Mom about the investigation (honest, vague, or a lie) decides what the CO learns and how bad Twist 3 gets.
-3. **Eli's trespass.** When Wade learns Eli was on the banished land that night: keep quiet, report it, or use it as leverage.
-4. **Curly's escape plan.** When Jake passes on Curly's drunken getaway talk: warn Lucy, confront Curly, or let it go.
+3. **Curly's escape plan.** When Jake passes on Curly's drunken getaway talk: warn Lucy, confront Curly, or let it go.
 
 After the crash:
+4. **Eli's trespass.** After Lucy nearly dies, Eli stops protecting himself and tells Wade he saw the skiff, and that he was trespassing on the banished land. Wade keeps quiet, reports it, or uses it as leverage.
 5. **After the confession.** Wade stays with Lucy, walks, or turns on her.
 6. **The landman's offer.** Money, land, and a way out for silence: take it, refuse it, or fake taking it (double agent).
 7. **Testifying.** Wade goes on the record against the CO and the landman at the cost of his career, or doesn't.
@@ -164,7 +164,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 
 ## Systems
 
-- **Letters home.** Wade and his mother write back and forth all year; doubles as journal/save system. Each letter is a chance to tell her the truth or lie. Her replies react to what he tells her, not what really happened. Writing-choice mechanism TBD. 
+- **Letters home.** Wade and his mother write back and forth all year; doubles as journal/save system. Each letter is a chance to tell her the truth or lie. Her replies react to what he tells her, not what really happened. Each letter has three or four topics (work, friends, the investigation, how he's doing); for each the player picks a line: honest, softened, or a lie. The assembled letter reads like a real one, and the dangerous leak is visible as a choice, which is the tension. 
   - **The CO reads Wade's mail.** Neither Wade nor Lucy knows; most players won't expect it either. This is how Twist 3 works: Wade accidentally lets slip something in a letter to his mother that the CO isn't supposed to know. The CO acts on it, and Eli notices that decision and realizes the CO knows something he shouldn't. That is how the protagonists find out.
   - Fact-check: routine censorship of personal mail was mostly a wartime practice; peacetime airmen in 1967 probably weren't censored as policy. Easy fix that keeps the plot: the CO does it quietly and off the books, so the realism holds up for players who know the history.
 - **Stealth.** Primary mode in town and on base.
@@ -193,12 +193,10 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 
 ## Open Questions
 
-- Letter-writing choice mechanism
 - Wade's exact rash act against the councilman (safe job or otherwise)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Ashby: early scenes that make him likable
 - Owen Marsh's presence after the prologue (journals, reel-to-reel tapes at the survey camp)
-- Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
 - Endings: how the seven decisions combine into good/middle/bad, and which early choices map to which late-game changes
 - Title
 - Native cop's name (from Athabascan consultants)
