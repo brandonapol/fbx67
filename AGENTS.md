@@ -25,6 +25,7 @@ text-game/src/explore.ts      the exhaustive sweep of every reachable state
 text-game/src/matrix.ts       one runnable path per combination of plot decisions
 text-game/routes/             golden routes, transcripts and the matrix summary, generated and committed
 web/                          the browser build (Vite, vanilla TypeScript) on GitHub Pages
+game/                         the engine build (PlayCanvas, TypeScript), served under /play/
 git/hooks/                    the pre-commit hook, installed by make setup/hooks
 ```
 
