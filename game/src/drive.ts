@@ -1,5 +1,5 @@
 import type { Game, Input } from './prologue.ts'
-import { HIDE_TIME, interact, press, still, tick } from './prologue.ts'
+import { HIDE_TIME, interact, press, start, still, tick } from './prologue.ts'
 import { CURLY_PERIOD } from './levels.ts'
 import type { Vec } from './world.ts'
 import { distance, sub, vec } from './world.ts'
@@ -47,9 +47,24 @@ export const routes = {
   marker: [[-6, 2], [-2, -1.5], [0, -6], [1.8, -7.5]],
 } as const
 
+type Points = readonly (readonly [number, number])[]
+
+export const back = (spot: keyof typeof routes): Points => [...(routes[spot] as Points)].reverse().slice(1).concat([[-7.4, 3.8]])
+
 export const talk = (g: Game, who: 'texas' | 'munitions' | 'round'): Game => {
   const walked = press(g, 'close')
   const at = who === 'round' ? walk(walked, [[-1.5, -2.2]]) : walk(walked, [[1.6, 3.2]])
   const opened = interact(at)
   return press(press(opened, `note:${who}`), 'close')
+}
+
+export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => {
+  const bar = talk(start(), who)
+  const room = interact(walk(bar, [[0, 4.2]]))
+  const desk = interact(walk(room, [[1.6, -0.8]]))
+  const camp = press(desk, 'fly')
+  const hidden = holdWhenSafe(walk(camp, routes[spot]))
+  const home = interact(walk(hidden, back(spot)))
+  const skiff = interact(walk(home, [[0.2, 5.4]]))
+  return press(skiff, 'note:continue')
 }

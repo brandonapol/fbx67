@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { HIDE_TIME, focus, interact, press, start, tick } from './prologue.ts'
+import { HIDE_TIME, ended, focus, interact, press, start, tick, textBuildHash } from './prologue.ts'
 import { createView } from './render.ts'
 import { spaces } from './levels.ts'
 import type { Vec } from './world.ts'
@@ -27,12 +27,18 @@ const view = createView(canvas)
 const keys = new Set<string>()
 const live: { g: Game; target?: Vec; touchHold: boolean; shown?: unknown } = { g: start(), touchHold: false }
 
+const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.location.href).toString()
+
 const act = (f: (g: Game) => Game): void => {
   live.g = f(live.g)
   live.target = undefined
 }
 
 const choose = (id: string): void => {
+  if (id === 'continue' && ended(live.g)) {
+    window.location.href = textBuild(live.g)
+    return
+  }
   act((g) => press(g, id))
 }
 
@@ -142,5 +148,6 @@ Object.assign(window, {
     walkTo: (x: number, z: number) => {
       live.target = vec(x, z)
     },
+    textBuild: () => textBuild(live.g),
   },
 })
