@@ -100,7 +100,9 @@ ${
       iceJam(s) === 'stopped'
         ? `Eli hears from a freighter downriver that a man in an Air Force parka has been walking the jam. Eli knows that stretch of river better than anyone alive. You get there in his boat at dawn, through the floes, and find ${N.co} on the ice with a satchel of charges signed out in your name.
 
-He looks at you and sits down on the ice. He's tired. He wanted to retire to Florida with a boat.`
+He looks at you and sits down on the ice. He's tired.
+
+"Somebody got into my cabinet in October," he says. "My files. My handwriting on every one of those sheets.${s.leakedFlightDate ? ' And somebody saw my car at that strip the night before the flight.' : ''} Ashby knew all of it. He said finish this, or he gives Barnette a crooked officer instead of a Texas airman." He laughs, once. "I just wanted to retire to Florida with a boat."`
         : `In the middle of the night the jam goes up with a sound like artillery. From the bluff, too late, you see a man in an Air Force parka running for a car with base plates. By morning the fish camp is under the river.
 
 By noon, ${N.barnette} has the demolition sign-outs. Every page says Wade Pruett.`

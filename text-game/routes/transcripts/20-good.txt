@@ -514,7 +514,9 @@ May. The river ice is groaning. If the ice jam above the fish camp is blown, the
 
 Eli hears from a freighter downriver that a man in an Air Force parka has been walking the jam. Eli knows that stretch of river better than anyone alive. You get there in his boat at dawn, through the floes, and find Major Dekker on the ice with a satchel of charges signed out in your name.
 
-He looks at you and sits down on the ice. He's tired. He wanted to retire to Florida with a boat.
+He looks at you and sits down on the ice. He's tired.
+
+"Somebody got into my cabinet in October," he says. "My files. My handwriting on every one of those sheets. Ashby knew all of it. He said finish this, or he gives Barnette a crooked officer instead of a Texas airman." He laughs, once. "I just wanted to retire to Florida with a boat."
 
   1. Continue.
 
