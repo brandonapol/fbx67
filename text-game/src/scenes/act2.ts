@@ -63,7 +63,7 @@ ${has(s, 'aerialPhotos') ? 'Lucy spreads the photos across her kitchen table nex
 October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks with men from Outside. A uniform with a guitar can sit in the corner. A Native woman asking questions cannot.`,
     choices: () => [
       { label: 'Bring your guitar. Play in the corner and listen.', apply: addEvidence('hotelTalk'), next: 'a2_hotel_heard' },
-      { label: 'Skip it. You\'ve been seen too much lately.', apply: heat(-1), next: 'a2_co_ask' },
+      { label: 'Skip it. You\'ve been seen too much lately.', apply: heat(-1), next: 'a2_chiefs' },
     ],
   },
   {
@@ -74,7 +74,47 @@ October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks
 Under the music you catch half of it. Tolliver, the councilman, red in the face: "...my land, my title, been my land since '52..." The other man is quieter, with his back to you, and you never see his face. "...after the claims settle it won't matter whose title it is. Before is what counts."
 
 Tolliver sounds like a man with a lot to lose. You can't tell if any of it means anything.`,
-    choices: () => [{ label: 'Pack up and go tell Lucy.', next: 'a2_co_ask' }],
+    choices: () => [{ label: 'Pack up and go tell Lucy.', next: 'a2_chiefs' }],
+  },
+  {
+    id: 'a2_chiefs',
+    act,
+    title: 'The Chiefs',
+    text: (s) => `
+${s.eliTrust <= -2 ? 'Lucy almost doesn\'t bring you. "Stand in the back," she says, "and don\'t talk."' : 'Lucy brings you to a meeting in a community hall on the edge of town. "Stand in the back," she says. "Listen."'}
+
+It's the Tanana Chiefs: village chiefs and delegates from up and down the Tanana and the Yukon, folding chairs, a coffee urn, a map of the Interior taped to the wall with colored pins in it. The talk is about the land freeze, the claims, and what the oil companies are already doing on land nobody has settled. You are the only uniform in the room.
+
+An old man from Nenana reminds everyone that the Tanana chiefs sat down with Judge Wickersham in this same town in 1915, about this same land. "He told us to take allotments and become citizens," he says. "We have been filling out his papers for fifty years."
+
+Then Eli stands up. In town, you've never heard him say more than ten words in a row. Here he speaks for his family: the fish camp, the application that vanished, the councilman's title, the night of the flood. People nod. A woman writes it all down.
+
+${N.ashby} is in the back row too, in his good coat, handing out cards. He catches your eye and nods, one friend of the families to another.`,
+    choices: () => [
+      { label: 'Stay in the back and listen.', apply: eliTrust(1), next: 'a2_chiefs_after' },
+      { label: 'Stand up and offer to help. You\'re the one with base access.', next: 'a2_chiefs_spoke' },
+      { label: 'Slip out early. This isn\'t your room.', apply: eliTrust(-1), next: 'a2_chiefs_after' },
+    ],
+  },
+  {
+    id: 'a2_chiefs_spoke',
+    act,
+    title: 'The Chiefs',
+    text: () => `
+The room goes quiet while you talk. Somebody thanks you politely. The meeting moves on.
+
+Outside, Lucy lights into you. "That wasn't your turn. Eli has waited years to say that in that room, and you made it about the airman." Eli doesn't say anything at all.`,
+    choices: () => [{ label: 'Continue.', apply: eliTrust(-1), next: 'a2_co_ask' }],
+  },
+  {
+    id: 'a2_chiefs_after',
+    act,
+    title: 'The Chiefs',
+    text: (s) => `
+${s.eliTrust > 0 ? 'Afterward, Eli finds you by the coffee urn. He doesn\'t say anything about the meeting. He just hands you a cup.' : 'Afterward, Eli is surrounded by people from the villages. He doesn\'t look your way.'}
+
+Lucy watches the door Ashby went out. "He's been good to us," she says, to nobody in particular.`,
+    choices: () => [{ label: 'Continue.', next: 'a2_co_ask' }],
   },
   {
     id: 'a2_co_ask',
