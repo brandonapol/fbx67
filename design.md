@@ -35,10 +35,10 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **The pilot.** Bush pilot on Lucy's crashed flight. Ambiguous, then innocent. He looks suspicious during the crash chapter (e.g. took a cash charter, changed the route), but he was paid to fly, not to crash. The ambiguity must be explicitly resolved on screen (a scene or document that clears him) so it never reads as a dropped thread. He is the city councilman's nephew. Not close to his uncle, but the connection is enough to make the player suspicious. The clearing beat: Wade's wreck-reading shows the sabotage was done on the ground before the pilot took the plane.
 
-**The nurse (Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. Whether she pulls him toward betrayal is TBD.
+**Joan Halvorsen (the nurse, Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. Whether she pulls him toward betrayal is TBD.
   - Fact-check: which hospital served Fairbanks in 1967 (likely St. Joseph's) and how the flood hit it.
 
-**The straight-arrow mechanic.** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
+**Jake Bueller (the straight-arrow mechanic).** The other bush plane mechanic. Inspired by a real Fairbanks friend: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction.
 
 **The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. A straight arrow who can't be bought; arrests the crooked mechanic in Act 3 and keeps him safe in custody.
 
@@ -49,7 +49,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 - **The oil landman.** The ultimate villain. Orders things done but never gets his own hands dirty; uses everyone else.
 - **The city councilman.** Holds the family's land. Complicit; degree of guilt TBD. Uncle of the bush pilot.
 - **Wade's CO.** Reads Wade's mail and feeds the oil men. Complicit; degree of guilt TBD.
-- **The crooked mechanic.** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
+- **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
   - **Act 1:** in the barfight, hauled in and let go; the cops already know him.
   - **Act 3:** after the crash, he realizes the landman is cleaning up loose ends and he's next. He breaks into a cabin and steals a new left-handed hunting bow as preemptive self-defense, figuring a killing with a bow would be harder to trace to him than a rifle. The Native cop arrests him for the burglary.
   - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
@@ -134,10 +134,11 @@ Driven by player morals and early-game choices.
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
 - When the player learns Lucy was using Wade
-- The nurse: name, and whether she pulls Wade toward betrayal
+- Joan: whether she pulls Wade toward betrayal
 - Eli's secret (Twist 5): keep or cut, and what it is
 - Title
-- Names: crooked mechanic, inspector, Native cop, straight-arrow mechanic, nurse
+- Inspector's name: from an old Fairbanks family (founder or landmark name)
+- Native cop's name (from Athabascan consultants)
 - Native cop's larger role beyond the arrest
 - Smoking mechanics: which hooks to keep
 
