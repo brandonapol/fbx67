@@ -42,7 +42,8 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **The Native cop.** Fairbanks cop, Alaska Native. Went to college in Georgia and hated being treated like a curiosity for being Alaskan. Knows the crooked mechanic. A straight arrow who can't be bought; arrests the crooked mechanic in Act 3 and keeps him safe in custody.
 
-**The inspector.** Investigator looking into the frontier chaos from early in the game. After the barfight he ties Wade to the crooked mechanic and decides he hates Wade, and he keeps turning up throughout the game. Agency and exact title TBD.
+**Inspector Barnette.** Investigator looking into the frontier chaos from early in the game. A fictional descendant of E.T. Barnette, who founded Fairbanks as a trading post and left town in disgrace after his bank collapsed. Carries a chip on his shoulder about the family name and wants to be the law his ancestor wasn't. First name TBD. After the barfight he ties Wade to the crooked mechanic and decides he hates Wade, and he keeps turning up throughout the game. Agency and exact title TBD.
+  - Fact-check: E.T. Barnette details (trading post 1901, bank collapse and embezzlement charges around 1911, left Fairbanks) and whether real descendants exist who might object.
   - Fact-check: who would investigate in 1967 Fairbanks (Fairbanks PD detective, the newly renamed Alaska State Troopers, a federal agent) and what title fits.
 
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
@@ -64,8 +65,8 @@ Eli and Lucy's family filed a Native allotment application for their fish camp d
 ## Barfight Ensemble
 
 Goal: introduce as many characters as possible in one chaotic Act 1 scene, then tie them back in later (or cut).
-- Confirmed: Wade, Eli, the crooked mechanic, the Native cop, the inspector (arrives in the aftermath).
-- Candidates: the straight-arrow mechanic, the nurse (patching people up afterward), the pilot, the councilman or landman watching from a booth, Wade's rescue-team buddy.
+- Confirmed: Wade, Eli, Curly Boone, the Native cop, Inspector Barnette (arrives in the aftermath).
+- Candidates: Jake Bueller, Joan Halvorsen (patching people up afterward), the pilot, the councilman or landman watching from a booth, Wade's rescue-team buddy.
 
 ## Structure (one year, four seasons)
 
@@ -137,7 +138,7 @@ Driven by player morals and early-game choices.
 - Joan: whether she pulls Wade toward betrayal
 - Eli's secret (Twist 5): keep or cut, and what it is
 - Title
-- Inspector's name: from an old Fairbanks family (founder or landmark name)
+- Inspector Barnette's first name
 - Native cop's name (from Athabascan consultants)
 - Native cop's larger role beyond the arrest
 - Smoking mechanics: which hooks to keep
