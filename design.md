@@ -63,6 +63,8 @@ Cultural approach: Eli and Lucy are Lower Tanana, and the story's spine is land-
 
 ## The Real Wrong
 
+**What the town knows (one rule, everywhere).** Until Prudhoe is announced in Act 4, there is no oil rush. The public knows a few companies are exploring up north, and nobody in Fairbanks takes it seriously or connects it to land near town. The secret is not the oil; it's that someone is quietly buying land along a future road north, betting on a strike nobody else believes in. Only Owen (from his survey), Ashby, and the conspirators know. No scene before Act 4 has anyone talk about an oil boom or link the land to oil. Prudhoe is when everyone else catches up, and nobody knows how big it is yet.
+
 The family filed a Native allotment application for their fish camp decades ago. It vanished. Tolliver holds title. The camp is on the lower Chatanika, in Minto's fishing area. The Elliott Highway already bridges that river, so the camp's value is not a road crossing: Owen's survey shows it holds the best gravel on the river and the easiest place to put a pipeline or a heavy haul road across it, both things a road north to oil would need. Ashby is buying ahead of information nobody else has; the Act 4 Prudhoe announcement is the player's "oh, that's why."
 
 The claim rests on proof of use. A BLM land examiner's summer field check of the camp is coming, so the Major has to wipe out the camp before anyone official sees it, which is why the ice jam has to go at breakup. Losing the camp badly hurts the claim but does not legally end it: the elders can still testify to generations of use. In the good and best endings the claim is won, later and partly on that testimony, and the camp returns to the family; in the bad and middle endings it is lost or stalled.
