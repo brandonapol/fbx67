@@ -1,0 +1,15 @@
+export const N = {
+  wade: 'Wade',
+  eli: 'Eli',
+  lucy: 'Lucy',
+  owen: 'Owen Marsh',
+  curly: 'Curly Boone',
+  jake: 'Jake Bueller',
+  joan: 'Joan Halvorsen',
+  ashby: 'Franklin Ashby',
+  barnette: 'Inspector Vernon Barnette',
+  cop: 'Officer Tom Peter',
+  co: 'Major Dekker',
+  councilman: 'Councilman Ray Tolliver',
+  bar: 'the Silver Pan',
+} as const

@@ -1,0 +1,68 @@
+import type { Scene } from '../types.ts'
+import { N } from '../names.ts'
+import { set } from '../state.ts'
+
+const act = 'Prologue' as const
+
+export const prologue: readonly Scene[] = [
+  {
+    id: 'p_bar',
+    act,
+    title: 'The Silver Pan, July 1967',
+    text: () => `
+You are ${N.owen}, a geologist, two summers into a contract surveying gravel and river crossings north of Fairbanks. The midnight sun is still up at eleven. ${N.bar} smells like beer and wet wool.
+
+${N.curly}, the mechanic who keeps your charter plane flying, waves you over. Beside him is a skinny kid in an Air Force haircut with a guitar case at his feet.
+
+"Owen, this here's ${N.wade}. Texan, like me. Munitions out at Eielson. Never seen snow in his life."
+
+The kid grins and shakes your hand like he means it.`,
+    choices: () => [
+      { label: 'Ask Wade about Texas.', next: 'p_talk' },
+      { label: 'Ask Wade what a munitions man does all day.', next: 'p_talk' },
+      { label: 'Buy the table a round.', next: 'p_talk' },
+    ],
+  },
+  {
+    id: 'p_talk',
+    act,
+    title: 'Small Talk',
+    text: () => `
+Wade talks about water skiing behind his cousins' boat, and about how quiet the base is when the jets aren't up. Curly laughs at everything.
+
+When Wade asks what you do, you tell him the truth, or most of it: you map where a road could someday cross the rivers north of here, and where the gravel is to build it.
+
+"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Native families out there. There's a lawyer in town, ${N.ashby}, helping me with that. Good man."
+
+Curly checks his watch. "Plane's ready for the morning, Owen."`,
+    choices: () => [
+      { label: 'Say goodnight and walk back to your room.', next: 'p_letter' },
+    ],
+  },
+  {
+    id: 'p_letter',
+    act,
+    title: 'A Letter to Lucy',
+    text: () => `
+In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel sits right on the best crossing. A fish camp. The family's allotment application vanished years ago.
+
+You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. If anything happens, she should know where the real notes are. You will cache them at the survey camp before freeze-up.
+
+Where do you tell her to look?`,
+    choices: () => [
+      { label: 'Under the floorboards behind the cook-tent stove.', apply: set({ owenCache: 'stove' }), next: 'p_end' },
+      { label: 'In the old meat cache up on stilts.', apply: set({ owenCache: 'cache' }), next: 'p_end' },
+      { label: 'In an ammo can buried under the survey marker.', apply: set({ owenCache: 'marker' }), next: 'p_end' },
+    ],
+  },
+  {
+    id: 'p_end',
+    act,
+    title: 'High Water',
+    text: () => `
+You seal the letter and mail it in the morning. A month later the rain starts and does not stop. By the second week of August the Chena is over its banks, and Curly is at your door with a skiff, offering a ride across the water to Lucy.
+
+You climb in.`,
+    choices: () => [{ label: 'Continue.', next: 'a1_flood' }],
+  },
+]

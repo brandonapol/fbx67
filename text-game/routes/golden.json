@@ -1,0 +1,433 @@
+[
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "fake",
+      "testified": true,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "best",
+    "missingForBest": [],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,3,1,1,1"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": true,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "good",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,1"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "fake",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,3,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "sideCurly",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,3,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": false,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,2,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "ignore",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,3,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "quiet",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "fake",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,3,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "report",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "gunpoint",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,3,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,1,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "turn",
+      "offer": "fake",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 5 was not \"stay\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,3,1,1,1,3,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "walk",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 5 was not \"stay\"",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,2,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": false
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "wreck evidence not shared with Jake"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,2,1,1,1,1,1,1,1,1,1"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "confront",
+      "eliTrespass": "leverage",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "refuse",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "middle",
+    "missingForBest": [
+      "decision 3 was not \"warn Lucy\"",
+      "decision 4 was not \"keep quiet\"",
+      "decision 7 did not testify"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,3,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,2,1,1,1,1,1,2,1,1,2"
+  },
+  {
+    "decisions": {
+      "barfight": "blameEli",
+      "coJob": "lucy",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "burn",
+      "afterConfession": "stay",
+      "offer": "fake",
+      "testified": true,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "good",
+    "missingForBest": [
+      "heat 4 above 3"
+    ],
+    "path": "1,1,1,1,1,1,1,1,3,2,1,1,2,2,2,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,3,1,1,1"
+  }
+]

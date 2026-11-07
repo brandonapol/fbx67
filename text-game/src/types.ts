@@ -1,0 +1,54 @@
+export type Act = 'Prologue' | 'Act 1: Flood' | 'Act 2: Freeze-up' | 'Act 3: Deep Winter' | 'Act 4: Breakup' | 'Epilogue'
+
+export type Evidence =
+  | 'knot'
+  | 'bruising'
+  | 'aerialPhotos'
+  | 'hotelTalk'
+  | 'coFiles'
+  | 'curlyKnot'
+  | 'tapes'
+  | 'wreckProof'
+  | 'curlyLefty'
+  | 'staffCar'
+  | 'curlyNamesAshby'
+  | 'councilmanFlips'
+
+export type MomLine = 'honest' | 'soft' | 'lie'
+
+export type CacheSpot = 'stove' | 'cache' | 'marker'
+
+export type State = Readonly<{
+  scene: string
+  owenCache?: CacheSpot
+  barfight?: 'coverEli' | 'blameEli' | 'sideCurly'
+  momHonesty: number
+  leakedFlightDate: boolean
+  coJob?: 'wade' | 'lucy'
+  curlyPlan?: 'warn' | 'confront' | 'ignore'
+  eliTrespass?: 'quiet' | 'report' | 'leverage'
+  rashPlan?: 'safe' | 'burn' | 'gunpoint'
+  afterConfession?: 'stay' | 'walk' | 'turn'
+  offer?: 'take' | 'refuse' | 'fake'
+  testified?: boolean
+  sharedWreck: boolean
+  evidence: readonly Evidence[]
+  heat: number
+  lucyHeat: number
+  eliTrust: number
+  joan: number
+}>
+
+export type Choice = Readonly<{
+  label: string
+  apply?: (s: State) => State
+  next: string | ((s: State) => string)
+}>
+
+export type Scene = Readonly<{
+  id: string
+  act: Act
+  title: string
+  text: (s: State) => string
+  choices: (s: State) => readonly Choice[]
+}>
