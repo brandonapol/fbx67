@@ -1,5 +1,5 @@
 import type { State } from './types.ts'
-import { has, honesty } from './state.ts'
+import { honesty } from './state.ts'
 
 export type Ending = 'best' | 'good' | 'middle' | 'bad'
 
@@ -24,8 +24,7 @@ export const barnetteTrustsWade = (s: State): boolean => s.heat <= HEAT_LIMIT
 
 export const councilmanFlips = (s: State): boolean => s.sharedWreck
 
-export const paperRouteComplete = (s: State): boolean =>
-  has(s, 'coFiles') && has(s, 'tapes') && s.afterConfession === 'stay' && s.testified === true
+export const paperRouteComplete = (s: State): boolean => s.afterConfession === 'stay' && s.testified === true
 
 export const isBad = (s: State): boolean =>
   s.offer === 'take' || s.afterConfession === 'turn' || (s.offer === 'fake' && !doubleAgentWorks(s))
@@ -64,8 +63,8 @@ export const momVerdict = (s: State): 'knows' | 'halfKnows' | 'believesALie' => 
   return h >= 2 ? 'knows' : h <= -2 ? 'believesALie' : 'halfKnows'
 }
 
-export const missingForBest = (s: State): readonly string[] =>
-  [
+export const missingForBest = (s: State): readonly string[] => {
+  const checks: readonly (readonly [boolean, string])[] = [
     [isBad(s), 'ending is bad'],
     [!curlyTalks(s), 'decision 3 was not "warn Lucy"'],
     [s.eliTrespass !== 'quiet', 'decision 4 was not "keep quiet"'],
@@ -76,5 +75,5 @@ export const missingForBest = (s: State): readonly string[] =>
     [!barnetteTrustsWade(s), `heat ${s.heat} above ${HEAT_LIMIT}`],
     [leakIsWadesFault(s), 'told Mama the flight date'],
   ]
-    .filter(([miss]) => miss)
-    .map(([, why]) => why as string)
+  return checks.flatMap(([miss, why]) => (miss ? [why] : []))
+}
