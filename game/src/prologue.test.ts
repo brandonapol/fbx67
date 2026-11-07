@@ -2,10 +2,26 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replay } from '../../text-game/src/engine.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { available, focus, interact, press, seen, start, still, tick } from './prologue.ts'
-import { back, hold, holdWhenSafe, holdWhenWatched, routes, talk, walk } from './drive.ts'
+import { available, ended, focus, interact, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
+import { back, hold, holdWhenSafe, holdWhenWatched, playPrologue, routes, talk, walk } from './drive.ts'
 
+const talks = ['texas', 'munitions', 'round'] as const
 const spots = ['stove', 'cache', 'marker'] as const
+
+talks.forEach((who, ti) =>
+  spots.forEach((spot, si) =>
+    test(`playing ${who} then hiding at the ${spot} matches text path ${ti + 1},1,${si + 1},1`, () => {
+      const g = playPrologue(who, spot)
+      assert.ok(ended(g))
+      assert.deepEqual(g.path, [ti + 1, 1, si + 1, 1])
+      assert.deepEqual(g.story, replay(g.path).at(-1))
+      assert.equal(g.story.scene, 'a1_flood')
+      assert.equal(g.story.owenCache, spot)
+      assert.equal(textBuildHash(g), `#path=${ti + 1},1,${si + 1},1`)
+      assert.equal(g.busts, 0)
+    }),
+  ),
+)
 
 const atCamp = () => {
   const bar = talk(start(), 'texas')
