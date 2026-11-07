@@ -1,10 +1,11 @@
 import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
-import { owenLook, spaces } from './levels.ts'
+import { CURLY_HALF_ANGLE, CURLY_RANGE, owenLook, spaces } from './levels.ts'
 import type { Lighting } from './lighting.ts'
 import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
+import { seen, watcher } from './prologue.ts'
 
 export type View = Readonly<{
   app: pc.Application
@@ -81,6 +82,18 @@ const addFigure = (root: pc.Entity, f: Figure): pc.Entity => {
   return e
 }
 
+const fan = (device: pc.GraphicsDevice, range: number, half: number, steps = 18): pc.Mesh => {
+  const points = Array.from({ length: steps + 1 }, (_, i) => -half + (2 * half * i) / steps)
+  const positions = [0, 0.04, 0, ...points.flatMap((a) => [Math.sin(a) * range, 0.04, Math.cos(a) * range])]
+  const indices = points.slice(1).flatMap((_, i) => [0, i + 1, i + 2])
+  const mesh = new pc.Mesh(device)
+  mesh.setPositions(positions)
+  mesh.setNormals(Array.from({ length: positions.length / 3 }).flatMap(() => [0, 1, 0]))
+  mesh.setIndices(indices)
+  mesh.update()
+  return mesh
+}
+
 const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, lamp: pc.Entity, l: Lighting): void => {
   if (camera.camera) camera.camera.clearColor = color(l.sky)
   app.scene.ambientLight = color(l.ambient)
@@ -105,12 +118,15 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
 const cameraOffset: Readonly<Record<Space['id'], readonly [number, number]>> = {
   bar: [6.5, 9],
   room: [4.6, 7],
+  camp: [17, 25],
 }
 
 type Built = Readonly<{
   id: Space['id']
   root: pc.Entity
   figures: ReadonlyMap<string, pc.Entity>
+  cone?: pc.Entity
+  coneMats?: readonly [pc.StandardMaterial, pc.StandardMaterial]
   rain: readonly pc.Entity[]
   weather: string
 }>
@@ -155,6 +171,17 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     primitive(root, 'box', space.ground, [0, -0.05, 0], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
     space.props.forEach((p) => addProp(root, p))
     const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f)] as const))
+    const cone = space.id === 'camp' ? new pc.Entity('sight') : undefined
+    const coneMats = cone
+      ? ([material('#ffe9a8', { opacity: 0.28, unlit: true }), material('#ff4a3a', { opacity: 0.45, unlit: true })] as const)
+      : undefined
+    if (cone && coneMats) {
+      cone.addComponent('render', {
+        meshInstances: [new pc.MeshInstance(fan(app.graphicsDevice, CURLY_RANGE, CURLY_HALF_ANGLE), coneMats[0])],
+        castShadows: false,
+      })
+      root.addChild(cone)
+    }
     const l = lighting(space.id, space.season, weather(g.story))
     const rain = l.rain
       ? Array.from({ length: 220 }, (_, i) => {
@@ -166,7 +193,7 @@ export const createView = (canvas: HTMLCanvasElement): View => {
       : []
     applyLighting(app, camera, sun, lamp, l)
     app.root.addChild(root)
-    return { id: space.id, root, figures, rain, weather: weather(g.story) }
+    return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }
 
   const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }> } = {}
@@ -181,14 +208,22 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     const b = state.built
     owen.setLocalPosition(g.pos.x, 0, g.pos.z)
     owen.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
-
+    if (b.cone && b.coneMats) {
+      const w = watcher(g)
+      b.cone.setLocalPosition(w.at.x, 0, w.at.z)
+      b.cone.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
+      const mi = b.cone.render?.meshInstances[0]
+      if (mi) mi.material = seen(g) ? b.coneMats[1] : b.coneMats[0]
+      b.figures.get('curly')?.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
+    }
     b.rain.forEach((r) => {
       const p = r.getLocalPosition()
       const y = p.y - dt * 11
       r.setLocalPosition(p.x, y < 0 ? 9 : y, p.z)
     })
     const [back, up] = cameraOffset[g.space]
-    const look = { x: g.pos.x, z: g.pos.z }
+    const k = g.space === 'camp' ? 0.35 : 1
+    const look = { x: g.pos.x * k, z: g.pos.z * k + (1 - k) * -1 }
     const target = new pc.Vec3(look.x, up, look.z + back)
     const cam = state.cam ?? target.clone()
     cam.lerp(cam, target, Math.min(1, dt * 4))
