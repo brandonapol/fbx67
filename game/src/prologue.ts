@@ -46,6 +46,15 @@ export const sendNote = (g: Game, note: string): Game => {
   return { ...g, story: send(g.story, note), path: [...g.path, option.n] }
 }
 
+const enter = (g: Game, space: SpaceId): Game => ({
+  ...g,
+  space,
+  pos: spaces[space].spawn,
+  facing: Math.PI,
+  t: 0,
+  panel: undefined,
+})
+
 export const start = (): Game => ({
   story: initialState,
   path: [],
@@ -74,11 +83,9 @@ export const interact = (g: Game): Game => {
     if (id === 'wade') return { ...g, panel: g.story.scene === 'p_bar' ? storyPanel(g.story, ['texas', 'munitions'], [close('Not yet.')]) : storyPanel(g.story, [], [close('Back to the table.')]) }
     if (id === 'hank') return { ...g, panel: storyPanel(g.story, ['round'], [close('Not yet.')]) }
     if (id === 'curly') return { ...g, panel: storyPanel(g.story, [], [close('Back to the table.')]) }
-    if (id === 'door') {
-      const home = sendNote(g, 'goodnight')
-      return { ...home, panel: storyPanel(home.story, []) }
-    }
+    if (id === 'door') return { ...enter(sendNote(g, 'goodnight'), 'room') }
   }
+  if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, [], [close('Put the notes away.')]) }
   return g
 }
 
