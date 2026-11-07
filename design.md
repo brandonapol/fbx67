@@ -25,7 +25,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 ## Cast (placeholder names)
 
-**Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Smokes. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
+**Wade Pruett.** 19, Air Force munitions airman at Eielson, from the Texas plains, first time away from home, never seen snow. Creative tinkerer and musician (guitar). Bored, likable, easy to use. Drinks. Smokes. Water-skied growing up, behind his better-off cousins' boat on a Texas reservoir. Capable of turning gritty or evil depending on player choices. Partly inspired by a real Eielson munitions airman: a kind, creative guy who built homemade flamethrowers for his kids.
 
 **Eli.** Local Athabascan man, Wade's friend. Funny, proud, angry underneath. Knows the rivers and country. Never drinks at any point in the game.
 
@@ -86,7 +86,7 @@ Driven by player morals and early-game choices.
   - Fact-check: routine censorship of personal mail was mostly a wartime practice; peacetime airmen in 1967 probably weren't censored as policy. Easy fix that keeps the plot: the CO does it quietly and off the books, so the realism holds up for players who know the history.
 - **Stealth.** Primary mode in town and on base.
 - **Survival.** Cold, light, calories, frostbite; seasons change the map (flood, freeze, dark, breakup).
-- **Skiing.** Cross-country skis for the Act 3 rescue search. Wade has never seen snow, so he starts out clumsy and gets better.
+- **Skiing.** Cross-country skis for the Act 3 rescue search. Wade has never seen snow, but he grew up water skiing, so he's overconfident. His balance on downhills carries over; kick-and-glide on the flats and climbing don't, and he has to learn those.
 - **Smoking.** Wade smokes. Possible hooks (TBD): lighter and matches as a fire source, cigarettes as social currency on base and in bars, cravings vs. stamina in the cold, smoke or a lit cigarette giving away his position in stealth.
 - **Crafting/tinkering.** Munitions skills: flares, noisemakers, small charges (ice jams, doors), lock tools, engine thawing, one sketchy homemade flamethrower. Same tools serve help or harm.
 - **Music.** Guitar as social stealth: house parties, bars, fish camp, access to rooms a uniform can't enter.
