@@ -1,6 +1,6 @@
 # Fairbanks 1967 — Design Draft v0.1
 
-Working title: TBD
+Working title: Second Rush
 Engine: PlayCanvas (engine-only, TypeScript, glTF pipeline)
 Targets: Browser first; Steam later via Electron wrapper
 
@@ -154,6 +154,7 @@ Three arrangements, each growing out of a different route through the story.
 - **A. Paper route (Lucy's).** Default path toward the good ending. During a heist, Wade or Lucy finds a document in the CO's files that Lucy gave only to the lawyer. Eli's flight-date deduction lines up with it: the CO had no reason to care about Lucy's flight unless someone asked him. After the crash, the geologist's reel-to-reel tapes from the survey camp have him doubting the lawyer the week before he died. Lucy knows, but on paper alone it's circumstantial: Wade testifying (decision 7) is what makes it public.
 - **B. Confession route (Curly's).** Road to the hidden best outcome. Wade kept Curly alive and earned some trust (acted on the escape-plan tip, handled the arrest well). Scared and in custody, Curly names the man who paid him. The councilman flips over Jake's crash: a second witness. Barnette swallows his pride and makes the arrest.
 - **C. Offer route (Wade's).** Bad ending and double agent. The lawyer comes to Wade with the offer (decision 6) himself; being bought is how Wade learns who's at the top. Take it: he knows and keeps quiet (bad ending). Fake taking it: he gets the lawyer on the record (double agent).
+- **Curly's murder of Owen** follows the route: confession route, it comes out in court as part of taking down Ashby; paper route, he's convicted of the burglary only and the murder stays a secret Wade, Lucy, and Eli carry; offer route, Ashby's money makes it disappear.
 - **No route finished.** Middle ending: Lucy suspects him, can't prove it, and he walks.
 
 ### Epilogues
@@ -195,9 +196,7 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 
 ## Open Questions
 
-- Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Endings: the specific late-game changes each early choice causes
-- Title
 - Native cop's name (from Athabascan consultants)
 - Smoking mechanics: which hooks to keep
 - Heat system: how heat rises and cools, and whether the two lawmen track it separately
