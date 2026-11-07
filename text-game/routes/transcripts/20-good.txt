@@ -532,11 +532,71 @@ May. The river ice is groaning. In July a land examiner from the BLM flies out t
 
 Eli hears from a freighter downriver that a man in an Air Force parka has been walking the jam. Eli knows that stretch of river better than anyone alive. You get there in his boat at dawn, through the floes, and find Major Dekker on the ice with a satchel of charges signed out in your name.
 
-He looks at you and sits down on the ice. He's tired.
+He sees you. For a second he just stands there with the satchel. Then he runs, out across the jam, toward the charges he's already set.
+
+  1. Go after him.
+
+== Act 4: Breakup :: Rotten Ice ==
+
+The jam is a mile of broken slabs heaved up on edge, grinding against each other, groaning like a building coming down. The Major is fifty yards ahead, slipping, scrambling, the satchel banging on his hip. Between you is a lead of open black water, six feet across and widening.
+
+Eli is shouting from the boat. You can't hear what.
+
+  1. Jump the open water after him.
+  2. Go around by the drift logs, the long way.
+
+== Act 4: Breakup :: Rotten Ice ==
+
+You jump. You make it with one boot. The other goes into the river to the knee, and the cold is like being hit with a hammer. Something grabs your collar and hauls you up onto the slab: Eli, who followed you across without a word and is looking at you like you're the dumbest man in Alaska.
+
+But you're close now. Twenty yards. Ten.
+
+  1. Run him down.
+
+== Act 4: Breakup :: One Arm ==
+
+He swings the satchel at you, a full arc, and it catches your cast and sends a white bolt of pain up into your shoulder. He's twenty years older than you, and twenty pounds heavier, and you only have one working arm.
+
+"Go home, Pruett," he says, breathing hard. "Go home to Texas. None of this was ever going to be yours."
+
+  1. Hit him with the cast.
+  2. Talk to him. He doesn't want this either.
+
+== Act 4: Breakup :: One Arm ==
+
+You swing the plaster cast at his jaw like a club. It connects, and you nearly black out from the pain, and he goes down on the ice with you on top of him. You get your knee on the satchel strap. He stops fighting all at once, like somebody turned him off.
+
+  1. Get the satchel off him.
+
+== Act 4: Breakup :: Fuse ==
+
+"It's lit," he says. "I lit it before you got here."
+
+He's not lying. Out on the jam, a thin grey thread of smoke crawls along a length of safety fuse toward a stack of charges wedged under the biggest slab. You know this fuse. You've counted it out on a supply shelf a hundred times. Forty seconds a foot, give or take, and there's maybe two feet left.
+
+You have one good hand.
+
+  1. Run to the charges and pull the blasting cap out.
+  2. Cut the fuse ahead of the burn with your pocketknife.
+  3. Freeze.
+
+== Act 4: Breakup :: Fuse ==
+
+You get there with a foot of fuse left. The cap is crimped into the end of the fuse and pushed deep into the charge. You can't hold the charge and pull at the same time with one hand, so you pin it with your knee, get the cap between two fingers, and draw it out slow and steady, the way the manual says, the way you never thought you'd actually have to.
+
+You throw the cap out over the open water. It pops like a firecracker. That's all.
+
+  1. Breathe.
+
+== Act 4: Breakup :: Breakup ==
+
+Eli sits the Major down on a slab of ice and stands over him. Nobody says anything for a while. The river groans under all three of you.
+
+Then the Major talks, to nobody in particular.
 
 "Somebody got into my cabinet in October," he says. "My files. My handwriting on every one of those sheets. Ashby knew all of it. He said the camp had to be gone before that examiner flies out in July, and breakup was the only time to do it. Finish this, or he gives Barnette a crooked officer instead of a Texas airman." He laughs, once. "I just wanted to retire to Florida with a boat."
 
-  1. Continue.
+  1. Take him in.
 
 == Act 4: Breakup :: On the Record ==
 
