@@ -1,8 +1,20 @@
-import type { Scene } from '../types.ts'
+import { mamaReply } from './mama.ts'
 import { N } from '../names.ts'
 import { addEvidence, eliTrust, has, heat, mom, pipe, set } from '../state.ts'
+import type { Choice, Scene, State } from '../types.ts'
+import { askGossip, gossip } from './gossip.ts'
 
 const act = 'Act 2: Freeze-up' as const
+
+const coChoices = (_: State): readonly Choice[] => [
+  { label: 'Do it.', next: 'a2_co_heist' },
+  { label: 'Refuse. That\'s your own CO. You\'d hang for it.', apply: set({ coJob: 'lucy' }), next: 'a2_co_lucy' },
+]
+
+const heatChoices = (_: State): readonly Choice[] => [
+  { label: 'Lie low until Lucy\'s flight. Play some gigs, be seen being boring.', apply: heat(-2), next: 'a3_camp' },
+  { label: 'Keep digging. There isn\'t time to be careful.', next: 'a3_camp' },
+]
 
 export const act2: readonly Scene[] = [
   {
@@ -75,11 +87,9 @@ ${has(s, 'hotelTalk') ? 'Lucy makes you repeat the quiet man\'s words twice. "Be
 She wants the files in your commander's office. ${N.co} keeps a locked cabinet he never lets the clerk touch.
 
 "I'm not asking you to steal," she says. "I'm asking you to look."`,
-    choices: () => [
-      { label: 'Do it.', next: 'a2_co_heist' },
-      { label: 'Refuse. That\'s your own CO. You\'d hang for it.', apply: set({ coJob: 'lucy' }), next: 'a2_co_lucy' },
-    ],
+    choices: (s) => [...coChoices(s), askGossip('a2_co_gossip')],
   },
+  gossip('a2_co_gossip', act, (s) => coChoices(s)),
   {
     id: 'a2_co_heist',
     act,
@@ -135,7 +145,9 @@ He ties it off without looking: a cowboy bowline, backward, the way the ranch ha
     text: () => `
 ${N.jake} catches you outside the hangar where he does contract maintenance for the base. He's six foot seven and has to duck under the door. Bush pilot, mechanic, straight arrow. His uncle is Ray Tolliver, the councilman, and he'll tell you himself that they don't talk.
 
-"Curly got drunk with me Thursday," he says. "Said he's got money coming, enough to get out of Alaska for good. Said some people in this town are going to be real sorry they know his name. I don't like it."`,
+"Curly got drunk with me Thursday," he says. "Said he's got money coming, enough to get out of Alaska for good. Said some people in this town are going to be real sorry they know his name. I don't like it."
+
+He rubs the back of his neck. "A man in over his head like that, whoever's paying him won't want him around long. Somebody ought to tell somebody who can keep an eye on him. Not me. I fix airplanes."`,
     choices: () => [
       { label: 'Tell Lucy everything Jake said.', apply: set({ curlyPlan: 'warn' }), next: 'a2_flight' },
       { label: 'Go confront Curly yourself.', apply: set({ curlyPlan: 'confront' }), next: 'a2_confront' },
@@ -181,7 +193,9 @@ ${s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of 
     id: 'a2_letter_work',
     act,
     title: 'Letter Home: Work',
-    text: () => `
+    text: (s) => `
+${mamaReply(0)(s)}
+
 Dear Mama,
 
 First, the base. You've had a strange fall.`,
@@ -209,9 +223,7 @@ Then your friends. Mama always asks if you're eating and who you eat with.`,
     title: 'Before the Dark',
     text: (s) => `
 ${s.heat >= 3 ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and that land office girl," he says. "I'm watching all three of you."\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
-    choices: () => [
-      { label: 'Lie low until Lucy\'s flight. Play some gigs, be seen being boring.', apply: heat(-2), next: 'a3_camp' },
-      { label: 'Keep digging. There isn\'t time to be careful.', next: 'a3_camp' },
-    ],
+    choices: (s) => [...heatChoices(s), askGossip('a2_heat_gossip')],
   },
+  gossip('a2_heat_gossip', act, (s) => heatChoices(s)),
 ]

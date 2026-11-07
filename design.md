@@ -45,6 +45,8 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
   - Fact-check: E.T. Barnette details (trading post 1901, bank collapse and embezzlement charges around 1911, left Fairbanks) and whether real descendants exist who might object.
   - Fact-check: Alaska State Troopers' 1967 renaming, investigator ranks/titles, and Trooper vs. Fairbanks PD jurisdiction in town.
 
+**Dottie Vinson (placeholder name), the gossip.** Counter waitress at the Northern Lights Café on Second Avenue; ran the telephone switchboard for eleven years, cousin married to a city cop. An optional stop at the three decision points where heat matters (before the CO heist, before lying low, before Wade's rash act). She tells Wade, in coarse in-character tiers, how much the law is watching him and Lucy. She never says whether a job is worth doing, which protects the uncertain-stakes pillar. Asking her costs nothing and changes nothing.
+
 **Villains.** A conspiracy of mixed guilt; nobody is a cartoon.
 - **Franklin Ashby, the land lawyer (the landman, hidden).** The ultimate villain, disguised. Presents as a sympathetic lawyer helping Native families with allotment claims. In the prologue, the geologist mentions to Wade at the bar that there's "a lawyer who's helping me do right by the Native families": a throwaway nice detail that is actually the first clue. The landman fooled the geologist too. Lucy trusts him because the geologist did, and hands him evidence. His interest in Wade is the same as Lucy's: an airman with base access is useful, a dark mirror of Twist 2. Why players like him: he helps Wade personally (gets him out of the drunk tank after the barfight, talks Barnette down, and Wade owes him), and he genuinely wins small claims for other Native families, so his reputation is earned, which makes the betrayal worse. Secretly working for the oil interests, which is how the family's paperwork keeps vanishing. Orders things done but never gets his own hands dirty. The reveal flips everything Lucy did. Players should suspect the councilman and the CO first. Nothing in his early scenes should say "oil."
 - **The city councilman.** Holds title to the family's fish camp. In on the land grab, not the murder. His nephew Jake was flying the plane the conspiracy rigged; when he learns that, he becomes the conspirator who can flip (part of the hidden best run).
@@ -177,6 +179,7 @@ Ashby in handcuffs, arrested by Barnette. Expected to take 2-3 varied playthroug
 ## Systems
 
 - **Letters home.** Wade and his mother write back and forth all year; doubles as journal/save system. Each letter is a chance to tell her the truth or lie. Her replies react to what he tells her, not what really happened. Each letter has three or four topics (work, friends, the investigation, how he's doing); for each the player picks a line: honest, softened, or a lie. The assembled letter reads like a real one, and the dangerous leak is visible as a choice, which is the tension. 
+  - **Mama's replies.** Three replies carry one piece of family wisdom each, arriving just before the decisions that are easiest to misread: "a man is only as good as the people who'll vouch for him" (before the double-agent and testimony choices), "a secret someone hands you is a loan, not a gift" (before Eli's trespass), and "money that asks you to do nothing is the most expensive kind" (before Ashby's offer). Her framing shifts with how honest Wade has been; the wisdom doesn't.
   - **The CO reads Wade's mail.** Neither Wade nor Lucy knows; most players won't expect it either. This is how Twist 3 works: Wade lets slip something in a letter to his mother that the CO isn't supposed to know, and the CO acts on it. If Wade leaked the flight date, Eli, running fuel out to the bush strip, sees the CO's staff car there the night before the flight: a base officer at a civilian strip at night. Wade realizes the only way the CO could know was his letter. If Wade never leaked the date, the protagonists find out later and more slowly: smaller leaks about the investigation turn up in the CO's files during a heist.
   - Fact-check: routine censorship of personal mail was mostly a wartime practice; peacetime airmen in 1967 probably weren't censored as policy. Easy fix that keeps the plot: the CO does it quietly and off the books, so the realism holds up for players who know the history.
 - **Stealth.** Primary mode in town and on base.
@@ -208,7 +211,8 @@ Ashby in handcuffs, arrested by Barnette. Expected to take 2-3 varied playthroug
 - Endings: the specific late-game changes each early choice causes
 - Native cop's name (from Athabascan consultants)
 - Smoking mechanics: which hooks to keep
-- Heat system: how heat rises and cools, and whether the two lawmen track it separately
+- Heat system: whether the two lawmen track it separately (heat is readable through Dottie)
+- Dottie's real name
 
 ## Continuing in Claude Code
 

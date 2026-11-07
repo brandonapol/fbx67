@@ -1,8 +1,17 @@
-import type { CacheSpot, Scene, State } from '../types.ts'
+import { mamaReply } from './mama.ts'
+import type { CacheSpot, Choice, Scene, State } from '../types.ts'
+import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
 import { addEvidence, eliTrust, has, heat, joan, lefty, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
+
+const rashChoices = (_: State): readonly Choice[] => [
+  { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
+  { label: 'Burn down his hunting cabin.', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
+  { label: 'Find him and put a gun in his face until he talks.', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
+  { label: 'Stay out of it. Not your fight, not your land.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
+]
 
 const dig = (spot: CacheSpot) => (s: State): string => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
 
@@ -111,7 +120,7 @@ You find them on the hillside. You try to haul Lucy up out of the fuselage, the 
 
 Lucy splints your arm, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
 
-Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
+Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these. You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
 You wander over to the engine to get away from her look. You know hardware. The fuel sump drain is backed out a quarter turn and safety-wired so it looks tight. Water didn't get in by accident. Somebody put it there.`,
     choices: () => [
@@ -152,7 +161,9 @@ ${s.curlyPlan === 'warn' ? `Because Lucy passed on Jake's tip, ${N.cop} has been
 
 He'd stolen a brand-new hunting bow. A left-handed one.${lefty(s) || texan(s) ? '\n\n' : ''}${lefty(s) ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? 'And Curly ties his bowlines backward, like a Texas ranch hand.' : ''}
 
-Curly is safe in a cell, where nobody can arrange an accident for him. The officer can't be bought, and Curly knows it.`,
+Curly is safe in a cell, where nobody can arrange an accident for him. The officer can't be bought, and Curly knows it.
+
+A letter from Mama is waiting at the hospital desk. ${mamaReply(1)(s)}`,
     choices: () => [{ label: 'Continue.', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],
   },
   {
@@ -183,13 +194,9 @@ Lucy nearly died. Jake can't walk. Your arm is in a cast.${has(s, 'hotelTalk') ?
 Tolliver holds the fish camp. Lucy has always said the family's original application was never lost, just pulled from the files, and Tolliver is the one who'd want it kept. As far as you can see, Tolliver did this.
 
 You tell Lucy you're going to do something about it. She lets you talk.`,
-    choices: () => [
-      { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
-      { label: 'Burn down his hunting cabin.', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
-      { label: 'Find him and put a gun in his face until he talks.', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
-      { label: 'Stay out of it. Not your fight, not your land.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
-    ],
+    choices: (s) => [...rashChoices(s), askGossip('a3_rash_gossip')],
   },
+  gossip('a3_rash_gossip', act, (s) => rashChoices(s)),
   {
     id: 'a3_rash_safe',
     act,

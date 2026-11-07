@@ -1,3 +1,4 @@
+import { mamaReply } from './mama.ts'
 import type { Scene } from '../types.ts'
 import { N } from '../names.ts'
 import { addEvidence, has, set } from '../state.ts'
@@ -17,7 +18,9 @@ Everybody in Fairbanks suddenly knows why a road north matters, and why the best
 
 ${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to Owen\'s tapes.' : 'Lucy listens to Owen\'s tapes without you. Eli tells you about it later, flatly.'} On the last reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
-Lucy plays it three times. She doesn't say who she thinks "he" is.`,
+Lucy plays it three times. She doesn't say who she thinks "he" is.
+
+${mamaReply(2)(s)}`,
     choices: () => [{ label: 'Continue.', next: 'a4_offer' }],
   },
   {

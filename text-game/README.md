@@ -51,7 +51,7 @@ Runs, in order:
 1. `typecheck`: `tsc --noEmit`.
 2. `test:unit`: truth-table tests for the logic gates, plus golden-route replay.
 3. `verify`: differential test. Plays random games from both the real state and its canonical (pruned) form and asserts identical text and endings. This is what makes the explorer's shortcuts trustworthy.
-4. `explore`: walks every path (about 367 billion) by merging equivalent states. Fails on any choice error, unreachable scene, or unreachable ending.
+4. `explore`: walks every path (about 7 trillion) by merging equivalent states. Fails on any choice error, unreachable scene, or unreachable ending.
 
 ## Layout
 
@@ -61,10 +61,11 @@ Runs, in order:
 - `src/engine.ts`: pure step/replay/render.
 - `src/liveness.ts`: which state fields are dead after which scene; used only by the explorer, guarded by `verify`.
 - `src/explore.ts`, `src/matrix.ts`, `src/verify.ts`: analysis tools.
-- `src/names.ts`: all character names in one place. Placeholders still to be decided: the Fairbanks PD officer (from Athabascan consultants), the CO, and the councilman's first name.
+- `src/names.ts`: all character names in one place. Placeholders still to be decided: the Fairbanks PD officer (from Athabascan consultants), the CO, the councilman's first name, and Dottie.
 
 ## Design rules encoded here
 
 - Bounded counters: heat 0 to 6, Eli's trust -3 to 5, Joan 0 to 3, honesty with Mom -3 to 3.
-- Heat limit for the best ending: 3.
+- Heat limit for the best ending: 3. Dottie at the café reports heat in coarse tiers at three decision points.
+- Mama's replies deliver one hint each before decisions 4, 6, and 7.
 - Decision numbering follows `design.md`: 1 barfight, 2 letter leak, 3 Curly's escape plan, 4 Eli's trespass, 5 after the confession, 6 the offer, 7 testifying.
