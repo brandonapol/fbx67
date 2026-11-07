@@ -35,7 +35,8 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 
 **The pilot.** Bush pilot on Lucy's crashed flight. Ambiguous, then innocent. He looks suspicious during the crash chapter (e.g. took a cash charter, changed the route), but he was paid to fly, not to crash. The ambiguity must be explicitly resolved on screen (a scene or document that clears him) so it never reads as a dropped thread. He is the city councilman's nephew. Not close to his uncle, but the connection is enough to make the player suspicious. The clearing beat: Wade's wreck-reading shows the sabotage was done on the ground before the pilot took the plane.
 
-**Side romance (Wade).** Casual, elsewhere in the story. Candidates: bar waitress/musician, hospital nurse, daughter of the oil landman or city councilman.
+**The nurse (Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. Whether she pulls him toward betrayal is TBD.
+  - Fact-check: which hospital served Fairbanks in 1967 (likely St. Joseph's) and how the flood hit it.
 
 **Villains.** Some mix of the city councilman holding the family's land, an oil company landman, and Wade's commanding officer at Eielson. Main face TBD.
 
@@ -109,7 +110,7 @@ Driven by player morals and early-game choices.
 - Wade's exact rash act against the councilman (safe job or otherwise)
 - Main face of the villains
 - When the player learns Lucy was using Wade
-- Side romance pick and whether it pulls toward betrayal
+- The nurse: name, and whether she pulls Wade toward betrayal
 - Eli's secret (Twist 5): keep or cut, and what it is
 - Title
 - Smoking mechanics: which hooks to keep
