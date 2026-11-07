@@ -51,6 +51,8 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 - **The city councilman.** Holds the family's land. Complicit; degree of guilt TBD. Uncle of the bush pilot.
 - **Wade's CO.** Reads Wade's mail and feeds the oil men. Complicit; degree of guilt TBD.
 - **Curtis "Curly" Boone (the crooked mechanic).** A bush plane mechanic and a fellow Texan, Wade's foil: what Wade could turn into if he takes the money. Their shared accent and homesickness make him easy for Wade to like and trust, which makes the betrayal personal. Introduced early as a likable local. Friend of the geologist and hungry for money; sold him out to the landman and was part of his murder. Left-handed. He is the one who rigged Lucy's plane. Arc:
+  - **The murder (Aug 1967):** during the flood, Curly offers his friend the geologist a skiff ride across the water to Lucy. He takes him to a flooded cabin instead, holds him under, and leaves the body tied to submerged debris. The proof the geologist carried disappears. The knot is a cowboy bowline, the left-handed version of the bowline that Texas ranch hands tie: the lefty-Texan clue (briefly points at Lucy, who's left-handed, and Wade, who's Texan).
+    - Fact-check: the cowboy bowline's name, handedness, and association with Texas/ranch work; 1967 flood death toll.
   - **Act 1:** in the barfight, hauled in and let go; the cops already know him.
   - **Act 3:** after the crash, he realizes the landman is cleaning up loose ends and he's next. He breaks into a cabin and steals a new left-handed hunting bow as preemptive self-defense, figuring a killing with a bow would be harder to trace to him than a rifle. The Native cop arrests him for the burglary.
   - **Custody keeps him alive.** The landman can't arrange an "accident" for a man in active police custody, and the Native cop is a straight arrow who can't be bought. The left-handed bow is what makes Wade suspect him in the geologist's death (the left-handed evidence at the scene is TBD).
@@ -70,7 +72,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 
 ## Structure (one year, four seasons)
 
-**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body in a collapsed cabin; ruled an accident. Lucy disagrees. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
+**Act 1 — Flood (Aug 1967).** Wade is sent into drowned Fairbanks. Meets Eli. They find the geologist's body drowned in a flooded cabin, tied to submerged debris; ruled an accident ("tangled in a line in the current"). Lucy disagrees. Barfight set piece: Wade's first real fight, Eli steps in, friendship begins. The barfight is an ensemble scene that introduces as much of the cast as possible (see Barfight Ensemble). The crooked mechanic is in it and gets hauled in afterward; the cops already know him. Teaches stealth and survival systems in flooded streets.
 
 **Act 2 — Freeze-up (fall).** Wade joins Lucy's investigation. He can go where she can't: the base, officers' club, oil men's hotel bar. Spying, eavesdropping, document theft, tailing.
 
@@ -79,14 +81,15 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
   - Idea: lighting up near a wreck that might be leaking fuel is its own tension beat.
   - Fact-check: who actually ran a 1967 Alaska Range crash search (Air Force rescue out of Eielson or Elmendorf, Civil Air Patrol, Army ski troops from Fort Wainwright/Fort Greely), and how an airman from munitions could plausibly tag along. Wade's contribution is reading the wreck: it was sabotaged. Railroad past Denali; Anchorage side trip (oil offices, land lawyers, post-earthquake city).
 
-**Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. What Wade knows now matters. Endings.
+**Act 4 — Breakup (spring 1968).** Prudhoe Bay goes public. At breakup, someone blows an ice jam with Eielson charges signed out under Wade's name, flooding out the family's fish camp and wiping out the signs of use and occupancy their allotment claim depends on. What Wade knows now matters. Endings.
+  - Fact-check: dynamiting ice jams on Interior rivers in the 1960s; whether 1906 Act allotments required proof of use and occupancy (likely five years, per the 1956 amendment).
 
 ## Twists
 
 1. The geologist was on the family's side. Oil interests were using his survey data to grab land before Native claims settled. He died on his way to give proof to Lucy.
 2. Lucy befriended Wade at first because she needed base access. The friendship became real later. Mirrors Wade's own betrayal option.
 3. Wade's CO is feeding information to the oil men, and Wade has been feeding it to his CO without knowing, through his letters home. Eli is the one who catches on.
-4. The cabin collapse used explosives from Eielson's munitions stock, traced to Wade's signature. He is being set up as the fall guy.
+4. Eielson munitions are going missing under Wade's signature. Lucy uncovers the paper trail late in Act 3; in Act 4 the charges are used to blow the ice jam that floods the fish camp. He is being set up as the fall guy.
 5. (Optional) Eli was at the cabin the night of the flood. He's hiding something, but not what the player assumes.
 
 ## Lucy's Confession
@@ -130,7 +133,6 @@ Driven by player morals and early-game choices.
 - Letter-writing choice mechanism
 - What exactly Wade leaks in the letter, and what decision the CO makes that tips off Eli
 - Wade's exact rash act against the councilman (safe job or otherwise)
-- Crooked mechanic: what left-handed evidence is at the geologist's cabin
 - Fair-play clues pointing at the crooked mechanic before the bow (the player should be able to suspect him early)
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Exact guilt of the councilman and the CO in the geologist's death and the plane sabotage
