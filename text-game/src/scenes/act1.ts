@@ -25,12 +25,12 @@ Your sergeant puts you on a sandbag line. Across the street, a riverboat is pull
     text: (s) => `
 ${s.eliTrust > 0 ? 'The boatman, Eli, owes you one, and he says so.' : 'That evening the boatman, Eli, needs a strong back, and your sergeant lends you out.'} Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
-It's a man, held under by a line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
+It's a man, held under by a yellow braided line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
 
-The line is tied off in a cowboy bowline, the backward way your uncle's ranch hands tied them back home.`,
+The line is tied off in a bowline, but backward, the tail sitting outside the loop. You learned your knots tying up your cousins' boat on the reservoir, and every bowline you ever saw there had the tail inside. Somebody tied this one, and tied it his own way.`,
     choices: () => [
       { label: 'Point out the knot to Eli. Nobody tangles into a bowline.', apply: pipe(addEvidence('knot'), eliTrust(1)), next: 'a1_knot' },
-      { label: 'Say nothing. Cut him loose and get him to the hospital.', apply: addEvidence('knot'), next: 'a1_ruling' },
+      { label: 'Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the hospital.', apply: addEvidence('knot'), next: 'a1_ruling' },
     ],
   },
   {
@@ -40,7 +40,9 @@ The line is tied off in a cowboy bowline, the backward way your uncle's ranch ha
     text: () => `
 Eli looks at the knot for a long time.
 
-"Nobody ties himself to a sawhorse," he says quietly. "Remember that knot, Texas."`,
+"Nobody ties himself to a sawhorse," he says quietly. "Don't untie that, Texas."
+
+You cut the line a hand's width above the knot and a hand's width below, so it stays tied, and put it in your jacket pocket.`,
     choices: () => [{ label: 'Help Eli lift Owen\'s body into the boat.', next: 'a1_ruling' }],
   },
   {
@@ -48,11 +50,11 @@ Eli looks at the knot for a long time.
     act,
     title: 'An Accident',
     text: () => `
-${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his great-grandfather founded this town and skipped out on it with everybody's money. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
+${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
 
-"Tangled in a line in the current. Accident." He signs it and moves on.
+"Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
 
-At the hospital, a nurse named ${N.joan} is cleaning up in a hallway full of cots.`,
+St. Joseph's took water on the first floor and moved most of its patients out. In what's left, a nurse named ${N.joan} is cleaning up in a hallway full of cots.`,
     choices: () => [
       { label: 'Ask Joan if anything about the body looked wrong.', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_joan_ask' },
       { label: 'Make her laugh. She looks like she needs it.', apply: pipe(addEvidence('bruising'), joan(2)), next: 'a1_joan_laugh' },
@@ -85,7 +87,7 @@ Eli takes you to the land office, where his sister ${N.lucy} is hauling wet ledg
 
 She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on tundra tires off a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
 
-"He was working with a lawyer, ${N.ashby}, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The originals are on your base. I can't get onto your base."
+"He was working with a lawyer, ${N.ashby}, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The base photo lab kept the only full set of prints in Alaska. I can't get onto your base."
 
 She looks at you a beat too long.`,
     choices: () => [

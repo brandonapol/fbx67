@@ -7,7 +7,7 @@ const act = 'Prologue' as const
 const talkRest = `
 When Wade asks what you do, you tell him the truth, or most of it: you map where a road could someday cross the rivers north of here, and where the gravel is to build it.
 
-"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Lower Tanana families out there, the Minto people with camps on the river. There's a lawyer in town helping me with that."
+"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Lower Tanana families out there, the Minto people with fish camps down on the lower Chatanika. There's a lawyer in town helping me with that."
 
 Curly checks his watch. "Plane's ready for the morning, Owen."`
 
@@ -62,7 +62,7 @@ ${talkRest}`,
     act,
     title: 'Owen: A Letter to Lucy',
     text: () => `
-In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel sits right on the best crossing. A fish camp. The family's allotment application vanished years ago.
+In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
 
 You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp. While he refuels at the creek, you will hide the real notes and tapes. If anything happens to you, she should know where.
 

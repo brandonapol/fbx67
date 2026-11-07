@@ -5,9 +5,9 @@ import { HEAT_LIMIT, curlyFate, curlyTalks, doubleAgentWorks, eliJailed, ending,
 const headline = (s: State): string => {
   const e = ending(s)
   if (e === 'best')
-    return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} The family's allotment is restored. The fish camp is theirs again.`
+    return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} The family's allotment claim still takes three more years. The elders' testimony about generations of use on that bend is what wins it. The fish camp is theirs again.`
   if (e === 'good')
-    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened, and this time it holds. The fish camp is theirs again.${eliJailed(s) ? ' Eli watches it from a cell. You won, and you can\'t stand to look at what it cost.' : ''}`
+    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened. It takes years, and it is won in the end on the elders' testimony about generations of use${iceJam(s) === 'blown' ? ', with the camp still under a foot of silt from the jam' : ''}. The fish camp is theirs again.${eliJailed(s) ? ' Eli watches it from a cell. You won, and you can\'t stand to look at what it cost.' : ''}`
   if (e === 'bad') {
     if (s.offer === 'fake')
       return `You tried to play Ashby, but you'd already burned the people who could have backed you up.${s.testified ? ' You testified anyway. Nobody believed which side you were on.' : ''} The grand jury never sees a case. Ashby wins.`
@@ -63,10 +63,10 @@ const barnetteLine = (s: State): string =>
 const tolliverLine = (s: State, won: boolean): string =>
   s.sharedWreck
     ? won
-      ? 'Testifies against Ashby, loses his council seat, and loses the parcel when the claim holds.'
-      : 'Tried to come clean after Jake told him about the plane. It wasn\'t enough. Keeps his seat.'
+      ? 'Testifies against Ashby, loses his council seat, and loses the parcel when the claim is won.'
+      : 'Tried to come clean after Jake told him about the plane. It wasn\'t enough. Keeps his seat, and the family\'s claim stalls.'
     : won
-      ? 'Loses the parcel when the claim holds. Nobody ever told Jake about the sump drain, so nobody ever told Ray. Keeps his seat.'
+      ? 'Loses the parcel when the claim is won. Nobody ever told Jake about the sump drain, so nobody ever told Ray. Keeps his seat.'
       : 'Nobody ever told Jake about the sump drain, so nobody ever told Ray. Keeps his seat and sells the fish camp to the road builders in 1970.'
 
 const epilogues = (s: State): readonly string[] => {

@@ -18,7 +18,7 @@ Wade lights up. He grew up on the plains outside Lubbock, water skiing behind hi
 
 When Wade asks what you do, you tell him the truth, or most of it: you map where a road could someday cross the rivers north of here, and where the gravel is to build it.
 
-"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Lower Tanana families out there, the Minto people with camps on the river. There's a lawyer in town helping me with that."
+"Lot of folks care about that land all of a sudden," you say. "I'm trying to do right by the Lower Tanana families out there, the Minto people with fish camps down on the lower Chatanika. There's a lawyer in town helping me with that."
 
 Curly checks his watch. "Plane's ready for the morning, Owen."
 
@@ -26,7 +26,7 @@ Curly checks his watch. "Plane's ready for the morning, Owen."
 
 == Prologue :: Owen: A Letter to Lucy ==
 
-In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel sits right on the best crossing. A fish camp. The family's allotment application vanished years ago.
+In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
 
 You write to Lucy, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp. While he refuels at the creek, you will hide the real notes and tapes. If anything happens to you, she should know where.
 
@@ -59,20 +59,20 @@ Your sergeant puts you on a sandbag line. Across the street, a riverboat is pull
 
 That evening the boatman, Eli, needs a strong back, and your sergeant lends you out. Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
-It's a man, held under by a line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
+It's a man, held under by a yellow braided line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
 
-The line is tied off in a cowboy bowline, the backward way your uncle's ranch hands tied them back home.
+The line is tied off in a bowline, but backward, the tail sitting outside the loop. You learned your knots tying up your cousins' boat on the reservoir, and every bowline you ever saw there had the tail inside. Somebody tied this one, and tied it his own way.
 
   1. Point out the knot to Eli. Nobody tangles into a bowline.
-  2. Say nothing. Cut him loose and get him to the hospital.
+  2. Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the hospital.
 
 == Act 1: Flood :: An Accident ==
 
-Inspector Vernon Barnette of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his great-grandfather founded this town and skipped out on it with everybody's money. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
+Investigator Vernon Barnette of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
 
-"Tangled in a line in the current. Accident." He signs it and moves on.
+"Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
 
-At the hospital, a nurse named Joan Halvorsen is cleaning up in a hallway full of cots.
+St. Joseph's took water on the first floor and moved most of its patients out. In what's left, a nurse named Joan Halvorsen is cleaning up in a hallway full of cots.
 
   1. Ask Joan if anything about the body looked wrong.
   2. Make her laugh. She looks like she needs it.
@@ -89,7 +89,7 @@ Eli takes you to the land office, where his sister Lucy is hauling wet ledgers u
 
 She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on tundra tires off a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
 
-"He was working with a lawyer, Franklin Ashby, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The originals are on your base. I can't get onto your base."
+"He was working with a lawyer, Franklin Ashby, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The base photo lab kept the only full set of prints in Alaska. I can't get onto your base."
 
 She looks at you a beat too long.
 
@@ -119,7 +119,7 @@ The floor is slick with mud. There's a hot stove, a moose rack on the wall, and 
 
 The whole bar picks sides. Curly jumps in on yours, roaring about Texas. Officer Tom Peter of Fairbanks PD, a Native officer people say has never taken a dollar from anybody, hauls you, Eli, and Curly in together. He knows Curly by name.
 
-In the morning Inspector Vernon Barnette comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
+In the morning Investigator Vernon Barnette comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
 
 "Give me a name and you walk."
 
@@ -233,9 +233,9 @@ You can't tell what any of it means. Lucy will have to read it.
 
 November. Planes are coming off floats and going onto skis, so nobody is flying anywhere for weeks. You find Curly at the bush strip lashing a tarp over a wing.
 
-He ties it off without looking: a cowboy bowline, backward, the way the ranch hands did it.
+He ties it off without looking, with yellow braided line off a coil on his workbench: a bowline, backward, the tail outside the loop.
 
-You have seen that knot before. Tied to a drowned sawhorse.
+You have seen that knot before. There's a piece of it in your footlocker, cut off a drowned sawhorse, in the same yellow line.
 
 "Wade! Come by Saturday, we'll get a steak. My treat. Money's good this year."
 
@@ -338,7 +338,7 @@ You get a fire going in the lee of the fuselage first. By the time you get back 
 
 == Act 3: Deep Winter :: Wade: The Search ==
 
-You are Wade again. When Jake's plane doesn't come back, the rescue team out of Eielson needs a munitions man for flares and signal charges. Your sergeant sends you.
+You are Wade again. When Jake's plane doesn't come back, the Rescue Coordination Center at Elmendorf calls Eielson for people to put on a ground team, and the team needs a munitions man for flares and signal charges. Your sergeant sends you.
 
 They hand you cross-country skis. You grew up water skiing. How hard can it be?
 
@@ -385,7 +385,9 @@ Curly bolts the week after the crash. Officer Tom Peter runs him down at a hunti
 
 He'd stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won't say.
 
-And Curly ties his bowlines backward, like a Texas ranch hand.
+And Curly ties his bowlines backward, tail outside, like the one on Owen's sawhorse.
+
+You give Officer Tom Peter the piece of line you cut off Owen's sawhorse. He takes it out to Curly's hangar and comes back with a coil of yellow tie-down line off Curly's workbench: the same braid, the same blue tracer thread running through it.
 
 Curly is safe in a cell, where nobody can arrange an accident for him. The officer can't be bought, and Curly knows it.
 
@@ -467,9 +469,9 @@ Joan uncaps her pen. "Dear Mama," she says. "Go on."
 
 == Act 4: Breakup :: Prudhoe Bay ==
 
-March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on the Arctic coast, maybe the biggest field in North America.
+March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on the Arctic coast. Nobody knows how big yet.
 
-Everybody in Fairbanks suddenly knows why a road north matters, and why the best river crossing on the way matters. It runs straight through Eli and Lucy's fish camp.
+Everybody in Fairbanks suddenly knows why a road north matters, and a pipeline after it, and why the gravel and the river crossings on the way matter. The best of both on the lower Chatanika are on Eli and Lucy's fish camp.
 
 You sit with Lucy at her kitchen table and listen to the last of Owen's tapes. The final reel cracked in the crash, and it took Jake all winter on crutches to splice it. On it, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
@@ -511,17 +513,17 @@ Jake is up on crutches. Nobody ever told him about the sump drain, so he still t
 
 == Act 4: Breakup :: Breakup ==
 
-May. The river ice is groaning. If the ice jam above the fish camp is blown, the water will take the smokehouse, the drying racks, the cabin, the graves: every sign that the family has used that land for generations. An allotment claim lives or dies on proof of use. Without it, the claim is just paper.
+May. The river ice is groaning. In July a land examiner from the BLM flies out to look at the fish camp for the family's claim. If the ice jam above the camp is blown, the water will take the smokehouse, the drying racks, the cabin, the graves: every sign of use the examiner would see from the air or on the ground. It wouldn't end the claim. The elders can still swear to fifty years of fishing that bend. But a claim with nothing left to look at can sit in a file for years, and years are all Ashby needs.
 
 In the middle of the night the jam goes up with a sound like artillery. From the bluff, too late, you see a man in an Air Force parka running for a car with base plates. By morning the fish camp is under the river.
 
-By noon, Inspector Vernon Barnette has the demolition sign-outs. Every page says Wade Pruett.
+By noon, Investigator Vernon Barnette has the demolition sign-outs. Every page says Wade Pruett.
 
   1. Continue.
 
 == Act 4: Breakup :: On the Record ==
 
-Inspector Vernon Barnette comes to see you himself. He hates this, and he says so. The Air Force's investigators are running their own inquiry into the missing charges, and he's taken a case to a state grand jury. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: Franklin Ashby.
+Investigator Vernon Barnette comes to see you himself. He hates this, and he says so. The Air Force's investigators are running their own inquiry into the missing charges, and he's taken a case to a state grand jury. He has the piece of line you cut off Owen's sawhorse and the coil it matches from Curly's hangar. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: Franklin Ashby.
 
 For the first time since August, he seems to believe you.
 

@@ -12,9 +12,9 @@ export const act4: readonly Scene[] = [
     act,
     title: 'Prudhoe Bay',
     text: (s) => `
-March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on the Arctic coast, maybe the biggest field in North America.
+March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on the Arctic coast. Nobody knows how big yet.
 
-Everybody in Fairbanks suddenly knows why a road north matters, and why the best river crossing on the way matters. It runs straight through Eli and Lucy's fish camp.
+Everybody in Fairbanks suddenly knows why a road north matters, and a pipeline after it, and why the gravel and the river crossings on the way matter. The best of both on the lower Chatanika are on Eli and Lucy's fish camp.
 
 ${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to the last of Owen\'s tapes.' : s.afterConfession === 'turn' ? 'Lucy is suspended and won\'t speak to you. You hear about Owen\'s tapes from Dottie at the café, secondhand.' : 'Lucy listens to the last of Owen\'s tapes without you. Eli tells you about it later, flatly.'} The final reel cracked in the crash, and it took Jake all winter on crutches to splice it. On it, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
@@ -94,7 +94,7 @@ Jake is up on crutches. Nobody ever told him about the sump drain, so he still t
     act,
     title: 'Breakup',
     text: (s) => `
-May. The river ice is groaning. If the ice jam above the fish camp is blown, the water will take the smokehouse, the drying racks, the cabin, the graves: every sign that the family has used that land for generations. An allotment claim lives or dies on proof of use. Without it, the claim is just paper.
+May. The river ice is groaning. In July a land examiner from the BLM flies out to look at the fish camp for the family's claim. If the ice jam above the camp is blown, the water will take the smokehouse, the drying racks, the cabin, the graves: every sign of use the examiner would see from the air or on the ground. It wouldn't end the claim. The elders can still swear to fifty years of fishing that bend. But a claim with nothing left to look at can sit in a file for years, and years are all Ashby needs.
 
 ${
       iceJam(s) === 'stopped'
@@ -102,7 +102,7 @@ ${
 
 He looks at you and sits down on the ice. He's tired.
 
-"Somebody got into my cabinet in October," he says. "My files. My handwriting on every one of those sheets.${s.leakedFlightDate ? ' And somebody saw my car at that strip the night before the flight.' : ''} Ashby knew all of it. He said finish this, or he gives Barnette a crooked officer instead of a Texas airman." He laughs, once. "I just wanted to retire to Florida with a boat."`
+"Somebody got into my cabinet in October," he says. "My files. My handwriting on every one of those sheets.${s.leakedFlightDate ? ' And somebody saw my car at that strip the night before the flight.' : ''} Ashby knew all of it. He said the camp had to be gone before that examiner flies out in July, and breakup was the only time to do it. Finish this, or he gives Barnette a crooked officer instead of a Texas airman." He laughs, once. "I just wanted to retire to Florida with a boat."`
         : `In the middle of the night the jam goes up with a sound like artillery. From the bluff, too late, you see a man in an Air Force parka running for a car with base plates. By morning the fish camp is under the river.
 
 By noon, ${N.barnette} has the demolition sign-outs. Every page says Wade Pruett.`
@@ -114,7 +114,7 @@ By noon, ${N.barnette} has the demolition sign-outs. Every page says Wade Pruett
     act,
     title: 'On the Record',
     text: (s) => `
-${N.barnette} comes to see you himself. He hates this, and he says so. The Air Force's investigators are running their own inquiry into the missing charges, and he's taken a case to a state grand jury. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: ${N.ashby}.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
+${N.barnette} comes to see you himself. He hates this, and he says so. The Air Force's investigators are running their own inquiry into the missing charges, and he's taken a case to a state grand jury. He has the piece of line you cut off Owen's sawhorse and the coil it matches from Curly's hangar. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: ${N.ashby}.${has(s, 'curlyNamesAshby') ? ' He has Curly\'s statement.' : ''}${has(s, 'councilmanFlips') ? ' He has Tolliver.' : ''}
 
 ${s.heat > HEAT_LIMIT ? 'He doesn\'t believe half of what you say, and he tells you so. You gave him too many reasons this winter.' : 'For the first time since August, he seems to believe you.'}${doubleAgentWorks(s) ? ' He has the tape from your cast.' : ''}
 
