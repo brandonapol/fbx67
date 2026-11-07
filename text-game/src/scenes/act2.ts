@@ -83,7 +83,7 @@ Tolliver sounds like a man with a lot to lose. You can't tell if any of it means
     text: (s) => `
 ${s.eliTrust <= -2 ? 'Lucy almost doesn\'t bring you. "Stand in the back," she says, "and don\'t talk."' : 'Lucy brings you to a meeting in a community hall on the edge of town. "Stand in the back," she says. "Listen."'}
 
-It's the Tanana Chiefs: village chiefs and delegates from up and down the Tanana and the Yukon, folding chairs, a coffee urn, a map of the Interior taped to the wall with colored pins in it. The talk is about the land freeze, the claims, and what the oil companies are already doing on land nobody has settled. You are the only uniform in the room.
+It's the Tanana Chiefs: village chiefs and delegates from up and down the Tanana and the Yukon, folding chairs, a coffee urn, a map of the Interior taped to the wall with colored pins in it. The talk is about the land freeze, the claims, and how many families have fish camps and trapline cabins on land some white man in town holds the title to. You are the only uniform in the room.
 
 An old man from Nenana reminds everyone that the Tanana chiefs sat down with Judge Wickersham in this same town in 1915, about this same land. "He told us to take allotments and become citizens," he says. "We have been filling out his papers for fifty years."
 
