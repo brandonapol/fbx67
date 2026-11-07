@@ -34,7 +34,7 @@ To verify before writing dialogue: exact munitions unit names and job titles at 
 **Wade's mother.** Back home in Texas. Wade writes to her all year; she is his moral compass. He can be honest with her or lie to her, and she has no way to check (she's in Texas), which is the point: lying to her is free, so choosing honesty means something.
 
 
-**Joan Halvorsen (the nurse, Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. Whether she pulls him toward betrayal is TBD.
+**Joan Halvorsen (the nurse, Wade's side romance).** Hospital nurse in Fairbanks. Introduced early, in Act 1 during the flood (triage, evacuation, or when the geologist's body comes in). She saw the body and is a good source for conversations about how he really died. The romance picks up in Act 3/4 when Wade comes back with a broken arm. She isn't scheming: she represents the easy road (a nice girl, a good job, staying out of trouble). In the bad ending Wade gets her along with the payoff, and the game lets you feel what that comfort cost. In the good ending she gives up on a man who keeps choosing trouble.
   - Fact-check: which hospital served Fairbanks in 1967 (likely St. Joseph's) and how the flood hit it.
 
 **Jake Bueller (the straight-arrow mechanic and pilot).** Bush plane mechanic and pilot. Inspired by a real Fairbanks friend, a mechanic and medevac pilot: 6'7", skis and bikes, super pragmatic, quit a job once because his boss asked him to do something wrong. Picks up civilian contract maintenance work at Eielson, which is how Wade knows him and why he can get on base. Becomes Wade's informant and points his suspicion in the right direction. He flies Lucy to the survey camp in Act 3 and goes down with her. He is the city councilman's nephew and doesn't get along with his uncle, which gives the player a flicker of doubt about their informant.
@@ -106,6 +106,7 @@ Goal: introduce as many characters as possible in one chaotic Act 1 scene, then 
 - **When.** Late Act 3, after the crash, once Wade has read the sabotaged wreck and the frame-up (Twist 4) is coming together.
 - **How.** Under duress. Wade is angry and about to act on it, and his plan assumes Lucy's loyalty. She has to tell him before he commits, because the move only works (or only stays survivable) if he knows the truth. ("I picked you because you had access. Now they've picked you too.")
 - **Trigger.** Furious about the crash, Wade blusters about going after the councilman (e.g. blowing his safe for the stolen allotment file; exact act TBD) and assumes Lucy has his back. She lets him vent. When he actually starts getting ready to do it, one-armed in a cast, she realizes how reckless he's become and intercepts him and tells him the truth, because Eielson explosives in his hands are exactly what the frame-up needs (Twist 4).
+- **Reveal timing.** The player learns it at the same moment Wade does. Lucy's playable chapters are honest but never show her motive, so on a replay her early scenes read completely differently.
 - Rule: the confession is never romantic or gratitude-driven.
 
 ## Endings
@@ -197,8 +198,6 @@ The landman can be arrested, but only with near-flawless play: the right evidenc
 - Whether the crooked mechanic's guilt is exposed publicly or kept quiet (player choice), now that the Eli-rescue beat is replaced by the arrest
 - Ashby: early scenes that make him likable
 - Owen Marsh's presence after the prologue (journals, reel-to-reel tapes at the survey camp)
-- When the player learns Lucy was using Wade
-- Joan: whether she pulls Wade toward betrayal
 - Twist 5: when Eli finally tells Wade he saw the skiff, and what makes him talk
 - Endings: how the seven decisions combine into good/middle/bad, and which early choices map to which late-game changes
 - Title
