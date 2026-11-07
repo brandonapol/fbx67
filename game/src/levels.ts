@@ -1,7 +1,7 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 
-export type SpaceId = 'bar'
+export type SpaceId = 'bar' | 'room'
 
 export type Season = 'summer' | 'flood'
 
@@ -88,7 +88,26 @@ export const bar: Space = {
   ],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar }
+export const room: Space = {
+  id: 'room',
+  name: "Owen's room",
+  season: 'summer',
+  size: { w: 6, d: 6 },
+  ground: '#6b5641',
+  spawn: vec(0, 2),
+  props: [
+    ...walls(6, 6, '#8c7a62'),
+    { box: { x: -1.8, z: -1.6, w: 1.6, d: 2.4 }, h: 0.6, color: '#5d6f7f', solid: true },
+    { box: { x: 1.9, z: -2.2, w: 1.6, d: 0.9 }, h: 0.8, color: '#5b3e28', solid: true },
+    { box: { x: 1.6, z: -2.25, w: 0.5, d: 0.35 }, h: 0.22, y: 0.8, color: '#30302e' },
+    { box: { x: 2.25, z: -2.15, w: 0.5, d: 0.4 }, h: 0.04, y: 0.8, color: '#efe6cf' },
+    { box: { x: 0.4, z: -2.9, w: 1.4, d: 0.1 }, h: 1.2, y: 1.0, color: '#ffc27a', glow: true },
+  ],
+  figures: [],
+  spots: [{ id: 'desk', x: 1.9, z: -1.4, r: 1.2, prompt: 'Sit down with the survey notes' }],
+}
+
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room }
 
 export const owenLook = owen
 
