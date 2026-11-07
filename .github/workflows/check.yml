@@ -1,0 +1,85 @@
+name: check
+
+on:
+  pull_request:
+  # The merge queue runs every job on the pull request combined with main and whatever is queued ahead of it.
+  merge_group:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancels only superseded runs of the same pull request.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      text: ${{ steps.filter.outputs.text }}
+      web: ${{ steps.filter.outputs.web }}
+      game: ${{ steps.filter.outputs.game }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: filter
+        if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          filters: .github/path-filters.yml
+          base: ${{ github.event.merge_group.base_sha || github.event.pull_request.base.sha }}
+          ref: ${{ github.event.merge_group.head_sha || github.sha }}
+
+  check-text:
+    needs: changes
+    if: needs.changes.outputs.text == 'true' || (github.event_name != 'pull_request' && github.event_name != 'merge_group')
+    runs-on: ${{ vars.TEXT_GAME_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: text-game/.nvmrc
+          cache: npm
+          cache-dependency-path: text-game/package-lock.json
+      - name: Install
+        run: make setup/text
+      - name: Typecheck
+        run: make check/text/typecheck
+      - name: Unit tests and golden route replay
+        run: make test/text/unit
+      - name: Verify liveness pruning
+        run: make test/text/verify VERIFY_TRIALS=2000 VERIFY_SEED="$(( GITHUB_RUN_NUMBER * 2000 ))"
+      - name: Matrix summary matches routes/matrix-summary.json
+        run: make test/text/matrix
+      - name: Generated routes are committed
+        run: make check/routes
+
+  check-web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true' || (github.event_name != 'pull_request' && github.event_name != 'merge_group')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: text-game/.nvmrc
+          cache: npm
+          cache-dependency-path: |
+            text-game/package-lock.json
+            web/package-lock.json
+      - name: Install
+        run: |
+          make setup/text
+          make setup/web
+      - name: Build
+        run: make build/web

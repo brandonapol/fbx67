@@ -1,0 +1,15 @@
+# What each job in check.yml reads, for dorny/paths-filter. On a pull request and in the merge queue a job runs only
+# when its set matched; pushes to main run everything. When a job starts reading something new, add it here.
+ci: &ci
+  - Makefile
+  - .github/path-filters.yml
+  - .github/workflows/check.yml
+text: &text
+  - *ci
+  - text-game/**
+web:
+  - *text
+  - web/**
+game:
+  - *text
+  - game/**
