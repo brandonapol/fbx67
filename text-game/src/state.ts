@@ -17,22 +17,29 @@ export const BOUNDS = {
   eliTrust: [-3, 5],
   joan: [0, 3],
   momHonesty: [-3, 3],
+  lucyHeat: [0, 4],
 } as const
 
-const clamp = ([lo, hi]: readonly [number, number], n: number): number => Math.min(hi, Math.max(lo, n))
+export type Bounded = keyof typeof BOUNDS
+
+export type Patch = Partial<Omit<State, 'scene' | 'evidence' | Bounded>>
+
+export const clamp = ([lo, hi]: readonly [number, number], n: number): number => Math.min(hi, Math.max(lo, n))
 
 export const has = (s: State, e: Evidence): boolean => s.evidence.includes(e)
 
 export const addEvidence = (e: Evidence) => (s: State): State =>
   has(s, e) ? s : { ...s, evidence: [...s.evidence, e].sort() }
 
-export const set = (patch: Partial<State>) => (s: State): State => ({ ...s, ...patch })
+export const set = (patch: Patch) => (s: State): State => ({ ...s, ...patch })
 
 export const heat = (n: number) => (s: State): State => ({ ...s, heat: clamp(BOUNDS.heat, s.heat + n) })
 
 export const eliTrust = (n: number) => (s: State): State => ({ ...s, eliTrust: clamp(BOUNDS.eliTrust, s.eliTrust + n) })
 
 export const joan = (n: number) => (s: State): State => ({ ...s, joan: clamp(BOUNDS.joan, s.joan + n) })
+
+export const lucyHeat = (n: number) => (s: State): State => ({ ...s, lucyHeat: clamp(BOUNDS.lucyHeat, s.lucyHeat + n) })
 
 export const mom = (line: MomLine) => (s: State): State => ({
   ...s,

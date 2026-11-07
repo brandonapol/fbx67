@@ -1,5 +1,5 @@
 import { N } from '../names.ts'
-import { addEvidence, eliTrust, has, heat, mom, pipe, set } from '../state.ts'
+import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, set } from '../state.ts'
 import type { Choice, Scene, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 
@@ -159,7 +159,7 @@ Three nights later Lucy gets onto the base on her cousin's janitorial crew. She 
 
 By morning ${N.barnette} has a description: a Native woman seen leaving a squadron building on an Air Force base at night. He doesn't have a name yet. Lucy doesn't sleep at home for a week.`,
     choices: () => [
-      { label: 'Continue.', apply: pipe(addEvidence('coFiles'), (s) => ({ ...s, lucyHeat: s.lucyHeat + 2 })), next: 'a2_curly' },
+      { label: 'Continue.', apply: pipe(addEvidence('coFiles'), lucyHeat(2)), next: 'a2_curly' },
     ],
   },
   {
@@ -212,7 +212,7 @@ You ask Curly straight out where his money is coming from. The smile stays on hi
 
 "Texas boys stick together, Wade. Don't make me wonder about you."`,
     choices: (s) => [
-      ...(has(s, 'knot') ? [{ label: 'Lean on him: "I saw how that line was tied on Owen, Curly."', next: 'a2_confront_knot' }] : []),
+      ...(has(s, 'knot') ? [{ label: 'Lean on him: "I saw how that line was tied on Owen, Curly."', next: 'a2_confront_knot' } satisfies Choice] : []),
       { label: 'Let it drop. Eat your steak.', next: 'a2_flight' },
     ],
   },
