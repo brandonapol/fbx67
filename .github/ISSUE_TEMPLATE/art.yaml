@@ -1,0 +1,30 @@
+name: Art
+description: A still, a concept sheet, a model, or a style rule.
+title: "[Art] "
+labels: ["art"]
+body:
+  - type: dropdown
+    id: act
+    attributes:
+      label: Act
+      multiple: true
+      options:
+        - N/A
+        - Prologue (Owen)
+        - Act 1 (flood)
+        - Act 2 (winter)
+        - Act 3 (Lucy)
+        - Act 4 (breakup)
+        - Endings
+  - type: textarea
+    id: what
+    attributes:
+      label: What is needed?
+      description: Scene ids, characters, season, moral weather.
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: References
+      description: Concept sheets in docs/art/concepts, stills, photos.
