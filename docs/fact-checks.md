@@ -294,6 +294,7 @@ Ordered by impact.
 - Real descendants of E.T. Barnette: Alaska State Library genealogy resources.
 - Whether Alaska observed daylight saving time in summer 1967 (item 19): Fairbanks Daily News-Miner sun tables, July 1967.
 - Whether downtown 2nd Avenue was paved by 1967 (item 20): dated photographs in the UAF archives.
+- Which way 2nd Avenue runs in 1967 (item 22): a period USGS or city street map.
 
 ## Engine look checks (issue #32)
 
@@ -301,13 +302,13 @@ Questions raised by the art direction in [`art/README.md`](art/README.md#engine-
 
 ### 19. Daylight saving time in Fairbanks, summer 1967
 
-**Claim.** The Silver Pan and 2nd Avenue target frames are set at 11 pm in July 1967, with the sun at or just above the north-northwest horizon.
+**Claim.** The Prologue text (`text-game/src/scenes/prologue.ts`) says "The midnight sun is still up at eleven" in July 1967, and the engine keeps the sun's disc 0 to +4 degrees above the north-northwest horizon at 11 pm (a stated cheat in `art/README.md`).
 
 **Verdict.** Unknown.
 
-**Evidence.** Fairbanks kept Alaska-Hawaii Standard Time (UTC-10) in 1967. The Uniform Time Act of 1966 took effect in 1967 and let a state opt out of daylight saving by law; whether Alaska observed it in summer 1967 is not settled here. On standard time the sun at 11 pm in mid-July is about -1 to +0.5 degrees; on daylight time the same clock hour is an hour earlier by the sun, about 2 degrees higher.
+**Evidence.** Fairbanks kept Alaska-Hawaii Standard Time (UTC-10) in 1967. The Uniform Time Act of 1966 took effect in 1967 and let a state opt out of daylight saving by law; whether Alaska observed it in summer 1967 is not settled here. Computed for 64.84 N, 147.72 W at 23:00 local: on standard time (UTC-10) the sun is at -1.5 / -3.0 / -6.3 degrees on July 1 / 15 / 31; on daylight time (UTC-9) it is at +0.7 / -0.8 / -4.0 degrees. So the disc is above the horizon at eleven only on daylight time and only in early July; on standard time it is down all month, with the northern sky still bright.
 
-**Recommended change.** None needed: the art rule is written to hold either way (a glowing north-northwest horizon with the key light at or just above it). Settle it with the Fairbanks Daily News-Miner's sunrise and sunset tables for July 1967.
+**Recommended change.** The Prologue text depends on the answer: "still up at eleven" is literally true only on daylight time in early July. The engine keeps the disc up either way as an intentional cheat under "plausible, not archival". If the answer is standard time, consider "the sky is still bright at eleven" in the text. Settle it with the Fairbanks Daily News-Miner's sunrise and sunset tables for July 1967.
 
 ### 20. Was downtown 2nd Avenue paved by 1967?
 
@@ -326,3 +327,13 @@ Questions raised by the art direction in [`art/README.md`](art/README.md#engine-
 **Verdict.** Pending review.
 
 **Recommended change.** Before the frame guides any character or crowd work, have a Lower Tanana or Tanana Chiefs consultant look at how the Native resident is drawn, together with the Eli, Lucy and officer concept sheets already flagged in `art/README.md`.
+
+### 22. Which way does 2nd Avenue run, and can it hold a north-northwest sun?
+
+**Claim.** The `second-ave` target looks roughly northwest along the avenue toward the low midnight sun.
+
+**Verdict.** Unknown.
+
+**Evidence.** Downtown Fairbanks is laid out along the Chena, and 2nd Avenue is usually described as running roughly east-west, parallel to the river. A street running due east-west cannot show a north-northwest sun near its vanishing point; one that bends or runs a little off the grid can.
+
+**Recommended change.** Check the 1967 street grid against a USGS or city map of the period. If 2nd Avenue runs straight east-west, read the target as a cross street looking north toward the river, and stage the in-game sun off the avenue's axis.
