@@ -24,6 +24,7 @@ make serve/game
 - WASD or arrow keys to walk, or tap the ground.
 - E or Space to interact; hold it to hide the notes. On a phone, press and hold the prompt.
 - Number keys or Enter pick a panel option.
+- Sound (top right) opens a volume slider per bus. Audio starts on the first key press or tap.
 
 ## Layout
 
@@ -33,6 +34,12 @@ src/levels.ts     the four spaces as data, and Curly's look schedule
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   season and moral-weather presets
 src/render.ts     PlayCanvas: draws the game state, owns nothing
+src/mixer.ts      buses, slider gain, ducking and saved volumes; pure
+src/footsteps.ts  stride cadence from distance walked and surface lookup; pure
+src/soundscape.ts ambience beds, spot effects and surfaces per space as data, and their conditions
+src/synth.ts      procedural sounds on Web Audio: noise beds, walla, jukebox, footsteps, spot effects
+src/audio.ts      the audio engine: unlock on gesture, buses, positional panners, the per-frame sync
+src/sound-panel.ts the volume sliders
 src/main.ts       input, HUD and the frame loop
 src/drive.ts      a headless player for tests
 src/probe.ts      test-only hooks: fixed capture poses and per-frame stats; loaded only with ?test=1
@@ -40,11 +47,19 @@ smoke/            the end-to-end browser test, frame comparison and budget check
 smoke/baselines/  the committed frame per capture pose
 ```
 
+## Sound
+
+Every sound is synthesized at run time; sources and the size budget are in
+[`docs/audio/sources.md`](../docs/audio/sources.md). Four buses (ambience, effects, voices, music) feed a limiter;
+a story panel ducks voices and music. Spot effects and some beds are positional through Web Audio panners with the
+listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m at a walk, 1.1 m at
+the current pace), on the surface under Owen. Escape closes the sound panel.
+
 ## Tests
 
-- `make test/game/unit`: movement and sight, every mission rule, and parity: all nine prologue outcomes reach the
-  same `State` as the matching text-build path. Also the frame diff and the budget rules in `smoke/`, without a
-  browser.
+- `make test/game/unit`: movement and sight, every mission rule, the mixer and footstep rules, and parity: all nine
+  prologue outcomes reach the same `State` as the matching text-build path. Also the frame diff and the budget rules
+  in `smoke/`, without a browser.
 - `make test/game/smoke`: builds, serves and plays the prologue in headless Chromium. `SMOKE_SHOTS=<dir>` saves a
   screenshot per beat. It also:
   - freezes the clock and every animation layer at each beat, puts Owen at a fixed spot and holds the camera on a

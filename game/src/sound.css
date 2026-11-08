@@ -1,0 +1,37 @@
+#sound {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font: 13px/1.4 system-ui, sans-serif;
+}
+
+#sound-toggle {
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 2px 8px var(--shadow);
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+#sound-panel {
+  display: grid;
+  grid-template-columns: auto 140px;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 4px 14px var(--shadow);
+  color: var(--ink);
+}
+
+#sound-panel input {
+  width: 100%;
+  accent-color: var(--accent);
+}

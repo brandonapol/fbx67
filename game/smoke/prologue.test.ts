@@ -128,8 +128,20 @@ const play = async (page: Page, run: Run): Promise<void> => {
   run.downloadBytes = await fetched(initial)
   await snap(page, '01-bar')
   await capture(page, 'bar')
+  assert.equal(await page.evaluate(() => (window as any).__prologue.audio()), 'locked')
 
   await page.keyboard.press('1')
+  await page.waitForFunction(() => (window as any).__prologue.audio() === 'running', null, { timeout: 30000 })
+  await page.locator('#sound-toggle').click()
+  await page.locator('#sound-music').fill('20')
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('second-rush.volumes') ?? '{}'))
+  assert.equal(saved.music, 0.2)
+  const before = (await game(page)).pos
+  await page.keyboard.down('w')
+  await page.waitForFunction((z) => (window as any).__prologue.game().pos.z < z - 0.2, before.z, { timeout: 90000 })
+  await page.keyboard.up('w')
+  await page.keyboard.press('Escape')
+  assert.equal(await page.locator('#sound-panel').isHidden(), true)
   await tour(page, [0, 3.9], [-1.5, -2.2])
   await page.keyboard.press('e')
   await page.locator('#panel-buttons button[data-id="note:round"]').click()
@@ -182,6 +194,7 @@ const play = async (page: Page, run: Run): Promise<void> => {
   await snap(page, '07-end')
   const href = await page.evaluate(() => (window as any).__prologue.textBuild())
   assert.match(href, /\/fbx67\/#path=3,1,1,1,3,1$/)
+  assert.equal(await page.evaluate(() => (window as any).__prologue.audio()), 'running')
   assert.deepEqual(errors, [])
 }
 

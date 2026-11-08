@@ -216,7 +216,7 @@ export const solids = (s: Space): readonly Box[] => s.props.filter((p) => p.soli
 export const occluders = (s: Space): readonly Box[] => s.props.filter((p) => p.occludes).map((p) => p.box)
 
 const TURN = 0.9
-const WORK = 4.6
+export const WORK = 4.6
 const SWEEP = 2.8
 export const CURLY_PERIOD = WORK + TURN + SWEEP + TURN
 
