@@ -50,18 +50,19 @@ test('weather follows heat and trust', () => {
   assert.equal(weather(at({ eliTrust: -3 })), 'night')
 })
 
-test('every prologue scene says where, when and what next', () => {
-  const prologue = scenes.filter((sc) => sc.act === 'Prologue')
-  assert.ok(prologue.length > 0)
-  prologue.forEach((sc) => {
+const placed = scenes.filter((sc) => sc.act === 'Prologue' || sc.act === 'Act 1: Flood')
+
+test('every prologue and Act 1 scene says where, when and what next', () => {
+  assert.ok(placed.some((sc) => sc.act === 'Act 1: Flood'))
+  placed.forEach((sc) => {
     assert.ok(sc.place, `${sc.id} has no place`)
     assert.match(sc.clock ?? '', /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, `${sc.id} has no clock`)
     assert.ok(sc.goal, `${sc.id} has no goal`)
   })
 })
 
-test('the prologue clock only runs forward', () => {
-  const times = scenes.filter((sc) => sc.act === 'Prologue').map((sc) => sc.clock ?? '')
+test('the prologue and Act 1 clock only runs forward', () => {
+  const times = placed.map((sc) => sc.clock ?? '')
   times.slice(1).forEach((t, i) => assert.ok(t >= times[i], `${t} comes before ${times[i]}`))
 })
 
@@ -74,7 +75,7 @@ test('place, clock and goal read the current scene', () => {
   assert.equal(place(send(dock, 'fly')), 'surveyCamp')
   const flood = replay([1, 1, 1, 1, 1, 1]).at(-1)!
   assert.equal(flood.scene, 'a1_flood')
-  assert.equal(place(flood), undefined)
-  assert.equal(clock(flood), undefined)
-  assert.equal(goal(flood), undefined)
+  assert.equal(place(flood), 'floodedStreet')
+  assert.equal(clock(flood), '1967-08-15T09:00')
+  assert.equal(goal(flood), 'Hold the sandbag line.')
 })
