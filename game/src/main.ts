@@ -22,7 +22,8 @@ const placeEl = $('place')
 const barEl = $('hidebar')
 const barFill = $('hidebar-fill')
 
-const view = createView(canvas)
+placeEl.textContent = 'Loading…'
+const view = await createView(canvas, import.meta.env.BASE_URL)
 
 const keys = new Set<string>()
 const live: { g: Game; target?: Vec; touchHold: boolean; shown?: unknown } = { g: start(), touchHold: false }

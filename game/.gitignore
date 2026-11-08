@@ -2,3 +2,4 @@ node_modules
 dist
 smoke-shots
 smoke-report
+.cache
