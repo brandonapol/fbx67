@@ -35,12 +35,29 @@ src/lighting.ts   season and moral-weather presets
 src/render.ts     PlayCanvas: draws the game state, owns nothing
 src/main.ts       input, HUD and the frame loop
 src/drive.ts      a headless player for tests
-smoke/            the end-to-end browser test
+src/probe.ts      test-only hooks: fixed capture poses and per-frame stats; loaded only with ?test=1
+smoke/            the end-to-end browser test, frame comparison and budget checks
+smoke/baselines/  the committed frame per capture pose
 ```
 
 ## Tests
 
 - `make test/game/unit`: movement and sight, every mission rule, and parity: all nine prologue outcomes reach the
-  same `State` as the matching text-build path.
+  same `State` as the matching text-build path. Also the frame diff and the budget rules in `smoke/`, without a
+  browser.
 - `make test/game/smoke`: builds, serves and plays the prologue in headless Chromium. `SMOKE_SHOTS=<dir>` saves a
-  screenshot per beat.
+  screenshot per beat. It also:
+  - freezes the clock and every animation layer at each beat, puts Owen at a fixed spot and holds the camera on a
+    fixed shot (`poses` in `src/probe.ts`, `View.pose` in `src/render.ts`), hides the HUD and compares the frame with
+    `smoke/baselines/` (pixelmatch; a frame fails past 0.2% changed pixels);
+  - walks back and forth in each space for 10 s, recording draw calls, triangles, texture memory and CPU frame time,
+    and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md).
+
+  It refuses a port that serves another build, so parallel worktrees need their own `SMOKE_PORT`. Everything lands
+  in `smoke-report/` (`SMOKE_REPORT=<dir>` moves it): `frames/`, `diff/` for changed frames,
+  `perf.json` and `summary.md`. Set `CHROMIUM_PATH` to use a browser other than Playwright's.
+- `make generate/baselines`: the same run, but it overwrites `smoke/baselines/` with the new frames. Run it when a
+  change to the look is meant, read the new images, and commit them. Baselines are rendered by Playwright's
+  headless Chromium in software (SwiftShader), the same as CI, so generate them without `CHROMIUM_PATH`. If a
+  local run and CI ever disagree past the tolerance, take the frames from CI instead: download the
+  `prologue-frames-<run>-<attempt>` artifact and copy its `frames/*.png` into `smoke/baselines/`.

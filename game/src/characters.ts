@@ -35,6 +35,7 @@ export const loadCast = async (app: pc.Application, base: string): Promise<Cast>
     const l = loaded.get(who)
     if (!l) throw new Error(`cast member ${who} not loaded`)
     const root = new pc.Entity(who)
+    root.tags.add('cast')
     const body = (l.model.resource as pc.ContainerResource).instantiateRenderEntity({ castShadows: true, receiveShadows: true })
     root.addChild(body)
     body.addComponent('anim', { activate: true })
