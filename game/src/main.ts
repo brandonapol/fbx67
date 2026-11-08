@@ -153,7 +153,7 @@ view.app.on('update', (dtRaw: number) => {
   const dt = Math.min(dtRaw, 0.1)
   live.g = tick(live.g, input(), dt)
   view.sync(live.g, dt)
-  audio.sync(live.g)
+  audio.sync(live.g, dt)
   renderHud(live.g)
 })
 

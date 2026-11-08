@@ -15,7 +15,7 @@ of audio files: every sound below is synthesized at run time with the Web Audio 
 | Walla (bar murmur)                     | The Silver Pan            | Procedural: band-passed pink noise, 7 voices  | Original, repo |
 | Glasses clinking                       | The Silver Pan            | Procedural: decaying sine partials            | Original, repo |
 | Stove roar and crackle                 | The Silver Pan            | Procedural: brown noise and noise clicks      | Original, repo |
-| Jukebox placeholder tune               | The Silver Pan            | Procedural: an original I-vi-IV-V shuffle     | Original, repo |
+| Jukebox placeholder tune               | The Silver Pan            | Procedural: original I-vi-IV-V in even time  | Original, repo |
 | Room tone                              | Owen's room               | Procedural: low-passed brown noise            | Original, repo |
 | Distant street and passing cars        | Owen's room               | Procedural: filtered pink noise sweeps        | Original, repo |
 | Reel-to-reel hiss and motor            | Owen's room               | Procedural: noise, mains hum, sawtooth motor  | Original, repo |
@@ -31,6 +31,11 @@ of audio files: every sound below is synthesized at run time with the Web Audio 
 
 "Original, repo" means the sound is the output of code written for this project: no third-party recording or sample
 is involved, so it carries whatever license the repository carries.
+
+## Follow-ups
+
+- **A low tier for phones.** The bar's walla runs 7 voices (about 30 nodes) and a gravel step 7 grains. A low tier
+  (4 walla voices, 4 grains) for coarse-pointer or low-core devices is not built yet.
 
 ## Tried and not used
 

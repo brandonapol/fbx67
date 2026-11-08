@@ -83,6 +83,8 @@ export type Voice = Readonly<{ out: AudioNode; stop: (at: number) => void; tick?
 
 const QUIET = 0.0001
 
+export const RUMBLE_CUT = 70
+
 const envelope = (p: AudioParam, at: number, peak: number, attack: number, decay: number): number => {
   p.setValueAtTime(QUIET, at)
   p.exponentialRampToValueAtTime(Math.max(QUIET, peak), at + attack)
@@ -122,7 +124,8 @@ const noiseVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Noise, rand: Ran
   const src = loop(ctx, buffers[l.color])
   const f = filter(ctx, l.filter, l.freq, l.q)
   const g = gainNode(ctx, l.gain)
-  src.connect(f).connect(g)
+  const head = l.color === 'brown' ? src.connect(filter(ctx, 'highpass', RUMBLE_CUT)) : src
+  head.connect(f).connect(g)
   const w = l.wobble
   const mod = w ? lfo(ctx, w.rate, w.on === 'gain' ? l.gain * w.depth : l.freq * w.depth, w.on === 'gain' ? g.gain : f.frequency) : undefined
   src.start(ctx.currentTime, between(rand, 0, BUFFER_SECONDS))
@@ -206,7 +209,7 @@ const burst = (
 }
 
 const jukeboxVoice = (ctx: BaseAudioContext, l: Extract<Layer, { kind: 'jukebox' }>): Voice => {
-  const cabinet = filter(ctx, 'lowpass', 1700, 1.2)
+  const cabinet = filter(ctx, 'lowpass', 3000, 0.9)
   const g = gainNode(ctx, l.gain)
   cabinet.connect(g)
   const beat = 60 / TEMPO
@@ -216,8 +219,8 @@ const jukeboxVoice = (ctx: BaseAudioContext, l: Extract<Layer, { kind: 'jukebox'
     if (s.next < now) s.next = now + 0.05
     while (s.next < now + 0.25) {
       const b = beatAt(s.i)
-      tone(ctx, cabinet, 'triangle', midiHz(b.bass), s.next, 0.5, 0.01, beat * 0.8)
-      b.chord?.forEach((m) => tone(ctx, cabinet, 'square', midiHz(m), s.next, 0.06, 0.01, beat * 0.45))
+      tone(ctx, cabinet, 'triangle', midiHz(b.bass), s.next, 0.3, 0.01, beat * 0.8)
+      b.chord?.forEach((m) => tone(ctx, cabinet, 'square', midiHz(m), s.next, 0.3, 0.01, beat * 0.45))
       s.i += 1
       s.next += beat
     }

@@ -1,5 +1,5 @@
 import type { Bus, Volumes } from './mixer.ts'
-import { BUSES, STORAGE_KEY, busGains, parseVolumes, serializeVolumes, withVolume } from './mixer.ts'
+import { BUSES, LIMITER, STORAGE_KEY, busGains, parseVolumes, serializeVolumes, withVolume } from './mixer.ts'
 import type { Gait } from './footsteps.ts'
 import { pace, standing, surfaceAt } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
@@ -16,7 +16,7 @@ export type Status = 'locked' | 'running' | 'suspended' | 'unavailable'
 
 export type Audio = Readonly<{
   unlock: () => void
-  sync: (g: Game) => void
+  sync: (g: Game, dt: number) => void
   volumes: () => Volumes
   setVolume: (bus: Bus, v: number) => void
   status: () => Status
@@ -32,6 +32,18 @@ const EAR = 1.6
 const SOURCE = 1.2
 const FADE = 0.8
 const SMOOTH = 0.15
+
+const whenDone = (ctx: AudioContext, keep: AudioNode, at: number, done: () => void): void => {
+  const timer = ctx.createConstantSource()
+  timer.offset.value = 0
+  timer.connect(keep)
+  timer.onended = () => {
+    timer.disconnect()
+    done()
+  }
+  timer.start()
+  timer.stop(at)
+}
 
 const panner = (ctx: AudioContext, dest: AudioNode, at: Vec): PannerNode => {
   const p = ctx.createPanner()
@@ -115,8 +127,11 @@ export const createAudio = (store: Storage | undefined): Audio => {
     if (!Ctor) return undefined
     const ctx = new Ctor()
     const limiter = ctx.createDynamicsCompressor()
-    limiter.threshold.value = -6
-    limiter.ratio.value = 8
+    limiter.threshold.value = LIMITER.threshold
+    limiter.knee.value = LIMITER.knee
+    limiter.ratio.value = LIMITER.ratio
+    limiter.attack.value = LIMITER.attack
+    limiter.release.value = LIMITER.release
     limiter.connect(ctx.destination)
     const buses = Object.fromEntries(
       BUSES.map((b) => {
@@ -134,7 +149,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
     try {
       live.graph = live.graph ?? build()
       if (!live.graph) live.failed = true
-      else if (live.graph.ctx.state === 'suspended') void live.graph.ctx.resume().catch(() => undefined)
+      else if (live.graph.ctx.state !== 'running') void live.graph.ctx.resume().catch(() => undefined)
     } catch {
       live.failed = true
     }
@@ -142,8 +157,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
 
   const oneShot = (gr: Graph, bus: Bus, at: Vec, play: (dest: AudioNode) => number): void => {
     const p = panner(gr.ctx, gr.buses[bus], at)
-    const end = play(p)
-    setTimeout(() => p.disconnect(), Math.max(0, end - gr.ctx.currentTime) * 1000 + 250)
+    whenDone(gr.ctx, p, play(p) + 0.25, () => p.disconnect())
   }
 
   const enter = (gr: Graph, space: SpaceId, listener: Vec): Scene => {
@@ -179,7 +193,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
       f.gain.linearRampToValueAtTime(0, now + FADE)
     })
     s.placed.forEach((p) => p.voice.stop(now + FADE + 0.05))
-    setTimeout(() => s.fades.forEach((f) => f.disconnect()), (FADE + 0.3) * 1000)
+    whenDone(gr.ctx, s.fades[0], now + FADE + 0.3, () => s.fades.forEach((f) => f.disconnect()))
   }
 
   const events = (gr: Graph, s: Scene, g: Game): void => {
@@ -193,15 +207,15 @@ export const createAudio = (store: Storage | undefined): Audio => {
     })
   }
 
-  const steps = (gr: Graph, g: Game): void => {
-    const { gait, falls } = pace(live.gait, walked(live.prev, g))
+  const steps = (gr: Graph, g: Game, dt: number): void => {
+    const { gait, falls } = pace(live.gait, walked(live.prev, g), dt)
     live.gait = gait
     if (!falls) return
     const surface = surfaceAt(soundscapes[g.space].ground, g.pos)
     oneShot(gr, 'sfx', g.pos, (dest) => footstep(gr.ctx, gr.buffers, surface, dest, rand))
   }
 
-  const run = (gr: Graph, g: Game): void => {
+  const run = (gr: Graph, g: Game, dt: number): void => {
     const now = gr.ctx.currentTime
     listen(gr.ctx, g.pos)
     const gains = busGains(live.volumes, ducked(g))
@@ -219,14 +233,15 @@ export const createAudio = (store: Storage | undefined): Audio => {
     })
     events(gr, s, g)
     arrivals(live.prev, g).forEach((a) => oneShot(gr, 'sfx', g.pos, (dest) => spot(gr.ctx, gr.buffers, a, dest, rand)))
-    steps(gr, g)
+    steps(gr, g, dt)
   }
 
-  const sync = (g: Game): void => {
+  const sync = (g: Game, dt: number): void => {
     const gr = live.graph
     try {
-      if (gr && gr.ctx.state === 'running') run(gr, g)
-    } catch {
+      if (gr && gr.ctx.state === 'running') run(gr, g, dt)
+    } catch (e) {
+      console.warn('audio disabled after an error in the frame loop', e)
       live.failed = true
       live.graph = undefined
       void gr?.ctx.close().catch(() => undefined)

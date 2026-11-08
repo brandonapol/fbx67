@@ -6,21 +6,21 @@ export type Region = Readonly<{ box: Box; surface: Surface }>
 
 export type Ground = Readonly<{ surface: Surface; regions: readonly Region[] }>
 
-export const STRIDE = 0.8
+export const strideFor = (speed: number): number => 0.42 + 0.22 * Math.max(0, speed)
 
-const FIRST = 0.6 * STRIDE
+const FIRST = 0.6
 
-export type Gait = Readonly<{ carry: number; steps: number }>
+export type Gait = Readonly<{ phase: number; steps: number }>
 
-export const standing: Gait = { carry: FIRST, steps: 0 }
+export const standing: Gait = { phase: FIRST, steps: 0 }
 
 export type Stride = Readonly<{ gait: Gait; falls: number }>
 
-export const pace = (gait: Gait, walked: number, stride: number = STRIDE): Stride => {
-  if (!(walked > 1e-4)) return { gait: { ...gait, carry: FIRST }, falls: 0 }
-  const carry = gait.carry + walked
-  const falls = Math.floor(carry / stride)
-  return { gait: { carry: carry - falls * stride, steps: gait.steps + falls }, falls }
+export const pace = (gait: Gait, walked: number, dt: number): Stride => {
+  if (!(walked > 1e-4) || !(dt > 0)) return { gait: { ...gait, phase: FIRST }, falls: 0 }
+  const phase = gait.phase + walked / strideFor(walked / dt)
+  const falls = Math.floor(phase)
+  return { gait: { phase: phase - falls, steps: gait.steps + falls }, falls }
 }
 
 const inside = (p: Vec, b: Box): boolean => Math.abs(p.x - b.x) <= b.w / 2 && Math.abs(p.z - b.z) <= b.d / 2

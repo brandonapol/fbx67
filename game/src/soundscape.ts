@@ -60,10 +60,10 @@ export const CREEK_Z = 9.2
 const bar: Soundscape = {
   ground: { surface: 'wood', regions: [] },
   layers: [
-    { kind: 'walla', bus: 'voice', gain: 0.5, voices: 7 },
+    { kind: 'walla', bus: 'voice', gain: 1.6, voices: 7 },
     { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 160, gain: 0.25 },
-    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 90, gain: 0.5, at: STOVE_AT, wobble: { rate: 0.3, depth: 0.2, on: 'gain' } },
-    { kind: 'jukebox', bus: 'music', gain: 0.35, at: JUKEBOX_AT },
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 90, gain: 0.2, at: STOVE_AT, wobble: { rate: 0.3, depth: 0.2, on: 'gain' } },
+    { kind: 'jukebox', bus: 'music', gain: 1.2, at: JUKEBOX_AT },
   ],
   events: [
     { spot: 'clink', bus: 'ambience', every: [0.8, 3.5], at: vec(-1.5, -3.6), spread: 3 },
@@ -93,7 +93,7 @@ const camp: Soundscape = {
   layers: [
     { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 1400, q: 0.9, gain: 0.5, at: vec(0, CREEK_Z), alongX: true, wobble: { rate: 0.7, depth: 0.35, on: 'freq' } },
     { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 3200, q: 1.4, gain: 0.18, at: vec(0, CREEK_Z), alongX: true, wobble: { rate: 1.3, depth: 0.4, on: 'gain' } },
-    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 320, gain: 0.35, wobble: { rate: 0.07, depth: 0.7, on: 'gain' } },
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 320, gain: 0.18, wobble: { rate: 0.07, depth: 0.7, on: 'gain' } },
     { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 900, q: 0.7, gain: 0.08, wobble: { rate: 0.11, depth: 0.8, on: 'gain' } },
   ],
   events: [
@@ -108,9 +108,9 @@ const flood: Soundscape = {
     regions: [{ box: { x: 0, z: 7.0, w: 6, d: 0.8 }, surface: 'wood' }],
   },
   layers: [
-    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain: 0.55, wobble: { rate: 0.13, depth: 0.25, on: 'gain' } },
-    { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 4200, q: 0.5, gain: 0.2 },
-    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 520, gain: 0.7, at: vec(0, -2), wobble: { rate: 0.21, depth: 0.4, on: 'freq' } },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain: 0.55, wobble: { rate: 0.09, depth: 0.6, on: 'gain' } },
+    { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 4200, q: 0.5, gain: 0.2, wobble: { rate: 0.23, depth: 0.6, on: 'gain' } },
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 520, gain: 0.15, wobble: { rate: 0.21, depth: 0.4, on: 'freq' } },
   ],
   events: [],
 }

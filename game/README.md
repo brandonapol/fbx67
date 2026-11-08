@@ -50,7 +50,8 @@ smoke/            the end-to-end browser test
 Every sound is synthesized at run time; sources and the size budget are in
 [`docs/audio/sources.md`](../docs/audio/sources.md). Four buses (ambience, effects, voices, music) feed a limiter;
 a story panel ducks voices and music. Spot effects and some beds are positional through Web Audio panners with the
-listener on Owen. Footsteps fall every 0.8 m walked, on the surface under Owen.
+listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m at a walk, 1.1 m at
+the current pace), on the surface under Owen. Escape closes the sound panel.
 
 ## Tests
 

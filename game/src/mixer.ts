@@ -51,3 +51,5 @@ export const parseVolumes = (raw: string | null | undefined): Volumes => {
 }
 
 export const serializeVolumes = (volumes: Volumes): string => JSON.stringify(volumes)
+
+export const LIMITER = { threshold: -3, knee: 0, ratio: 20, attack: 0.003, release: 0.1 } as const

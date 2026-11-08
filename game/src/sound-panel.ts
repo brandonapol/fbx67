@@ -3,6 +3,8 @@ import type { Audio } from './audio.ts'
 import type { Bus } from './mixer.ts'
 import { BUSES, BUS_LABELS } from './mixer.ts'
 
+const ADJUST: ReadonlySet<string> = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'])
+
 const slider = (audio: Audio, bus: Bus): readonly HTMLElement[] => {
   const id = `sound-${bus}`
   const label = Object.assign(document.createElement('label'), { htmlFor: id, textContent: BUS_LABELS[bus] })
@@ -16,6 +18,7 @@ const slider = (audio: Audio, bus: Bus): readonly HTMLElement[] => {
   })
   input.dataset.bus = bus
   input.addEventListener('input', () => audio.setVolume(bus, Number(input.value) / 100))
+  input.addEventListener('pointerup', () => input.blur())
   return [label, input]
 }
 
@@ -26,14 +29,22 @@ export const mountSoundPanel = (audio: Audio, parent: HTMLElement = document.bod
   panel.setAttribute('role', 'group')
   panel.setAttribute('aria-label', 'Volume')
   panel.append(...BUSES.flatMap((b) => slider(audio, b)))
-  toggle.setAttribute('aria-expanded', 'false')
+  const show = (open: boolean): void => {
+    panel.hidden = !open
+    toggle.setAttribute('aria-expanded', String(open))
+    if (!open && document.activeElement instanceof HTMLElement && root.contains(document.activeElement)) document.activeElement.blur()
+  }
+  show(false)
   toggle.addEventListener('click', () => {
-    panel.hidden = !panel.hidden
-    toggle.setAttribute('aria-expanded', String(!panel.hidden))
+    show(panel.hidden)
     toggle.blur()
   })
-  root.addEventListener('keydown', (e) => e.stopPropagation())
-  root.addEventListener('pointerdown', (e) => e.stopPropagation())
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel.hidden) show(false)
+  })
+  root.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLInputElement && ADJUST.has(e.key)) e.stopPropagation()
+  })
   root.append(toggle, panel)
   parent.append(root)
   return root
