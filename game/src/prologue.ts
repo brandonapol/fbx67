@@ -6,10 +6,12 @@ import { add, angleBetween, angleTo, distance, length, move, normalize, pick, sc
 import type { SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 
+import { RUN_SPEED, WALK_SPEED } from './cast.ts'
+
 export { HIDE_TIME, ROUND_TIME } from './levels.ts'
 
-export const WALK = 1.4
-export const JOG = 3.5
+export const WALK = WALK_SPEED
+export const JOG = RUN_SPEED
 export const ACCEL = 9
 export const DECEL = 12
 export const TURN_RATE = 10
@@ -202,7 +204,7 @@ const walk = (g: Game, input: Input, dt: number): Game => {
   const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
   const step = arriving ? scale(normalize(input.dir), input.limit ?? 0) : scale(vel, dt)
   const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(spaces[g.space])) : g.pos
-  return { ...g, pos, facing, vel: arriving ? zero : scale(sub(pos, g.pos), 1 / dt) }
+  return { ...g, pos, facing, vel: arriving ? zero : dt > 0 ? scale(sub(pos, g.pos), 1 / dt) : g.vel }
 }
 
 export const tick = (g: Game, input: Input, dt: number): Game => {

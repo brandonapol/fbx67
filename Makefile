@@ -54,8 +54,12 @@ check/game/typecheck: ## tsc on game
 test/game/unit: ## Mission logic and story parity tests
 	cd $(GAME) && npm run -s test
 
-test/game/smoke: build/game ## Play the prologue end to end in headless Chromium
+test/game/smoke: build/game ## Play the prologue in headless Chromium; compare frames, check docs/perf.md budgets
 	cd $(GAME) && npm run -s smoke
+
+.PHONY: generate/baselines
+generate/baselines: build/game ## Replay the smoke test and overwrite game/smoke/baselines with its frames
+	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden
@@ -86,9 +90,12 @@ test/text/matrix: ## Decision matrix matches routes/matrix-summary.json
 test/text/explore: ## Exhaustive sweep of every reachable state (~15 s, 1.5 GB)
 	cd $(TEXT) && npm run -s explore
 
-.PHONY: generate/routes
+.PHONY: generate/routes generate/characters
 generate/routes: ## Regenerate golden transcripts and the matrix summary
 	cd $(TEXT) && npm run -s golden
+
+generate/characters: ## Rebuild game/public/characters from game/assets/characters.json
+	cd $(GAME) && NODE_USE_ENV_PROXY=1 node tools/characters.ts
 
 .PHONY: play serve/web build/web serve/game build/game build/pages
 play: ## Play the text build in the terminal

@@ -52,7 +52,8 @@ const stickEl = $('stick')
 const knobEl = $('stick-knob')
 const helpEl = $('help')
 
-const view = createView(canvas)
+placeEl.textContent = 'Loading…'
+const view = await createView(canvas, import.meta.env.BASE_URL)
 
 const store = safeStore(() => window.localStorage)
 
@@ -408,3 +409,15 @@ Object.assign(window, {
     },
   },
 })
+
+if (new URLSearchParams(window.location.search).get('test') === '1') {
+  void import('./probe.ts').then(({ installProbe }) =>
+    installProbe(view, {
+      get: () => live.g,
+      set: (g) => {
+        live.g = g
+        live.target = undefined
+      },
+    }),
+  )
+}
