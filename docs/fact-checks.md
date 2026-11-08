@@ -28,22 +28,22 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 16 | Fairbanks hospital in 1967 | Low | Confirmed, with a timeline problem | Low. St. Joseph's was flooded and evacuated in 1967 and closed in June 1968. Fairbanks Memorial opened in 1972. |
 | 17 | Tanana Chiefs Conference founding and 1967-68 activity; 1915 Wickersham meeting; Minto relocation | Low | Partly | Low. 1962 organizing meeting confirmed, formal incorporation 1971; 1915 meeting confirmed (Wickersham was then Delegate, not judge); Minto moved in 1969 (some sources say 1971). |
 | 18 | Peacetime military mail reading in 1967 | Low | Confirmed (design's assumption) | None. Mail censorship ended after WWII and Korea; the CO reading mail off the books is the right call. |
-| 19 | Downtown street grid and names | Map | Confirmed; order west of Cushman plausible | Low. Only street signs and one backdrop depend on it. |
-| 20 | Cushman Street bridge | Map | Confirmed | Low. The 1967 bridge is the 1960 span, not the 1917 truss. |
+| 19 | Downtown street grid and names | Map | Names confirmed; order plausible (address evidence) | Medium. Lacey and Noble are east of Cushman, so the footprint is sited east. |
+| 20 | Cushman Street bridge | Map | Confirmed the truss was gone; span date plausible | Low. A late-1950s span (1958–60), not the 1917 truss. |
 | 21 | Second Avenue's bar row | Map | Confirmed; bar names invented | None. Use fictional names; 1967 is smaller than the 1970s boom. |
 | 22 | Nordale Hotel | Map | Confirmed | None. South side of Second, Cushman to Lacey; burned 1972. |
-| 23 | Pioneer Hotel | Map | Wrong for 1967 | Low. Burned 1952; its corner is a gravel lot on the map. |
+| 23 | Pioneer Hotel | Map | Wrong for 1967; lot spot invented | Low. Burned 1952; a gravel lot west of Barnette, off the play area. |
 | 24 | Lacey Street Theater | Map | Confirmed; July 1967 status unknown | Low. A 1966 fire; "reopening soon" is safe. |
-| 25 | Northern Commercial Company | Map | Confirmed | None. |
+| 25 | Northern Commercial Company | Map | Confirmed; west side plausible | None. Between Cushman and Turner, west of Cushman. |
 | 26 | Immaculate Conception church across the river | Map | Confirmed | None. |
 | 27 | St. Joseph's Hospital's location | Map | Confirmed | None. North bank, downstream of the church. |
-| 28 | Co-op Drug | Map | Plausible | None. Building confirmed (1927); store dates not. |
+| 28 | Co-op Drug | Map | Plausible | None. Building confirmed (1927); south side of Second, next to the Nordale. |
 | 29 | Polaris and Northward buildings | Map | Confirmed | None. The 1952 skyline. |
 | 30 | Federal Building, post office, post box | Map | Plausible | Low. Red, white and blue boxes in 1967; the land office stays a storefront. |
 | 31 | Alaskaland / the A-67 exposition | Map | Confirmed | Low. In July 1967 say "A-67", not "Alaskaland". |
 | 32 | Street surfaces, boardwalks, summer dust | Map | Plausible | None. |
 | 33 | Building types | Map | Plausible | None. |
-| 34 | Flood depths downtown | Map | Confirmed at the marks; plausible between | Medium. Sets the flooded variant's water: 1.5 m at the bank to 0.15 m near Fifth. |
+| 34 | Flood depths downtown | Map | Confirmed at the marks; plausible between | Medium. One water plane at y 1.2: 1.5 m at the bank, 0.6 m at the Co-op, 0.38 m at the post office, 0.15 m at City Hall (800 Cushman). |
 | 35 | Floatplanes on the Chena; the float dock | Map | Plausible; dock invented | Low. No documented 1967 downtown dock; Phillips Field was the small-plane base. |
 | 36 | Native families in town in July | Map | Plausible; consultant review | Medium. Ordinary errands and work; avoid bar-room color and the period fire slur. |
 | 37 | Golden Days and the games on the riverbank | Map | Confirmed for 1961; plausible for 1967 | Low. Optional dressing. |
@@ -301,52 +301,69 @@ search-result excerpts; page fetches were blocked in this session too, so spot-c
 
 ### 19. Street grid and names
 
-**Claim.** Avenues are numbered from the river: First Avenue on the south bank, then Second, Third, Fourth, Fifth.
-North-south streets have names. West of Cushman the map runs Cushman, Lacey, Noble; a short lane (Blanchfield)
-runs between Cushman and Lacey from First to Second.
+**Claim.** Avenues are numbered from the river: First Avenue on the south bank, then Second, Third, Fourth and Fifth.
+North-south streets have names. East of Cushman the order is Lacey, then Noble; west of Cushman it is Barnette, with
+Turner, Wickersham and Cowles further west. A short lane (Blanchfield) runs between Cushman and Lacey from First to
+Second.
 
-**Verdict.** Confirmed for the numbering and the names; plausible for the order west of Cushman.
+**Verdict.** Confirmed for the numbering and the names. Plausible for the order: the address numbers below support
+it strongly, but no map was seen.
 
 **Evidence.**
-- UAF oral histories: First Avenue "was first called Front Street"; streets parallel to the river are numbered
-  avenues and the cross streets have names; Cushman is named for Congressman Francis W. Cushman; "the little street
-  between Cushman and Lacey" honors Percy Blanchfield and lies between First and Second, "right across from the
-  co-op" (https://oralhistory.library.uaf.edu/74/74-07_t01.pdf).
-- Noble Street is named for George Noble, who owned one of the first saloons on First Avenue (same transcript, via
-  search excerpt).
-- The Nordale stood on Second "between Cushman and Lacey" (University of Alaska regents profile of Anton Nordale:
-  https://www.alaska.edu/uajourney/regents/1917-1923-anton-j.-nordal/; and a Fairbanks guide via search).
-- Dunkel Street is east of downtown, by the Wendell Street bridge (Morris Thompson Center at 101 Dunkel; the Gould
-  cabin at 105 Dunkel was "just upstream from the riverfront business district" about 1910:
-  https://www.sketchesofalaska.com/2022/01/this-dunkel-street-cabin-is-one-of-the-oldest-buildings-in-downtown-fairbanks.html).
-  Barnette Street is parallel to Cushman on its east side.
-- Conflict: the Northward Building is said to fill the block "between Lacey and Noble Streets, and Third and Fourth"
-  (https://www.sketchesofalaska.com/?p=435), but its address, 455 Third Avenue, falls in the same hundred as the
-  Polaris (427 First Avenue, at First and Lacey). Depending on how the address numbers run, Noble could lie between
-  Cushman and Lacey rather than west of Lacey.
+- **Names and numbering.** UAF oral histories: First Avenue "was first called Front Street"; streets parallel to the
+  river are numbered avenues and the cross streets have names; Cushman is named for Congressman Francis W. Cushman.
+  "The little street between Cushman and Lacey" honors Percy Blanchfield; it lies between First and Second, "right
+  across from the co-op" (https://oralhistory.library.uaf.edu/74/74-07_t01.pdf). Noble Street is named for George
+  Noble, who owned one of the first saloons on First Avenue (same transcript, via search excerpt).
+- **Address numbers fall going east.**
+  - First Avenue numbers rise toward Cowles: the Thomas Memorial Library is 901 First Avenue at Cowles, the
+    Oddfellows Hall 825, St. Matthew's 1029.
+  - Dunkel Street lies upstream of the old business district: the Gould cabin at 105 Dunkel was "just upstream from
+    the riverfront business district" about 1910, and the Morris Thompson Center is at 101 Dunkel by the Wendell
+    Street bridge
+    (https://www.sketchesofalaska.com/2022/01/this-dunkel-street-cabin-is-one-of-the-oldest-buildings-in-downtown-fairbanks.html).
+    The Chena flows west, so upstream is east.
+- **The 500 block of Second is between Cushman and Lacey.**
+  - The Lacey Street Theater is 500 Second Avenue, at Lacey.
+  - The Co-op is 535 and the Mecca 549.
+  - The Nordale stood on Second "between Cushman and Lacey" (UA regents profile:
+    https://www.alaska.edu/uajourney/regents/1917-1923-anton-j.-nordal/).
+  - The Blanchfield lane, between Cushman and Lacey, is "across from the co-op".
+  - So Lacey is the low (500) end of that block, and Cushman is about the 600 line.
+- **The 400 block is between Lacey and Noble.** The Polaris is 427 First Avenue at First and Lacey (123 Lacey). The
+  Northward is 455 Third Avenue, on the block "between Lacey and Noble Streets, and Third and Fourth"
+  (https://www.sketchesofalaska.com/?p=435).
+- **Together:** numbers fall going east, from Cowles (900s) through Cushman (about 600) to Lacey (500) and Noble
+  (400). Lacey and Noble are east of Cushman; Barnette, Turner and Wickersham are west.
+- **Supporting:** the Northern Commercial Company's block is "between Cushman and Turner" (item 25), and the Pioneer
+  Hotel stood half a block west of the N.C. (item 23).
+- **Loose end:** one account of Immaculate Conception's move puts its first site on Dunkel near Front Street, "some
+  four hundred feet upstream" of where it now stands. That distance doesn't fit Dunkel lying east of Lacey and
+  Noble; the account may be measuring from somewhere else.
 
-**Recommended change.** Keep Lacey as the first street west of Cushman (three sources put the Nordale and the
-Blanchfield lane "between Cushman and Lacey"), and check the order against a city map or a 1960s Sanborn map
-before the street signs are modeled. Only the signs and the Northward's backdrop position depend on it.
+**Recommended change.** The town map is sited east of Cushman on this evidence. Confirm against a period map (a
+1960s Sanborn map, or USGS Hydrologic Atlas 294) before the street signs are modeled.
 
 ### 20. The Cushman Street bridge
 
-**Claim.** A two-lane bridge carries Cushman Street over the Chena; in 1967 it is the 1960 span.
+**Claim.** A two-lane bridge carries Cushman Street over the Chena; in 1967 it is a late-1950s span (1958–60).
 
-**Verdict.** Confirmed, with a date conflict for the earlier bridge's removal.
+**Verdict.** Confirmed that the 1917 truss was gone by 1967. The newer span's exact year is plausible: sources give
+1958 and 1960.
 
-**Evidence.** Early crossings were a ferry and wooden bridges that breakup took out each spring; a steel bridge was
+**Evidence.** Early crossings were a ferry, then wooden bridges that breakup took out each spring. A steel bridge was
 approved in 1915 and finished in 1917 under the Alaska Road Commission and the city (hmdb.org marker:
 https://www.hmdb.org/m.asp?m=47406). That truss was replaced in the 1950s and floated or hauled west to become a
 bridge on the Kuzitrin River near Nome (https://www.alaska.org/detail/kuzitrin-river-bridge); sources give the
-replacement as the late 1950s or 1958. The current bridge was "originally built in 1960" and later rehabilitated
-(https://www.alaska.org/detail/cushman-street-bridge).
+replacement as the late 1950s or 1958. A visitor guide says the current bridge was "originally built in 1960" and
+later rehabilitated (https://www.alaska.org/detail/cushman-street-bridge).
 
-**Recommended change.** Model a plain 1960 highway bridge (concrete deck, low rails, walks), not a steel truss.
+**Recommended change.** Model a plain late-1950s highway bridge (concrete deck on girders, low rails, walks), not a
+steel truss. The deck profile in `town-map.md` (at grade at the banks, crowned at mid-river) is ours.
 
 ### 21. Second Avenue's bar row
 
-**Claim.** Second Avenue between Cushman and the blocks west of Lacey is the bar row; the game's bars have
+**Claim.** Second Avenue from Cushman east past Lacey is the bar row; the game's bars have
 fictional names.
 
 **Verdict.** Confirmed for the place; names in the game invented.
@@ -382,15 +399,16 @@ collection has a "Nordale Hotel Fire" image.
 
 **Claim.** The issue listed the Pioneer Hotel as a landmark.
 
-**Verdict.** Wrong for 1967.
+**Verdict.** Wrong for 1967: it burned in 1952. The lot's spot on the map is invented.
 
 **Evidence.** The Pioneer Hotel stood on the waterfront about half a block west of the Northern Commercial Company
-and was destroyed by fire in 1952; an Alaska State Library fire log for 1952 lists the Pioneer Grill and Pioneer
-Bar (https://www.sketchesofalaska.com/2012/10/fairbanks-early-pioneer-hotel-no-longer.html;
+and was destroyed by fire in 1952. An Alaska State Library fire log for 1952 lists the Pioneer Grill and Pioneer Bar
+(https://www.sketchesofalaska.com/2012/10/fairbanks-early-pioneer-hotel-no-longer.html;
 https://library.alaska.gov/hist/hist_docs/docs/ms010/ms10_alaska_historical_files_F.pdf).
 
-**Recommended change.** No Pioneer Hotel on the map. Its corner at First and Cushman is a gravel lot (invented
-placement, consistent with "half a block west of the N.C."). An old-timer can still say "where the Pioneer was".
+**Recommended change.** No Pioneer Hotel. The map shows a gravel lot on First Avenue west of Barnette, off the play
+area (item 19 puts the N.C. west of Cushman, and the hotel was west of the N.C.). The exact spot is ours. An
+old-timer can still say "where the Pioneer was".
 
 ### 24. The Lacey Street Theater
 
@@ -405,21 +423,24 @@ closed about 1980-83, now the ice museum (National Register nomination:
 https://npgallery.nps.gov/NRHP/GetAsset/NRHP/90000878_text; SAH Archipedia: https://sah-archipedia.org/node/3280;
 hmdb.org: https://www.hmdb.org/m.asp?m=58989).
 
-**Recommended change.** Use it. If its reopening date can't be found, a marquee that reads "REOPENING SOON" or a
-current 1967 picture both work; the first is the safer choice and a nice detail.
+**Recommended change.** Use it. At 500 Second Avenue it is on the Cushman–Lacey block, at the Lacey corner. The map
+puts it on Second's north side, because the Co-op's odd number is on the south side; that is plausible, not checked.
+If its reopening date can't be found, a marquee that reads "REOPENING SOON" is the safer choice and a nice detail.
 
 ### 25. The Northern Commercial Company
 
-**Claim.** The N.C.'s department store fills the riverfront block east of Cushman, with a power plant beyond.
+**Claim.** The N.C.'s department store fills the riverfront block just west of Cushman, with its power plant on the
+same block.
 
-**Verdict.** Confirmed.
+**Verdict.** Confirmed for the store and the block. The west side follows item 19: plausible.
 
-**Evidence.** The N.C. built its Fairbanks store in 1904 between Cushman and Turner streets on the site of
-Barnette's first trading post, then a power plant with two tall smokestacks and a garage and machine shop on the
-same block; the store remained the city's foremost department store until the early 1970s (hmdb.org marker:
+**Evidence.** The N.C. built its Fairbanks store in 1904 "between Cushman and Turner streets" on the site of
+Barnette's first trading post. A power plant with two tall smokestacks and a garage and machine shop followed on the
+same block. The store remained the city's foremost department store until the early 1970s (hmdb.org marker:
 https://www.hmdb.org/m.asp?m=47406; https://www.sketchesofalaska.com/2012/05/warehouse-all-that-remains-of-northern.html).
 
-**Recommended change.** None. Locals said "the N.C."; keep the two stacks in the skyline.
+**Recommended change.** None. Locals said "the N.C.". Keep the two stacks in the skyline; on the map they are on
+the west, beyond the play area.
 
 ### 26. Immaculate Conception church
 
@@ -450,18 +471,24 @@ and item 16).
 
 ### 28. Co-op Drug
 
-**Claim.** A drugstore with a fountain-lunch counter in a concrete building on Second Avenue just west of Lacey.
+**Claim.** A drugstore with a fountain-lunch counter, in a concrete building on the south side of Second Avenue
+between Cushman and Lacey, next to the Nordale.
 
-**Verdict.** Plausible. The building is confirmed; the drugstore's dates are not.
+**Verdict.** Plausible. The building is confirmed. Which side of Second it is on follows from the Blanchfield lane
+(item 19). The drugstore's dates are not confirmed.
 
-**Evidence.** The Co-op Plaza, 535 Second Avenue (some sources say 525), was built in 1927 as the Empress Theater
-and was Fairbanks's first concrete building (https://www.investfairbanks.com/fusion_element/fnl-co-op-plaza/;
-News-Miner Interior Scrapbook, March 3, 2024). A News-Miner feature describes the Co-op Drugstore's grand opening on
-Second Avenue with a fountain-lunch counter, year not shown in the excerpt
-(https://www.newsminer.com/features/co-op-drugstore-grand-opening-makes-a-splash-in-downtown-fairbanks/article_d8c7a8ba-6893-11ef-9700-475fc4a51cb6.html).
-The building carries a 1967 high-water mark (item 34).
+**Evidence.**
+- The Co-op Plaza, 535 Second Avenue (some sources say 525), was built in 1927 as the Empress Theater and was
+  Fairbanks's first concrete building (https://www.investfairbanks.com/fusion_element/fnl-co-op-plaza/; News-Miner
+  Interior Scrapbook, March 3, 2024).
+- The Blanchfield lane, which runs from First to Second north of Second Avenue, is "right across from the co-op".
+  That puts the Co-op on Second's south side.
+- A News-Miner feature describes the Co-op Drugstore's grand opening on Second Avenue with a fountain-lunch counter;
+  the year is not shown in the excerpt
+  (https://www.newsminer.com/features/co-op-drugstore-grand-opening-makes-a-splash-in-downtown-fairbanks/article_d8c7a8ba-6893-11ef-9700-475fc4a51cb6.html).
+- A 1967 high-water mark is reported on the building (item 34).
 
-**Recommended change.** Use it. Which side of Second it stands on is ours (the north side).
+**Recommended change.** Use it, on Second's south side next to the Nordale.
 
 ### 29. The Polaris and Northward buildings
 
@@ -482,20 +509,21 @@ https://www.adn.com/opinions/2017/08/15/fairbanks-recalls-the-great-flood-that-c
 
 ### 30. The Federal Building, the post office and the post box
 
-**Claim.** Owen mails his letter at a street box by the post office in the Federal Building on Cushman between
+**Claim.** Owen mails his letter at a street box by the post office in the Federal Building, on Cushman between
 Second and Third. The box is red, white and blue.
 
-**Verdict.** Plausible.
+**Verdict.** Plausible. The map puts the building on Cushman's west side; that side is ours.
 
-**Evidence.** The Federal Building on Cushman held the post office; a 1967 flood mark stands at the old post
+**Evidence.** The Federal Building on Cushman held the post office. A 1967 flood mark stands at the old post
 office's front entrance, "a few blocks from the Chena River" (Waymarking, walking-tour mark 8:
 https://www.waymarking.com/waymarks/WM16WR0_1967_Flood_High_Level_Mark_Old_US_Post_Office_Fairbanks_AK). The
-building dates to 1933 (Old Federal Building, NRHP). U.S. street collection boxes were olive drab before 1955,
-red, white and blue from 1955, and all blue from 1971 (general postal history; not checked for Fairbanks). Whether
-the BLM's Fairbanks land office was in this building in 1967 was not found.
+building dates to 1933 (Old Federal Building, NRHP). U.S. street collection boxes were olive drab before 1955, red,
+white and blue from 1955, and all blue from 1971 (general postal history; not checked for Fairbanks). No source was
+found on whether the BLM's Fairbanks land office was in this building in 1967.
 
-**Recommended change.** Use a red, white and blue box. Keep Lucy's land office a separate storefront across
-Cushman (invented) unless a source puts the BLM office inside the Federal Building, in which case move it there.
+**Recommended change.** Use a red, white and blue box. Lucy's land office is an invented storefront on Second east
+of Lacey, a block off Owen's morning route. If a source puts the BLM office inside the Federal Building, move it
+there and have it closed at the hour Owen passes (he leaves early for the flight).
 
 ### 31. Alaskaland and the Centennial Exposition
 
@@ -544,32 +572,46 @@ and surplus quonsets are the common pattern in Interior towns after the war; not
 
 ### 34. Flood depths downtown, August 1967
 
-**Claim.** The flood stood about 1.5 m deep at the riverbank, 1.2 m on First Avenue and at the foot of Cushman,
-0.6 m on Second, 0.4 m on Third, and 0.15 m near Fifth.
+**Claim.** Measured at buildings, the flood stood:
 
-**Verdict.** Confirmed for the anchor points; plausible between them.
+- about 1.5 m at the bank by the bridge;
+- about 0.6 m at the Co-op's wall on Second;
+- about 0.38 m at the old post office's door on Cushman;
+- about 0.15 m at City Hall, 800 Cushman (about Eighth Avenue, off the map).
+
+The map hangs one flat water plane at y 1.2 over a grade that rises through those marks.
+
+**Verdict.** Confirmed for the anchor marks, with the Co-op mark weaker (see below). Plausible between them.
 
 **Evidence.**
-- The Chena crested at Fairbanks on August 15, 1967; about 95 percent of the city flooded; six deaths; about 12,000
-  evacuated (USGS WSP 1880-A: https://pubs.usgs.gov/publication/wsp1880A; item 11).
+- The Chena crested at Fairbanks on August 15, 1967. About 95 percent of the city flooded; six people died; about
+  12,000 were evacuated (USGS WSP 1880-A: https://pubs.usgs.gov/publication/wsp1880A; item 11).
 - A USGS hydrologist at the 2017 high-water sign unveiling: "near the river ... about five feet of water above
   ground level. Most places throughout downtown Fairbanks were one-and-a-half to three feet"
   (KUAC: https://fm.kuac.org/post/sign-project-revives-1967-flood-history; Alaska Public:
   https://alaskapublic.org/2017/08/09/sign-project-revives-1967-fairbanks-flood-history).
 - Cushman Street "turned into a waterway", with canoes and motorboats in 3 or 4 feet of water (ADN, 2017:
   https://www.adn.com/opinions/2017/08/15/fairbanks-recalls-the-great-flood-that-changed-everything/).
-- High-water marks from the walking tour (Waymarking excerpts): the Co-op Plaza on Second Avenue, about 2 feet
-  (https://www.waymarking.com/waymarks/wm16WR3_1967_Flood_High_Level_Mark_Co_Op_Plaza_Fairbanks_AK); the old
-  post office on Cushman, about 15 inches (item 30); City Hall on Cushman, about 6 inches
-  (https://www.waymarking.com/waymarks/WM16WQV_1967_Flood_Level_Mark_City_Hall_Fairbanks_AK).
+- High-water marks, from Waymarking excerpts:
+  - The old post office on Cushman (NWS walking tour #8): about 15 inches (item 30).
+  - City Hall (NWS tour #11): about 6 inches
+    (https://www.waymarking.com/waymarks/WM16WQV_1967_Flood_Level_Mark_City_Hall_Fairbanks_AK). City Hall is at
+    800 Cushman, about Eighth Avenue, not Fifth as the first pass of this item said.
+  - The Co-op Plaza on Second: about 2 feet
+    (https://www.waymarking.com/waymarks/wm16WR3_1967_Flood_High_Level_Mark_Co_Op_Plaza_Fairbanks_AK). Waymarking
+    lists it, but it is not one of the NWS walking tour's official signs, so treat it as the weakest anchor.
+- Each mark is a depth over the ground at its own building. The map's grade therefore passes through each building's
+  frontage (the Co-op's wall at z 64, the post office door at z 80) rather than the street centerline. Floors are
+  0.3 m above grade, so the water inside is 0.3 m shallower than outside.
 - The authoritative inundation map is USGS Hydrologic Atlas 294, Childers and Meckel, "Flood of August 1967 at
   Fairbanks, Alaska", 1:24,000 (https://pubs.usgs.gov/publication/ha294). The National Weather Service's walking
-  tour brochure lists every mark
+  tour brochure lists every official mark
   (https://www.weather.gov/media/aprfc/HWM_Brochure_WalkingTourSignage_2017-0810.pdf). Neither could be opened
   here.
 
-**Recommended change.** Use the per-band table in `town-map.md`, with one flat water plane at y = 1.2. Replace the
-interpolated bands with the brochure's numbers when someone can open it.
+**Recommended change.** Use the ground function and depth tables in `town-map.md`. Fifth Avenue comes out at 0.21 m,
+between Third (0.32 m) and the City Hall mark (0.15 m). Replace the grade knots with the brochure's numbers when
+someone can open it.
 
 ### 35. Floatplanes on the Chena; the float dock
 
@@ -648,8 +690,8 @@ Ordered by impact.
 - Exact pipeline crossing points on the Chatanika and Tolovana: TAPS route maps (1971-74) and USGS open-file reports 75-87 and 78-611.
 - Alaska State Troopers ranks in 1967: DPS historical rosters, Alaska State Archives.
 - Real descendants of E.T. Barnette: Alaska State Library genealogy resources.
-- Downtown street order west of Cushman (Lacey then Noble, or the reverse), block sizes and the river's width: a
-  1960s Sanborn map or USGS Hydrologic Atlas 294 (item 19).
+- Downtown street order (Lacey and Noble east of Cushman, from address numbers), block sizes and the river's width:
+  a 1960s Sanborn map or USGS Hydrologic Atlas 294 (item 19).
 - Per-block flood depths between the marks: the National Weather Service high-water-mark walking-tour brochure and
   USGS Hydrologic Atlas 294 (item 34).
 - Whether the Lacey Street Theater was open in July 1967: Fairbanks Daily News-Miner, 1966-67 (item 24).
