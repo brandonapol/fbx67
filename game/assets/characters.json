@@ -1,0 +1,98 @@
+{
+  "sourceHeightMeters": 1.78,
+  "characters": {
+    "curly": {
+      "name": "Curly Boone",
+      "heightMeters": 1.78,
+      "image": "7db03e5c-f796-4667-8a63-63b9179fb2ea",
+      "job": "bc922d87-e0a2-40c7-8301-e6f796fdbc1e",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_003321_bc922d87-e0a2-40c7-8301-e6f796fdbc1e.glb"
+    },
+    "owen": {
+      "name": "Owen Marsh",
+      "heightMeters": 1.8,
+      "image": "3771fb58-c6d8-4252-8c9e-8cdf8ad03d73",
+      "job": "3483ed5e-e7f9-416d-9fd6-af396ceacc51",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004858_3483ed5e-e7f9-416d-9fd6-af396ceacc51.glb"
+    },
+    "wade": {
+      "name": "Wade",
+      "heightMeters": 1.82,
+      "image": "f8c7e080-5262-4a2d-a32e-405017a08d05",
+      "job": "b502c233-e9f8-4cee-8a49-3687c0b9b58e",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004859_b502c233-e9f8-4cee-8a49-3687c0b9b58e.glb"
+    },
+    "hank": {
+      "name": "Hank Lyle",
+      "heightMeters": 1.76,
+      "image": "abc304e0-fec0-4a76-9a74-1eb4b28b42c7",
+      "job": "1d003f05-f141-4d03-9875-0078f048c190",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004900_1d003f05-f141-4d03-9875-0078f048c190.glb"
+    }
+  },
+  "clips": {
+    "idle": {
+      "action": 0,
+      "name": "Idle",
+      "rootMotion": false,
+      "job": "2500c02c-311b-4505-8cf7-38fdfe9cb8f6",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004843_2500c02c-311b-4505-8cf7-38fdfe9cb8f6.glb"
+    },
+    "walk": {
+      "action": 613,
+      "name": "Casual_Walk_inplace",
+      "rootMotion": false,
+      "job": "c5826c9f-bbcf-424f-8874-27d92b5af4c6",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004844_c5826c9f-bbcf-424f-8874-27d92b5af4c6.glb"
+    },
+    "run": {
+      "action": 16,
+      "name": "RunFast",
+      "rootMotion": true,
+      "job": "f0111535-f8e5-4a85-a58a-a53fd2923a35",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004845_f0111535-f8e5-4a85-a58a-a53fd2923a35.glb"
+    },
+    "sneak": {
+      "action": 671,
+      "name": "Sneaky_Walk_inplace",
+      "rootMotion": false,
+      "job": "0e4e12e6-9a04-4984-af6a-78b47ac679d1",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004845_0e4e12e6-9a04-4984-af6a-78b47ac679d1.glb"
+    },
+    "sit": {
+      "action": 33,
+      "name": "Chair_Sit_Idle_M",
+      "rootMotion": false,
+      "job": "139e958c-90ae-4c9b-8038-0f94dc6b2fd2",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004846_139e958c-90ae-4c9b-8038-0f94dc6b2fd2.glb"
+    },
+    "sitDrink": {
+      "action": 343,
+      "name": "Sit_and_Drink",
+      "rootMotion": false,
+      "job": "638cbd6a-abb2-4004-af84-5c5d2d4f4e20",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004847_638cbd6a-abb2-4004-af84-5c5d2d4f4e20.glb"
+    },
+    "drink": {
+      "action": 342,
+      "name": "Stand_and_Drink",
+      "rootMotion": false,
+      "job": "fa54a431-1e37-4c87-936c-286319bf1ff2",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004848_fa54a431-1e37-4c87-936c-286319bf1ff2.glb"
+    },
+    "talk": {
+      "action": 314,
+      "name": "Talk_with_Right_Hand_Open",
+      "rootMotion": false,
+      "job": "26dc774f-7904-4612-a6ed-df62f387b243",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004848_26dc774f-7904-4612-a6ed-df62f387b243.glb"
+    },
+    "wave": {
+      "action": 28,
+      "name": "Big_Wave_Hello",
+      "rootMotion": false,
+      "job": "ee5f7e1a-ec2a-4baf-9459-7569a475e626",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004849_ee5f7e1a-ec2a-4baf-9459-7569a475e626.glb"
+    }
+  }
+}
