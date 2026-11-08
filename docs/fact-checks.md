@@ -292,3 +292,37 @@ Ordered by impact.
 - Exact pipeline crossing points on the Chatanika and Tolovana: TAPS route maps (1971-74) and USGS open-file reports 75-87 and 78-611.
 - Alaska State Troopers ranks in 1967: DPS historical rosters, Alaska State Archives.
 - Real descendants of E.T. Barnette: Alaska State Library genealogy resources.
+- Whether Alaska observed daylight saving time in summer 1967 (item 19): Fairbanks Daily News-Miner sun tables, July 1967.
+- Whether downtown 2nd Avenue was paved by 1967 (item 20): dated photographs in the UAF archives.
+
+## Engine look checks (issue #32)
+
+Questions raised by the art direction in [`art/README.md`](art/README.md#engine-look). None changes the plot.
+
+### 19. Daylight saving time in Fairbanks, summer 1967
+
+**Claim.** The Silver Pan and 2nd Avenue target frames are set at 11 pm in July 1967, with the sun at or just above the north-northwest horizon.
+
+**Verdict.** Unknown.
+
+**Evidence.** Fairbanks kept Alaska-Hawaii Standard Time (UTC-10) in 1967. The Uniform Time Act of 1966 took effect in 1967 and let a state opt out of daylight saving by law; whether Alaska observed it in summer 1967 is not settled here. On standard time the sun at 11 pm in mid-July is about -1 to +0.5 degrees; on daylight time the same clock hour is an hour earlier by the sun, about 2 degrees higher.
+
+**Recommended change.** None needed: the art rule is written to hold either way (a glowing north-northwest horizon with the key light at or just above it). Settle it with the Fairbanks Daily News-Miner's sunrise and sunset tables for July 1967.
+
+### 20. Was downtown 2nd Avenue paved by 1967?
+
+**Claim.** The `second-ave` target shows a paved street with concrete sidewalks and curbs.
+
+**Verdict.** Unknown; likely yes.
+
+**Evidence.** Downtown Fairbanks streets were being paved through the 1950s, and photographs of the 1967 flood show water over what look like paved downtown streets with curbs. Not verified against a dated source.
+
+**Recommended change.** Keep the paved street unless a dated photograph of 2nd Avenue in 1966-68 shows otherwise. Check the University of Alaska Fairbanks archives' flood photographs.
+
+### 21. Consultant review: the `second-ave` target frame
+
+**Claim.** The frame includes an ordinary Alaska Native resident in summer town clothes (plaid shirt, work pants, cap, carrying groceries) among the people on the street.
+
+**Verdict.** Pending review.
+
+**Recommended change.** Before the frame guides any character or crowd work, have a Lower Tanana or Tanana Chiefs consultant look at how the Native resident is drawn, together with the Eli, Lucy and officer concept sheets already flagged in `art/README.md`.
