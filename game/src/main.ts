@@ -2,6 +2,8 @@ import './style.css'
 import type { Game, Input } from './prologue.ts'
 import { ended, focus, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { createView } from './render.ts'
+import { createAudio } from './audio.ts'
+import { mountSoundPanel } from './sound-panel.ts'
 import { spaces } from './levels.ts'
 import type { Rig } from './camera.ts'
 import { armFor, bob, follow, rigFor, toWorld } from './camera.ts'
@@ -99,6 +101,18 @@ const settings = mountSettings(
     renderHelp()
   },
 )
+
+const localStore = (): Storage | undefined => {
+  try {
+    return window.localStorage
+  } catch {
+    return undefined
+  }
+}
+
+const audio = createAudio(localStore())
+mountSoundPanel(audio)
+;['pointerdown', 'touchend', 'keydown'].forEach((type) => window.addEventListener(type, audio.unlock, { capture: true }))
 
 const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.location.href).toString()
 
@@ -393,6 +407,7 @@ view.app.on('update', (dtRaw: number) => {
   const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway)
   live.rig = next.rig
   view.sync(g, dt, next.pose)
+  audio.sync(g, dt)
   renderHud(g)
 })
 
@@ -407,6 +422,7 @@ Object.assign(window, {
     aim: (yaw: number, pitch: number) => {
       live.rig = { ...live.rig, yaw, pitch, idle: 0 }
     },
+    audio: () => audio.status(),
   },
 })
 

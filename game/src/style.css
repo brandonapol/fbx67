@@ -163,6 +163,7 @@ body[data-device='touch'] #prompt .glyph:not(.hold) {
   position: fixed;
   top: 16px;
   right: 16px;
+  width: 112px;
   padding: 6px 12px;
   background: var(--paper);
   border: 1px solid var(--paper-edge);
@@ -172,6 +173,10 @@ body[data-device='touch'] #prompt .glyph:not(.hold) {
   letter-spacing: 0.06em;
   color: var(--ink);
   cursor: pointer;
+}
+
+body #sound {
+  right: 140px;
 }
 
 #settings {
