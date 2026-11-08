@@ -2,6 +2,8 @@ import './style.css'
 import type { Game, Input } from './prologue.ts'
 import { HIDE_TIME, ended, focus, interact, press, start, tick, textBuildHash } from './prologue.ts'
 import { createView } from './render.ts'
+import { createAudio } from './audio.ts'
+import { mountSoundPanel } from './sound-panel.ts'
 import { spaces } from './levels.ts'
 import type { Vec } from './world.ts'
 import { distance, sub, vec } from './world.ts'
@@ -23,6 +25,18 @@ const barEl = $('hidebar')
 const barFill = $('hidebar-fill')
 
 const view = createView(canvas)
+
+const localStore = (): Storage | undefined => {
+  try {
+    return window.localStorage
+  } catch {
+    return undefined
+  }
+}
+
+const audio = createAudio(localStore())
+mountSoundPanel(audio)
+;['pointerdown', 'touchend', 'keydown'].forEach((type) => window.addEventListener(type, audio.unlock, { capture: true }))
 
 const keys = new Set<string>()
 const live: { g: Game; target?: Vec; touchHold: boolean; shown?: unknown } = { g: start(), touchHold: false }
@@ -139,6 +153,7 @@ view.app.on('update', (dtRaw: number) => {
   const dt = Math.min(dtRaw, 0.1)
   live.g = tick(live.g, input(), dt)
   view.sync(live.g, dt)
+  audio.sync(live.g)
   renderHud(live.g)
 })
 
@@ -149,5 +164,6 @@ Object.assign(window, {
       live.target = vec(x, z)
     },
     textBuild: () => textBuild(live.g),
+    audio: () => audio.status(),
   },
 })

@@ -48,20 +48,24 @@ const snap = async (p: Page, name: string): Promise<void> => {
 
 test('the prologue plays end to end in a browser', { timeout: 360000 }, async () => {
   const server = spawn('npx', ['vite', 'preview', '--port', String(port), '--strictPort'], { stdio: 'ignore' })
+  const opened: import('playwright').Browser[] = []
   try {
     await waitForServer()
     const browser = await chromium.launch({
       executablePath: process.env.CHROMIUM_PATH,
       args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
     })
+    opened.push(browser)
     const page = await browser.newPage({ viewport: { width: 960, height: 600 } })
     const errors: string[] = []
     page.on('pageerror', (e) => errors.push(String(e)))
     await page.goto(url)
     await page.waitForFunction(() => (window as any).__prologue !== undefined)
     await snap(page, '01-bar')
+    assert.equal(await page.evaluate(() => (window as any).__prologue.audio()), 'locked')
 
     await page.keyboard.press('1')
+    await page.waitForFunction(() => (window as any).__prologue.audio() === 'running', null, { timeout: 10000 })
     await walk(page, [[-1.5, -2.2]])
     await page.keyboard.press('e')
     await page.locator('#panel-buttons button[data-id="note:round"]').click()
@@ -102,9 +106,14 @@ test('the prologue plays end to end in a browser', { timeout: 360000 }, async ()
     await snap(page, '06-end')
     const href = await page.evaluate(() => (window as any).__prologue.textBuild())
     assert.match(href, /\/fbx67\/#path=3,1,3,1$/)
+    await page.locator('#sound-toggle').click()
+    await page.locator('#sound-music').fill('20')
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('second-rush.volumes') ?? '{}'))
+    assert.equal(saved.music, 0.2)
+    assert.equal(await page.evaluate(() => (window as any).__prologue.audio()), 'running')
     assert.deepEqual(errors, [])
-    await browser.close()
   } finally {
+    await Promise.all(opened.map((b) => b.close()))
     server.kill()
   }
 })
