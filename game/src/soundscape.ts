@@ -120,7 +120,7 @@ export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, c
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 
 export const holds = (when: Condition | undefined, g: Game): boolean => {
-  if (when === 'writing') return g.space === 'room' && g.panel?.kind === 'story'
+  if (when === 'writing') return g.story.scene === 'p_letter' && g.panel?.kind === 'story'
   if (when === 'refueling') return g.space === 'camp' && !g.panel && refueling(g.t)
   return true
 }

@@ -114,6 +114,8 @@ test('the typewriter runs while the letter is open, and the jerry can while Curl
   const desk = interact(walk(room, [[1.6, -0.8]]))
   assert.ok(!holds('writing', room))
   assert.ok(holds('writing', desk))
+  assert.equal(desk.story.scene, 'p_letter')
+  assert.ok(!holds('writing', press(desk, 'note:sleep')))
   const camp = { ...press(start(), 'close'), space: 'camp' as const, pos: spaces.camp.spawn }
   assert.ok(refueling(0) && refueling(WORK - 0.01) && !refueling(WORK + 0.01) && refueling(CURLY_PERIOD))
   assert.equal(holds('refueling', { ...camp, t: 1 }), true)

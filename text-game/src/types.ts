@@ -22,6 +22,10 @@ export type MomLine = 'honest' | 'soft' | 'lie'
 
 export type CacheSpot = 'stove' | 'cache' | 'marker'
 
+export type Place = 'silverPan' | 'owensRoom' | 'floatDock' | 'surveyCamp' | 'boardingHouse'
+
+export type Clock = `${number}-${number}-${number}T${number}:${number}`
+
 export type State = Readonly<{
   scene: SceneId
   owenCache?: CacheSpot
@@ -54,6 +58,9 @@ export type Scene = Readonly<{
   id: SceneId
   act: Act
   title: string
+  place?: Place
+  clock?: Clock
+  goal?: string
   text: (s: State) => string
   choices: (s: State) => readonly Choice[]
 }>
