@@ -47,6 +47,7 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 35 | Floatplanes on the Chena; the float dock | Map | Plausible; dock invented | Low. No documented 1967 downtown dock; Phillips Field was the small-plane base. |
 | 36 | Native families in town in July | Map | Plausible; consultant review | Medium. Ordinary errands and work; avoid bar-room color and the period fire slur. |
 | 37 | Golden Days and the games on the riverbank | Map | Confirmed for 1961; plausible for 1967 | Low. Optional dressing. |
+| 42 | Owen's body to a help tent (issue #230) | Story | Plausible | Low. A field hospital or Red Cross station on high ground; no real site named. |
 
 ## High priority
 
@@ -753,3 +754,13 @@ Questions raised by the art direction in [`art/README.md`](art/README.md#engine-
 **Evidence.** Downtown Fairbanks is laid out along the Chena, and 2nd Avenue is usually described as running roughly east-west, parallel to the river. A street running due east-west cannot show a north-northwest sun near its vanishing point; one that bends or runs a little off the grid can.
 
 **Recommended change.** Check the 1967 street grid against a USGS or city map of the period. If 2nd Avenue runs straight east-west, read the target as a cross street looking north toward the river, and stage the in-game sun off the avenue's axis.
+
+### 42. Owen's body to a help tent, not the hospital (issue #230)
+
+**Claim.** After the flood St. Joseph's is half-flooded, so Owen's body is taken to a help tent on high ground, where Joan sees it. The nurse works there.
+
+**Verdict.** Plausible.
+
+**Evidence.** St. Joseph's was flooded and evacuated in August 1967 (items 16 and 27), and about 12,000 people were evacuated (item 34). A field hospital or Red Cross station on high ground is plausible for a flood of that size. Not checked against a named 1967 site.
+
+**Recommended change.** Keep it as "the help tent" with no real site named. Settle the real location with the Fairbanks Daily News-Miner's August 1967 coverage if it ever matters.

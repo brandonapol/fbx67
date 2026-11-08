@@ -164,6 +164,7 @@ Off the map:
 | | Quonset float shed | A2, First Avenue | x 130..150, z 18..28 | (140, 18) north onto First | 0.23 | 5 m arch |
 | `floatDock` | The float dock | south bank between Lacey and Noble | see [Float dock](#float-dock) | | | |
 | | Curly's floatplane | moored on the float's west (downstream) side | about x 97..110, z −22..−11 | | | nose east, upstream into the current |
+| `helpTent` | The help tent (field hospital / Red Cross station) | high ground off the map, south along Cushman beyond Fifth Avenue; coordinates are a gap for the place-id ticket (#89) | not yet placed | not yet placed | | canvas tents and a school-gym-style cot line, 6 m |
 | | Skiff and riverboat landing | lower bank east of the bridge | x 22..70, z −10..−5 | | | |
 
 **The land office** is Lucy's. It is on the boarding house's own block but faces Second; neither route passes its
@@ -266,7 +267,7 @@ What changes on these blocks:
   strip at the door (world z 96..98.9, where `floodedStreet` stands) is currently dry. This doc keeps the physical
   truth (0.33 m, one plane at y 1.2); issue #58 extends the slab to the wall.
 - The bridge is an island: both approaches are under water, and the crown stands just clear.
-- Across the river, St. Joseph's is being evacuated and the church stands in water.
+- Across the river, St. Joseph's is being evacuated and the church stands in water. The displaced patients and the nurses who stayed work from a help tent on high ground south of town (`helpTent`; fact-checks item 42). Owen's body is taken there.
 
 ## Building types
 
@@ -340,6 +341,7 @@ set fires to get work; it appears in a 1969 magazine piece (item 36).
 
 ## Open questions
 
+- The help tent's exact spot and rectangle (`helpTent`): place-id ticket #89. It is off the map; the Act 1 medicine errand walks there and back.
 - Confirm the street order (Lacey and Noble east of Cushman, Barnette west) against a period map. It rests on
   address numbers (item 19).
 - The N.C.'s block is "between Cushman and Turner", but Barnette is the first street west of Cushman here. Either
