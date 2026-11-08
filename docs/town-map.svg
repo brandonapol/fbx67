@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Downtown Fairbanks, summer 1967: the walkable map for the prologue (issue #35).
+  Hand-written. The viewBox is in meters and matches docs/town-map.md exactly:
+  origin at the south end of the Cushman Street bridge, x east, z south (SVG y = z).
+  Edit this file and the tables in town-map.md together.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-222 -132 400 302" width="1200" height="906" font-family="Helvetica, Arial, sans-serif">
+  <title>Downtown Fairbanks, summer 1967: walkable map</title>
+  <style>
+    .land { fill: #dde3cb; }
+    .river { fill: #a9cfe0; }
+    .bank { fill: #c7d4a4; }
+    .street { fill: #e8e0cc; }
+    .gravel { fill: #d8ccad; }
+    .block { fill: #f7f3ea; stroke: #b9b09a; stroke-width: 0.3; }
+    .gen { fill: #e4ddcd; stroke: #a99f88; stroke-width: 0.25; }
+    .real { fill: #d39a72; stroke: #7a4a2c; stroke-width: 0.4; }
+    .ours { fill: #f0c75a; stroke: #8a6a12; stroke-width: 0.4; }
+    .back { fill: #c3bdb0; stroke: #8f887a; stroke-width: 0.3; }
+    .lot { fill: #e9e1c9; stroke: #8f887a; stroke-width: 0.35; stroke-dasharray: 1.2 0.8; }
+    .interior { fill: none; stroke: #2f2a24; stroke-width: 0.35; stroke-dasharray: 0.9 0.6; }
+    .dock { fill: #9a7a52; stroke: #4f3a22; stroke-width: 0.3; }
+    .plane { fill: #f4f1ea; stroke: #333; stroke-width: 0.25; }
+    .offplay { fill: #ffffff; opacity: 0.45; }
+    .bound { fill: none; stroke: #c0392b; stroke-width: 0.6; stroke-dasharray: 3 1.5; }
+    .grid { stroke: #8a8a8a; stroke-width: 0.15; opacity: 0.5; }
+    .night { fill: none; stroke: #5b3f8c; stroke-width: 1.1; stroke-dasharray: 2.4 1.2; stroke-linejoin: round; }
+    .morning { fill: none; stroke: #d35400; stroke-width: 1.1; stroke-linejoin: round; }
+    .skiff { fill: none; stroke: #1f6f99; stroke-width: 1.0; stroke-dasharray: 0.6 1.0; stroke-linecap: round; }
+    .spawn { fill: #c0392b; stroke: #ffffff; stroke-width: 0.4; }
+    .t { fill: #2b2620; font-size: 2.6px; }
+    .ts { fill: #2b2620; font-size: 2.1px; }
+    .tst { fill: #2b2620; font-size: 3.4px; font-weight: bold; letter-spacing: 0.4px; }
+    .tw { fill: #ffffff; font-size: 2.6px; }
+    .tb { fill: #1f4f66; font-size: 2.6px; font-style: italic; }
+    .tsp { fill: #9b2418; font-size: 2.3px; font-weight: bold; paint-order: stroke; stroke: #ffffff; stroke-width: 0.7px; stroke-linejoin: round; }
+    .tg { fill: #6b6b6b; font-size: 2.2px; }
+    .th { fill: #2b2620; font-size: 4.2px; font-weight: bold; }
+    .tl { fill: #2b2620; font-size: 2.7px; }
+  </style>
+
+  <!-- Paper -->
+  <rect x="-222" y="-132" width="400" height="302" fill="#fbfaf6" />
+
+  <!-- North bank (backdrop), river, south bank -->
+  <rect class="land" x="-222" y="-132" width="299" height="72" />
+  <rect class="river" x="-222" y="-60" width="299" height="56" />
+  <rect class="bank" x="-222" y="-4" width="299" height="6" />
+
+  <!-- Town ground: streets are the ground; blocks sit on top -->
+  <rect class="street" x="-222" y="2" width="299" height="168" />
+  <!-- Gravel: Noble Street, the lane and the alleys -->
+  <rect class="gravel" x="-168" y="2" width="14" height="108" />
+  <rect class="gravel" x="-44" y="16" width="5" height="32" />
+  <rect class="gravel" x="-195" y="78" width="188" height="4" />
+
+  <!-- Blocks, row A (1st to 2nd) -->
+  <rect class="block" x="-39" y="16" width="32" height="32" />
+  <rect class="block" x="-74" y="16" width="30" height="32" />
+  <rect class="block" x="-154" y="16" width="66" height="32" />
+  <rect class="block" x="-222" y="16" width="54" height="32" />
+  <rect class="block" x="7" y="16" width="70" height="32" />
+  <!-- Row B (2nd to 3rd), split by the east-west alley -->
+  <rect class="block" x="-74" y="64" width="67" height="14" />
+  <rect class="block" x="-74" y="82" width="67" height="14" />
+  <rect class="block" x="-154" y="64" width="66" height="14" />
+  <rect class="block" x="-154" y="82" width="66" height="14" />
+  <rect class="block" x="-222" y="64" width="54" height="14" />
+  <rect class="block" x="-222" y="82" width="54" height="14" />
+  <rect class="block" x="7" y="64" width="70" height="32" />
+  <!-- Row C (3rd to 4th): one lot deep along Cushman, backdrop beyond -->
+  <rect class="block" x="-40" y="110" width="33" height="14" />
+  <rect class="block" x="7" y="110" width="33" height="14" />
+  <rect class="back" x="-88" y="110" width="44" height="14" />
+  <rect class="back" x="44" y="110" width="33" height="14" />
+  <rect class="back" x="-222" y="110" width="54" height="14" />
+  <!-- Row D (4th to 5th) -->
+  <rect class="block" x="-40" y="134" width="33" height="16" />
+  <rect class="block" x="7" y="134" width="33" height="16" />
+  <rect class="back" x="-88" y="134" width="44" height="16" />
+  <rect class="back" x="44" y="134" width="33" height="16" />
+  <rect class="back" x="-222" y="112" width="54" height="40" />
+
+  <!-- Generic frame storefronts, cabins and sheds (no names) -->
+  <g>
+    <rect class="gen" x="-154" y="34" width="12" height="14" />
+    <rect class="gen" x="-141" y="36" width="10" height="12" />
+    <rect class="gen" x="-130" y="34" width="9" height="14" />
+    <rect class="gen" x="-120" y="38" width="7" height="10" />
+    <rect class="gen" x="-110" y="16" width="20" height="10" />
+    <rect class="gen" x="-195" y="20" width="12" height="10" />
+    <rect class="gen" x="-195" y="34" width="12" height="14" />
+    <rect class="gen" x="-181" y="36" width="11" height="12" />
+    <rect class="gen" x="-74" y="64" width="11" height="14" />
+    <rect class="gen" x="-74" y="82" width="12" height="14" />
+    <rect class="gen" x="-60" y="84" width="11" height="12" />
+    <rect class="gen" x="-47" y="82" width="12" height="14" />
+    <rect class="gen" x="-33" y="84" width="10" height="12" />
+    <rect class="gen" x="-154" y="64" width="12" height="14" />
+    <rect class="gen" x="-140" y="64" width="12" height="14" />
+    <rect class="gen" x="-124" y="66" width="5" height="12" />
+    <rect class="gen" x="-154" y="84" width="10" height="12" />
+    <rect class="gen" x="-122" y="84" width="10" height="12" />
+    <rect class="gen" x="-108" y="82" width="10" height="14" />
+    <rect class="gen" x="-96" y="84" width="8" height="12" />
+    <rect class="gen" x="-195" y="64" width="12" height="14" />
+    <rect class="gen" x="-181" y="64" width="11" height="14" />
+    <rect class="gen" x="-195" y="84" width="9" height="12" />
+    <rect class="gen" x="-184" y="84" width="9" height="12" />
+    <rect class="gen" x="-40" y="110" width="15" height="14" />
+    <rect class="gen" x="-23" y="110" width="16" height="14" />
+    <rect class="gen" x="7" y="110" width="16" height="14" />
+    <rect class="gen" x="25" y="110" width="15" height="14" />
+    <rect class="gen" x="-40" y="134" width="15" height="16" />
+    <rect class="gen" x="-23" y="134" width="16" height="16" />
+    <rect class="gen" x="7" y="134" width="16" height="16" />
+    <rect class="gen" x="25" y="134" width="15" height="16" />
+  </g>
+
+  <!-- Real landmarks inside the footprint -->
+  <rect class="real" x="-74" y="16" width="24" height="18" />
+  <text class="t" x="-62" y="23.5" text-anchor="middle">Polaris Building</text>
+  <text class="ts" x="-62" y="27" text-anchor="middle">11 floors, 1952</text>
+  <text class="ts" x="-62" y="30.2" text-anchor="middle">(skyline)</text>
+
+  <rect class="real" x="-112" y="28" width="22" height="20" />
+  <text class="t" x="-101" y="37" text-anchor="middle">Co-op Drug</text>
+  <text class="ts" x="-101" y="40.5" text-anchor="middle">concrete, 1927</text>
+
+  <rect class="real" x="-62" y="64" width="39" height="14" />
+  <text class="t" x="-42.5" y="70.5" text-anchor="middle">Nordale Hotel</text>
+  <text class="ts" x="-42.5" y="74" text-anchor="middle">3 floors, frame and stucco</text>
+
+  <rect class="real" x="-118" y="64" width="30" height="14" />
+  <rect class="real" x="-92" y="64" width="4" height="4" fill="#b97a52" />
+  <text class="t" x="-104" y="70" text-anchor="middle">Lacey Street</text>
+  <text class="t" x="-104" y="73.3" text-anchor="middle">Theater</text>
+  <text class="ts" x="-104" y="76.5" text-anchor="middle">Art Deco, 1939-40</text>
+
+  <rect class="real" x="7" y="16" width="48" height="32" />
+  <text class="t" x="31" y="29" text-anchor="middle">Northern Commercial Co.</text>
+  <text class="ts" x="31" y="32.5" text-anchor="middle">"the N.C." department store</text>
+  <text class="ts" x="31" y="35.7" text-anchor="middle">2 floors, brick and frame</text>
+  <text class="ts" x="31" y="39" text-anchor="middle">(stacks east, off the map)</text>
+
+  <rect class="real" x="7" y="64" width="48" height="32" />
+  <text class="t" x="31" y="78" text-anchor="middle">Federal Building</text>
+  <text class="t" x="31" y="81.4" text-anchor="middle">and Post Office</text>
+  <text class="ts" x="31" y="84.7" text-anchor="middle">concrete, 1933</text>
+
+  <rect class="lot" x="-25" y="16" width="18" height="16" />
+  <text class="ts" x="-16" y="22.5" text-anchor="middle">gravel lot</text>
+  <text class="ts" x="-16" y="25.5" text-anchor="middle">(Pioneer Hotel</text>
+  <text class="ts" x="-16" y="28.5" text-anchor="middle">burned 1952)</text>
+
+  <!-- Our fictional places -->
+  <rect class="ours" x="-39" y="32" width="16" height="16" />
+  <rect class="interior" x="-36" y="38" width="12" height="10" />
+  <text class="t" x="-31" y="35.6" text-anchor="middle">Silver Pan</text>
+  <text class="ts" x="-30" y="42" text-anchor="middle">bar room 12 x 10</text>
+
+  <rect class="ours" x="-21" y="34" width="14" height="14" />
+  <text class="t" x="-14" y="41" text-anchor="middle">Ptarmigan</text>
+  <text class="ts" x="-14" y="44" text-anchor="middle">bar</text>
+
+  <rect class="ours" x="-60" y="34" width="16" height="14" />
+  <text class="t" x="-52" y="41" text-anchor="middle">Sluice Box</text>
+  <text class="ts" x="-52" y="44" text-anchor="middle">bar</text>
+
+  <rect class="ours" x="-74" y="34" width="14" height="14" />
+  <text class="ts" x="-67" y="40" text-anchor="middle">Blue Spruce</text>
+  <text class="ts" x="-67" y="42.6" text-anchor="middle">Lounge</text>
+
+  <rect class="ours" x="-21" y="64" width="14" height="14" />
+  <text class="ts" x="-14" y="69" text-anchor="middle">Northern</text>
+  <text class="ts" x="-14" y="71.6" text-anchor="middle">Lights</text>
+  <text class="ts" x="-14" y="74.2" text-anchor="middle">Café</text>
+
+  <rect class="ours" x="-21" y="82" width="14" height="14" />
+  <text class="ts" x="-14" y="88" text-anchor="middle">Land</text>
+  <text class="ts" x="-14" y="90.6" text-anchor="middle">office</text>
+
+  <rect class="ours" x="-142" y="82" width="16" height="14" />
+  <rect class="interior" x="-137" y="83" width="6" height="6" />
+  <text class="ts" x="-134" y="92" text-anchor="middle">Boarding</text>
+  <text class="ts" x="-134" y="94.6" text-anchor="middle">house</text>
+
+  <!-- Quonset float shed on the riverfront -->
+  <rect class="ours" x="-150" y="18" width="20" height="10" rx="4" ry="4" />
+  <text class="ts" x="-140" y="22.6" text-anchor="middle">quonset</text>
+  <text class="ts" x="-140" y="25.2" text-anchor="middle">float shed</text>
+
+  <!-- Float dock, gangway and the floatplane (nose upstream, east) -->
+  <rect class="dock" x="-120" y="-6" width="3" height="8" />
+  <rect class="dock" x="-126" y="-18" width="14" height="12" />
+  <g>
+    <rect class="plane" x="-140" y="-12.6" width="10" height="1.4" rx="0.6" />
+    <rect class="plane" x="-136.4" y="-17.5" width="1.8" height="11.2" />
+    <rect class="plane" x="-141" y="-12.3" width="1.8" height="0.8" />
+    <rect class="plane" x="-140.5" y="-14.6" width="10.5" height="0.8" rx="0.4" fill="#d0ccc0" />
+    <rect class="plane" x="-140.5" y="-9.8" width="10.5" height="0.8" rx="0.4" fill="#d0ccc0" />
+  </g>
+  <text class="tb" x="-119" y="-21" text-anchor="middle">float dock</text>
+  <text class="tb" x="-135" y="-23.8" text-anchor="middle">Curly's floatplane</text>
+
+  <!-- Skiffs and village boats pulled up near the bridge -->
+  <g fill="#7a5a3a">
+    <ellipse cx="-62" cy="-6.5" rx="3.2" ry="0.9" />
+    <ellipse cx="-52" cy="-7" rx="3.6" ry="1.0" />
+    <ellipse cx="-41" cy="-6.3" rx="3" ry="0.8" />
+    <rect x="-34" y="-10" width="12" height="3" rx="1.2" fill="#5d4630" />
+  </g>
+  <text class="tb" x="-46" y="-13" text-anchor="middle">skiff and riverboat landing</text>
+
+  <!-- Bridge (1960 span) -->
+  <rect x="-6" y="-132" width="12" height="134" fill="#9a958b" stroke="#55514a" stroke-width="0.4" />
+  <rect x="-4" y="-132" width="8" height="134" fill="#b4afa5" />
+  <text class="tw" x="1.2" y="-30" text-anchor="middle" transform="rotate(-90 1.2 -30)">CUSHMAN STREET BRIDGE (1960)</text>
+
+  <!-- North bank backdrop -->
+  <rect class="back" x="-40" y="-88" width="18" height="22" />
+  <polygon points="-31,-96 -33,-88 -29,-88" fill="#8f887a" />
+  <text class="ts" x="-31" y="-78.5" text-anchor="middle">Immaculate</text>
+  <text class="ts" x="-31" y="-76" text-anchor="middle">Conception</text>
+  <text class="ts" x="-31" y="-73.5" text-anchor="middle">church</text>
+  <rect class="back" x="-175" y="-118" width="55" height="36" />
+  <text class="t" x="-147.5" y="-101" text-anchor="middle">St. Joseph's Hospital</text>
+  <text class="ts" x="-147.5" y="-97.6" text-anchor="middle">Sisters of Providence (backdrop)</text>
+  <text class="tg" x="-100" y="-66" text-anchor="middle">NORTH BANK: backdrop, not walkable</text>
+
+  <!-- Off-map backdrop south and east -->
+  <rect class="back" x="-154" y="112" width="66" height="48" />
+  <text class="t" x="-121" y="132" text-anchor="middle">Northward Building</text>
+  <text class="ts" x="-121" y="135.5" text-anchor="middle">8 floors, 1952 (skyline)</text>
+
+  <!-- River and street labels -->
+  <text class="tst" x="-120" y="-36" text-anchor="middle" fill="#1f4f66">CHENA RIVER</text>
+  <text class="tb" x="-120" y="-31" text-anchor="middle">flows west (to the left), toward the Tanana</text>
+  <text class="tst" x="-95" y="10.2" text-anchor="middle">FIRST AVENUE</text>
+  <text class="ts" x="-50" y="10" text-anchor="middle">(old Front Street)</text>
+  <text class="tst" x="-125" y="57.4" text-anchor="middle">SECOND AVENUE</text>
+  <text class="ts" x="-125" y="61.2" text-anchor="middle">"Two Street": the bar row</text>
+  <text class="tst" x="-60" y="104.5" text-anchor="middle">THIRD AVENUE</text>
+  <text class="tst" x="-60" y="130.5" text-anchor="middle">FOURTH AVE</text>
+  <text class="tst" x="-60" y="155.8" text-anchor="middle">FIFTH AVE</text>
+  <text class="tst" x="1.2" y="122" text-anchor="middle" transform="rotate(-90 1.2 122)">CUSHMAN ST</text>
+  <text class="tst" x="-79.8" y="30" text-anchor="middle" transform="rotate(-90 -79.8 30)">LACEY ST</text>
+  <text class="tst" x="-159.8" y="62" text-anchor="middle" transform="rotate(-90 -159.8 62)">NOBLE ST</text>
+  <text class="ts" x="-40.8" y="25" text-anchor="middle" transform="rotate(-90 -40.8 25)">Blanchfield lane</text>
+  <text class="ts" x="-100" y="80.8" text-anchor="middle">alley (gravel)</text>
+  <text class="ts" x="-40" y="80.8" text-anchor="middle">alley (gravel)</text>
+
+  <!-- Off-play wash and the play boundary (250 x 200 m) -->
+  <rect class="offplay" x="-222" y="-60" width="27" height="230" />
+  <rect class="offplay" x="55" y="-60" width="22" height="230" />
+  <rect class="offplay" x="-195" y="140" width="250" height="30" />
+  <rect class="bound" x="-195" y="-60" width="250" height="200" />
+  <text class="tsp" x="-193" y="-61.5">play area: x -195 to 55, z -60 to 140 (250 x 200 m)</text>
+
+  <!-- Routes -->
+  <polyline class="night" points="-30,47.6 -30,50 -81,50 -81,98 -134,98 -134,96" />
+  <polyline class="morning" points="-134,96 -134,98.8 5.5,98.8 5.5,3 -118.5,3 -118.5,-12" />
+  <polyline class="skiff" points="-134,103 -86,103 -86,-2" />
+  <polygon points="-86,-6 -87.6,-1.8 -84.4,-1.8" fill="#1f6f99" />
+
+  <!-- Post box -->
+  <rect x="4.7" y="64.8" width="1.6" height="1.6" fill="#1d3f8f" stroke="#b22222" stroke-width="0.35" />
+
+  <!-- Spawn points -->
+  <g>
+    <circle class="spawn" cx="-30" cy="46.9" r="1.3" />
+    <text class="tsp" x="-27.8" y="47.4">silverPan</text>
+    <circle class="spawn" cx="-30" cy="50.5" r="1.3" />
+    <text class="tsp" x="-27.8" y="53.4">secondAve</text>
+    <circle class="spawn" cx="-134" cy="98.5" r="1.3" />
+    <text class="tsp" x="-150" y="101.6">boardingHouse</text>
+    <circle class="spawn" cx="-134" cy="88" r="1.1" />
+    <text class="tsp" x="-128.6" y="88.6">owensRoom</text>
+    <circle class="spawn" cx="-118.5" cy="1" r="1.3" />
+    <text class="tsp" x="-116" y="0.6">floatDock</text>
+    <circle class="spawn" cx="-134" cy="103" r="1.3" fill="#1f6f99" />
+    <text class="tsp" x="-150" y="107.4">floodedStreet</text>
+    <circle class="spawn" cx="5.5" cy="67.4" r="1.1" />
+    <text class="tsp" x="8.4" y="69.4">postBox</text>
+    <circle class="spawn" cx="-5.5" cy="89" r="1.1" />
+    <text class="tsp" x="-3.4" y="93.2">landOffice</text>
+    <circle class="spawn" cx="0" cy="-2" r="1.1" />
+    <text class="tsp" x="2" y="-3.2">bridgeSouth</text>
+  </g>
+
+  <!-- Flood depth strip (August 15, 1967 crest), per band, meters of water over grade -->
+  <g>
+    <text class="ts" x="66" y="-9.2" text-anchor="middle">flood depth</text>
+    <text class="ts" x="66" y="-6.6" text-anchor="middle">Aug. 1967 (m)</text>
+    <rect x="58" y="-4" width="16" height="6" fill="#1f5f8b" opacity="0.95" />
+    <text class="tw" x="66" y="0" text-anchor="middle">1.5</text>
+    <rect x="58" y="2" width="16" height="14" fill="#2b6f9b" opacity="0.85" />
+    <text class="tw" x="66" y="10" text-anchor="middle">1.2</text>
+    <rect x="58" y="16" width="16" height="32" fill="#3f84ad" opacity="0.65" />
+    <text class="t" x="66" y="33" text-anchor="middle">0.9</text>
+    <rect x="58" y="48" width="16" height="16" fill="#5a9cc0" opacity="0.55" />
+    <text class="t" x="66" y="57" text-anchor="middle">0.6</text>
+    <rect x="58" y="64" width="16" height="32" fill="#76b0cf" opacity="0.5" />
+    <text class="t" x="66" y="81" text-anchor="middle">0.5</text>
+    <rect x="58" y="96" width="16" height="14" fill="#94c2da" opacity="0.5" />
+    <text class="t" x="66" y="104" text-anchor="middle">0.4</text>
+    <rect x="58" y="110" width="16" height="14" fill="#b1d3e5" opacity="0.5" />
+    <text class="t" x="66" y="118" text-anchor="middle">0.3</text>
+    <rect x="58" y="124" width="16" height="10" fill="#c8e0ec" opacity="0.5" />
+    <text class="t" x="66" y="130" text-anchor="middle">0.2</text>
+    <rect x="58" y="134" width="16" height="6" fill="#dbeaf2" opacity="0.6" />
+    <text class="ts" x="66" y="138" text-anchor="middle">0.15</text>
+  </g>
+
+  <!-- Coordinate grid every 50 m with labels -->
+  <g>
+    <line class="grid" x1="-200" y1="-128" x2="-200" y2="168" />
+    <line class="grid" x1="-150" y1="-128" x2="-150" y2="168" />
+    <line class="grid" x1="-100" y1="-128" x2="-100" y2="168" />
+    <line class="grid" x1="-50" y1="-128" x2="-50" y2="168" />
+    <line class="grid" x1="0" y1="-128" x2="0" y2="168" />
+    <line class="grid" x1="50" y1="-128" x2="50" y2="168" />
+    <line class="grid" x1="-220" y1="-100" x2="76" y2="-100" />
+    <line class="grid" x1="-220" y1="-50" x2="76" y2="-50" />
+    <line class="grid" x1="-220" y1="0" x2="76" y2="0" />
+    <line class="grid" x1="-220" y1="50" x2="76" y2="50" />
+    <line class="grid" x1="-220" y1="100" x2="76" y2="100" />
+    <line class="grid" x1="-220" y1="150" x2="76" y2="150" />
+    <text class="tg" x="-200" y="-128.5" text-anchor="middle">x -200</text>
+    <text class="tg" x="-150" y="-128.5" text-anchor="middle">-150</text>
+    <text class="tg" x="-100" y="-128.5" text-anchor="middle">-100</text>
+    <text class="tg" x="-50" y="-128.5" text-anchor="middle">-50</text>
+    <text class="tg" x="0" y="-128.5" text-anchor="middle">0</text>
+    <text class="tg" x="50" y="-128.5" text-anchor="middle">50</text>
+    <text class="tg" x="-221" y="-99.2">z -100</text>
+    <text class="tg" x="-221" y="-49.2">-50</text>
+    <text class="tg" x="-221" y="0.8">0</text>
+    <text class="tg" x="-221" y="50.8">50</text>
+    <text class="tg" x="-221" y="100.8">100</text>
+    <text class="tg" x="-221" y="150.8">150</text>
+  </g>
+
+  <!-- Legend panel -->
+  <rect x="80" y="-128" width="96" height="296" fill="#ffffff" stroke="#b9b09a" stroke-width="0.4" />
+  <text class="th" x="84" y="-120">Downtown Fairbanks</text>
+  <text class="th" x="84" y="-114.6">summer 1967</text>
+  <text class="tl" x="84" y="-109">The prologue's walkable map (issue #35).</text>
+  <text class="tl" x="84" y="-105.4">Meters. Origin (0, 0) at the south end</text>
+  <text class="tl" x="84" y="-101.8">of the Cushman Street bridge; x east,</text>
+  <text class="tl" x="84" y="-98.2">z south. Plausible, not archival.</text>
+
+  <!-- North arrow -->
+  <polygon points="164,-121 161,-112 164,-114 167,-112" fill="#2b2620" />
+  <text class="tl" x="164" y="-108" text-anchor="middle">N</text>
+
+  <!-- Scale bar -->
+  <rect x="84" y="-93" width="25" height="1.6" fill="#2b2620" />
+  <rect x="109" y="-93" width="25" height="1.6" fill="#ffffff" stroke="#2b2620" stroke-width="0.3" />
+  <text class="ts" x="84" y="-88">0</text>
+  <text class="ts" x="109" y="-88" text-anchor="middle">25</text>
+  <text class="ts" x="134" y="-88" text-anchor="middle">50 m</text>
+
+  <!-- Key -->
+  <rect class="real" x="84" y="-82" width="6" height="4" />
+  <text class="tl" x="92" y="-79">real 1967 landmark</text>
+  <rect class="ours" x="84" y="-75" width="6" height="4" />
+  <text class="tl" x="92" y="-72">our fictional place</text>
+  <rect class="gen" x="84" y="-68" width="6" height="4" />
+  <text class="tl" x="92" y="-65">generic frame building</text>
+  <rect class="back" x="84" y="-61" width="6" height="4" />
+  <text class="tl" x="92" y="-58">backdrop (seen, not entered)</text>
+  <rect class="lot" x="84" y="-54" width="6" height="4" />
+  <text class="tl" x="92" y="-51">empty gravel lot</text>
+  <rect class="gravel" x="84" y="-47" width="6" height="4" />
+  <text class="tl" x="92" y="-44">gravel street, lane or alley</text>
+  <rect class="street" x="84" y="-40" width="6" height="4" stroke="#b9b09a" stroke-width="0.3" />
+  <text class="tl" x="92" y="-37">paved street, concrete walks</text>
+  <rect class="interior" x="84" y="-33" width="6" height="4" />
+  <text class="tl" x="92" y="-30">playable interior</text>
+  <line class="night" x1="84" y1="-24" x2="90" y2="-24" />
+  <text class="tl" x="92" y="-23">night: Silver Pan to boarding house</text>
+  <line class="morning" x1="84" y1="-17" x2="90" y2="-17" />
+  <text class="tl" x="92" y="-16">morning: boarding house, post box,</text>
+  <text class="tl" x="92" y="-12.6">float dock</text>
+  <line class="skiff" x1="84" y1="-7" x2="90" y2="-7" />
+  <text class="tl" x="92" y="-6">August: the skiff at Owen's door</text>
+  <circle class="spawn" cx="87" cy="0" r="1.3" />
+  <text class="tl" x="92" y="1">spawn point (id)</text>
+  <rect x="86.2" y="5" width="1.6" height="1.6" fill="#1d3f8f" stroke="#b22222" stroke-width="0.35" />
+  <text class="tl" x="92" y="7">red, white and blue mail box</text>
+  <rect class="bound" x="84" y="10" width="6" height="4" />
+  <text class="tl" x="92" y="13">edge of the play area</text>
+
+  <!-- Notes -->
+  <text class="tl" x="84" y="22" font-weight="bold">Flood (Aug. 14-15, 1967)</text>
+  <text class="ts" x="84" y="26">One flat water surface; depth over grade per</text>
+  <text class="ts" x="84" y="29">band, from the downtown high-water marks:</text>
+  <text class="ts" x="84" y="32">about 5 ft near the river, 2 ft at the Co-op</text>
+  <text class="ts" x="84" y="35">on 2nd Ave, 15 in at the old post office,</text>
+  <text class="ts" x="84" y="38">6 in near 5th on Cushman.</text>
+
+  <text class="tl" x="84" y="46" font-weight="bold">Compressed</text>
+  <text class="ts" x="84" y="50">Order and neighbors are kept; distances are not.</text>
+  <text class="ts" x="84" y="53">River straightened to run east-west. Blocks</text>
+  <text class="ts" x="84" y="56">about half their real depth; Cushman from 3rd</text>
+  <text class="ts" x="84" y="59">to 5th squeezed hardest. Street order west of</text>
+  <text class="ts" x="84" y="62">Cushman (Lacey, then Noble) is to be checked.</text>
+
+  <text class="tl" x="84" y="70" font-weight="bold">Off the map</text>
+  <text class="ts" x="84" y="74">A-67 Centennial Exposition (later Alaskaland):</text>
+  <text class="ts" x="84" y="77">about 2.5 km southwest, Airport Way and Peger.</text>
+  <text class="ts" x="84" y="80">Phillips Field bush strip: north side of the</text>
+  <text class="ts" x="84" y="83">river, beyond the railroad yards.</text>
+  <text class="ts" x="84" y="86">Eielson AFB: about 26 miles southeast.</text>
+
+  <text class="tl" x="84" y="94" font-weight="bold">Skyline from the street</text>
+  <text class="ts" x="84" y="98">Polaris (11 floors) at First and Lacey; the</text>
+  <text class="ts" x="84" y="101">Northward (8) south of Third; the N.C.'s two</text>
+  <text class="ts" x="84" y="104">stacks east; the church steeple and St.</text>
+  <text class="ts" x="84" y="107">Joseph's across the river; low hills north.</text>
+
+  <text class="tl" x="84" y="115" font-weight="bold">Spawn ids</text>
+  <text class="ts" x="84" y="119">silverPan, secondAve, boardingHouse,</text>
+  <text class="ts" x="84" y="122">owensRoom, floatDock, floodedStreet,</text>
+  <text class="ts" x="84" y="125">postBox, landOffice, bridgeSouth.</text>
+  <text class="ts" x="84" y="128">Coordinates and facings: docs/town-map.md.</text>
+
+  <text class="tl" x="84" y="136" font-weight="bold">Sources</text>
+  <text class="ts" x="84" y="140">docs/fact-checks.md, items 19-37.</text>
+  <text class="ts" x="84" y="143">Names of bars, the boarding house, the land</text>
+  <text class="ts" x="84" y="146">office, the float shed and the dock are ours.</text>
+</svg>
