@@ -1,16 +1,24 @@
 import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
-import { CURLY_HALF_ANGLE, CURLY_RANGE, owenLook, spaces } from './levels.ts'
+import { CURLY_HALF_ANGLE, CURLY_RANGE, spaces } from './levels.ts'
 import type { Lighting } from './lighting.ts'
+import type { Cast } from './characters.ts'
+import { loadCast } from './characters.ts'
+import { castFor, clipFor, playbackRate } from './cast.ts'
 import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { seen, watcher } from './prologue.ts'
 
+export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readonly [number, number, number] }>
+
+// The camera is written only by sync and pose. A held shot wins over the follow camera until pose(undefined).
 export type View = Readonly<{
   app: pc.Application
   camera: pc.Entity
   sync: (g: Game, dt: number) => void
+  pose: (shot: Shot | undefined) => void
+  reset: () => void
   groundAt: (x: number, y: number) => Readonly<{ x: number; z: number }> | undefined
 }>
 
@@ -65,7 +73,15 @@ const addProp = (root: pc.Entity, p: Prop): void => {
   primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow })
 }
 
-const addFigure = (root: pc.Entity, f: Figure): pc.Entity => {
+const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
+  const who = castFor(f.id)
+  if (who) {
+    const c = cast.spawn(who)
+    c.setLocalPosition(f.at.x, 0, f.at.z)
+    c.setLocalEulerAngles(0, (f.facing * 180) / Math.PI, 0)
+    root.addChild(c)
+    return c
+  }
   const e = new pc.Entity(f.id)
   const body = f.height * 0.62
   primitive(e, 'capsule', f.coat, [0, body / 2 + 0.05, 0], [0.5, body / 2, 0.4])
@@ -132,7 +148,7 @@ type Built = Readonly<{
   weather: string
 }>
 
-export const createView = (canvas: HTMLCanvasElement): View => {
+export const createView = async (canvas: HTMLCanvasElement, base: string): Promise<View> => {
   const app = new pc.Application(canvas, {
     mouse: new pc.Mouse(canvas),
     touch: new pc.TouchDevice(canvas),
@@ -161,9 +177,8 @@ export const createView = (canvas: HTMLCanvasElement): View => {
   lamp.addComponent('light', { type: 'omni', castShadows: false })
   app.root.addChild(lamp)
 
-  const owen = new pc.Entity('owen')
-  addFigure(owen, { id: 'owen-body', at: { x: 0, z: 0 }, facing: 0, coat: '#556b3f', height: 1.8, ...owenLook })
-  primitive(owen, 'box', '#c9b98f', [0.3, 0.9, 0.12], [0.12, 0.3, 0.22])
+  const cast = await loadCast(app, base)
+  const owen = cast.spawn('owen')
   app.root.addChild(owen)
 
   const build = (g: Game): Built => {
@@ -171,7 +186,7 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     const root = new pc.Entity(space.id)
     primitive(root, 'box', space.ground, [0, -0.05, 0], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
     space.props.forEach((p) => addProp(root, p))
-    const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f)] as const))
+    const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f, cast)] as const))
     const cone = space.id === 'camp' ? new pc.Entity('sight') : undefined
     const coneMats = cone
       ? ([material('#ffe9a8', { opacity: 0.28, unlit: true }), material('#ff4a3a', { opacity: 0.45, unlit: true })] as const)
@@ -197,16 +212,44 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }
 
-  const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }> } = {}
+  const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }>; last?: Readonly<{ x: number; z: number }>; held?: Shot } = {}
+
+  const isCast = (e: pc.GraphNode | null): boolean => (e ? e.tags.has('cast') || isCast(e.parent) : false)
+
+  const dispose = (b: Built | undefined): void => {
+    if (!b) return
+    const mats = new Set<pc.Material>(
+      (b.root.findComponents('render') as pc.RenderComponent[]).filter((r) => !isCast(r.entity)).flatMap((r) => r.meshInstances.flatMap((mi) => (mi.material ? [mi.material] : []))),
+    )
+    b.coneMats?.forEach((m) => mats.add(m))
+    b.root.destroy()
+    mats.forEach((m) => m.destroy())
+  }
+
+  const place = (shot: Shot): void => {
+    camera.setPosition(shot.eye[0], shot.eye[1], shot.eye[2])
+    camera.lookAt(shot.at[0], shot.at[1], shot.at[2])
+  }
 
   const sync = (g: Game, dt: number): void => {
     if (!state.built || state.built.id !== g.space || state.built.weather !== weather(g.story)) {
-      state.built?.root.destroy()
+      dispose(state.built)
       state.built = build(g)
       state.cam = undefined
       state.look = undefined
     }
     const b = state.built
+    const moved = state.last ? Math.hypot(g.pos.x - state.last.x, g.pos.z - state.last.z) : 0
+    state.last = g.pos
+    const speed = dt > 0 ? moved / dt : 0
+    const owenClip = clipFor({ speed, sneaking: g.space === 'camp', activity: 'stand', talking: false })
+    cast.play(owen, owenClip, playbackRate(owenClip, speed))
+    spaces[g.space].figures.forEach((f) => {
+      const e = b.figures.get(f.id)
+      if (!e || !castFor(f.id)) return
+      const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
+      cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
+    })
     owen.setLocalPosition(g.pos.x, 0, g.pos.z)
     owen.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
     if (b.cone && b.coneMats) {
@@ -222,6 +265,10 @@ export const createView = (canvas: HTMLCanvasElement): View => {
       const y = p.y - dt * 11
       r.setLocalPosition(p.x, y < 0 ? 9 : y, p.z)
     })
+    if (state.held) {
+      place(state.held)
+      return
+    }
     const [back, up] = cameraOffset[g.space]
     const k = g.space === 'camp' ? 0.35 : 1
     const look = { x: g.pos.x * k, z: g.pos.z * k + (1 - k) * -1 }
@@ -247,6 +294,18 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return k < 0 ? undefined : { x: near.x + (far.x - near.x) * k, z: near.z + (far.z - near.z) * k }
   }
 
+  const pose = (shot: Shot | undefined): void => {
+    state.held = shot
+    state.cam = undefined
+    state.look = undefined
+    if (shot) place(shot)
+  }
+
+  const reset = (): void => {
+    dispose(state.built)
+    state.built = undefined
+  }
+
   app.start()
-  return { app, camera, sync, groundAt }
+  return { app, camera, sync, pose, reset, groundAt }
 }

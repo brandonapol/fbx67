@@ -24,7 +24,8 @@ const placeEl = $('place')
 const barEl = $('hidebar')
 const barFill = $('hidebar-fill')
 
-const view = createView(canvas)
+placeEl.textContent = 'Loading…'
+const view = await createView(canvas, import.meta.env.BASE_URL)
 
 const localStore = (): Storage | undefined => {
   try {
@@ -167,3 +168,15 @@ Object.assign(window, {
     audio: () => audio.status(),
   },
 })
+
+if (new URLSearchParams(window.location.search).get('test') === '1') {
+  void import('./probe.ts').then(({ installProbe }) =>
+    installProbe(view, {
+      get: () => live.g,
+      set: (g) => {
+        live.g = g
+        live.target = undefined
+      },
+    }),
+  )
+}
