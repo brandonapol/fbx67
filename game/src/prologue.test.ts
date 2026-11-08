@@ -14,14 +14,14 @@ const spots = ['stove', 'cache', 'marker'] as const
 
 talks.forEach((who, ti) =>
   spots.forEach((spot, si) =>
-    test(`playing ${who} then hiding at the ${spot} matches text path ${ti + 1},1,${si + 1},1`, () => {
+    test(`playing ${who} then hiding at the ${spot} matches text path ${ti + 1},1,1,1,${si + 1},1`, () => {
       const g = playPrologue(who, spot)
       assert.ok(ended(g))
-      assert.deepEqual(g.path, [ti + 1, 1, si + 1, 1])
+      assert.deepEqual(g.path, [ti + 1, 1, 1, 1, si + 1, 1])
       assert.deepEqual(g.story, replay(g.path).at(-1))
       assert.equal(g.story.scene, 'a1_flood')
       assert.equal(g.story.owenCache, spot)
-      assert.equal(textBuildHash(g), `#path=${ti + 1},1,${si + 1},1`)
+      assert.equal(textBuildHash(g), `#path=${ti + 1},1,1,1,${si + 1},1`)
       assert.equal(g.busts, 0)
     }),
   ),
@@ -30,7 +30,7 @@ talks.forEach((who, ti) =>
 const atCamp = () => {
   const bar = talk(start(), 'texas')
   const room = interact(walk(bar, [[0, 4.2]]))
-  return press(interact(walk(room, [[1.6, -0.8]])), 'fly')
+  return press(press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep'), 'note:fly')
 }
 
 test('the door only opens after a conversation, and Hank only sells the round before one', () => {
@@ -40,12 +40,23 @@ test('the door only opens after a conversation, and Hank only sells the round be
   assert.deepEqual(available(after).map((i) => i.id).sort(), ['curly', 'door', 'wade'])
 })
 
-test('the letter is read in the room and no hiding note is sent there', () => {
+test('the letter is read in the room, the dock panel follows, and no hiding note is sent before the camp', () => {
   const room = interact(walk(talk(start(), 'munitions'), [[0, 4.2]]))
   const desk = interact(walk(room, [[1.6, -0.8]]))
   assert.equal(desk.panel?.title, 'Owen: A Letter to Lucy')
-  assert.deepEqual(desk.panel?.buttons.map((b) => b.id), ['fly'])
+  assert.deepEqual(desk.panel?.buttons, [{ id: 'note:sleep', label: menu(desk.story).options[0].label }])
   assert.equal(desk.story.owenCache, undefined)
+  const dock = press(desk, 'note:sleep')
+  assert.equal(dock.space, 'room')
+  assert.equal(dock.story.scene, 'p_dock')
+  assert.equal(dock.panel?.title, 'Owen: The Float Dock')
+  assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
+  const camp = press(dock, 'note:fly')
+  assert.equal(camp.space, 'camp')
+  assert.equal(camp.panel, undefined)
+  assert.equal(camp.story.scene, 'p_camp')
+  assert.deepEqual(camp.path, [2, 1, 1, 1])
+  assert.equal(camp.story.owenCache, undefined)
 })
 
 spots.forEach((spot) =>
@@ -54,7 +65,7 @@ spots.forEach((spot) =>
     const caught = holdWhenWatched(camp)
     assert.equal(caught.panel?.kind, 'busted')
     assert.equal(caught.hidden, undefined)
-    assert.deepEqual(caught.story, replay([1, 1]).at(-1))
+    assert.deepEqual(caught.story, replay([1, 1, 1, 1]).at(-1))
     const retried = press(caught, 'retry')
     assert.equal(retried.space, 'camp')
     assert.equal(retried.panel, undefined)
@@ -107,7 +118,7 @@ test('walking out of reach cancels a hold and nothing is sent', () => {
   assert.equal(away.holding, undefined)
   assert.equal(away.hidden, undefined)
   assert.equal(away.story.owenCache, undefined)
-  assert.deepEqual(away.story, replay([1, 1]).at(-1))
+  assert.deepEqual(away.story, replay([1, 1, 1, 1]).at(-1))
 })
 
 test('reach, not stick drift, decides whether a hold survives', () => {

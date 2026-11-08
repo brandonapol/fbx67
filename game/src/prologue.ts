@@ -134,7 +134,7 @@ export const interact = (g: Game): Game => {
     if (id === 'curly') return { ...g, panel: storyPanel(g.story, [], [close('Back to the table.')]) }
     if (id === 'door' && target.note) return enter(sendNote(g, target.note), 'room')
   }
-  if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, [], [{ id: 'fly', label: 'Sleep. Fly north with Curly in the morning.' }]) }
+  if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, ['sleep']) }
   if (g.space === 'camp') {
     if (id === 'plane') return enter(g, 'flood')
   }
@@ -144,13 +144,14 @@ export const interact = (g: Game): Game => {
 
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
-  if (button === 'fly') return enter(g, 'camp')
   if (button === 'retry') return { ...enter(g, 'camp'), busts: g.busts }
   if (button === 'continue') return g
   if (button.startsWith('note:')) {
     const note = button.slice(5)
     const next = sendNote(g, note)
     if (note === 'continue') return { ...next, panel: endCard(next) }
+    if (note === 'sleep') return { ...next, panel: storyPanel(next.story, ['fly']) }
+    if (note === 'fly') return enter(next, 'camp')
     return { ...next, panel: storyPanel(next.story, [], [close('Back to the table.')]) }
   }
   return g
