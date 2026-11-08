@@ -1,5 +1,6 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
+import type { Activity } from './cast.ts'
 
 export type SpaceId = 'bar' | 'room' | 'camp' | 'flood'
 
@@ -25,6 +26,7 @@ export type Figure = Readonly<{
   hair: string
   height: number
   hood?: boolean
+  activity?: Activity
 }>
 
 export type Space = Readonly<{
@@ -80,12 +82,14 @@ export const bar: Space = {
     { box: { x: 2.8, z: 1.2, w: 1.6, d: 1.6 }, h: 0.8, color: '#6e4a30', solid: true, shape: 'cylinder' },
     { box: { x: -4.2, z: 1.8, w: 1.3, d: 1.3 }, h: 0.8, color: '#6e4a30', solid: true, shape: 'cylinder' },
     { box: { x: 3.6, z: 2.3, w: 1.0, d: 0.35 }, h: 0.3, color: '#2b1d14' },
+    { box: { x: 4.05, z: 0.85, w: 0.42, d: 0.42 }, h: 0.46, color: '#4a3020' },
+    { box: { x: 2.55, z: 2.45, w: 0.42, d: 0.42 }, h: 0.46, color: '#4a3020' },
     { box: { x: 0, z: 4.45, w: 1.4, d: 0.7 }, h: 0.03, color: '#a8794a' },
   ],
   figures: [
-    { id: 'hank', at: vec(-1.5, -4.0), facing: 0, coat: '#e8e1d2', skin: '#e0b48f', hair: '#9a9a9a', height: 1.8 },
-    { id: 'curly', at: vec(3.9, 0.9), facing: -1.9, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75 },
-    { id: 'wade', at: vec(2.6, 2.3), facing: 2.9, coat: '#5d7a8f', skin: '#efc49e', hair: '#5a3b22', height: 1.82 },
+    { id: 'hank', at: vec(-1.5, -4.0), facing: 0, coat: '#e8e1d2', skin: '#e0b48f', hair: '#9a9a9a', height: 1.8, activity: 'stand' },
+    { id: 'curly', at: vec(3.9, 0.9), facing: -1.9, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75, activity: 'sitDrink' },
+    { id: 'wade', at: vec(2.6, 2.3), facing: 2.9, coat: '#5d7a8f', skin: '#efc49e', hair: '#5a3b22', height: 1.82, activity: 'sit' },
   ],
   spots: [
     { id: 'wade', x: 2.6, z: 2.3, r: 1.9, prompt: 'Talk to Wade' },
