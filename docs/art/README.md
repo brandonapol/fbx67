@@ -23,7 +23,7 @@ neutral to cool. A frame that is orange all over is wrong even if it is pretty.
 
 These are what renders get compared to. They are generated reference (GPT Image 2.6, 16:9, with the Owen, Hank,
 Curly and Wade character sheets as image references), not final art. Their signage is placeholder, and the
-`second-ave` frame is pending consultant review (see [`fact-checks.md`](../fact-checks.md), item 21).
+`second-ave` frame is pending consultant review (see [`fact-checks.md`](../fact-checks.md), item 40).
 
 The targets set **grade, light, density and period**. They do not set framing: where a target's camera height, lens
 or offset differs from the Camera rules below, the Camera rules win.
@@ -31,7 +31,7 @@ or offset differs from the Camera rules below, the Camera rules win.
 | Frame | Shows |
 | ----- | ----- |
 | [`targets/silver-pan.webp`](targets/silver-pan.webp) | The Silver Pan at 11 pm in July 1967, over Owen's shoulder: low sun from the north-northwest over low hills, smoke, Hank behind the bar, Curly and Wade at a table, a dozen patrons. |
-| [`targets/second-ave.webp`](targets/second-ave.webp) | 2nd Avenue under the July midnight sun, looking roughly northwest along the avenue's bend toward the low sun: paved street, concrete sidewalks, brick and a few false fronts, 1950s-60s cars. Street orientation is open ([`fact-checks.md`](../fact-checks.md) item 22). |
+| [`targets/second-ave.webp`](targets/second-ave.webp) | 2nd Avenue under the July midnight sun, looking roughly northwest along the avenue's bend toward the low sun: paved street, concrete sidewalks, brick and a few false fronts, 1950s-60s cars. Street orientation is open ([`fact-checks.md`](../fact-checks.md) item 41). |
 | [`targets/survey-camp.webp`](targets/survey-camp.webp) | Owen's survey camp on a clearwater gravel bar: Curly refueling the floatplane, the cook tent, the cache on stilts, willow, alder and poplar on the bar, white spruce behind; the sun off frame right, shadows falling toward the camera's left. |
 
 **Pass test.** A render passes when, at the same size as its target (or as the rule it illustrates), it holds these
@@ -77,7 +77,7 @@ looks down.
     still up at eleven", so the engine keeps the disc up.
   - The real sky: at 64.84 N, 147.72 W, 23:00 on July 1 / 15 / 31 puts the sun at **-1.5 / -3.0 / -6.3 degrees** on
     standard time (UTC-10), or **+0.7 / -0.8 / -4.0 degrees** on daylight time. Whether Alaska kept daylight saving
-    in 1967 is open ([`fact-checks.md`](../fact-checks.md) item 19).
+    in 1967 is open ([`fact-checks.md`](../fact-checks.md) item 38).
   - After the Prologue, the sun follows the band and season table under Moral weather.
   - Why the winter sun is so low: at Fairbanks it reaches about **1.7 degrees** at noon on the solstice and about
     **10-12 degrees** by mid-February.
