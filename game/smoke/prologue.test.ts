@@ -219,6 +219,7 @@ const play = async ({ page, errors, initial }: Opened, run: Run): Promise<void> 
   await walk(page, [[5.2, 4.3]], true)
   await aim(page, (-3 * Math.PI) / 4, 0)
   await snap(page, '02-bar-corner', 3)
+  await walk(page, [[0, 3.9]], true)
 
   await tour(page, [0, 3.9], [-1.5, -2.2])
   assert.equal(await page.locator('#prompt').getAttribute('data-id'), 'hank')

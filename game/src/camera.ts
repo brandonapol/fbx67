@@ -33,7 +33,7 @@ export const SETTLE_TIME = 0.4
 export const RECENTER_DELAY = 1.5
 export const RECENTER_TIME = 0.8
 export const BOB = 0.03
-export const TOO_CLOSE = 0.6
+export const TOO_CLOSE = 0.9
 
 export const blocks = (s: Space): readonly Block[] => [
   ...s.props.filter((p) => p.solid && p.h > 0.05).map((p) => ({ box: p.box, y0: p.y ?? 0, y1: (p.y ?? 0) + p.h })),
