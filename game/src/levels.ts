@@ -34,6 +34,7 @@ export type Space = Readonly<{
   name: string
   season: Season
   size: Readonly<{ w: number; d: number }>
+  interior: boolean
   ground: string
   spawn: Vec
   props: readonly Prop[]
@@ -51,7 +52,7 @@ const wall = (x: number, z: number, w: number, d: number, color: string, h = 3):
 
 const walls = (w: number, d: number, color: string): readonly Prop[] => [
   wall(0, -d / 2, w, 0.3, color),
-  wall(0, d / 2, w, 0.3, color, 1),
+  wall(0, d / 2, w, 0.3, color),
   wall(-w / 2, 0, 0.3, d, color),
   wall(w / 2, 0, 0.3, d, color),
 ]
@@ -63,15 +64,20 @@ const edges = (w: number, d: number): readonly Prop[] => [
   { box: { x: w / 2 + 0.5, z: 0, w: 1, d: d + 2 }, h: 0.01, color: '#000000', solid: true },
 ]
 
+export const HIDE_TIME = 2.4
+
+export const ROUND_TIME = 1.2
+
 const owen = { skin: '#d9a982', hair: '#6b4a2e' }
 
 export const bar: Space = {
   id: 'bar',
   name: 'The Silver Pan',
+  interior: true,
   season: 'summer',
   size: { w: 12, d: 10 },
   ground: '#5a3d2b',
-  spawn: vec(0, 3.9),
+  spawn: vec(0, 3.0),
   props: [
     ...walls(12, 10, '#7a5a3f'),
     { box: { x: -1.5, z: -3.3, w: 7, d: 0.9 }, h: 1.1, color: '#3e2618', solid: true, occludes: true },
@@ -94,18 +100,19 @@ export const bar: Space = {
   spots: [
     { id: 'wade', x: 2.6, z: 2.3, r: 1.9, prompt: 'Talk to Wade' },
     { id: 'curly', x: 3.9, z: 0.9, r: 1.7, prompt: 'Talk to Curly' },
-    { id: 'hank', x: -1.5, z: -2.6, r: 1.5, prompt: 'Buy the table a round' },
-    { id: 'door', x: 0, z: 4.4, r: 1.0, prompt: 'Say goodnight and walk back to your room' },
+    { id: 'hank', x: -1.5, z: -2.6, r: 1.5, note: 'round', hold: ROUND_TIME },
+    { id: 'door', x: 0, z: 4.4, r: 1.0, note: 'goodnight' },
   ],
 }
 
 export const room: Space = {
   id: 'room',
   name: "Owen's room",
+  interior: true,
   season: 'summer',
   size: { w: 6, d: 6 },
   ground: '#6b5641',
-  spawn: vec(0, 2),
+  spawn: vec(0, 1.2),
   props: [
     ...walls(6, 6, '#8c7a62'),
     { box: { x: -1.8, z: -1.6, w: 1.6, d: 2.4 }, h: 0.6, color: '#5d6f7f', solid: true },
@@ -123,6 +130,7 @@ export const CURLY_AT = vec(-6.4, 5.4)
 export const camp: Space = {
   id: 'camp',
   name: 'The survey camp',
+  interior: false,
   season: 'summer',
   size: { w: 28, d: 24 },
   ground: '#6f7a4a',
@@ -177,9 +185,9 @@ export const camp: Space = {
     { id: 'curly', at: CURLY_AT, facing: -Math.PI / 2, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75 },
   ],
   spots: [
-    { id: 'stove', x: 5.6, z: -0.5, r: 1.1, prompt: 'Hold E: hide the notes under the floorboards behind the cook-tent stove' },
-    { id: 'cache', x: 9.2, z: 3.8, r: 1.1, prompt: 'Hold E: hide the notes in the old meat cache on stilts' },
-    { id: 'marker', x: 1.8, z: -8.1, r: 1.1, prompt: 'Hold E: bury the ammo can under the survey marker' },
+    { id: 'stove', x: 5.6, z: -0.5, r: 1.1, note: 'stove', hold: HIDE_TIME },
+    { id: 'cache', x: 9.2, z: 3.8, r: 1.1, note: 'cache', hold: HIDE_TIME },
+    { id: 'marker', x: 1.8, z: -8.1, r: 1.1, note: 'marker', hold: HIDE_TIME },
     { id: 'plane', x: -7.6, z: 4.6, r: 1.6, prompt: 'Fly home with Curly' },
   ],
 }
@@ -187,6 +195,7 @@ export const camp: Space = {
 export const flood: Space = {
   id: 'flood',
   name: 'High water',
+  interior: false,
   season: 'flood',
   size: { w: 20, d: 16 },
   ground: '#5b4a33',
@@ -211,7 +220,11 @@ export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood
 
 export const owenLook = owen
 
-export const solids = (s: Space): readonly Box[] => s.props.filter((p) => p.solid).map((p) => p.box)
+export const FIGURE_WIDTH = 0.5
+
+export const figureBox = (f: Figure): Box => ({ x: f.at.x, z: f.at.z, w: FIGURE_WIDTH, d: FIGURE_WIDTH })
+
+export const solids = (s: Space): readonly Box[] => [...s.props.filter((p) => p.solid).map((p) => p.box), ...s.figures.map(figureBox)]
 
 export const occluders = (s: Space): readonly Box[] => s.props.filter((p) => p.occludes).map((p) => p.box)
 

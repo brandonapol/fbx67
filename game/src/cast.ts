@@ -13,7 +13,7 @@ export type Motion = Readonly<{ speed: number; sneaking: boolean; activity: Acti
 export const WALK_SPEED = 1.4
 export const RUN_SPEED = 3.5
 const MOVING = 0.15
-const RUNNING = 2.4
+const RUNNING = (WALK_SPEED + RUN_SPEED) / 2
 
 export const castFor = (figureId: string): CastId | undefined =>
   (castIds as readonly string[]).includes(figureId) ? (figureId as CastId) : undefined

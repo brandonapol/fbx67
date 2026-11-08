@@ -14,6 +14,8 @@ test('speed picks idle, walk, sneak and run', () => {
   assert.equal(clipFor({ ...still, speed: 1.4 }), 'walk')
   assert.equal(clipFor({ ...still, speed: 1.4, sneaking: true }), 'sneak')
   assert.equal(clipFor({ ...still, speed: 3.5 }), 'run')
+  assert.equal(clipFor({ ...still, speed: 2.2 }), 'walk')
+  assert.equal(clipFor({ ...still, speed: 2.7 }), 'run')
 })
 
 test('seated people stay seated while talking; standing people gesture', () => {

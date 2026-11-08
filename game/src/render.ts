@@ -2,6 +2,8 @@ import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
 import { CURLY_HALF_ANGLE, CURLY_RANGE, spaces } from './levels.ts'
+import type { Pose } from './camera.ts'
+import { FOV, NEAR } from './camera.ts'
 import type { Lighting } from './lighting.ts'
 import type { Cast } from './characters.ts'
 import { loadCast } from './characters.ts'
@@ -16,10 +18,11 @@ export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readon
 export type View = Readonly<{
   app: pc.Application
   camera: pc.Entity
-  sync: (g: Game, dt: number) => void
+  sync: (g: Game, dt: number, cam: Pose) => void
   pose: (shot: Shot | undefined) => void
   reset: () => void
   groundAt: (x: number, y: number) => Readonly<{ x: number; z: number }> | undefined
+  screenAt: (x: number, y: number, z: number) => Readonly<{ x: number; y: number }> | undefined
 }>
 
 const color = (hex: string, a = 1): pc.Color => {
@@ -131,13 +134,6 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
   }
 }
 
-const cameraOffset: Readonly<Record<Space['id'], readonly [number, number]>> = {
-  bar: [6.5, 9],
-  room: [4.6, 7],
-  camp: [17, 25],
-  flood: [7, 9],
-}
-
 type Built = Readonly<{
   id: Space['id']
   root: pc.Entity
@@ -159,7 +155,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   window.addEventListener('resize', () => app.resizeCanvas())
 
   const camera = new pc.Entity('camera')
-  camera.addComponent('camera', { fov: 45, nearClip: 0.1, farClip: 200 })
+  camera.addComponent('camera', { fov: FOV, nearClip: NEAR, farClip: 200 })
   app.root.addChild(camera)
 
   const sun = new pc.Entity('sun')
@@ -212,7 +208,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }
 
-  const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }>; last?: Readonly<{ x: number; z: number }>; held?: Shot } = {}
+  const state: { built?: Built; last?: Readonly<{ x: number; z: number }>; held?: Shot } = {}
 
   const isCast = (e: pc.GraphNode | null): boolean => (e ? e.tags.has('cast') || isCast(e.parent) : false)
 
@@ -231,12 +227,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     camera.lookAt(shot.at[0], shot.at[1], shot.at[2])
   }
 
-  const sync = (g: Game, dt: number): void => {
+  const sync = (g: Game, dt: number, cam: Pose): void => {
     if (!state.built || state.built.id !== g.space || state.built.weather !== weather(g.story)) {
       dispose(state.built)
       state.built = build(g)
-      state.cam = undefined
-      state.look = undefined
     }
     const b = state.built
     const moved = state.last ? Math.hypot(g.pos.x - state.last.x, g.pos.z - state.last.z) : 0
@@ -252,6 +246,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     })
     owen.setLocalPosition(g.pos.x, 0, g.pos.z)
     owen.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
+    owen.enabled = !cam.close || state.held !== undefined
     if (b.cone && b.coneMats) {
       const w = watcher(g)
       b.cone.setLocalPosition(w.at.x, 0, w.at.z)
@@ -269,18 +264,8 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       place(state.held)
       return
     }
-    const [back, up] = cameraOffset[g.space]
-    const k = g.space === 'camp' ? 0.35 : 1
-    const look = { x: g.pos.x * k, z: g.pos.z * k + (1 - k) * -1 }
-    const target = new pc.Vec3(look.x, up, look.z + back)
-    const cam = state.cam ?? target.clone()
-    cam.lerp(cam, target, Math.min(1, dt * 4))
-    state.cam = cam
-    camera.setPosition(cam)
-    const at = state.look ?? look
-    const eased = { x: at.x + (look.x - at.x) * Math.min(1, dt * 4), z: at.z + (look.z - at.z) * Math.min(1, dt * 4) }
-    state.look = eased
-    camera.lookAt(eased.x, 0.9, eased.z)
+    camera.setPosition(cam.eye[0], cam.eye[1], cam.eye[2])
+    camera.lookAt(cam.target[0], cam.target[1], cam.target[2])
   }
 
   const groundAt = (x: number, y: number): Readonly<{ x: number; z: number }> | undefined => {
@@ -294,10 +279,18 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     return k < 0 ? undefined : { x: near.x + (far.x - near.x) * k, z: near.z + (far.z - near.z) * k }
   }
 
+  const screenAt = (x: number, y: number, z: number): Readonly<{ x: number; y: number }> | undefined => {
+    const c = camera.camera
+    if (!c) return undefined
+    const p = new pc.Vec3(x, y, z)
+    const ahead = p.clone().sub(camera.getPosition()).dot(camera.forward) > 0
+    if (!ahead) return undefined
+    const s = c.worldToScreen(p)
+    return { x: s.x, y: s.y }
+  }
+
   const pose = (shot: Shot | undefined): void => {
     state.held = shot
-    state.cam = undefined
-    state.look = undefined
     if (shot) place(shot)
   }
 
@@ -307,5 +300,5 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   }
 
   app.start()
-  return { app, camera, sync, pose, reset, groundAt }
+  return { app, camera, sync, pose, reset, groundAt, screenAt }
 }

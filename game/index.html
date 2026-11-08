@@ -9,13 +9,24 @@
     <canvas id="scene"></canvas>
     <div id="place"></div>
     <button id="prompt" type="button" hidden></button>
-    <div id="hidebar" hidden><div id="hidebar-fill"></div></div>
+    <div id="stick" hidden><div id="stick-knob"></div></div>
+    <button id="settings-open" type="button">Controls</button>
+    <section id="settings" hidden aria-label="Controls">
+      <h2>Controls</h2>
+      <label class="row"><input id="invert-y" type="checkbox" /> Invert camera up and down</label>
+      <label class="row">Camera sensitivity <input id="sensitivity" type="range" step="0.05" /></label>
+      <div id="bindings"></div>
+      <div class="row">
+        <button id="settings-reset" type="button">Reset</button>
+        <button id="settings-close" type="button">Done</button>
+      </div>
+    </section>
     <section id="panel" hidden aria-live="polite">
       <h2 id="panel-title"></h2>
       <div id="panel-text"></div>
       <div id="panel-buttons"></div>
     </section>
-    <div id="help">WASD or arrows to walk, or tap the ground. E to interact, hold E to hide. Number keys pick an option.</div>
+    <div id="help"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

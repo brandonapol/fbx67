@@ -5,7 +5,7 @@ import { DEFAULT_VOLUMES, DUCK, busGain, busGains, parseVolumes, serializeVolume
 import type { Gait } from './footsteps.ts'
 import { pace, standing, strideFor, surfaceAt } from './footsteps.ts'
 import { CURLY_PERIOD, WORK, spaces } from './levels.ts'
-import { SPEED, interact, press, start, still, tick } from './prologue.ts'
+import { JOG, WALK, interact, press, start, still, tick } from './prologue.ts'
 import { DT, talk, walk } from './drive.ts'
 import { arrivals, ducked, holds, refueling, soundscapes, sourceAt, walked } from './soundscape.ts'
 import { beatAt, midiHz, noiseSamples } from './synth.ts'
@@ -53,17 +53,17 @@ test('footsteps fall once per stride at a steady pace however the time is sliced
 })
 
 test('the stride lengthens with speed: a walk is short, a jog is long', () => {
-  assert.ok(Math.abs(strideFor(1.4) - 0.73) < 0.02)
-  assert.ok(strideFor(SPEED) >= 1.1 && strideFor(SPEED) <= 1.2)
-  assert.ok(strideFor(3.5) > strideFor(SPEED))
+  assert.ok(Math.abs(strideFor(WALK) - 0.73) < 0.02)
+  assert.ok(strideFor(JOG) >= 1.1 && strideFor(JOG) <= 1.25)
+  assert.ok(strideFor(JOG) > strideFor(WALK))
   const steps = (speed: number) => Array.from({ length: 100 }).reduce<Gait>((s) => pace(s, speed * 0.1, 0.1).gait, standing).steps
   assert.ok(steps(1.4) < steps(3.5))
 })
 
 test('the first step comes soon after starting, and stopping resets the stride', () => {
-  const stride = strideFor(SPEED)
-  assert.equal(pace(standing, stride * 0.45, (stride * 0.45) / SPEED).falls, 1)
-  const stopped = pace(pace(standing, stride * 0.2, (stride * 0.2) / SPEED).gait, 0, 1 / 30)
+  const stride = strideFor(JOG)
+  assert.equal(pace(standing, stride * 0.45, (stride * 0.45) / JOG).falls, 1)
+  const stopped = pace(pace(standing, stride * 0.2, (stride * 0.2) / JOG).gait, 0, 1 / 30)
   assert.deepEqual(stopped.gait, standing)
   assert.equal(pace(standing, 0, 1 / 30).falls, 0)
   assert.equal(pace(standing, 1, 0).falls, 0)
@@ -88,15 +88,16 @@ test('surfaces: wood indoors, gravel and creek mud at camp, water and a doorstep
 })
 
 test('walking a real route counts steps from the distance the game moved', () => {
-  const g0 = press(start(), 'close')
-  const frames = Array.from({ length: 30 }).reduce<readonly ReturnType<typeof start>[]>(
-    (acc) => [...acc, tick(acc[acc.length - 1], { dir: vec(0, -1), hold: false }, DT)],
-    [g0],
+  const north = { dir: vec(0, -1), hold: false, run: true }
+  const warm = Array.from({ length: 20 }).reduce<ReturnType<typeof start>>((g) => tick(g, north, DT), press(start(), 'close'))
+  const frames = Array.from({ length: 25 }).reduce<readonly ReturnType<typeof start>[]>(
+    (acc) => [...acc, tick(acc[acc.length - 1], north, DT)],
+    [warm],
   )
   const dist = frames.slice(1).reduce((d, g, i) => d + walked(frames[i], g), 0)
   const gait = frames.slice(1).reduce((s, g, i) => pace(s, walked(frames[i], g), DT).gait, standing)
   assert.ok(dist > 2)
-  assert.equal(gait.steps, Math.floor(standing.phase + dist / strideFor(SPEED)))
+  assert.equal(gait.steps, Math.floor(standing.phase + dist / strideFor(JOG)))
 })
 
 test('changing space is not walking, and the room door closes on arrival', () => {

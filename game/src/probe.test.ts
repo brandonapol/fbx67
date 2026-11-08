@@ -63,8 +63,8 @@ test('every capture pose stands inside its space', () => {
 })
 
 test('a pose replaces position, facing and time, and refuses the wrong space', () => {
-  const g = { ...start(), hiding: { spot: 'stove' as const, progress: 1 } }
+  const g = { ...start(), holding: { id: 'stove', note: 'stove', progress: 1, time: 2.4 } }
   const p = posed(g, poses.bar!)
-  assert.deepEqual([p.pos, p.facing, p.t, p.hiding, p.story], [poses.bar!.pos, poses.bar!.facing, 0, undefined, g.story])
+  assert.deepEqual([p.pos, p.facing, p.t, p.holding, p.story], [poses.bar!.pos, poses.bar!.facing, 0, undefined, g.story])
   assert.throws(() => posed(g, poses.letter!), /pose is for room/)
 })

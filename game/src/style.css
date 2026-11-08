@@ -54,20 +54,77 @@ body {
 
 #prompt {
   position: fixed;
-  bottom: 56px;
   left: 50%;
-  transform: translateX(-50%);
-  max-width: calc(100% - 32px);
-  padding: 10px 16px;
-  background: var(--paper);
+  top: calc(100% - 56px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translate(-50%, -100%);
+  max-width: min(420px, calc(100% - 32px));
+  padding: 6px 12px 6px 6px;
+  background: rgba(244, 234, 214, 0.92);
   border: 1px solid var(--paper-edge);
+  border-radius: 20px;
   box-shadow: 0 4px 14px var(--shadow);
   font: inherit;
-  font-size: 17px;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: left;
   color: var(--ink);
   cursor: pointer;
   user-select: none;
   touch-action: none;
+}
+
+#prompt .glyph {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+}
+
+#prompt .glyph svg {
+  position: absolute;
+  inset: 0;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  transform: rotate(-90deg);
+}
+
+#prompt .glyph circle {
+  fill: none;
+  stroke-width: 3;
+}
+
+#prompt .glyph .track {
+  stroke: rgba(42, 33, 24, 0.2);
+}
+
+#prompt .glyph .fill {
+  stroke: var(--accent);
+}
+
+#prompt .key {
+  position: relative;
+  margin: 0;
+}
+
+#prompt .glyph.hold .key {
+  border: none;
+  min-width: 0;
+}
+
+body[data-device='touch'] #prompt {
+  padding: 10px 16px 10px 10px;
+  font-size: 16px;
+}
+
+body[data-device='touch'] #prompt .glyph:not(.hold) {
+  display: none;
 }
 
 .key {
@@ -81,21 +138,87 @@ body {
   text-align: center;
 }
 
-#hidebar {
+#stick {
   position: fixed;
-  bottom: 110px;
-  left: 50%;
-  width: min(320px, calc(100% - 32px));
-  height: 12px;
-  transform: translateX(-50%);
-  background: rgba(244, 234, 214, 0.5);
-  border: 1px solid var(--paper);
+  width: 110px;
+  height: 110px;
+  margin: -55px 0 0 -55px;
+  border: 2px solid rgba(244, 234, 214, 0.6);
+  border-radius: 50%;
+  background: rgba(20, 14, 8, 0.2);
+  pointer-events: none;
 }
 
-#hidebar-fill {
-  height: 100%;
-  width: 0;
-  background: var(--accent);
+#stick-knob {
+  position: absolute;
+  left: 35px;
+  top: 35px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(244, 234, 214, 0.85);
+}
+
+#settings-open {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 112px;
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 2px 8px var(--shadow);
+  font: inherit;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+body #sound {
+  right: 140px;
+}
+
+#settings {
+  position: fixed;
+  top: 56px;
+  right: 16px;
+  width: min(340px, calc(100% - 32px));
+  max-height: calc(100% - 72px);
+  overflow-y: auto;
+  padding: 16px 18px;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 8px 30px var(--shadow);
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+#settings h2 {
+  margin: 0 0 10px;
+  font: 18px Georgia, serif;
+  font-variant: small-caps;
+}
+
+#settings .row,
+#settings .binding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+#settings button {
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--ink);
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+#settings .binding button {
+  min-width: 96px;
 }
 
 #panel {
