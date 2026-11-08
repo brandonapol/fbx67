@@ -5,7 +5,11 @@ copies its text or re-implements its gates: each mission ends by sending the sto
 offers (see [`docs/story-api.md`](../docs/story-api.md)).
 
 Today it plays the prologue as Owen: the Silver Pan, the letter to Lucy, hiding the notes at the survey camp while
-Curly refuels, and the skiff in the flood. The end card continues into the text build at Act 1 with the same path.
+Curly refuels, and the skiff in the flood. "Continue as Wade" on the end card goes on into Act 1.
+
+`src/router.ts` decides where each scene plays from the story's `place(state)`: a place with a space puts the player
+in it, and a place without one (or no place, as in every scene after the prologue today) shows the scene's menu as a
+panel, each option a note button. A new space declares its `place` in `src/levels.ts` and takes over its scenes.
 
 Live at <https://brandonapol.github.io/fbx67/play/>.
 
@@ -50,6 +54,7 @@ src/world.ts      vectors, collision, line of sight, the watcher cone, target pi
 src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, interior and exterior arms; pure
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
 src/levels.ts     the four spaces as data, and Curly's look schedule
+src/router.ts     which space a scene plays in, from the story's place; pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   season and moral-weather presets
 src/render.ts     PlayCanvas: draws the game state, owns nothing

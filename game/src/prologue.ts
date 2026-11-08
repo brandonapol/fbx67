@@ -1,6 +1,7 @@
 import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu, send } from '../../text-game/src/story.ts'
+import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
 import type { SpaceId } from './levels.ts'
@@ -112,6 +113,15 @@ export const watcher = (g: Game) => ({ at: CURLY_AT, facing: curlyFacing(g.t), r
 
 export const seen = (g: Game): boolean => g.space === 'camp' && sees(watcher(g), g.pos, occluders(spaces.camp))
 
+const leftPrologue = (from: State, to: State): boolean => menu(from).act === 'Prologue' && menu(to).act !== 'Prologue'
+
+const arrive = (g: Game): Game => {
+  const r = route(g.story)
+  if (r.to === 'menu') return { ...g, panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note)) }
+  if (r.space !== g.space) return enter(g, r.space)
+  return { ...g, panel: storyPanel(g.story, [], [close(spaces[r.space].back ?? 'Back.')]) }
+}
+
 const busted = (g: Game): Game => ({
   ...g,
   holding: undefined,
@@ -119,12 +129,12 @@ const busted = (g: Game): Game => ({
   panel: { kind: 'busted', title: 'Busted', text: 'Curly turns around. That was way too obvious.', buttons: [{ id: 'retry', label: 'Try again' }] },
 })
 
-const endCard = (g: Game): Panel => ({
+const endCard: Panel = {
   kind: 'end',
   title: 'End of the prologue',
-  text: 'Act 1 continues in the text build, where you play Wade.',
+  text: 'Act 1 begins. From here you play Wade.',
   buttons: [{ id: 'continue', label: 'Continue as Wade' }],
-})
+}
 
 export const interact = (g: Game): Game => {
   const target = focus(g)
@@ -134,27 +144,21 @@ export const interact = (g: Game): Game => {
   if (g.space === 'bar') {
     if (id === 'wade') return { ...g, panel: g.story.scene === 'p_bar' ? storyPanel(g.story, ['texas', 'munitions'], [close('Not yet.')]) : storyPanel(g.story, [], [close('Back to the table.')]) }
     if (id === 'curly') return { ...g, panel: storyPanel(g.story, [], [close('Back to the table.')]) }
-    if (id === 'door' && target.note) return enter(sendNote(g, target.note), 'room')
+    if (id === 'door' && target.note) return arrive(sendNote(g, target.note))
   }
   if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, ['sleep']) }
-  if (g.space === 'camp') {
-    if (id === 'plane') return enter(g, 'flood')
-  }
+  if (g.space === 'camp' && id === 'plane') return arrive(g)
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
 
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
-  if (button === 'retry') return { ...enter(g, 'camp'), busts: g.busts }
-  if (button === 'continue') return g
+  if (button === 'retry') return enter(g, g.space)
+  if (button === 'continue') return arrive(g)
   if (button.startsWith('note:')) {
-    const note = button.slice(5)
-    const next = sendNote(g, note)
-    if (note === 'continue') return { ...next, panel: endCard(next) }
-    if (note === 'sleep') return { ...next, panel: storyPanel(next.story, ['fly']) }
-    if (note === 'fly') return enter(next, 'camp')
-    return { ...next, panel: storyPanel(next.story, [], [close('Back to the table.')]) }
+    const next = sendNote(g, button.slice(5))
+    return leftPrologue(g.story, next.story) ? { ...next, panel: endCard } : arrive(next)
   }
   return g
 }
