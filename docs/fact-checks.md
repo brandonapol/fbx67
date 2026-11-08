@@ -178,6 +178,8 @@ A note on method: research was done by web search. Direct page fetches were bloc
 
 **Recommended change (text tweak).** "Nobody is flying anywhere" is too strong: wheel planes still flew from Fairbanks runways. Change to "nobody can land at a camp with no strip until the ice and snow are good". For Owen, "big tires off a gravel bar" is safer than the term "tundra tires".
 
+**Update (issue #38).** Owen now flies with Curly on amphibian floats: off the Chena from a float dock in town, and down on their wheels on the camp's gravel bar. Act 1 says the same and no longer uses "tundra tires". Amphibian floats, with wheels that retract into the floats, were in use on Beaver-class bush planes by the 1960s. Small amphibian wheels on a gravel bar are rougher than big tires, but a smooth, known bar makes the landing plausible.
+
 ### 10. Who ran a 1967 winter crash search
 
 **Claim.** Act 3: "the rescue team out of Eielson needs a munitions man for flares and signal charges."
