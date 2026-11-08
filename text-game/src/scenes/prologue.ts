@@ -9,7 +9,7 @@ When Wade asks what you do, you tell him the truth, or most of it: you map where
 
 "Somebody's been quietly asking who owns that land," you say. "Nobody else seems to notice." "I'm trying to do right by the Lower Tanana families out there, the Minto people with fish camps down on the lower Chatanika. There's a lawyer in town helping me with that."
 
-Curly checks his watch. "Plane's ready for the morning, Owen."`
+Curly checks his watch. "Plane's ready for the morning, ${N.owenShort}."`
 
 const talkAt = { place: 'silverPan', clock: '1967-07-14T23:20', goal: 'Walk back to your room.' } as const
 
@@ -26,7 +26,7 @@ You are ${N.owen}, a geologist, two summers into a contract surveying gravel and
 
 ${N.curly}, the mechanic who keeps your charter plane flying, waves you over. Beside him is a skinny kid in an Air Force haircut with a guitar case at his feet.
 
-"Owen, this here's ${N.wade}. Texan, like me. Munitions out at Eielson. Never seen snow in his life."
+"${N.owenShort}, this here's ${N.wade}. Texan, like me. Munitions out at Eielson. Never seen snow in his life."
 
 The kid grins and shakes your hand like he means it.`,
     choices: () => [
@@ -73,7 +73,7 @@ ${talkRest}`,
     clock: '1967-07-15T00:30',
     goal: `Sleep. In the morning, mail the letter and meet ${N.curlyShort} at the float dock.`,
     text: () => `
-In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
+In your rented room at the boarding house you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
 
 You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow ${N.curlyShort} flies you to the survey camp, and you will hide the real notes and tapes out there. If anything happens to you, she should know there is something to find.`,
     choices: () => [{ label: 'Seal the letter and go to sleep.', note: 'sleep', next: 'p_dock' }],
@@ -88,9 +88,9 @@ You write to ${N.lucy}, the clerk at the land office who has been asking the que
     text: () => `
 It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
 
-At the float dock on the Chena, ${N.curly} is standing on a float with a funnel in the wing tank, pouring gas from a jerry can through a chamois. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
+At the float dock on the Chena, ${N.curly} is down on one knee on a float with a hand pump, pumping the night's seep out of the float compartments. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
 
-"You look like you didn't sleep, Owen."
+"You look like you didn't sleep, ${N.owenShort}."
 
 You hand him your duffel and keep the satchel with the notes and the tapes. It rides on your knees all the way north.`,
     choices: () => [{ label: `Climb in and fly north with ${N.curlyShort}.`, note: 'fly', next: 'p_camp' }],
@@ -124,7 +124,7 @@ Where do you hide them?`,
     text: () => `
 You fly home. ${N.curlyShort} never sees where you put them. Back in town you write ${N.lucy} a second, longer letter, and somewhere in it is where to look.
 
-A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
+A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to ${N.lucy} with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
 
 You climb in.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a1_flood' }],

@@ -85,7 +85,7 @@ She laughs despite herself. As you're leaving she catches your sleeve.
     text: () => `
 Eli takes you to the land office, where his sister ${N.lucy} is hauling wet ledgers up a staircase. You light a cigarette. She takes it out of your mouth and drops it in a puddle without a word.
 
-She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her twice in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on amphibian floats, landing on their wheels on a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
+She doesn't believe the accident ruling for a second. ${N.owenShort} was coming to see her the night he drowned. He'd written to her twice in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. ${N.owenShort} flew in and out on amphibian floats, landing on their wheels on a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
 
 "He was working with a lawyer, ${N.ashby}, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The base photo lab kept the only full set of prints in Alaska. I can't get onto your base."
 

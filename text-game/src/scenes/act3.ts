@@ -30,7 +30,7 @@ export const act3: readonly Scene[] = [
     text: () => `
 You are ${N.lucy}. December 12th, thirty-eight below. Jake sets the plane down on the frozen creek below Owen's camp, and you have three hours of grey light.
 
-The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. Owen's second letter told you where to look.`,
+The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. ${N.owenShort}'s second letter told you where to look.`,
     choices: () => [
       { label: 'Under the floorboards behind the cook-tent stove.', next: dig('stove') },
       { label: 'The old meat cache up on stilts.', next: dig('cache') },

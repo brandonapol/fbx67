@@ -63,7 +63,7 @@ Each scene can carry three fields, `place`, `clock` and `goal`, written in its s
 | `clock(state)` | local date and time, `YYYY-MM-DDTHH:MM` (`Clock` in `types.ts`), for sun angle and season; weather such as the flood comes from the date, not the place | `1967-07-15T07:30` |
 | `goal(state)` | a short objective line: where the story wants the player next | `Fly north with Curly to the survey camp.` |
 
-Every prologue scene has all three, and a unit test (`text-game/src/story.test.ts`) enforces that and checks that the prologue clock never runs backward. Scenes in later acts do not have them yet, so the queries return `undefined` there; the game must handle that until each act is filled in. A new place id is added to `Place` when a scene needs it.
+Every prologue scene has all three, and a unit test (`text-game/src/story.test.ts`) enforces that and checks that the prologue clock never runs backward. Scenes in later acts do not have them yet, so the queries return `undefined` there; the game must handle that until each act is filled in. A new place id is added to `Place` when a scene needs it. `boardingHouse` is the outside of Owen's boarding house and its door; `owensRoom` is his room inside it. Until the game has a dock space, it shows the `p_dock` panel over the room, and its `fly` button enters the camp.
 
 The game never changes story facts directly. It only sends notes (Rule 1) and asks questions (Rule 5).
 
