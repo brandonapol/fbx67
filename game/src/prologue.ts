@@ -2,7 +2,7 @@ import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu, send } from '../../text-game/src/story.ts'
 import type { Interactable, Vec } from './world.ts'
-import { angleTo, length, move, normalize, pick, scale, sees, vec } from './world.ts'
+import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
 import type { SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 
@@ -13,12 +13,13 @@ export const JOG = 3.5
 export const ACCEL = 9
 export const DECEL = 12
 export const TURN_RATE = 10
+export const TURN_GO = 0.5
 
 export type Button = Readonly<{ id: string; label: string }>
 
 export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end'; title: string; text: string; buttons: readonly Button[] }>
 
-export type Holding = Readonly<{ id: string; progress: number; time: number }>
+export type Holding = Readonly<{ id: string; note?: string; progress: number; time: number }>
 
 export type Game = Readonly<{
   story: State
@@ -26,6 +27,7 @@ export type Game = Readonly<{
   space: SpaceId
   pos: Vec
   facing: number
+  view: number
   vel: Vec
   t: number
   panel?: Panel
@@ -34,7 +36,7 @@ export type Game = Readonly<{
   busts: number
 }>
 
-export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number }>
+export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
 
 const zero = vec(0, 0)
 
@@ -69,6 +71,7 @@ const enter = (g: Game, space: SpaceId): Game => ({
   space,
   pos: spaces[space].spawn,
   facing: Math.PI,
+  view: Math.PI,
   vel: zero,
   t: 0,
   panel: undefined,
@@ -81,6 +84,7 @@ export const start = (): Game => ({
   space: 'bar',
   pos: spaces.bar.spawn,
   facing: Math.PI,
+  view: Math.PI,
   vel: zero,
   t: 0,
   busts: 0,
@@ -97,7 +101,10 @@ export const available = (g: Game): readonly Interactable[] =>
     return true
   })
 
-export const focus = (g: Game): Interactable | undefined => (g.panel ? undefined : pick(g.pos, g.facing, available(g)))
+export const focus = (g: Game): Interactable | undefined => (g.panel ? undefined : pick(g.pos, g.view, g.facing, available(g)))
+
+export const label = (g: Game, i: Interactable): string =>
+  (i.note ? menu(g.story).options.find((o) => o.note === i.note)?.label : i.prompt) ?? i.id
 
 export const watcher = (g: Game) => ({ at: CURLY_AT, facing: curlyFacing(g.t), range: CURLY_RANGE, halfAngle: CURLY_HALF_ANGLE })
 
@@ -121,11 +128,11 @@ export const interact = (g: Game): Game => {
   const target = focus(g)
   if (!target) return g
   const id = target.id
-  if (target.hold) return { ...g, vel: zero, holding: { id, progress: 0, time: target.hold } }
+  if (target.hold) return { ...g, vel: zero, holding: { id, note: target.note, progress: 0, time: target.hold } }
   if (g.space === 'bar') {
     if (id === 'wade') return { ...g, panel: g.story.scene === 'p_bar' ? storyPanel(g.story, ['texas', 'munitions'], [close('Not yet.')]) : storyPanel(g.story, [], [close('Back to the table.')]) }
     if (id === 'curly') return { ...g, panel: storyPanel(g.story, [], [close('Back to the table.')]) }
-    if (id === 'door') return { ...enter(sendNote(g, 'goodnight'), 'room') }
+    if (id === 'door' && target.note) return enter(sendNote(g, target.note), 'room')
   }
   if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, [], [{ id: 'fly', label: 'Sleep. Fly north with Curly in the morning.' }]) }
   if (g.space === 'camp') {
@@ -149,54 +156,59 @@ export const press = (g: Game, button: string): Game => {
   return g
 }
 
-const holdNote: Readonly<Record<string, string>> = { hank: 'round', stove: 'stove', cache: 'cache', marker: 'marker' }
-
-const finish = (g: Game, id: string): Game => {
+const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
-  if (isSpot(id)) return { ...sendNote(done, id), hidden: id }
-  return press(done, `note:${holdNote[id]}`)
+  if (!h.note) return done
+  if (isSpot(h.id)) return { ...sendNote(done, h.note), hidden: h.id }
+  return press(done, `note:${h.note}`)
 }
 
-const hold = (g: Game, input: Input, moved: boolean, dt: number): Game => {
+export const inReach = (g: Game, id: string): boolean => {
+  const spot = available(g).find((i) => i.id === id)
+  return spot !== undefined && distance(g.pos, spot) <= spot.r
+}
+
+const hold = (g: Game, input: Input, dt: number): Game => {
   const h = g.holding
   if (!h) return g
-  if (!input.hold || moved) return { ...g, holding: undefined }
+  if (!input.hold || !inReach(g, h.id)) return { ...g, holding: undefined }
   if (seen(g)) return busted(g)
   const progress = h.progress + dt
-  return progress < h.time ? { ...g, holding: { ...h, progress } } : finish(g, h.id)
+  return progress < h.time ? { ...g, holding: { ...h, progress } } : finish(g, h)
 }
-
-const approach = (from: number, to: number, rate: number): number =>
-  from < to ? Math.min(to, from + rate) : Math.max(to, from - rate)
 
 const turn = (from: number, to: number, rate: number): number => {
   const d = Math.atan2(Math.sin(to - from), Math.cos(to - from))
   return from + Math.max(-rate, Math.min(rate, d))
 }
 
-export const topSpeed = (g: Game, input: Input): number => (input.run || !spaces[g.space].interior ? JOG : WALK)
+const toward = (from: Vec, to: Vec, rate: number): Vec => {
+  const d = sub(to, from)
+  return length(d) <= rate ? to : add(from, scale(normalize(d), rate))
+}
+
+export const ahead = (facing: number): Vec => vec(Math.sin(facing), Math.cos(facing))
+
+export const topSpeed = (input: Input): number => (input.run ? JOG : WALK)
 
 const walk = (g: Game, input: Input, dt: number): Game => {
   const push = Math.min(1, length(input.dir))
   const heading = push > 0 ? angleTo(zero, input.dir) : g.facing
   const facing = push > 0 ? turn(g.facing, heading, TURN_RATE * dt) : g.facing
-  const align = Math.max(0, Math.cos(heading - facing))
-  const want = topSpeed(g, input) * push * align
-  const now = length(g.vel)
-  const speed = approach(now, want, (want > now ? ACCEL : DECEL) * dt)
-  const way = push > 0 ? normalize(input.dir) : normalize(g.vel)
-  const stride = Math.min(speed * dt, input.limit ?? Infinity)
-  const arrived = input.limit !== undefined && speed * dt >= input.limit
-  const pos = stride > 0 ? move(g.pos, way, stride, solids(spaces[g.space])) : g.pos
-  return { ...g, pos, facing, vel: arrived ? zero : scale(way, speed) }
+  const off = angleBetween(facing, heading)
+  const want = off <= TURN_GO ? topSpeed(input) * push * Math.cos(off) : 0
+  const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? ACCEL : DECEL) * dt)
+  const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
+  const step = arriving ? scale(normalize(input.dir), input.limit ?? 0) : scale(vel, dt)
+  const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(spaces[g.space])) : g.pos
+  return { ...g, pos, facing, vel: arriving ? zero : scale(sub(pos, g.pos), 1 / dt) }
 }
 
 export const tick = (g: Game, input: Input, dt: number): Game => {
   const t = g.t + dt
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
-  const moved = length(input.dir) > 0
-  const held = hold({ ...g, t }, input, moved, dt)
-  return held.panel || held.holding ? held : walk(held, input, dt)
+  const walked = walk({ ...g, t }, input, dt)
+  return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
 }
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'

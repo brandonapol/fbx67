@@ -2,9 +2,12 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replay } from '../../text-game/src/engine.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { JOG, ROUND_TIME, WALK, available, ended, focus, interact, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
+import { menu } from '../../text-game/src/story.ts'
+import type { Game, Input } from './prologue.ts'
+import { JOG, ROUND_TIME, TURN_GO, WALK, available, ended, focus, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
 import { DT, back, hold, holdWhenSafe, holdWhenWatched, playPrologue, routes, talk, walk } from './drive.ts'
-import { length, vec } from './world.ts'
+import { angleBetween, length, vec } from './world.ts'
+import { spaces } from './levels.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
 const spots = ['stove', 'cache', 'marker'] as const
@@ -92,17 +95,32 @@ test('a hold with nothing nearby is refused', () => {
   assert.deepEqual(start().story, initialState)
 })
 
-test('stepping away from a hold cancels it and nothing is sent', () => {
+const run = (g: Game, input: Input, n: number): Game => Array.from({ length: n }).reduce<Game>((cur) => tick(cur, input, DT), g)
+
+const holding: Input = { dir: vec(0, 0), hold: true }
+
+test('walking out of reach cancels a hold and nothing is sent', () => {
   const started = interact(walk(atCamp(), routes.stove))
-  const half = Array.from({ length: 20 }).reduce<typeof started>((g) => tick(g, { dir: vec(0, 0), hold: true }, DT), started)
+  const half = run(started, holding, 20)
   assert.ok(half.holding && half.holding.progress > 0.5)
-  const stepped = tick(half, { dir: vec(-1, 0), hold: true }, DT)
-  assert.equal(stepped.holding, undefined)
-  const away = walk(stepped, [[3.6, 0.1]])
+  const away = run(half, { dir: vec(-1, 0), hold: true }, 60)
   assert.equal(away.holding, undefined)
   assert.equal(away.hidden, undefined)
   assert.equal(away.story.owenCache, undefined)
   assert.deepEqual(away.story, replay([1, 1]).at(-1))
+})
+
+test('reach, not stick drift, decides whether a hold survives', () => {
+  const started = interact(walk(atCamp(), routes.stove))
+  const drifting = run(started, { dir: vec(0.05, 0.05), hold: true }, 10)
+  assert.ok(drifting.holding)
+  assert.ok(inReach(drifting, 'stove'))
+  const stove = spaces.camp.spots.find((i) => i.id === 'stove')!
+  const outside = { ...drifting, pos: vec(stove.x, stove.z + stove.r + 0.05) }
+  assert.ok(!inReach(outside, 'stove'))
+  assert.equal(tick(outside, holding, DT).holding, undefined)
+  const edge = { ...drifting, pos: vec(stove.x, stove.z + stove.r - 0.05) }
+  assert.ok(tick(edge, holding, DT).holding)
 })
 
 test('buying the round is a hold at the bar, and a tap alone buys nothing', () => {
@@ -111,12 +129,26 @@ test('buying the round is a hold at the bar, and a tap alone buys nothing', () =
   const tapped = tick(interact(at), still, DT)
   assert.equal(tapped.holding, undefined)
   assert.equal(tapped.story.scene, 'p_bar')
-  const short = Array.from({ length: Math.floor(ROUND_TIME / DT) - 2 }).reduce<typeof at>((g) => tick(g, { dir: vec(0, 0), hold: true }, DT), interact(at))
+  const short = run(interact(at), holding, Math.floor(ROUND_TIME / DT) - 2)
   assert.equal(short.story.scene, 'p_bar')
   const bought = hold(at)
   assert.equal(bought.story.scene, 'p_talk_round')
   assert.deepEqual(bought.path, [3])
   assert.equal(bought.panel?.kind, 'story')
+})
+
+test('note-backed prompts read the story label', () => {
+  const bar = press(start(), 'close')
+  const hank = available(bar).find((i) => i.id === 'hank')!
+  assert.equal(label(bar, hank), menu(bar.story).options.find((o) => o.note === 'round')?.label)
+  const camp = atCamp()
+  const notes = menu(camp.story).options
+  available(camp)
+    .filter((i) => i.note)
+    .forEach((i) => assert.equal(label(camp, i), notes.find((o) => o.note === i.note)?.label))
+  const after = talk(start(), 'texas')
+  const door = available(after).find((i) => i.id === 'door')!
+  assert.equal(label(after, door), menu(after.story).options.find((o) => o.note === 'goodnight')?.label)
 })
 
 test('talking to Wade is a tap that opens the menu', () => {
@@ -125,21 +157,34 @@ test('talking to Wade is a tap that opens the menu', () => {
   assert.deepEqual(interact(at).panel?.buttons.map((b) => b.id), ['note:texas', 'note:munitions', 'close'])
 })
 
-const run = (g: ReturnType<typeof start>, input: Parameters<typeof tick>[1], n: number) =>
-  Array.from({ length: n }).reduce<typeof g>((cur) => tick(cur, input, DT), g)
+test('the camera, not only the facing, decides the target', () => {
+  const at = walk(press(start(), 'close'), [[1.6, 3.2]])
+  const away = tick(at, { ...still, view: at.facing + Math.PI }, DT)
+  assert.equal(focus(away), undefined)
+  const back = tick(away, { ...still, view: at.facing }, DT)
+  assert.equal(focus(back)?.id, 'wade')
+})
 
-test('Owen walks indoors, jogs with run or outdoors, and eases in and out', () => {
+test('Owen walks by default everywhere and jogs with run', () => {
   const bar = press(start(), 'close')
-  const north = { dir: vec(0, -1), hold: false }
+  const north: Input = { dir: vec(0, -1), hold: false }
   assert.ok(length(tick(bar, north, DT).vel) < WALK)
-  assert.ok(Math.abs(length(run(bar, north, 30).vel) - WALK) < 1e-9)
-  assert.ok(Math.abs(length(run(bar, { ...north, run: true }, 30).vel) - JOG) < 1e-9)
+  assert.ok(Math.abs(length(run(bar, north, 30).vel) - WALK) < 1e-6)
+  assert.ok(Math.abs(length(run(bar, { ...north, run: true }, 40).vel) - JOG) < 1e-6)
   const camp = { ...atCamp(), pos: vec(-2, -1.5) }
-  assert.ok(Math.abs(length(run(camp, north, 30).vel) - JOG) < 1e-9)
-  const moving = run(bar, north, 30)
+  assert.ok(Math.abs(length(run(camp, north, 30).vel) - WALK) < 1e-6)
+  assert.ok(Math.abs(length(run(camp, { ...north, run: true }, 40).vel) - JOG) < 1e-6)
+})
+
+test('Owen eases to a stop, and against a wall his velocity is zero', () => {
+  const bar = press(start(), 'close')
+  const moving = run(bar, { dir: vec(0, -1), hold: false }, 30)
   const coast = tick(moving, still, DT)
   assert.ok(coast.pos.z < moving.pos.z && length(coast.vel) < WALK)
   assert.equal(length(run(moving, still, 10).vel), 0)
+  const wall = run(bar, { dir: vec(0, 1), hold: false, run: true }, 120)
+  assert.ok(wall.pos.z > 4.4)
+  assert.equal(length(tick(wall, { dir: vec(0, 1), hold: false, run: true }, DT).vel), 0)
 })
 
 test('Owen turns in place before walking off the other way', () => {
@@ -148,6 +193,22 @@ test('Owen turns in place before walking off the other way', () => {
   assert.deepEqual(turned.pos, bar.pos)
   assert.notEqual(turned.facing, bar.facing)
   const later = run(bar, { dir: vec(0, 1), hold: false }, 20)
-  assert.ok(later.pos.z > bar.pos.z - 1e-9)
+  assert.ok(later.pos.z > bar.pos.z)
   assert.ok(Math.abs(Math.cos(later.facing) - 1) < 1e-6)
+})
+
+test('reversing at a jog slows down along the old way and never moves the new way before the turn', () => {
+  const camp = { ...atCamp(), pos: vec(-2, -1.5) }
+  const east: Input = { dir: vec(1, 0), hold: false, run: true }
+  const jogging = run(camp, east, 40)
+  assert.ok(Math.abs(length(jogging.vel) - JOG) < 1e-6)
+  const west: Input = { dir: vec(-1, 0), hold: false, run: true }
+  const heading = -Math.PI / 2
+  const steps = Array.from({ length: 40 }).reduce<readonly Game[]>((acc) => [...acc, tick(acc[acc.length - 1], west, DT)], [jogging])
+  const turning = steps.slice(1).filter((g) => angleBetween(g.facing, heading) > TURN_GO)
+  assert.ok(turning.length > 3)
+  steps.slice(1).forEach((g, i) => {
+    if (angleBetween(g.facing, heading) > TURN_GO) assert.ok(g.pos.x >= steps[i].pos.x - 1e-9, `moved west mid-turn at step ${i}`)
+  })
+  assert.ok(steps[steps.length - 1].pos.x < steps[0].pos.x)
 })

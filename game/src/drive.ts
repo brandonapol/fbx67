@@ -40,10 +40,12 @@ export const hold = (g: Game): Game => {
 
 export const holdWhenSafe = (g: Game): Game => hold(wait(g, (cur) => phase(cur) < DT))
 
-export const holdWhenWatched = (g: Game): Game => hold(wait(g, (cur) => phase(cur) > CURLY_PERIOD - 0.9 - HIDE_TIME))
+const WATCHED = CURLY_PERIOD - 0.9 - HIDE_TIME
+
+export const holdWhenWatched = (g: Game): Game => hold(wait(g, (cur) => phase(cur) > WATCHED && phase(cur) < WATCHED + 3 * DT))
 
 export const routes = {
-  stove: [[-6, 2], [-2, -1.5], [5.6, 0.1]],
+  stove: [[-6, 2], [-2, -1.5], [5.6, 0.5], [5.6, 0.1]],
   cache: [[-6, 2], [-2, -1.5], [7.5, 0.2], [9.2, 3.2]],
   marker: [[-6, 2], [-2, -1.5], [0, -6], [1.8, -7.5]],
 } as const

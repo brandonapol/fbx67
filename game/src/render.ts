@@ -3,6 +3,7 @@ import { weather } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
 import { CURLY_HALF_ANGLE, CURLY_RANGE, owenLook, spaces } from './levels.ts'
 import type { Pose } from './camera.ts'
+import { FOV, NEAR } from './camera.ts'
 import type { Lighting } from './lighting.ts'
 import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
@@ -138,7 +139,7 @@ export const createView = (canvas: HTMLCanvasElement): View => {
   window.addEventListener('resize', () => app.resizeCanvas())
 
   const camera = new pc.Entity('camera')
-  camera.addComponent('camera', { fov: 45, nearClip: 0.1, farClip: 200 })
+  camera.addComponent('camera', { fov: FOV, nearClip: NEAR, farClip: 200 })
   app.root.addChild(camera)
 
   const sun = new pc.Entity('sun')

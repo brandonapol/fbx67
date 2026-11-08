@@ -1,4 +1,4 @@
-export type Action = 'forward' | 'back' | 'left' | 'right' | 'run' | 'interact'
+export type Action = 'forward' | 'back' | 'left' | 'right' | 'run' | 'interact' | 'lookLeft' | 'lookRight' | 'lookUp' | 'lookDown'
 
 export type Bindings = Readonly<Record<Action, readonly string[]>>
 
@@ -12,7 +12,7 @@ export type Pad = Readonly<{ id: string; axes: readonly number[]; buttons: reado
 
 export const STORAGE_KEY = 'second-rush.controls'
 
-export const actions: readonly Action[] = ['forward', 'back', 'left', 'right', 'run', 'interact']
+export const actions: readonly Action[] = ['forward', 'back', 'left', 'right', 'run', 'interact', 'lookLeft', 'lookRight', 'lookUp', 'lookDown']
 
 export const actionNames: Readonly<Record<Action, string>> = {
   forward: 'Walk forward',
@@ -21,6 +21,10 @@ export const actionNames: Readonly<Record<Action, string>> = {
   right: 'Step right',
   run: 'Run',
   interact: 'Interact',
+  lookLeft: 'Look left',
+  lookRight: 'Look right',
+  lookUp: 'Look up',
+  lookDown: 'Look down',
 }
 
 export const SENSITIVITY = { min: 0.25, max: 3 } as const
@@ -33,6 +37,10 @@ export const defaults: Controls = {
     right: ['KeyD', 'ArrowRight'],
     run: ['ShiftLeft', 'ShiftRight'],
     interact: ['KeyE', 'Space'],
+    lookLeft: ['KeyJ'],
+    lookRight: ['KeyL'],
+    lookUp: ['KeyI'],
+    lookDown: ['KeyK'],
   },
   invertY: false,
   sensitivity: 1,
@@ -97,6 +105,11 @@ export const keyStick = (keys: ReadonlySet<string>, b: Bindings): Stick =>
     y: (held(keys, b, 'forward') ? 1 : 0) - (held(keys, b, 'back') ? 1 : 0),
   })
 
+export const keyLook = (keys: ReadonlySet<string>, b: Bindings): Stick => ({
+  x: (held(keys, b, 'lookRight') ? 1 : 0) - (held(keys, b, 'lookLeft') ? 1 : 0),
+  y: (held(keys, b, 'lookDown') ? 1 : 0) - (held(keys, b, 'lookUp') ? 1 : 0),
+})
+
 export const DEADZONE = 0.2
 
 export const deadzone = (s: Stick, dz = DEADZONE): Stick => {
@@ -125,11 +138,12 @@ export const runLatch = (latched: boolean, toggled: boolean, push: number): bool
 
 export const MOUSE_RATE = 0.0032
 export const STICK_RATE = 2.6
+export const KEY_RATE = 1.8
 export const TOUCH_RATE = 0.006
 
 export const look = (dx: number, dy: number, c: Controls, rate: number): Readonly<{ yaw: number; pitch: number }> => ({
   yaw: -dx * rate * c.sensitivity,
-  pitch: (c.invertY ? -dy : dy) * rate * c.sensitivity,
+  pitch: (c.invertY ? dy : -dy) * rate * c.sensitivity,
 })
 
 export const TOUCH_RADIUS = 60
@@ -166,3 +180,36 @@ export const padGlyphs: Readonly<Record<'xbox' | 'playstation', Readonly<{ confi
 
 export const glyph = (device: Device, c: Controls): string | undefined =>
   device === 'touch' ? undefined : device === 'keyboard' ? keyLabel(c.bindings.interact[0]) : padGlyphs[device].confirm
+
+const keys = (c: Controls, a: Action): string => keyLabel(c.bindings[a][0])
+
+export const help = (device: Device, c: Controls): string => {
+  if (device === 'touch') return 'Drag on the left to walk, drag on the right to look, tap the ground to walk there. Press and hold a prompt to hold.'
+  if (device !== 'keyboard') {
+    const g = padGlyphs[device]
+    return `Left stick to walk, press it (${g.run}) to run. Right stick to look. ${g.confirm} to interact; hold it when the prompt says so.`
+  }
+  const move = (['forward', 'left', 'back', 'right'] as const).map((a) => keys(c, a)).join('')
+  const turn = (['lookUp', 'lookLeft', 'lookDown', 'lookRight'] as const).map((a) => keys(c, a)).join('')
+  return `${move} to walk, ${keys(c, 'run')} to run. ${turn} or click and move the mouse to look, Esc to let go. ${keys(c, 'interact')} to interact; hold it when the prompt says so. Number keys pick an option.`
+}
+
+export type Store = Readonly<{ read: (key: string) => string | null; write: (key: string, value: string) => boolean }>
+
+export const safeStore = (storage: () => Pick<Storage, 'getItem' | 'setItem'>): Store => ({
+  read: (key) => {
+    try {
+      return storage().getItem(key)
+    } catch {
+      return null
+    }
+  },
+  write: (key, value) => {
+    try {
+      storage().setItem(key, value)
+      return true
+    } catch {
+      return false
+    }
+  },
+})

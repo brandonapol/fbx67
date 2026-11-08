@@ -21,16 +21,25 @@ make serve/game
 
 ## Controls
 
-A third-person camera over Owen's right shoulder. Owen walks indoors and jogs outdoors; run makes him jog anywhere.
+A third-person camera over Owen's right shoulder, following the Camera rules in
+[`docs/art/README.md`](../docs/art/README.md): eye height 1.7 m, 0.5 m to the right, a 2.6 m boom outdoors and 1.8 m
+indoors, 36 degree vertical field of view. Against a wall, a prop or a person the boom pulls in at once and lets out
+over 0.35 s. Pitch runs from 20 degrees down to 15 up and settles back to level half a second after you let go; after
+1.5 s without looking, the camera swings back behind Owen. Owen walks (1.4 m/s); run makes him jog (3.5 m/s). People
+are solid.
 
-- **Keyboard and mouse:** WASD or arrows to move, Shift to run. Click the scene to look with the mouse; Esc lets go.
-  E or Space to interact. Prompts that say "Hold" (buying the round, hiding the notes) fill a ring while you hold.
+- **Keyboard and mouse:** WASD or arrows to move, Shift to run, IJKL to look. Click the scene to look with the mouse;
+  Esc lets go. E or Space to interact. Prompts that say "Hold" (buying the round, hiding the notes) fill a ring while
+  you hold; walking out of reach cancels a hold.
 - **Gamepad:** left stick to move (press it to run), right stick to look, A (or Cross) to interact and to pick a
-  panel option, the d-pad to move between options. Prompts show the pad's own glyphs.
-- **Touch:** drag on the left of the screen for a stick, drag on the right to look, tap the ground to walk there.
-  Prompts are buttons: tap to talk, press and hold to hold.
-- **Controls panel** (top right): rebind keys, invert the camera's up and down, camera sensitivity. Saved in
-  `localStorage`. Camera bob is off under `prefers-reduced-motion`.
+  panel option, the d-pad to move between options. Prompts and help show the pad's own glyphs.
+- **Touch:** a touch that starts on the left 40% of the screen becomes a stick centered where the finger landed
+  (60 px to full tilt). A touch on the rest of the screen looks around when dragged, and walks to the ground point
+  when tapped. Prompts are buttons: tap to talk, press and hold to hold.
+- **Controls panel** (top right): rebind every key above, invert the camera's up and down, camera sensitivity.
+  Saved in `localStorage`; the help line is written from the current bindings. Camera bob is off under
+  `prefers-reduced-motion`.
+- The prompt targets what is in view: within 65 degrees of where the camera looks, nearest first.
 - Number keys or Enter pick a panel option.
 
 ## Layout

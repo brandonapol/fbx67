@@ -4,7 +4,9 @@ import {
   defaults,
   deadzone,
   glyph,
+  help,
   keyLabel,
+  keyLook,
   keyStick,
   look,
   padKind,
@@ -14,6 +16,7 @@ import {
   pressedNow,
   rebind,
   runLatch,
+  safeStore,
   serialize,
   touchStick,
 } from './input.ts'
@@ -77,7 +80,7 @@ test('a stick press latches run until the stick comes back to center', () => {
 
 test('look respects sensitivity and invert-Y', () => {
   const base = look(10, 10, defaults, 0.01)
-  assert.ok(base.yaw < 0 && base.pitch > 0)
+  assert.ok(base.yaw < 0 && base.pitch < 0)
   const inverted = look(10, 10, { ...defaults, invertY: true, sensitivity: 2 }, 0.01)
   assert.ok(near(inverted.pitch, -2 * base.pitch) && near(inverted.yaw, 2 * base.yaw))
 })
@@ -96,4 +99,44 @@ test('glyphs follow the device and the binding', () => {
   assert.equal(glyph('touch', defaults), undefined)
   assert.equal(keyLabel('ArrowUp'), '↑')
   assert.equal(keyLabel('Digit4'), '4')
+})
+
+test('look keys turn and tilt the camera and stay clear of interact', () => {
+  assert.deepEqual(keyLook(new Set(['KeyJ', 'KeyI']), defaults.bindings), { x: -1, y: -1 })
+  const look = ['lookLeft', 'lookRight', 'lookUp', 'lookDown'] as const
+  look.forEach((a) => assert.ok(!defaults.bindings[a].some((k) => defaults.bindings.interact.includes(k))))
+  const moved = rebind(defaults, 'lookUp', 'KeyU')
+  assert.deepEqual(keyLook(new Set(['KeyU']), moved.bindings), { x: 0, y: -1 })
+})
+
+test('help is written from the current bindings and the pad in hand', () => {
+  const c = rebind(rebind(defaults, 'interact', 'KeyF'), 'run', 'KeyR')
+  const text = help('keyboard', c)
+  assert.match(text, /WASD to walk, R to run\. IJKL or click/)
+  assert.match(text, /F to interact/)
+  assert.match(help('xbox', c), /press it \(LS\) to run.*A to interact/)
+  assert.match(help('playstation', c), /\(L3\).*\u2715 to interact/)
+})
+
+test('a store that throws reads as empty and refuses writes', () => {
+  const broken = safeStore(() => {
+    throw new Error('blocked')
+  })
+  assert.equal(broken.read('k'), null)
+  assert.equal(broken.write('k', 'v'), false)
+  assert.deepEqual(parseControls(broken.read('k')), defaults)
+  const throwing = safeStore(() => ({
+    getItem: () => {
+      throw new Error('denied')
+    },
+    setItem: () => {
+      throw new Error('quota')
+    },
+  }))
+  assert.equal(throwing.read('k'), null)
+  assert.equal(throwing.write('k', 'v'), false)
+  const memory = new Map<string, string>()
+  const ok = safeStore(() => ({ getItem: (k: string) => memory.get(k) ?? null, setItem: (k: string, v: string) => void memory.set(k, v) }))
+  assert.ok(ok.write('k', 'v'))
+  assert.equal(ok.read('k'), 'v')
 })

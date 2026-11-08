@@ -116,13 +116,29 @@ test('the prologue plays end to end with the keyboard', { timeout: 600000 }, asy
   await snap(page, '01-bar')
 
   await page.keyboard.press('1')
+  await aim(page, Math.PI / 2, 0)
+  const from = (await game(page)).pos
+  await page.keyboard.down('KeyW')
+  await page.waitForFunction(
+    ([x, z]) => {
+      const g = (window as any).__prologue.game()
+      return Math.hypot(g.pos.x - x, g.pos.z - z) > 0.6
+    },
+    [from.x, from.z] as const,
+    { timeout: 60000 },
+  )
+  await page.keyboard.up('KeyW')
+  const to = (await game(page)).pos
+  const moved = Math.hypot(to.x - from.x, to.z - from.z)
+  assert.ok((to.x - from.x) / moved > 0.95, `W with the camera looking east moved ${to.x - from.x},${to.z - from.z}`)
+
   await walk(page, [[5.2, 4.3]], true)
-  await aim(page, (-3 * Math.PI) / 4, 0.25)
-  await snap(page, '02-bar-corner')
-  await aim(page, Math.PI, 0.22)
+  await aim(page, (-3 * Math.PI) / 4, 0)
+  await snap(page, '02-bar-corner', 3)
 
   await walk(page, [[-1.5, -2.2]], true)
   assert.equal(await page.locator('#prompt').getAttribute('data-id'), 'hank')
+  assert.equal(await page.locator('#prompt .label').textContent(), 'Hold: Buy the table a round.')
   await page.keyboard.press('e')
   await frames(page, 10)
   assert.equal((await game(page)).story.scene, 'p_bar')

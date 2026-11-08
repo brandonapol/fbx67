@@ -1,12 +1,13 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { ended, focus, interact, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { ended, focus, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { createView } from './render.ts'
 import { spaces } from './levels.ts'
 import type { Rig } from './camera.ts'
 import { armFor, bob, follow, rigFor, toWorld } from './camera.ts'
 import type { Controls, Device, Pad, Stick } from './input.ts'
 import {
+  KEY_RATE,
   MOUSE_RATE,
   PAD,
   STICK_RATE,
@@ -15,6 +16,8 @@ import {
   actionFor,
   glyph,
   held,
+  help,
+  keyLook,
   keyStick,
   look,
   padActive,
@@ -24,6 +27,7 @@ import {
   parseControls,
   pressedNow,
   runLatch,
+  safeStore,
   serialize,
   touchStick,
 } from './input.ts'
@@ -46,16 +50,11 @@ const buttonsEl = $('panel-buttons')
 const placeEl = $('place')
 const stickEl = $('stick')
 const knobEl = $('stick-knob')
+const helpEl = $('help')
 
 const view = createView(canvas)
 
-const loadControls = (): Controls => {
-  try {
-    return parseControls(window.localStorage.getItem(STORAGE_KEY))
-  } catch {
-    return parseControls(null)
-  }
-}
+const store = safeStore(() => window.localStorage)
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
@@ -81,7 +80,7 @@ const live: {
   g: start(),
   rig: rigFor(Math.PI, armFor(spaces.bar)),
   rigFor: '',
-  controls: loadControls(),
+  controls: parseControls(store.read(STORAGE_KEY)),
   device: 'keyboard',
   keys: new Set(),
   touchHold: false,
@@ -95,11 +94,8 @@ const settings = mountSettings(
   (c) => {
     live.controls = c
     live.promptKey = undefined
-    try {
-      window.localStorage.setItem(STORAGE_KEY, serialize(c))
-    } catch {
-      return
-    }
+    store.write(STORAGE_KEY, serialize(c))
+    renderHelp()
   },
 )
 
@@ -118,11 +114,16 @@ const choose = (id: string): void => {
   act((g) => press(g, id))
 }
 
+const renderHelp = (): void => {
+  helpEl.textContent = help(live.device, live.controls)
+}
+
 const setDevice = (d: Device): void => {
   if (live.device === d) return
   live.device = d
   live.promptKey = undefined
   document.body.dataset.device = d
+  renderHelp()
 }
 
 const renderPanel = (g: Game): void => {
@@ -153,7 +154,7 @@ const renderPanel = (g: Game): void => {
 
 const RING = 2 * Math.PI * 15
 
-const promptMarkup = (label: string, key: string | undefined, hold: boolean): string =>
+const promptMarkup = (key: string | undefined, hold: boolean): string =>
   `<span class="glyph${hold ? ' hold' : ''}">` +
   (hold ? `<svg viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="15"/><circle class="fill" cx="18" cy="18" r="15" stroke-dasharray="${RING}" stroke-dashoffset="${RING}"/></svg>` : '') +
   (key ? `<span class="key">${key}</span>` : '') +
@@ -175,13 +176,14 @@ const renderHud = (g: Game): void => {
   if (f) {
     const hold = f.hold !== undefined
     const key = glyph(live.device, live.controls)
-    const label = hold ? `Hold: ${f.prompt}` : f.prompt
-    const id = `${f.id}|${key}|${label}`
+    const text = label(g, f)
+    const said = hold ? `Hold: ${text}` : text
+    const id = `${f.id}|${key}|${said}`
     if (live.promptKey !== id) {
       live.promptKey = id
-      promptEl.innerHTML = promptMarkup(label, key, hold)
+      promptEl.innerHTML = promptMarkup(key, hold)
       const l = promptEl.querySelector('.label')
-      if (l) l.textContent = label
+      if (l) l.textContent = said
       promptEl.dataset.id = f.id
     }
     const fill = promptEl.querySelector<SVGCircleElement>('.fill')
@@ -243,6 +245,8 @@ const input = (pad: Pad | undefined, dt: number): Readonly<{ input: Input; look:
   const padTurn = pad ? padLook(pad) : { x: 0, y: 0 }
   const mouse = look(live.turn.x, live.turn.y, c, MOUSE_RATE)
   const stickTurn = look(padTurn.x * dt, padTurn.y * dt, c, STICK_RATE)
+  const turnKeys = keyLook(keys, c.bindings)
+  const keyTurn = look(turnKeys.x * dt, turnKeys.y * dt, { ...c, invertY: false }, KEY_RATE)
   live.turn = { x: 0, y: 0 }
   return {
     input: {
@@ -250,8 +254,9 @@ const input = (pad: Pad | undefined, dt: number): Readonly<{ input: Input; look:
       hold: held(keys, c.bindings, 'interact') || live.touchHold || !!pad?.buttons[PAD.a],
       run: held(keys, c.bindings, 'run') || live.run,
       limit: towards ? distance(towards, live.g.pos) : undefined,
+      view: live.rig.yaw,
     },
-    look: { yaw: mouse.yaw + stickTurn.yaw, pitch: mouse.pitch + stickTurn.pitch },
+    look: { yaw: mouse.yaw + stickTurn.yaw + keyTurn.yaw, pitch: mouse.pitch + stickTurn.pitch + keyTurn.pitch },
   }
 }
 
@@ -370,6 +375,8 @@ const placeRig = (g: Game): void => {
   live.rig = rigFor(g.facing, live.rig.base)
 }
 
+renderHelp()
+
 view.app.on('update', (dtRaw: number) => {
   const dt = Math.min(dtRaw, 0.1)
   const pad = readPad()
@@ -381,8 +388,8 @@ view.app.on('update', (dtRaw: number) => {
   live.g = tick(live.g, frame.input, dt)
   placeRig(live.g)
   const g = live.g
-  const sway = bob(g.t, length(g.vel), topSpeed(g, frame.input), reducedMotion.matches)
-  const next = follow(live.rig, spaces[g.space], g.pos, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway)
+  const sway = bob(g.t, length(g.vel), topSpeed(frame.input), reducedMotion.matches)
+  const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway)
   live.rig = next.rig
   view.sync(g, dt, next.pose)
   renderHud(g)
@@ -397,7 +404,7 @@ Object.assign(window, {
     textBuild: () => textBuild(live.g),
     camera: () => live.rig,
     aim: (yaw: number, pitch: number) => {
-      live.rig = { ...live.rig, yaw, pitch }
+      live.rig = { ...live.rig, yaw, pitch, idle: 0 }
     },
   },
 })

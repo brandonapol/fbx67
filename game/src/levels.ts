@@ -96,8 +96,8 @@ export const bar: Space = {
   spots: [
     { id: 'wade', x: 2.6, z: 2.3, r: 1.9, prompt: 'Talk to Wade' },
     { id: 'curly', x: 3.9, z: 0.9, r: 1.7, prompt: 'Talk to Curly' },
-    { id: 'hank', x: -1.5, z: -2.6, r: 1.5, prompt: 'Buy the table a round', hold: ROUND_TIME },
-    { id: 'door', x: 0, z: 4.4, r: 1.0, prompt: 'Say goodnight and walk back to your room' },
+    { id: 'hank', x: -1.5, z: -2.6, r: 1.5, note: 'round', hold: ROUND_TIME },
+    { id: 'door', x: 0, z: 4.4, r: 1.0, note: 'goodnight' },
   ],
 }
 
@@ -181,9 +181,9 @@ export const camp: Space = {
     { id: 'curly', at: CURLY_AT, facing: -Math.PI / 2, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75 },
   ],
   spots: [
-    { id: 'stove', x: 5.6, z: -0.5, r: 1.1, prompt: 'Hide the notes under the floorboards behind the cook-tent stove', hold: HIDE_TIME },
-    { id: 'cache', x: 9.2, z: 3.8, r: 1.1, prompt: 'Hide the notes in the old meat cache on stilts', hold: HIDE_TIME },
-    { id: 'marker', x: 1.8, z: -8.1, r: 1.1, prompt: 'Bury the ammo can under the survey marker', hold: HIDE_TIME },
+    { id: 'stove', x: 5.6, z: -0.5, r: 1.1, note: 'stove', hold: HIDE_TIME },
+    { id: 'cache', x: 9.2, z: 3.8, r: 1.1, note: 'cache', hold: HIDE_TIME },
+    { id: 'marker', x: 1.8, z: -8.1, r: 1.1, note: 'marker', hold: HIDE_TIME },
     { id: 'plane', x: -7.6, z: 4.6, r: 1.6, prompt: 'Fly home with Curly' },
   ],
 }
@@ -216,7 +216,11 @@ export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood
 
 export const owenLook = owen
 
-export const solids = (s: Space): readonly Box[] => s.props.filter((p) => p.solid).map((p) => p.box)
+export const FIGURE_WIDTH = 0.5
+
+export const figureBox = (f: Figure): Box => ({ x: f.at.x, z: f.at.z, w: FIGURE_WIDTH, d: FIGURE_WIDTH })
+
+export const solids = (s: Space): readonly Box[] => [...s.props.filter((p) => p.solid).map((p) => p.box), ...s.figures.map(figureBox)]
 
 export const occluders = (s: Space): readonly Box[] => s.props.filter((p) => p.occludes).map((p) => p.box)
 

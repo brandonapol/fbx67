@@ -12,29 +12,41 @@ test('move stops at a wall and slides along it', () => {
   assert.ok(!blocked(slid, [wall]))
 })
 
-test('pick takes the closest interactable in reach when both are ahead', () => {
+test('pick takes the closest interactable in reach when both are in view', () => {
   const items = [
-    { id: 'a', x: 1, z: 0, r: 2, prompt: '' },
-    { id: 'b', x: 0.5, z: 0, r: 2, prompt: '' },
-    { id: 'c', x: 0.1, z: 0, r: 0.05, prompt: '' },
+    { id: 'a', x: 1, z: 0, r: 2 },
+    { id: 'b', x: 0.5, z: 0, r: 2 },
+    { id: 'c', x: 0.1, z: 0, r: 0.05 },
   ]
-  assert.equal(pick(vec(0, 0), Math.PI / 2, items)?.id, 'b')
-  assert.equal(pick(vec(9, 9), Math.PI / 2, items), undefined)
+  assert.equal(pick(vec(0, 0), Math.PI / 2, Math.PI / 2, items)?.id, 'b')
+  assert.equal(pick(vec(9, 9), Math.PI / 2, Math.PI / 2, items), undefined)
 })
 
-test('pick prefers what Owen faces over something a little nearer to his side', () => {
+test('pick prefers what is in view over something a little nearer to the side', () => {
   const items = [
-    { id: 'ahead', x: 0, z: 1.2, r: 2, prompt: '' },
-    { id: 'side', x: 1, z: 0, r: 2, prompt: '' },
+    { id: 'ahead', x: 0, z: 1.2, r: 2 },
+    { id: 'side', x: 1, z: 0, r: 2 },
   ]
-  assert.equal(pick(vec(0, 0), 0, items)?.id, 'ahead')
-  assert.equal(pick(vec(0, 0), Math.PI / 2, items)?.id, 'side')
+  assert.equal(pick(vec(0, 0), 0, 0, items)?.id, 'ahead')
+  assert.equal(pick(vec(0, 0), Math.PI / 2, Math.PI / 2, items)?.id, 'side')
 })
 
-test('pick ignores what is behind Owen, unless he stands on it', () => {
-  const behind = [{ id: 'behind', x: 0, z: -0.8, r: 2, prompt: '' }]
-  assert.equal(pick(vec(0, 0), 0, behind), undefined)
-  assert.equal(pick(vec(0, -0.7), 0, behind)?.id, 'behind')
+test('pick follows the camera when it looks at one thing and Owen faces another', () => {
+  const items = [
+    { id: 'looked-at', x: 1.2, z: 0, r: 2 },
+    { id: 'faced', x: 0, z: 1.2, r: 2 },
+  ]
+  assert.equal(pick(vec(0, 0), Math.PI / 2, 0, items)?.id, 'looked-at')
+  assert.equal(pick(vec(0, 0), 0, Math.PI / 2, items)?.id, 'faced')
+})
+
+test('pick ignores what is outside the view cone, unless Owen stands on it', () => {
+  const wide = [{ id: 'wide', x: 0.9, z: 0.3, r: 2 }]
+  assert.equal(pick(vec(0, 0), 0, 0, wide), undefined)
+  assert.equal(pick(vec(0, 0), 0.9, 0, wide)?.id, 'wide')
+  const behind = [{ id: 'behind', x: 0, z: -0.8, r: 2 }]
+  assert.equal(pick(vec(0, 0), 0, 0, behind), undefined)
+  assert.equal(pick(vec(0, -0.7), 0, 0, behind)?.id, 'behind')
 })
 
 test('line of sight is cut by a box', () => {
