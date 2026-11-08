@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { angleBetween, blocked, lineOfSight, move, nearest, sees, vec } from './world.ts'
+import { angleBetween, blocked, lineOfSight, move, pick, sees, vec } from './world.ts'
 
 const wall = { x: 0, z: 0, w: 2, d: 2 }
 
@@ -12,14 +12,29 @@ test('move stops at a wall and slides along it', () => {
   assert.ok(!blocked(slid, [wall]))
 })
 
-test('nearest picks the closest interactable in reach', () => {
+test('pick takes the closest interactable in reach when both are ahead', () => {
   const items = [
     { id: 'a', x: 1, z: 0, r: 2, prompt: '' },
     { id: 'b', x: 0.5, z: 0, r: 2, prompt: '' },
     { id: 'c', x: 0.1, z: 0, r: 0.05, prompt: '' },
   ]
-  assert.equal(nearest(vec(0, 0), items)?.id, 'b')
-  assert.equal(nearest(vec(9, 9), items), undefined)
+  assert.equal(pick(vec(0, 0), Math.PI / 2, items)?.id, 'b')
+  assert.equal(pick(vec(9, 9), Math.PI / 2, items), undefined)
+})
+
+test('pick prefers what Owen faces over something a little nearer to his side', () => {
+  const items = [
+    { id: 'ahead', x: 0, z: 1.2, r: 2, prompt: '' },
+    { id: 'side', x: 1, z: 0, r: 2, prompt: '' },
+  ]
+  assert.equal(pick(vec(0, 0), 0, items)?.id, 'ahead')
+  assert.equal(pick(vec(0, 0), Math.PI / 2, items)?.id, 'side')
+})
+
+test('pick ignores what is behind Owen, unless he stands on it', () => {
+  const behind = [{ id: 'behind', x: 0, z: -0.8, r: 2, prompt: '' }]
+  assert.equal(pick(vec(0, 0), 0, behind), undefined)
+  assert.equal(pick(vec(0, -0.7), 0, behind)?.id, 'behind')
 })
 
 test('line of sight is cut by a box', () => {

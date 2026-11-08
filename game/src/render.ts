@@ -2,6 +2,7 @@ import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
 import { CURLY_HALF_ANGLE, CURLY_RANGE, owenLook, spaces } from './levels.ts'
+import type { Pose } from './camera.ts'
 import type { Lighting } from './lighting.ts'
 import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
@@ -10,8 +11,9 @@ import { seen, watcher } from './prologue.ts'
 export type View = Readonly<{
   app: pc.Application
   camera: pc.Entity
-  sync: (g: Game, dt: number) => void
+  sync: (g: Game, dt: number, pose: Pose) => void
   groundAt: (x: number, y: number) => Readonly<{ x: number; z: number }> | undefined
+  screenAt: (x: number, y: number, z: number) => Readonly<{ x: number; y: number }> | undefined
 }>
 
 const color = (hex: string, a = 1): pc.Color => {
@@ -115,13 +117,6 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
   }
 }
 
-const cameraOffset: Readonly<Record<Space['id'], readonly [number, number]>> = {
-  bar: [6.5, 9],
-  room: [4.6, 7],
-  camp: [17, 25],
-  flood: [7, 9],
-}
-
 type Built = Readonly<{
   id: Space['id']
   root: pc.Entity
@@ -197,18 +192,17 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }
 
-  const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }> } = {}
+  const state: { built?: Built } = {}
 
-  const sync = (g: Game, dt: number): void => {
+  const sync = (g: Game, dt: number, pose: Pose): void => {
     if (!state.built || state.built.id !== g.space || state.built.weather !== weather(g.story)) {
       state.built?.root.destroy()
       state.built = build(g)
-      state.cam = undefined
-      state.look = undefined
     }
     const b = state.built
     owen.setLocalPosition(g.pos.x, 0, g.pos.z)
     owen.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
+    owen.enabled = !pose.close
     if (b.cone && b.coneMats) {
       const w = watcher(g)
       b.cone.setLocalPosition(w.at.x, 0, w.at.z)
@@ -222,18 +216,8 @@ export const createView = (canvas: HTMLCanvasElement): View => {
       const y = p.y - dt * 11
       r.setLocalPosition(p.x, y < 0 ? 9 : y, p.z)
     })
-    const [back, up] = cameraOffset[g.space]
-    const k = g.space === 'camp' ? 0.35 : 1
-    const look = { x: g.pos.x * k, z: g.pos.z * k + (1 - k) * -1 }
-    const target = new pc.Vec3(look.x, up, look.z + back)
-    const cam = state.cam ?? target.clone()
-    cam.lerp(cam, target, Math.min(1, dt * 4))
-    state.cam = cam
-    camera.setPosition(cam)
-    const at = state.look ?? look
-    const eased = { x: at.x + (look.x - at.x) * Math.min(1, dt * 4), z: at.z + (look.z - at.z) * Math.min(1, dt * 4) }
-    state.look = eased
-    camera.lookAt(eased.x, 0.9, eased.z)
+    camera.setPosition(pose.eye[0], pose.eye[1], pose.eye[2])
+    camera.lookAt(pose.target[0], pose.target[1], pose.target[2])
   }
 
   const groundAt = (x: number, y: number): Readonly<{ x: number; z: number }> | undefined => {
@@ -247,6 +231,16 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return k < 0 ? undefined : { x: near.x + (far.x - near.x) * k, z: near.z + (far.z - near.z) * k }
   }
 
+  const screenAt = (x: number, y: number, z: number): Readonly<{ x: number; y: number }> | undefined => {
+    const cam = camera.camera
+    if (!cam) return undefined
+    const p = new pc.Vec3(x, y, z)
+    const ahead = p.clone().sub(camera.getPosition()).dot(camera.forward) > 0
+    if (!ahead) return undefined
+    const s = cam.worldToScreen(p)
+    return { x: s.x, y: s.y }
+  }
+
   app.start()
-  return { app, camera, sync, groundAt }
+  return { app, camera, sync, groundAt, screenAt }
 }
