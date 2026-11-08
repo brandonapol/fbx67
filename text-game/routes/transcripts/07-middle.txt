@@ -28,7 +28,27 @@ Curly checks his watch. "Plane's ready for the morning, Owen."
 
 In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
 
-You write to Lucy, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp. While he refuels at the creek, you will hide the real notes and tapes. If anything happens to you, she should know where.
+You write to Lucy, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp, and you will hide the real notes and tapes out there. If anything happens to you, she should know where.
+
+  1. Seal the letter and go to sleep.
+
+== Prologue :: Owen: The Float Dock ==
+
+It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
+
+At the float dock on the Chena, Curly Boone is standing on a float with a funnel in the wing tank, pouring gas from a jerry can through a chamois. He squints at you over the strut.
+
+"You look like you didn't sleep, Owen."
+
+You hand him your duffel and keep the satchel with the notes and the tapes on your knees.
+
+  1. Climb in and fly north with Curly.
+
+== Prologue :: Owen: The Survey Camp ==
+
+The camp is the way you left it: the cook tent, the old meat cache up on its stilts, the survey marker on the rise. Curly carries the jerry cans down to the plane to top off the tanks for the trip home. He whistles while he works.
+
+While he refuels at the creek, you have a few minutes alone with the real notes and tapes.
 
 Where do you hide them?
 
@@ -38,7 +58,7 @@ Where do you hide them?
 
 == Prologue :: Owen: High Water ==
 
-You mail the letter, fly north, hide the notes, and fly home. Curly never sees.
+You fly home, and you mail Lucy one more line: where to look. Curly never sees.
 
 A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
 

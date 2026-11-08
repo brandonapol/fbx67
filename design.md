@@ -71,7 +71,7 @@ The claim rests on proof of use. A BLM land examiner's summer field check of the
 
 ## Structure
 
-**Prologue (July 1967), playing Owen.** Curly introduces Owen to Wade at the Silver Pan. Owen mentions a lawyer helping the Native families. That night he writes to Lucy and the player chooses where he hides his real notes and tapes at the survey camp (a memory test Lucy faces in Act 3). In August a man in a hooded slicker offers him a skiff ride through the flood.
+**Prologue (July 1967), playing Owen.** Curly introduces Owen to Wade at the Silver Pan. Owen mentions a lawyer helping the Native families. That night he writes to Lucy. In the morning Owen mails the letter and meets Curly at the float dock on the Chena, where Curly flies him north from the river. At the survey camp the player chooses where he hides his real notes and tapes (a memory test Lucy faces in Act 3). In August a man in a hooded slicker offers him a skiff ride through the flood.
 
 **Act 1: Flood (Aug 1967), playing Wade.** Wade helps Eli on the river and they find Owen tied under with a backward bowline, tail outside the loop, not the way anyone on Wade's cousins' boat ever tied one. Wade cuts the line on both sides of the knot and keeps it. Barnette rules it an accident. Joan, at St. Joseph's, noticed left-handed bruising. Lucy needs Owen's aerial photographs from the base. Hank's speech, then the barfight; Curly drags Wade in on his side; everyone lands in the drunk tank; Barnette demands a name (decision 1). Ashby pays the fine. First letter home.
 

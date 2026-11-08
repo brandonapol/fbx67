@@ -292,3 +292,4 @@ Ordered by impact.
 - Exact pipeline crossing points on the Chatanika and Tolovana: TAPS route maps (1971-74) and USGS open-file reports 75-87 and 78-611.
 - Alaska State Troopers ranks in 1967: DPS historical rosters, Alaska State Archives.
 - Real descendants of E.T. Barnette: Alaska State Library genealogy resources.
+- How Curly's plane gets from the float dock on the Chena to Owen's camp: the prologue leaves the Chena on floats, but Act 1 says Owen "flew in and out on tundra tires off a gravel bar" (see item 9). Amphibious floats, a lake near the camp, or a different plane for the gravel bar would settle it; a bush pilot or a 1960s Fairbanks charter operator's records would say which was usual.

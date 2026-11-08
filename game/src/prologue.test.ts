@@ -10,14 +10,14 @@ const spots = ['stove', 'cache', 'marker'] as const
 
 talks.forEach((who, ti) =>
   spots.forEach((spot, si) =>
-    test(`playing ${who} then hiding at the ${spot} matches text path ${ti + 1},1,${si + 1},1`, () => {
+    test(`playing ${who} then hiding at the ${spot} matches text path ${ti + 1},1,1,1,${si + 1},1`, () => {
       const g = playPrologue(who, spot)
       assert.ok(ended(g))
-      assert.deepEqual(g.path, [ti + 1, 1, si + 1, 1])
+      assert.deepEqual(g.path, [ti + 1, 1, 1, 1, si + 1, 1])
       assert.deepEqual(g.story, replay(g.path).at(-1))
       assert.equal(g.story.scene, 'a1_flood')
       assert.equal(g.story.owenCache, spot)
-      assert.equal(textBuildHash(g), `#path=${ti + 1},1,${si + 1},1`)
+      assert.equal(textBuildHash(g), `#path=${ti + 1},1,1,1,${si + 1},1`)
       assert.equal(g.busts, 0)
     }),
   ),
@@ -42,6 +42,10 @@ test('the letter is read in the room and no hiding note is sent there', () => {
   assert.equal(desk.panel?.title, 'Owen: A Letter to Lucy')
   assert.deepEqual(desk.panel?.buttons.map((b) => b.id), ['fly'])
   assert.equal(desk.story.owenCache, undefined)
+  const camp = press(desk, 'fly')
+  assert.equal(camp.story.scene, 'p_camp')
+  assert.deepEqual(camp.path, [2, 1, 1, 1])
+  assert.equal(camp.story.owenCache, undefined)
 })
 
 spots.forEach((spot) =>
@@ -50,7 +54,7 @@ spots.forEach((spot) =>
     const caught = holdWhenWatched(camp)
     assert.equal(caught.panel?.kind, 'busted')
     assert.equal(caught.hidden, undefined)
-    assert.deepEqual(caught.story, replay([1, 1]).at(-1))
+    assert.deepEqual(caught.story, replay([1, 1, 1, 1]).at(-1))
     const retried = press(caught, 'retry')
     assert.equal(retried.space, 'camp')
     assert.equal(retried.panel, undefined)

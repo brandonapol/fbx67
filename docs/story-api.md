@@ -51,6 +51,19 @@ The game asks the story a few read-only questions to set the scene:
 - **Weather and light:** sunset alpenglow, blue hour, or night and ice fog, based on how much trouble Wade is in.
 - **Who's around and how they feel:** Eli's and Lucy's trust, Barnette's suspicion.
 - **What Wade knows:** which clues and evidence he has, so the game can show them in his notebook.
+- **Where and when:** `place(state)`, `clock(state)` and `goal(state)` in `text-game/src/story.ts` (below).
+
+### Where, when and what next
+
+Each scene can carry three fields, written in its scene file next to its text. The game reads them through queries in `text-game/src/story.ts`, so it can put the player in the right part of town at the right hour without the story caring how they walked there.
+
+| Query | Returns | Example |
+|---|---|---|
+| `place(state)` | one of a fixed set of place ids (`Place` in `text-game/src/types.ts`): `silverPan`, `owensRoom`, `floatDock`, `surveyCamp`, `floodedStreet` | `floatDock` |
+| `clock(state)` | local date and time, `YYYY-MM-DDTHH:MM`, for sun angle and season | `1967-07-15T07:30` |
+| `goal(state)` | a short objective line: where the story wants the player next | `Fly north with Curly to the survey camp.` |
+
+Every prologue scene has all three, and a unit test (`text-game/src/story.test.ts`) enforces that and checks that the prologue clock never runs backward. Scenes in later acts do not have them yet, so the queries return `undefined` there; the game must handle that until each act is filled in. A new place id is added to `Place` when a scene needs it.
 
 The game never changes story facts directly. It only sends notes (Rule 1) and asks questions (Rule 5).
 

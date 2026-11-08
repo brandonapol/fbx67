@@ -4,6 +4,8 @@ export const sceneIds = [
   'p_talk_munitions',
   'p_talk_round',
   'p_letter',
+  'p_dock',
+  'p_camp',
   'p_end',
   'a1_flood',
   'a1_body',

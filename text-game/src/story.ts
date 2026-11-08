@@ -1,10 +1,9 @@
-import type { Act, State } from './types.ts'
+import type { Act, Place, State } from './types.ts'
 import { choicesOf, follow, sceneOf } from './engine.ts'
 import { HEAT_LIMIT } from './logic.ts'
 import { BOUNDS } from './state.ts'
 
 export type Weather = 'clear' | 'dusk' | 'night'
-
 
 export type Option = Readonly<{ n: number; note: string; label: string }>
 
@@ -43,3 +42,9 @@ export const weather = (s: State): Weather =>
     : s.heat >= HEAT_LIMIT - 1 || s.eliTrust < 0
       ? 'dusk'
       : 'clear'
+
+export const place = (s: State): Place | undefined => sceneOf(s).place
+
+export const clock = (s: State): string | undefined => sceneOf(s).time
+
+export const goal = (s: State): string | undefined => sceneOf(s).goal

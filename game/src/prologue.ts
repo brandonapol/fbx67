@@ -128,7 +128,7 @@ export const interact = (g: Game): Game => {
 
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
-  if (button === 'fly') return enter(g, 'camp')
+  if (button === 'fly') return enter(sendNote(sendNote(g, 'sleep'), 'fly'), 'camp')
   if (button === 'retry') return { ...enter(g, 'camp'), busts: g.busts }
   if (button === 'continue') return g
   if (button.startsWith('note:')) {
