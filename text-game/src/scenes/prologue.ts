@@ -11,7 +11,7 @@ When Wade asks what you do, you tell him the truth, or most of it: you map where
 
 Curly checks his watch. "Plane's ready for the morning, Owen."`
 
-const talkAt = { place: 'silverPan', time: '1967-07-14T23:20', goal: 'Walk back to your room.' } as const
+const talkAt = { place: 'silverPan', clock: '1967-07-14T23:20', goal: 'Walk back to your room.' } as const
 
 export const prologue: readonly Scene[] = [
   {
@@ -19,8 +19,8 @@ export const prologue: readonly Scene[] = [
     act,
     title: 'Owen: The Silver Pan, July 1967',
     place: 'silverPan',
-    time: '1967-07-14T23:00',
-    goal: 'Join Curly and Wade at their table.',
+    clock: '1967-07-14T23:00',
+    goal: `Join ${N.curlyShort} and ${N.wade} at their table.`,
     text: () => `
 You are ${N.owen}, a geologist, two summers into a contract surveying gravel and river crossings north of Fairbanks. The midnight sun is still up at eleven. The Silver Pan smells like beer and wet wool.
 
@@ -70,12 +70,12 @@ ${talkRest}`,
     act,
     title: 'Owen: A Letter to Lucy',
     place: 'owensRoom',
-    time: '1967-07-15T00:30',
-    goal: 'Sleep. Meet Curly at the float dock in the morning.',
+    clock: '1967-07-15T00:30',
+    goal: `Sleep. In the morning, mail the letter and meet ${N.curlyShort} at the float dock.`,
     text: () => `
 In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
 
-You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp, and you will hide the real notes and tapes out there. If anything happens to you, she should know where.`,
+You write to ${N.lucy}, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow ${N.curlyShort} flies you to the survey camp, and you will hide the real notes and tapes out there. If anything happens to you, she should know there is something to find.`,
     choices: () => [{ label: 'Seal the letter and go to sleep.', note: 'sleep', next: 'p_dock' }],
   },
   {
@@ -83,29 +83,29 @@ You write to ${N.lucy}, the clerk at the land office who has been asking the que
     act,
     title: 'Owen: The Float Dock',
     place: 'floatDock',
-    time: '1967-07-15T07:30',
-    goal: 'Fly north with Curly to the survey camp.',
+    clock: '1967-07-15T07:30',
+    goal: `Fly north with ${N.curlyShort} to the survey camp.`,
     text: () => `
 It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
 
-At the float dock on the Chena, ${N.curly} is standing on a float with a funnel in the wing tank, pouring gas from a jerry can through a chamois. He squints at you over the strut.
+At the float dock on the Chena, ${N.curly} is standing on a float with a funnel in the wing tank, pouring gas from a jerry can through a chamois. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
 
 "You look like you didn't sleep, Owen."
 
-You hand him your duffel and keep the satchel with the notes and the tapes on your knees.`,
-    choices: () => [{ label: 'Climb in and fly north with Curly.', note: 'fly', next: 'p_camp' }],
+You hand him your duffel and keep the satchel with the notes and the tapes. It rides on your knees all the way north.`,
+    choices: () => [{ label: `Climb in and fly north with ${N.curlyShort}.`, note: 'fly', next: 'p_camp' }],
   },
   {
     id: 'p_camp',
     act,
     title: 'Owen: The Survey Camp',
     place: 'surveyCamp',
-    time: '1967-07-15T10:00',
-    goal: 'Hide the notes while Curly refuels.',
+    clock: '1967-07-15T10:00',
+    goal: `Hide the notes while ${N.curlyShort} refuels.`,
     text: () => `
-The camp is the way you left it: the cook tent, the old meat cache up on its stilts, the survey marker on the rise. Curly carries the jerry cans down to the plane to top off the tanks for the trip home. He whistles while he works.
+${N.curlyShort} puts the wheels down and lands on the gravel bar below the camp. The camp is the way you left it: the cook tent, the old meat cache up on its stilts, the survey marker on the rise.
 
-While he refuels at the creek, you have a few minutes alone with the real notes and tapes.
+While ${N.curlyShort} refuels from the jerry cans for the trip home, you have a few minutes alone with the real notes and tapes. He whistles down on the gravel bar.
 
 Where do you hide them?`,
     choices: () => [
@@ -118,11 +118,11 @@ Where do you hide them?`,
     id: 'p_end',
     act,
     title: 'Owen: High Water',
-    place: 'floodedStreet',
-    time: '1967-08-14T21:00',
-    goal: 'Get across town to Lucy.',
+    place: 'boardingHouse',
+    clock: '1967-08-14T21:00',
+    goal: `Get across town to ${N.lucy}.`,
     text: () => `
-You fly home, and you mail Lucy one more line: where to look. Curly never sees.
+You fly home. ${N.curlyShort} never sees where you put them. Back in town you write ${N.lucy} a second, longer letter, and somewhere in it is where to look.
 
 A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
 

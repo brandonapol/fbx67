@@ -1,4 +1,4 @@
-import type { Act, Place, State } from './types.ts'
+import type { Act, Clock, Place, State } from './types.ts'
 import { choicesOf, follow, sceneOf } from './engine.ts'
 import { HEAT_LIMIT } from './logic.ts'
 import { BOUNDS } from './state.ts'
@@ -45,6 +45,6 @@ export const weather = (s: State): Weather =>
 
 export const place = (s: State): Place | undefined => sceneOf(s).place
 
-export const clock = (s: State): string | undefined => sceneOf(s).time
+export const clock = (s: State): Clock | undefined => sceneOf(s).clock
 
 export const goal = (s: State): string | undefined => sceneOf(s).goal

@@ -32,7 +32,7 @@ test('send agrees with choose on every prologue route', () => {
 })
 
 test('every option in the prologue has a named note', () => {
-  const states = [1, 2, 3, 4, 5].map((n) => replay(Array.from({ length: n }, () => 1)).at(-1)!)
+  const states = replay([1, 1, 1, 1, 1])
   states.forEach((s) => menu(s).options.forEach((o) => assert.doesNotMatch(o.note, /^option\d+$/)))
 })
 
@@ -55,13 +55,13 @@ test('every prologue scene says where, when and what next', () => {
   assert.ok(prologue.length > 0)
   prologue.forEach((sc) => {
     assert.ok(sc.place, `${sc.id} has no place`)
-    assert.match(sc.time ?? '', /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, `${sc.id} has no time`)
+    assert.match(sc.clock ?? '', /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, `${sc.id} has no clock`)
     assert.ok(sc.goal, `${sc.id} has no goal`)
   })
 })
 
 test('the prologue clock only runs forward', () => {
-  const times = scenes.filter((sc) => sc.act === 'Prologue').map((sc) => sc.time ?? '')
+  const times = scenes.filter((sc) => sc.act === 'Prologue').map((sc) => sc.clock ?? '')
   times.slice(1).forEach((t, i) => assert.ok(t >= times[i], `${t} comes before ${times[i]}`))
 })
 

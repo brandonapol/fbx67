@@ -22,7 +22,9 @@ export type MomLine = 'honest' | 'soft' | 'lie'
 
 export type CacheSpot = 'stove' | 'cache' | 'marker'
 
-export type Place = 'silverPan' | 'owensRoom' | 'floatDock' | 'surveyCamp' | 'floodedStreet'
+export type Place = 'silverPan' | 'owensRoom' | 'floatDock' | 'surveyCamp' | 'boardingHouse'
+
+export type Clock = `${number}-${number}-${number}T${number}:${number}`
 
 export type State = Readonly<{
   scene: SceneId
@@ -57,7 +59,7 @@ export type Scene = Readonly<{
   act: Act
   title: string
   place?: Place
-  time?: string
+  clock?: Clock
   goal?: string
   text: (s: State) => string
   choices: (s: State) => readonly Choice[]

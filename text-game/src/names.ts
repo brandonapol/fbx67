@@ -4,6 +4,7 @@ export const N = {
   lucy: 'Lucy',
   owen: 'Owen Marsh',
   curly: 'Curly Boone',
+  curlyShort: 'Curly',
   jake: 'Jake Bueller',
   joan: 'Joan Halvorsen',
   ashby: 'Franklin Ashby',
