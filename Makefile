@@ -54,8 +54,12 @@ check/game/typecheck: ## tsc on game
 test/game/unit: ## Mission logic and story parity tests
 	cd $(GAME) && npm run -s test
 
-test/game/smoke: build/game ## Play the prologue end to end in headless Chromium
+test/game/smoke: build/game ## Play the prologue in headless Chromium; compare frames, check docs/perf.md budgets
 	cd $(GAME) && npm run -s smoke
+
+.PHONY: generate/baselines
+generate/baselines: build/game ## Replay the smoke test and overwrite game/smoke/baselines with its frames
+	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden

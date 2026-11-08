@@ -13,3 +13,4 @@ web:
 game:
   - *text
   - game/**
+  - docs/perf.md
