@@ -9,6 +9,9 @@ export const act1: readonly Scene[] = [
     id: 'a1_flood',
     act,
     title: 'Wade: Drowned Town',
+    place: 'floodedStreet',
+    clock: '1967-08-15T09:00',
+    goal: 'Hold the sandbag line.',
     text: () => `
 You are ${N.wade} Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
@@ -22,6 +25,9 @@ Your sergeant puts you on a sandbag line. Across the street, a riverboat is pull
     id: 'a1_body',
     act,
     title: 'The Cabin',
+    place: 'floodCabin',
+    clock: '1967-08-15T18:00',
+    goal: 'Find out what the pole hit.',
     text: (s) => `
 ${s.eliTrust > 0 ? 'The boatman, Eli, owes you one, and he says so.' : 'That evening the boatman, Eli, needs a strong back, and your sergeant lends you out.'} Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
@@ -37,6 +43,9 @@ The line is tied off in a bowline, but backward, the tail sitting outside the lo
     id: 'a1_knot',
     act,
     title: 'Eli Looks',
+    place: 'floodCabin',
+    clock: '1967-08-15T18:20',
+    goal: 'Get Owen into the boat.',
     text: () => `
 Eli looks at the knot for a long time.
 
@@ -49,6 +58,9 @@ You cut the line a hand's width above the knot and a hand's width below, so it s
     id: 'a1_ruling',
     act,
     title: 'An Accident',
+    place: 'stJosephs',
+    clock: '1967-08-15T20:00',
+    goal: 'Find out what the nurse saw.',
     text: () => `
 ${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
 
@@ -64,6 +76,9 @@ St. Joseph's took water on the first floor and moved most of its patients out. I
     id: 'a1_joan_ask',
     act,
     title: 'Joan',
+    place: 'stJosephs',
+    clock: '1967-08-15T20:15',
+    goal: 'Listen to Joan.',
     text: () => `
 Joan lowers her voice. Bruises on his left shoulder and the side of his neck, she says, like a hand held him down. A left hand, from behind. "Nobody asked me," she says. "So I didn't say."`,
     choices: () => [{ label: 'Continue.', next: 'a1_lucy' }],
@@ -72,6 +87,9 @@ Joan lowers her voice. Bruises on his left shoulder and the side of his neck, sh
     id: 'a1_joan_laugh',
     act,
     title: 'Joan',
+    place: 'stJosephs',
+    clock: '1967-08-15T20:15',
+    goal: 'Listen to Joan.',
     text: () => `
 She laughs despite herself. As you're leaving she catches your sleeve.
 
@@ -82,6 +100,9 @@ She laughs despite herself. As you're leaving she catches your sleeve.
     id: 'a1_lucy',
     act,
     title: 'The Land Office',
+    place: 'landOffice',
+    clock: '1967-08-16T10:00',
+    goal: 'Decide what to tell Lucy.',
     text: () => `
 Eli takes you to the land office, where his sister ${N.lucy} is hauling wet ledgers up a staircase. You light a cigarette. She takes it out of your mouth and drops it in a puddle without a word.
 
@@ -99,6 +120,9 @@ She looks at you a beat too long.`,
     id: 'a1_barfight',
     act,
     title: 'Saturday at the Silver Pan',
+    place: 'silverPan',
+    clock: '1967-08-19T21:00',
+    goal: 'Keep Eli out of trouble.',
     text: () => `
 The water goes down. The mud doesn't. Saturday night the Silver Pan is packed: Curly at the bar, ${N.jake} the bush pilot folded into a booth, Eli nursing a soda.
 
@@ -122,6 +146,9 @@ The floor is slick with mud. There's a hot stove, a moose rack on the wall, and 
     id: 'a1_tank_sat',
     act,
     title: 'Not Your Fight',
+    place: 'silverPan',
+    clock: '1967-08-19T21:30',
+    goal: 'Get out of the fight in one piece.',
     text: () => `
 You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.`,
     choices: () => [{ label: 'Continue.', next: 'a1_tank' }],
@@ -130,6 +157,9 @@ You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes o
     id: 'a1_tank',
     act,
     title: 'The Drunk Tank',
+    place: 'cityJail',
+    clock: '1967-08-20T08:00',
+    goal: 'Get out of this cell.',
     text: () => `
 The whole bar picks sides. Curly jumps in on yours, roaring about Texas. ${N.cop} of Fairbanks PD hauls you, Eli, and Curly out to the car. He knows Curly by name. On the way, Curly presses a folded twenty into the officer's hand, friendly as anything. The officer tucks it back into Curly's shirt pocket without looking at it and shuts the door.
 
@@ -146,6 +176,9 @@ In the morning ${N.barnette} comes to the cell. He wants to know who started it,
     id: 'a1_ashby',
     act,
     title: 'A Friend in Town',
+    place: 'cityJail',
+    clock: '1967-08-20T10:00',
+    goal: 'Walk out of here.',
     text: (s) => `
 ${s.barfight === 'blameEli' ? 'Eli stays in the cell when they let you out. He does not look at you.' : s.barfight === 'sideCurly' ? 'Curly claps you on the back on the way out. Barnette writes your name next to his.' : 'Barnette lets you both go, but he writes your name down.'}
 
@@ -158,6 +191,9 @@ A man in a good coat is at the desk, talking Barnette down in a calm voice until
     id: 'a1_letter',
     act,
     title: 'Letter Home',
+    place: 'eielsonBarracks',
+    clock: '1967-08-20T20:30',
+    goal: 'Write home to Mama.',
     text: () => `
 You sit on your bunk with a pen. Mama will want to know about the flood. You are not sure how much to tell her about the dead man, the fight, or the night in jail.
 

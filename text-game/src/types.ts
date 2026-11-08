@@ -22,7 +22,18 @@ export type MomLine = 'honest' | 'soft' | 'lie'
 
 export type CacheSpot = 'stove' | 'cache' | 'marker'
 
-export type Place = 'silverPan' | 'owensRoom' | 'floatDock' | 'surveyCamp' | 'boardingHouse'
+export type Place =
+  | 'silverPan'
+  | 'owensRoom'
+  | 'floatDock'
+  | 'surveyCamp'
+  | 'boardingHouse'
+  | 'floodedStreet'
+  | 'floodCabin'
+  | 'stJosephs'
+  | 'landOffice'
+  | 'cityJail'
+  | 'eielsonBarracks'
 
 export type Clock = `${number}-${number}-${number}T${number}:${number}`
 
