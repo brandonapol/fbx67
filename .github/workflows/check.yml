@@ -129,19 +129,19 @@ jobs:
         env:
           SMOKE_SHOTS: ${{ github.workspace }}/game/smoke-shots
           SMOKE_REPORT: ${{ github.workspace }}/game/smoke-report
-          SMOKE_ARTIFACT: prologue-frames-${{ github.run_number }}
+          SMOKE_ARTIFACT: prologue-frames-${{ github.run_number }}-${{ github.run_attempt }}
         run: make test/game/smoke
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: prologue-smoke-${{ github.run_number }}
+          name: prologue-smoke-${{ github.run_number }}-${{ github.run_attempt }}
           path: game/smoke-shots/
           retention-days: 14
           if-no-files-found: ignore
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: prologue-frames-${{ github.run_number }}
+          name: prologue-frames-${{ github.run_number }}-${{ github.run_attempt }}
           path: game/smoke-report/
           retention-days: 14
           if-no-files-found: ignore

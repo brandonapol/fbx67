@@ -7,10 +7,14 @@ import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { seen, watcher } from './prologue.ts'
 
+export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readonly [number, number, number] }>
+
+// The camera is written only by sync and pose. A held shot wins over the follow camera until pose(undefined).
 export type View = Readonly<{
   app: pc.Application
   camera: pc.Entity
   sync: (g: Game, dt: number) => void
+  pose: (shot: Shot | undefined) => void
   reset: () => void
   groundAt: (x: number, y: number) => Readonly<{ x: number; z: number }> | undefined
 }>
@@ -198,11 +202,26 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }
 
-  const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }> } = {}
+  const state: { built?: Built; cam?: pc.Vec3; look?: Readonly<{ x: number; z: number }>; held?: Shot } = {}
+
+  const dispose = (b: Built | undefined): void => {
+    if (!b) return
+    const mats = new Set<pc.Material>(
+      (b.root.findComponents('render') as pc.RenderComponent[]).flatMap((r) => r.meshInstances.flatMap((mi) => (mi.material ? [mi.material] : []))),
+    )
+    b.coneMats?.forEach((m) => mats.add(m))
+    b.root.destroy()
+    mats.forEach((m) => m.destroy())
+  }
+
+  const place = (shot: Shot): void => {
+    camera.setPosition(shot.eye[0], shot.eye[1], shot.eye[2])
+    camera.lookAt(shot.at[0], shot.at[1], shot.at[2])
+  }
 
   const sync = (g: Game, dt: number): void => {
     if (!state.built || state.built.id !== g.space || state.built.weather !== weather(g.story)) {
-      state.built?.root.destroy()
+      dispose(state.built)
       state.built = build(g)
       state.cam = undefined
       state.look = undefined
@@ -223,6 +242,10 @@ export const createView = (canvas: HTMLCanvasElement): View => {
       const y = p.y - dt * 11
       r.setLocalPosition(p.x, y < 0 ? 9 : y, p.z)
     })
+    if (state.held) {
+      place(state.held)
+      return
+    }
     const [back, up] = cameraOffset[g.space]
     const k = g.space === 'camp' ? 0.35 : 1
     const look = { x: g.pos.x * k, z: g.pos.z * k + (1 - k) * -1 }
@@ -248,11 +271,18 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return k < 0 ? undefined : { x: near.x + (far.x - near.x) * k, z: near.z + (far.z - near.z) * k }
   }
 
+  const pose = (shot: Shot | undefined): void => {
+    state.held = shot
+    state.cam = undefined
+    state.look = undefined
+    if (shot) place(shot)
+  }
+
   const reset = (): void => {
-    state.built?.root.destroy()
+    dispose(state.built)
     state.built = undefined
   }
 
   app.start()
-  return { app, camera, sync, reset, groundAt }
+  return { app, camera, sync, pose, reset, groundAt }
 }
