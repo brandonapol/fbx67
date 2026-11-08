@@ -50,8 +50,9 @@ The game asks the story a few read-only questions to set the scene:
 
 - **Weather and light:** sunset alpenglow, blue hour, or night and ice fog, based on how much trouble Wade is in.
 - **Who's around and how they feel:** Eli's and Lucy's trust, Barnette's suspicion.
-- **What Wade knows:** which clues and evidence he has, so the game can show them in his notebook.
-- **Where and when:** `place(state)`, `clock(state)` and `goal(state)` in `text-game/src/story.ts` (below).
+- **What Wade knows:** `notebook(state)`, one short line per piece of evidence held, so the game can show them in his notebook (below).
+- **Who the player is:** `pov(state)` and `oneHanded(state)` (below).
+- **Where and when:** `place(state)`, `clock(state)`, `season(state)` and `goal(state)` in `text-game/src/story.ts` (below).
 
 ### Where, when and what next
 
@@ -61,9 +62,33 @@ Each scene can carry three fields, `place`, `clock` and `goal`, written in its s
 |---|---|---|
 | `place(state)` | one of a fixed set of place ids (`Place` in `text-game/src/types.ts`): `silverPan`, `owensRoom`, `floatDock`, `surveyCamp`, `boardingHouse` | `floatDock` |
 | `clock(state)` | local date and time, `YYYY-MM-DDTHH:MM` (`Clock` in `types.ts`), for sun angle and season; weather such as the flood comes from the date, not the place | `1967-07-15T07:30` |
+| `season(state)` | `summer`, `flood`, `freezeup`, `winter` or `breakup`, from `clock(state)`; `undefined` when the scene has no clock | `flood` |
 | `goal(state)` | a short objective line: where the story wants the player next | `Fly north with Curly to the survey camp.` |
 
 Every prologue scene has all three, and a unit test (`text-game/src/story.test.ts`) enforces that and checks that the prologue clock never runs backward. Scenes in later acts do not have them yet, so the queries return `undefined` there; the game must handle that until each act is filled in. A new place id is added to `Place` when a scene needs it. `boardingHouse` is the outside of Owen's boarding house and its door; `owensRoom` is his room inside it. Until the game has a dock space, it shows the `p_dock` panel over the room, and its `fly` button enters the camp.
+
+`season(state)` is a pure function of the date, not the place. Its ranges are constants in `text-game/src/queries.ts`
+(`SEASON_STARTS`), after the band-by-season table in `docs/art/README.md`: **flood** from 12 August to 31 August (the
+Chena tops its banks in the second week; the prologue's last scene, 14 August, is already flood), **freezeup** 1
+September to 30 November, **winter** 1 December to the end of February, **breakup** 1 March to 31 May, **summer** 1
+June to 11 August (the prologue's July). The engine's per-space `Season` is migrated to this query in the season-layer
+tickets, not here.
+
+### Who the player is
+
+| Query | Returns | Notes |
+|---|---|---|
+| `pov(state)` | `'owen'`, `'wade'` or `'lucy'` | Owen in the prologue; Wade from Act 1 on, except Lucy's scenes. Today those are `a3_camp` through `a3_survive_jake`. It is a lookup by scene id (`lucyScenes` in `queries.ts`), not prose parsing. The Act 2 land-office search (#84, written by #104) must add its scene ids to that set. |
+| `oneHanded(state)` | `true` from `a3_arm` onward, by scene order, else `false` | Wade's right arm breaks in `a3_arm`. Nothing yet says when it heals, so it stays true to the end. The broken-arm design decision (#88) may set a duration; this one query is where that changes. |
+
+### What Wade knows
+
+`notebook(state)` returns `{ id, line }[]`, one entry per piece of `Evidence` held, in the order the state keeps them.
+Each line says what was seen, not what it means ("A backward bowline in yellow line, tail outside the loop, cut off
+Owen's sawhorse," never "proof Curly did it"), in Wade's voice, or Lucy's where a line has one and the scene is hers.
+The lines live in `text-game/src/queries.ts` as a `Record<Evidence, ...>`, so adding an `Evidence` value without a
+line fails the typecheck, and a unit test (`text-game/src/queries.test.ts`) checks the lines against the oil rule. The
+in-game journal (#51) reads this query as its source.
 
 The game never changes story facts directly. It only sends notes (Rule 1) and asks questions (Rule 5).
 
