@@ -340,6 +340,10 @@ it strongly, but no map was seen.
 - **Loose end:** one account of Immaculate Conception's move puts its first site on Dunkel near Front Street, "some
   four hundred feet upstream" of where it now stands. That distance doesn't fit Dunkel lying east of Lacey and
   Noble; the account may be measuring from somewhere else.
+- **Loose end:** the N.C.'s block is "between Cushman and Turner" (item 25), yet Barnette is taken here as the first
+  street west of Cushman. Three readings: the N.C. ran Cushman to Barnette and "Turner" is loose; Turner, not
+  Barnette, is the first street west; or the N.C.'s holdings spanned two blocks across Barnette. The map draws the
+  N.C. on the Cushman–Barnette block.
 
 **Recommended change.** The town map is sited east of Cushman on this evidence. Confirm against a period map (a
 1960s Sanborn map, or USGS Hydrologic Atlas 294) before the street signs are modeled.
@@ -406,8 +410,9 @@ and was destroyed by fire in 1952. An Alaska State Library fire log for 1952 lis
 (https://www.sketchesofalaska.com/2012/10/fairbanks-early-pioneer-hotel-no-longer.html;
 https://library.alaska.gov/hist/hist_docs/docs/ms010/ms10_alaska_historical_files_F.pdf).
 
-**Recommended change.** No Pioneer Hotel. The map shows a gravel lot on First Avenue west of Barnette, off the play
-area (item 19 puts the N.C. west of Cushman, and the hotel was west of the N.C.). The exact spot is ours. An
+**Recommended change.** No Pioneer Hotel. The map shows a gravel lot on First Avenue across Barnette, a full block
+west of the N.C. and off the play area (item 19 puts the N.C. west of Cushman, and the hotel was west of the N.C.).
+The spot is ours. An
 old-timer can still say "where the Pioneer was".
 
 ### 24. The Lacey Street Theater
@@ -488,7 +493,8 @@ between Cushman and Lacey, next to the Nordale.
   (https://www.newsminer.com/features/co-op-drugstore-grand-opening-makes-a-splash-in-downtown-fairbanks/article_d8c7a8ba-6893-11ef-9700-475fc4a51cb6.html).
 - A 1967 high-water mark is reported on the building (item 34).
 
-**Recommended change.** Use it, on Second's south side next to the Nordale.
+**Recommended change.** Use it, on Second's south side next to the Nordale, facing the mouth of the Blanchfield
+lane.
 
 ### 29. The Polaris and Northward buildings
 
@@ -521,8 +527,8 @@ building dates to 1933 (Old Federal Building, NRHP). U.S. street collection boxe
 white and blue from 1955, and all blue from 1971 (general postal history; not checked for Fairbanks). No source was
 found on whether the BLM's Fairbanks land office was in this building in 1967.
 
-**Recommended change.** Use a red, white and blue box. Lucy's land office is an invented storefront on Second east
-of Lacey, a block off Owen's morning route. If a source puts the BLM office inside the Federal Building, move it
+**Recommended change.** Use a red, white and blue box. Lucy's land office is an invented storefront on the boarding
+house's own block, facing Second; neither of Owen's routes passes its door. If a source puts the BLM office inside the Federal Building, move it
 there and have it closed at the hour Owen passes (he leaves early for the flight).
 
 ### 31. Alaskaland and the Centennial Exposition

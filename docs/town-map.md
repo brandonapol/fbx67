@@ -106,8 +106,10 @@ boat up.
 - **Abutment:** a concrete abutment at z 0..2. The deck lands at grade there (y −0.3) and meets First Avenue level.
 - **Deck profile:** rises at 6% to a crown of y 1.5 at mid-river (z −30), then falls the same way to the north bank
   (z −60).
-- **Clearance:** the girders are about 1 m deep, so the soffit is about 2 m above summer water at the banks and 4 m
-  at the crown.
+- **Clearance:** the girders are about 1 m deep, so the soffit is about 2.8 m above summer water at the water's edge
+  and 4 m at the crown.
+- **North of the river:** the deck ends at the north bank (z −60); Cushman continues north as an ordinary street,
+  backdrop.
 - **In the flood:** water at y 1.2 covers both approaches. The crown stays about 0.3 m dry.
 
 ### Float dock
@@ -127,16 +129,16 @@ boat up.
 | Federal Building and Post Office | W2, Cushman between Second and Third, west side | x −74..−7, z 64..96 (playable to −55) | (−7, 80), east onto Cushman | 1.12 | 3 floors, 13 m |
 | Polaris Building | A2, First and Lacey, east corner (123 Lacey) | x 88..112, z 16..32 | (88, 24), west onto Lacey | 0.32 | 11 floors, about 35 m |
 | Lacey Street Theater | A1e, north side of Second at Lacey (500 Second Avenue) | x 56..74, z 26..48; tower x 70..74, z 44..48 | (66, 48), south under the marquee | 0.67 | 2 floors, 9 m; stepped tower 16 m |
-| Nordale Hotel | B1, south side of Second, Cushman–Lacey | x 20..46, z 64..78 | (33, 64), north onto Second | 0.90 | 3 floors, 11 m |
-| Co-op Drug | B1, south side of Second next to the Nordale (535 Second Avenue) | x 47..65, z 64..78 | (56, 64), north onto Second | 0.90 | 2 floors, 8 m |
+| Nordale Hotel | B1, south side of Second, Cushman–Lacey | x 18..38, z 64..78 | (28, 64), north onto Second | 0.90 | 3 floors, 11 m |
+| Co-op Drug | B1, south side of Second next to the Nordale (535 Second Avenue), facing the Blanchfield lane's mouth | x 39..57, z 64..78 | (48, 64), north onto Second | 0.90 | 2 floors, 8 m |
 | Cushman Street bridge | over the river | x −6..6, z −60..2 | | | see [Bridge](#bridge) |
 | Immaculate Conception church | north bank, by the bridge's north end | x −40..−22, z −88..−66 | backdrop | | steeple about 15 m |
 | St. Joseph's Hospital | north bank, a little downstream (west) of the church | x −130..−80, z −118..−82 | backdrop | | 4 floors (a guess) |
 | Northward Building | south of Third between Lacey and Noble | x 88..154, z 112..160 | backdrop | | 8 floors, about 26 m |
-| Gravel lot (Pioneer Hotel site) | First Avenue west of Barnette, off the map | x −112..−92, z 16..32 | backdrop | | none |
+| Gravel lot (Pioneer Hotel site) | First Avenue across Barnette, a full block west of the N.C., off the map | x −112..−92, z 16..32 | backdrop | | none |
 
-The Pioneer Hotel burned in 1952. "Half a block west of the N.C." is all the sources say, so the lot's exact spot is
-ours (item 23).
+The Pioneer Hotel burned in 1952. "Half a block west of the N.C." is all the sources say. The map puts the lot across
+Barnette, a full block west; the spot is ours (item 23).
 
 Off the map:
 
@@ -151,11 +153,11 @@ Off the map:
 
 | Id | Place | Where | Rectangle | Front door | Floor (y) | Height |
 |---|---|---|---|---|---|---|
-| `silverPan` | The Silver Pan | A1w, north side of Second, on the Blanchfield lane corner | x 23..39, z 32..48 | (31, 48) south onto Second; side door (39, 35) east onto the lane | 0.67 | 1 floor, false front 6 m |
+| `silverPan` | The Silver Pan | A1w, north side of Second, on the Blanchfield lane corner | x 23..39, z 32..48 | (33, 48) south onto Second; side door (39, 35) east onto the lane | 0.67 | 1 floor, false front 6 m |
 | | The Ptarmigan (bar) | A1w, corner of Second and Cushman | x 7..21, z 34..48 | (14, 48) south | 0.67 | 1 floor, 5.5 m |
 | | The Sluice Box (bar) | A1e, Second Avenue | x 44..56, z 34..48 | (50, 48) south | 0.67 | 1 floor, 5 m |
 | | The Blue Spruce Lounge | A2, corner of Second and Lacey | x 88..102, z 34..48 | (95, 48) south | 0.67 | 2 floors, 7 m |
-| `nlCafe` | Northern Lights Café | B1, corner of Second and Cushman | x 7..19, z 64..78 | (13, 64) north onto Second | 0.90 | 1 floor, 4.5 m |
+| `nlCafe` | Northern Lights Café | B1, corner of Second and Cushman | x 7..17, z 64..78 | (12, 64) north onto Second | 0.90 | 1 floor, 4.5 m |
 | `landOffice` | The land office | B2, south side of Second, east of Lacey | x 100..114, z 64..78 | (107, 64) north onto Second | 0.90 | 1 floor, false front 5 m |
 | `boardingHouse` | Owen's boarding house | B2, north side of Third | x 126..142, z 82..96 | (134, 96) south onto Third | 1.16 | 2 floors, 7 m |
 | `owensRoom` | Owen's room | upstairs at the back of the boarding house | x 131..137, z 82..88 | the stairs | 4.16 | |
@@ -164,8 +166,8 @@ Off the map:
 | | Curly's floatplane | moored on the float's west (downstream) side | about x 97..110, z −22..−11 | | | nose east, upstream into the current |
 | | Skiff and riverboat landing | lower bank east of the bridge | x 22..70, z −10..−5 | | | |
 
-**The land office** is Lucy's. It sits on Second east of Lacey, a block off the morning route, so Owen does not walk
-past her door with her letter in his pocket. Whether the federal land office was in the Federal Building in 1967 is
+**The land office** is Lucy's. It is on the boarding house's own block but faces Second; neither route passes its
+door, so Owen does not walk past it with her letter in his pocket. Whether the federal land office was in the Federal Building in 1967 is
 open (item 30); a storefront keeps us out of that question.
 
 **Generic buildings** (pale on the map) are unnamed frame storefronts, rooming houses, cabins and sheds. See
@@ -175,10 +177,10 @@ open (item 30); a storefront keeps us out of that question.
 
 | Space | Placement: center (x, z), yaw | Floor (y) | Check |
 |---|---|---|---|
-| `bar` (12 × 10) | (31, 43), 0° | 0.67 | the door spot at local (0, 4.4) lands at (31, 47.4), on the Silver Pan's front wall; local x ±6 spans x 25..37 inside the building |
+| `bar` (12 × 10) | (33, 43), 0° | 0.67 | the door spot at local (0, 4.4) lands at (33, 47.4), on the Silver Pan's front wall; local x ±6 spans x 27..39, so the bar's east wall is the building's east wall on the lane |
 | `room` (6 × 6) | (134, 85), 0° | 4.16 | spans x 131..137, z 82..88, inside the house; its window wall (local z −2.9) is the house's north wall at z 82, over the alley; the desk faces it |
 | `camp` | off the map | | |
-| `flood` (20 × 16) | (135.4, 104.2), 180° | street grade 0.87; water 1.2 | its house wall (local z 7.6) lands at z 96.6, the boarding house's front; the door glow (local x 1.4) lands at x 134, Owen's door; the space covers Third Avenue |
+| `flood` (20 × 16) | (135.4, 103.9), 180° | street grade 0.87; water 1.2 | spans x 125.4..145.4, z 95.9..111.9. The house wall (local z 7.3..7.9) lands at z 96.0..96.6, back face flush with the boarding house's front at z 96. The door glow (local x 1.4) lands at x 134, Owen's door. The skiff (local (0.2, 3.4)) lands at (135.2, 100.5) |
 
 ## The prologue route
 
@@ -186,9 +188,9 @@ The bar scene is a July night: the sun is still up at eleven, so "night" is a lo
 
 | Leg | Path (waypoints) | Length | What the player passes |
 |---|---|---|---|
-| Night: Silver Pan to boarding house | (31, 47.6) door, (31, 50), east on Second's north walk to (81, 50) at Lacey, south on Lacey to (81, 98), east on Third to (134, 98), (134, 96) door | about 155 m, 2 minutes on foot | the Sluice Box, the Lacey Street Theater's marquee and tower, the Nordale and the Co-op across the street, the Blue Spruce on the far corner |
-| Morning: boarding house, post box, float dock | (134, 96), (134, 98.8), west on Third to Cushman's west walk at (−5.5, 98.8), north on Cushman to the post box at (−5.5, 66), on to (−5.5, 3) at First, east on the river walk to (118.5, 3), down the gangway to (118.5, −16) on the float | about 380 m, 4 to 5 minutes | the Federal Building, the N.C., the bridge, the skiff landing, the Polaris, the float shed |
-| August: the skiff | waits at Owen's door, (134, 103) on flooded Third; leaves west to Lacey, then north toward the river | | the night route's blocks under water; where the ride ends is the story's business, not the map's |
+| Night: Silver Pan to boarding house | (33, 47.6) door, (33, 50), east on Second's north walk to (81, 50) at Lacey, south on Lacey to (81, 98), east on Third to (134, 98), (134, 96) door | about 153 m, 2 minutes on foot | the Sluice Box, the Lacey Street Theater's marquee and tower, the Nordale and the Co-op across the street, the Blue Spruce on the far corner |
+| Morning: boarding house, post box, float dock | (134, 96), (134, 98.8), west on Third to Cushman's west walk at (−5.5, 98.8), north on Cushman past the post box at the curb (−4.5, 66), on to (−5.5, 3) at First, east on the river walk to (118.5, 3), down the gangway to (118.5, −16) on the float | about 380 m, 4 to 5 minutes | the Federal Building, the N.C., the bridge, the skiff landing, the Polaris, the float shed |
+| August: the skiff | waits at (135.2, 100.5) in front of Owen's door on flooded Third (the `flood` space's skiff); leaves west to Lacey, then north toward the river | | the night route's blocks under water; where the ride ends is the story's business, not the map's |
 
 The post box is a street collection box at the curb outside the Federal Building, painted red, white and blue (the
 colors of the time; item 30).
@@ -199,15 +201,15 @@ Facing is a unit vector (x, z); (0, −1) faces north. y is grade or floor from 
 
 | Id | Position (x, y, z) | Facing | Notes |
 |---|---|---|---|
-| `silverPan` | (31, 0.67, 46.9) | (0, −1) | inside the door; the same spot as `bar.spawn` (0, 3.9) |
-| `secondAve` | (31, 0.40, 50.5) | (1, 0) | Second's north walk outside the Silver Pan; the night walk starts here |
+| `silverPan` | (33, 0.67, 46.9) | (0, −1) | inside the door; the same spot as `bar.spawn` (0, 3.9) |
+| `secondAve` | (33, 0.40, 50.5) | (1, 0) | Second's north walk outside the Silver Pan; the night walk starts here |
 | `boardingHouse` | (134, 0.87, 98.5) | (0, −1) | Third's north walk, facing the door; the morning walk starts here |
 | `owensRoom` | (134, 4.16, 87) | (0, −1) | the same spot as `room.spawn` (0, 2) |
 | `floatDock` | (118.5, −0.30, 1) | (0, −1) | top of the gangway, looking down at the float and the plane |
-| `floodedStreet` | (135.4, 0.87, 97.8) | (0, −1) | the `flood` space's spawn, (0, 6.4) turned 180°; at Owen's door, water 0.33 m deep |
-| `postBox` | (−5.5, 0.65, 67.4) | (0, −1) | Cushman's west walk at the box |
+| `floodedStreet` | (135.4, 0.87, 97.5) | (0, −1) | the `flood` space's spawn, (0, 6.4) turned 180°; at Owen's door, water 0.33 m deep (see the note under the flood tables) |
+| `postBox` | (−6, 0.63, 66) | (1, 0) | Cushman's west walk, facing the box at the curb, (−4.5, 66) |
 | `landOffice` | (107, 0.57, 62) | (0, 1) | Second's south walk at Lucy's door |
-| `nlCafe` | (13, 0.57, 62) | (0, 1) | Second's south walk at Dottie's door |
+| `nlCafe` | (12, 0.57, 62) | (0, 1) | Second's south walk at Dottie's door |
 | `bridgeSouth` | (0, −0.18, −2) | (0, 1) | on the deck at the south end, looking into town |
 
 ## The flood (August 1967)
@@ -222,7 +224,7 @@ hold at their buildings (item 34):
 | Co-op Plaza, 2nd Avenue (Waymarking; not one of the NWS tour's official signs) | Co-op wall, z 64 | about 2 ft (0.6 m) | 0.60 m |
 | Old post office, Cushman (NWS tour #8) | Federal Building door, z 80 | about 15 in (0.38 m) | 0.38 m |
 | City Hall, 800 Cushman (NWS tour #11) | about Eighth Avenue, off the map (z 170) | about 6 in (0.15 m) | 0.15 m |
-| Cushman a "waterway", canoes and motorboats in 3 to 4 ft (ADN) | Cushman, First to Second | 0.9 to 1.2 m | 1.40 to 0.72 m |
+| Cushman a "waterway", canoes and motorboats in 3 to 4 ft (ADN) | Cushman, First to Second | 0.9 to 1.2 m | 1.40 to 0.72 m: shallower than the report from about the middle of row A south (the report likely describes the blocks nearest the river) |
 
 Depth over grade by band (center):
 
@@ -260,6 +262,9 @@ What changes on these blocks:
   People pole and motor skiffs up the streets.
 - At Owen's door on Third the water is a shin-deep 0.33 m: enough to float a flat-bottomed skiff, poled, with the
   motor tilted up.
+- **Engine note:** the `flood` space in `game/src/levels.ts` draws its water slab over local z −8..5 only, so the
+  strip at the door (world z 96..98.9, where `floodedStreet` stands) is currently dry. This doc keeps the physical
+  truth (0.33 m, one plane at y 1.2); issue #58 extends the slab to the wall.
 - The bridge is an island: both approaches are under water, and the crown stands just clear.
 - Across the river, St. Joseph's is being evacuated and the church stands in water.
 
@@ -337,6 +342,9 @@ set fires to get work; it appears in a 1969 magazine piece (item 36).
 
 - Confirm the street order (Lacey and Noble east of Cushman, Barnette west) against a period map. It rests on
   address numbers (item 19).
+- The N.C.'s block is "between Cushman and Turner", but Barnette is the first street west of Cushman here. Either
+  the N.C. ran Cushman to Barnette and "Turner" is loose; or Turner, not Barnette, is the first street west; or the
+  N.C.'s holdings spanned two blocks across Barnette (item 19).
 - Was the Lacey Street Theater open again by July 1967 after the 1966 fire (item 24)?
 - Where exactly did floatplanes tie up on the Chena in 1967, and who ran them (item 35)?
 - Was the BLM's Fairbanks land office in the Federal Building (item 30)?

@@ -104,7 +104,7 @@
     <rect class="gen" x="142" y="34" width="12" height="14" />
     <rect class="gen" x="170" y="34" width="12" height="14" />
     <rect class="gen" x="184" y="36" width="11" height="12" />
-    <rect class="gen" x="66" y="64" width="8" height="14" />
+    <rect class="gen" x="58" y="64" width="16" height="14" />
     <rect class="gen" x="8" y="84" width="12" height="12" />
     <rect class="gen" x="22" y="82" width="12" height="14" />
     <rect class="gen" x="36" y="84" width="10" height="12" />
@@ -142,17 +142,17 @@
   <rect class="real" x="88" y="16" width="24" height="16" />
   <rect class="real" x="56" y="26" width="18" height="22" />
   <rect x="70" y="44" width="4" height="4" fill="#b97a52" stroke="#7a4a2c" stroke-width="0.3" />
-  <rect class="real" x="20" y="64" width="26" height="14" />
-  <rect class="real" x="47" y="64" width="18" height="14" />
+  <rect class="real" x="18" y="64" width="20" height="14" />
+  <rect class="real" x="39" y="64" width="18" height="14" />
   <rect class="lot" x="-112" y="16" width="20" height="16" />
 
   <!-- Ours -->
   <rect class="ours" x="23" y="32" width="16" height="16" />
-  <rect class="interior" x="25" y="38" width="12" height="10" />
+  <rect class="interior" x="27" y="38" width="12" height="10" />
   <rect class="ours" x="7" y="34" width="14" height="14" />
   <rect class="ours" x="44" y="34" width="12" height="14" />
   <rect class="ours" x="88" y="34" width="14" height="14" />
-  <rect class="ours" x="7" y="64" width="12" height="14" />
+  <rect class="ours" x="7" y="64" width="10" height="14" />
   <rect class="ours" x="100" y="64" width="14" height="14" />
   <rect class="ours" x="126" y="82" width="16" height="14" />
   <rect class="interior" x="131" y="82" width="6" height="6" />
@@ -178,8 +178,9 @@
   </g>
 
   <!-- Bridge: abutment z 0..2, deck north -->
-  <rect x="-6" y="-132" width="12" height="132" fill="#9a958b" stroke="#55514a" stroke-width="0.4" />
-  <rect x="-4" y="-132" width="8" height="132" fill="#b4afa5" />
+  <rect class="street" x="-6" y="-132" width="12" height="72" />
+  <rect x="-6" y="-60" width="12" height="60" fill="#9a958b" stroke="#55514a" stroke-width="0.4" />
+  <rect x="-4" y="-60" width="8" height="60" fill="#b4afa5" />
   <rect x="-7" y="0" width="14" height="2" fill="#7d786f" />
 
   <!-- North bank backdrop -->
@@ -197,13 +198,15 @@
   <rect class="bound" x="-55" y="-60" width="250" height="200" />
 
   <!-- Routes (under the labels) -->
-  <polyline class="night" points="31,47.6 31,50 81,50 81,98 134,98 134,96" />
+  <polyline class="night" points="33,47.6 33,50 81,50 81,98 134,98 134,96" />
   <polyline class="morning" points="134,96 134,98.8 -5.5,98.8 -5.5,3 118.5,3 118.5,-16" />
-  <polyline class="skiff" points="134,103 86,103 86,-6" />
+  <rect x="125.4" y="95.9" width="20" height="16" fill="none" stroke="#1f6f99" stroke-width="0.5" stroke-dasharray="1.6 0.9" />
+  <rect x="134.5" y="98.8" width="1.4" height="3.4" rx="0.6" fill="#6a6f72" stroke="#1f6f99" stroke-width="0.3" />
+  <polyline class="skiff" points="135.2,100.5 130,103 86,103 86,-6" />
   <polygon points="86,-10 84.2,-5.5 87.8,-5.5" fill="#1f6f99" />
 
   <!-- Post box (red, white and blue) -->
-  <rect x="-6.3" y="64.6" width="1.6" height="1.6" fill="#1d3f8f" stroke="#b22222" stroke-width="0.35" />
+  <rect x="-5.3" y="65.2" width="1.6" height="1.6" fill="#1d3f8f" stroke="#b22222" stroke-width="0.35" />
 
   <!-- Labels: water and banks -->
   <text class="tst halo" x="120" y="-44" text-anchor="middle" fill="#1f4f66">CHENA RIVER</text>
@@ -211,7 +214,7 @@
   <text class="tb halo" x="119" y="-24.5" text-anchor="middle">float dock</text>
   <text class="tb halo" x="90" y="-25" text-anchor="end">Curly's floatplane</text>
   <text class="tb halo" x="40" y="-17" text-anchor="middle">skiff landing</text>
-  <text class="tw" x="1.6" y="-42" text-anchor="middle" transform="rotate(-90 1.6 -42)">CUSHMAN ST BRIDGE (late 1950s)</text>
+  <text class="tw" x="1.6" y="-32" text-anchor="middle" transform="rotate(-90 1.6 -32)">BRIDGE (late 1950s)</text>
   <text class="t" x="-31" y="-100" text-anchor="middle">Immaculate Conception</text>
   <text class="t" x="-105" y="-101" text-anchor="middle">St. Joseph's</text>
   <text class="t" x="-105" y="-96.5" text-anchor="middle">Hospital</text>
@@ -241,23 +244,23 @@
   <text class="t" x="100" y="28" text-anchor="middle">11 floors</text>
   <text class="tbld" x="65" y="33" text-anchor="middle">Lacey St.</text>
   <text class="tbld" x="65" y="37.4" text-anchor="middle">Theater</text>
-  <text class="tbld" x="33" y="72.4" text-anchor="middle">Nordale</text>
-  <text class="tbld" x="56" y="70.4" text-anchor="middle">Co-op</text>
-  <text class="tbld" x="56" y="74.8" text-anchor="middle">Drug</text>
+  <text class="tbld" x="28" y="72.4" text-anchor="middle">Nordale</text>
+  <text class="tbld" x="48" y="70.4" text-anchor="middle">Co-op</text>
+  <text class="tbld" x="48" y="74.8" text-anchor="middle">Drug</text>
   <text class="t" x="-102" y="23" text-anchor="middle">Pioneer</text>
   <text class="t" x="-102" y="27.4" text-anchor="middle">lot</text>
   <text class="tbld" x="121" y="138" text-anchor="middle">Northward Building</text>
   <text class="t" x="121" y="142.6" text-anchor="middle">8 floors (skyline)</text>
   <text class="t" x="-66" y="44" text-anchor="middle">stacks</text>
 
-  <text class="tbld" x="31" y="36.6" text-anchor="middle">Silver</text>
-  <text class="tbld" x="31" y="41.4" text-anchor="middle">Pan</text>
+  <text class="tbld" x="33" y="37.4" text-anchor="middle">Silver</text>
+  <text class="tbld" x="33" y="42.4" text-anchor="middle">Pan</text>
   <text class="tbld" x="14" y="41" text-anchor="middle" textLength="12.6" lengthAdjust="spacingAndGlyphs">Ptarmigan</text>
   <text class="tbld" x="50" y="40" text-anchor="middle">Sluice</text>
   <text class="tbld" x="50" y="44.4" text-anchor="middle">Box</text>
   <text class="tbld" x="95" y="40" text-anchor="middle">Blue</text>
   <text class="tbld" x="95" y="44.4" text-anchor="middle">Spruce</text>
-  <text class="tbld" x="13" y="72.4" text-anchor="middle">Café</text>
+  <text class="tbld" x="12" y="72.4" text-anchor="middle">Café</text>
   <text class="tbld" x="107" y="70.4" text-anchor="middle">Land</text>
   <text class="tbld" x="107" y="74.8" text-anchor="middle">office</text>
   <text class="tbld" x="134" y="91.6" text-anchor="middle">Boarding</text>
@@ -267,29 +270,30 @@
 
   <!-- Spawn points, labels on leaders -->
   <g>
-    <line class="leader" x1="30.2" y1="47.6" x2="25.5" y2="53.2" />
-    <circle class="spawn" cx="31" cy="46.9" r="1.3" />
-    <text class="tsp halo" x="25" y="56" text-anchor="end">silverPan</text>
-    <line class="leader" x1="31.8" y1="51.4" x2="35" y2="53.2" />
-    <circle class="spawn" cx="31" cy="50.5" r="1.3" />
-    <text class="tsp halo" x="35" y="56">secondAve</text>
-    <circle class="spawn" cx="13" cy="62" r="1.3" />
-    <text class="tsp halo" x="15.6" y="61.6">nlCafe</text>
+    <line class="leader" x1="32.2" y1="47.6" x2="27.5" y2="53.2" />
+    <circle class="spawn" cx="33" cy="46.9" r="1.3" />
+    <text class="tsp halo" x="27" y="56" text-anchor="end">silverPan</text>
+    <line class="leader" x1="33.8" y1="51.4" x2="37" y2="53.2" />
+    <circle class="spawn" cx="33" cy="50.5" r="1.3" />
+    <text class="tsp halo" x="37" y="56">secondAve</text>
+    <circle class="spawn" cx="12" cy="62" r="1.3" />
+    <text class="tsp halo" x="14.6" y="61.6">nlCafe</text>
     <circle class="spawn" cx="107" cy="62" r="1.3" />
     <text class="tsp halo" x="109.6" y="61.6">landOffice</text>
     <circle class="spawn" cx="134" cy="98.5" r="1.3" />
     <line class="leader" x1="135.2" y1="99.2" x2="146" y2="101.2" />
     <text class="tsp halo" x="146.6" y="102.4">boardingHouse</text>
-    <circle class="spawn" cx="135.4" cy="97.8" r="1.0" fill="#1f6f99" />
-    <line class="leader" x1="136" y1="98.6" x2="146" y2="106.6" />
+    <circle class="spawn" cx="135.4" cy="97.5" r="1.0" fill="#1f6f99" />
+    <line class="leader" x1="136" y1="98.3" x2="146" y2="106.6" />
     <text class="tsp halo" x="146.6" y="107.8" fill="#1f6f99">floodedStreet</text>
+    <text class="tb halo" x="135.4" y="110.8" text-anchor="middle">flood space</text>
     <circle class="spawn" cx="134" cy="87" r="1.1" />
     <line class="leader" x1="135.1" y1="87" x2="143.5" y2="89.6" />
     <text class="tsp halo" x="144" y="90.8">owensRoom</text>
     <circle class="spawn" cx="118.5" cy="1" r="1.3" />
     <text class="tsp halo" x="122" y="0.6">floatDock</text>
-    <circle class="spawn" cx="-5.5" cy="67.4" r="1.1" />
-    <line class="leader" x1="-6.5" y1="67" x2="-12" y2="62.6" />
+    <circle class="spawn" cx="-6" cy="66" r="1.0" />
+    <line class="leader" x1="-7.4" y1="65.4" x2="-12" y2="62.6" />
     <text class="tsp halo" x="-12.6" y="61.6" text-anchor="end">postBox</text>
     <circle class="spawn" cx="0" cy="-2" r="1.1" />
     <text class="tsp halo" x="8" y="-2.4">bridgeSouth</text>
