@@ -151,3 +151,14 @@ Object.assign(window, {
     textBuild: () => textBuild(live.g),
   },
 })
+
+if (new URLSearchParams(window.location.search).has('test')) {
+  void import('./probe.ts').then(({ installProbe }) =>
+    installProbe(view, {
+      get: () => live.g,
+      set: (g) => {
+        live.g = g
+      },
+    }),
+  )
+}

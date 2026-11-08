@@ -11,6 +11,7 @@ export type View = Readonly<{
   app: pc.Application
   camera: pc.Entity
   sync: (g: Game, dt: number) => void
+  reset: () => void
   groundAt: (x: number, y: number) => Readonly<{ x: number; z: number }> | undefined
 }>
 
@@ -247,6 +248,11 @@ export const createView = (canvas: HTMLCanvasElement): View => {
     return k < 0 ? undefined : { x: near.x + (far.x - near.x) * k, z: near.z + (far.z - near.z) * k }
   }
 
+  const reset = (): void => {
+    state.built?.root.destroy()
+    state.built = undefined
+  }
+
   app.start()
-  return { app, camera, sync, groundAt }
+  return { app, camera, sync, reset, groundAt }
 }
