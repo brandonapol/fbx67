@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { ended, focus, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { focus, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
 import { mountSoundPanel } from './sound-panel.ts'
@@ -121,13 +121,7 @@ const act = (f: (g: Game) => Game): void => {
   live.target = undefined
 }
 
-const choose = (id: string): void => {
-  if (id === 'continue' && ended(live.g)) {
-    window.location.href = textBuild(live.g)
-    return
-  }
-  act((g) => press(g, id))
-}
+const choose = (id: string): void => act((g) => press(g, id))
 
 const renderHelp = (): void => {
   helpEl.textContent = help(live.device, live.controls)

@@ -1,6 +1,7 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 import type { Activity } from './cast.ts'
+import type { Act, Place } from '../../text-game/src/types.ts'
 
 export type SpaceId = 'bar' | 'room' | 'camp' | 'flood'
 
@@ -31,7 +32,10 @@ export type Figure = Readonly<{
 
 export type Space = Readonly<{
   id: SpaceId
+  act: Act
+  place: Place
   name: string
+  back?: string
   season: Season
   size: Readonly<{ w: number; d: number }>
   interior: boolean
@@ -72,6 +76,9 @@ const owen = { skin: '#d9a982', hair: '#6b4a2e' }
 
 export const bar: Space = {
   id: 'bar',
+  act: 'Prologue',
+  place: 'silverPan',
+  back: 'Back to the table.',
   name: 'The Silver Pan',
   interior: true,
   season: 'summer',
@@ -107,6 +114,8 @@ export const bar: Space = {
 
 export const room: Space = {
   id: 'room',
+  act: 'Prologue',
+  place: 'owensRoom',
   name: "Owen's room",
   interior: true,
   season: 'summer',
@@ -129,6 +138,8 @@ export const CURLY_AT = vec(-6.4, 5.4)
 
 export const camp: Space = {
   id: 'camp',
+  act: 'Prologue',
+  place: 'surveyCamp',
   name: 'The survey camp',
   interior: false,
   season: 'summer',
@@ -194,6 +205,8 @@ export const camp: Space = {
 
 export const flood: Space = {
   id: 'flood',
+  act: 'Prologue',
+  place: 'boardingHouse',
   name: 'High water',
   interior: false,
   season: 'flood',

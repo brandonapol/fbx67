@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { replay } from '../../text-game/src/engine.ts'
+import { isEnd, replay } from '../../text-game/src/engine.ts'
+import { readFileSync } from 'node:fs'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
@@ -222,4 +223,44 @@ test('reversing at a jog slows down along the old way and never moves the new wa
     if (angleBetween(g.facing, heading) > TURN_GO) assert.ok(g.pos.x >= steps[i].pos.x - 1e-9, `moved west mid-turn at step ${i}`)
   })
   assert.ok(steps[steps.length - 1].pos.x < steps[0].pos.x)
+})
+
+const goldenRoutes: readonly { ending: string; path: string }[] = JSON.parse(readFileSync(new URL('../../text-game/routes/golden.json', import.meta.url), 'utf8'))
+
+const golden = (ending: string): readonly number[] => {
+  const route = goldenRoutes.find((r) => r.ending === ending)
+  if (!route) throw new Error(`no golden ${ending} route`)
+  return route.path.split(',').map(Number)
+}
+
+const pressAll = (g: Game, ns: readonly number[]): Game =>
+  ns.reduce((cur, n) => {
+    const b = cur.panel?.buttons[n - 1]
+    if (!b) throw new Error(`${cur.story.scene} has no button ${n}`)
+    return press(cur, b.id)
+  }, g)
+
+test('Continue as Wade on the end card shows the menu of Act 1, every option a note button', () => {
+  const end = playPrologue('texas', 'stove')
+  const card = end.panel!
+  assert.deepEqual(card.buttons, [{ id: 'continue', label: 'Continue as Wade' }])
+  const g = press(end, 'continue')
+  const m = menu(g.story)
+  assert.equal(g.story.scene, 'a1_flood')
+  assert.equal(g.panel?.kind, 'story')
+  assert.equal(g.panel?.title, m.title)
+  assert.equal(g.panel?.text, m.text)
+  assert.deepEqual(g.panel?.buttons, m.options.map((o) => ({ id: `note:${o.note}`, label: o.label })))
+})
+
+test('the golden best route plays from the prologue to its ending through panels alone', () => {
+  const path = golden('best')
+  const prologue = playPrologue('texas', 'stove')
+  assert.deepEqual(prologue.path, path.slice(0, prologue.path.length))
+  const g = pressAll(press(prologue, 'continue'), path.slice(prologue.path.length))
+  assert.deepEqual(g.path, path)
+  assert.deepEqual(g.story, replay(path).at(-1))
+  assert.ok(isEnd(g.story))
+  assert.equal(g.panel?.title, menu(g.story).title)
+  assert.deepEqual(g.panel?.buttons, [])
 })
