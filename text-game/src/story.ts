@@ -48,3 +48,6 @@ export const place = (s: State): Place | undefined => sceneOf(s).place
 export const clock = (s: State): Clock | undefined => sceneOf(s).clock
 
 export const goal = (s: State): string | undefined => sceneOf(s).goal
+
+export { notebook, oneHanded, pov, season } from './queries.ts'
+export type { NotebookEntry, Pov, Season } from './queries.ts'
