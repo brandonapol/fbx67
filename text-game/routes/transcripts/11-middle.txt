@@ -26,9 +26,29 @@ Curly checks his watch. "Plane's ready for the morning, Owen."
 
 == Prologue :: Owen: A Letter to Lucy ==
 
-In your rented room you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
+In your rented room at the boarding house you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
 
-You write to Lucy, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp. While he refuels at the creek, you will hide the real notes and tapes. If anything happens to you, she should know where.
+You write to Lucy, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp, and you will hide the real notes and tapes out there. If anything happens to you, she should know there is something to find.
+
+  1. Seal the letter and go to sleep.
+
+== Prologue :: Owen: The Float Dock ==
+
+It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
+
+At the float dock on the Chena, Curly Boone is down on one knee on a float with a hand pump, pumping the night's seep out of the float compartments. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
+
+"You look like you didn't sleep, Owen."
+
+You hand him your duffel and keep the satchel with the notes and the tapes. It rides on your knees all the way north.
+
+  1. Climb in and fly north with Curly.
+
+== Prologue :: Owen: The Survey Camp ==
+
+Curly puts the wheels down and lands on the gravel bar below the camp. The camp is the way you left it: the cook tent, the old meat cache up on its stilts, the survey marker on the rise.
+
+While Curly refuels from the jerry cans for the trip home, you have a few minutes alone with the real notes and tapes. He whistles down on the gravel bar.
 
 Where do you hide them?
 
@@ -38,7 +58,7 @@ Where do you hide them?
 
 == Prologue :: Owen: High Water ==
 
-You mail the letter, fly north, hide the notes, and fly home. Curly never sees.
+You fly home. Curly never sees where you put them. Back in town you write Lucy a second, longer letter, and somewhere in it is where to look.
 
 A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
 
@@ -87,7 +107,7 @@ Joan lowers her voice. Bruises on his left shoulder and the side of his neck, sh
 
 Eli takes you to the land office, where his sister Lucy is hauling wet ledgers up a staircase. You light a cigarette. She takes it out of your mouth and drops it in a puddle without a word.
 
-She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on tundra tires off a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
+She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her twice in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on amphibian floats, landing on their wheels on a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
 
 "He was working with a lawyer, Franklin Ashby, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The base photo lab kept the only full set of prints in Alaska. I can't get onto your base."
 
@@ -296,7 +316,7 @@ December is coming. The sun is barely up for four hours. You could keep your hea
 
 You are Lucy. December 12th, thirty-eight below. Jake sets the plane down on the frozen creek below Owen's camp, and you have three hours of grey light.
 
-The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. Owen's letter told you where to look.
+The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. Owen's second letter told you where to look.
 
   1. Under the floorboards behind the cook-tent stove.
   2. The old meat cache up on stilts.

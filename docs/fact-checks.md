@@ -197,6 +197,8 @@ A note on method: research was done by web search. Direct page fetches were bloc
 
 **Recommended change (text tweak).** "Nobody is flying anywhere" is too strong: wheel planes still flew from Fairbanks runways. Change to "nobody can land at a camp with no strip until the ice and snow are good". For Owen, "big tires off a gravel bar" is safer than the term "tundra tires".
 
+**Update (issue #38).** Owen now flies with Curly on amphibian floats: off the Chena from a float dock in town, and down on their wheels on the camp's gravel bar. Act 1 says the same and no longer uses "tundra tires". Amphibian floats, with wheels that retract into the floats, were in use on Beaver-class bush planes by the 1960s. Small amphibian wheels on a gravel bar are rougher than big tires, but a smooth, known bar makes the landing plausible.
+
 ### 10. Who ran a 1967 winter crash search
 
 **Claim.** Act 3: "the rescue team out of Eielson needs a munitions man for flares and signal charges."
@@ -706,3 +708,48 @@ Ordered by impact.
   (item 30).
 - The 1967 games' site and name during Golden Days: WEIO records, News-Miner (item 37).
 - How Minto families would want to appear in a July 1967 downtown crowd: consultants (item 36).
+- Whether Alaska observed daylight saving time in summer 1967 (item 38): Fairbanks Daily News-Miner sun tables, July 1967.
+- Whether downtown 2nd Avenue was paved by 1967 (item 39): dated photographs in the UAF archives.
+- Which way 2nd Avenue runs in 1967 (item 41): a period USGS or city street map.
+
+## Engine look checks (issue #32)
+
+Questions raised by the art direction in [`art/README.md`](art/README.md#engine-look). None changes the plot.
+
+### 38. Daylight saving time in Fairbanks, summer 1967
+
+**Claim.** The Prologue text (`text-game/src/scenes/prologue.ts`) says "The midnight sun is still up at eleven" in July 1967, and the engine keeps the sun's disc 0 to +4 degrees above the north-northwest horizon at 11 pm (a stated cheat in `art/README.md`).
+
+**Verdict.** Unknown.
+
+**Evidence.** Fairbanks kept Alaska-Hawaii Standard Time (UTC-10) in 1967. The Uniform Time Act of 1966 took effect in 1967 and let a state opt out of daylight saving by law; whether Alaska observed it in summer 1967 is not settled here. Computed for 64.84 N, 147.72 W at 23:00 local: on standard time (UTC-10) the sun is at -1.5 / -3.0 / -6.3 degrees on July 1 / 15 / 31; on daylight time (UTC-9) it is at +0.7 / -0.8 / -4.0 degrees. So the disc is above the horizon at eleven only on daylight time and only in early July; on standard time it is down all month, with the northern sky still bright.
+
+**Recommended change.** The Prologue text depends on the answer: "still up at eleven" is literally true only on daylight time in early July. The engine keeps the disc up either way as an intentional cheat under "plausible, not archival". If the answer is standard time, consider "the sky is still bright at eleven" in the text. Settle it with the Fairbanks Daily News-Miner's sunrise and sunset tables for July 1967.
+
+### 39. Was downtown 2nd Avenue paved by 1967?
+
+**Claim.** The `second-ave` target shows a paved street with concrete sidewalks and curbs.
+
+**Verdict.** Unknown; likely yes.
+
+**Evidence.** Downtown Fairbanks streets were being paved through the 1950s, and photographs of the 1967 flood show water over what look like paved downtown streets with curbs. Not verified against a dated source.
+
+**Recommended change.** Keep the paved street unless a dated photograph of 2nd Avenue in 1966-68 shows otherwise. Check the University of Alaska Fairbanks archives' flood photographs.
+
+### 40. Consultant review: the `second-ave` target frame
+
+**Claim.** The frame includes an ordinary Alaska Native resident in summer town clothes (plaid shirt, work pants, cap, carrying groceries) among the people on the street.
+
+**Verdict.** Pending review.
+
+**Recommended change.** Before the frame guides any character or crowd work, have a Lower Tanana or Tanana Chiefs consultant look at how the Native resident is drawn, together with the Eli, Lucy and officer concept sheets already flagged in `art/README.md`.
+
+### 41. Which way does 2nd Avenue run, and can it hold a north-northwest sun?
+
+**Claim.** The `second-ave` target looks roughly northwest along the avenue toward the low midnight sun.
+
+**Verdict.** Unknown.
+
+**Evidence.** Downtown Fairbanks is laid out along the Chena, and 2nd Avenue is usually described as running roughly east-west, parallel to the river. A street running due east-west cannot show a north-northwest sun near its vanishing point; one that bends or runs a little off the grid can.
+
+**Recommended change.** Check the 1967 street grid against a USGS or city map of the period. If 2nd Avenue runs straight east-west, read the target as a cross street looking north toward the river, and stage the in-game sun off the avenue's axis.
