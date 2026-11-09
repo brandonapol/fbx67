@@ -149,3 +149,61 @@ test('a space keeps the hour of its last scene when the story moves on to anothe
   // With no path there to read, the space falls back to its own season and the default sun, never the flood's rain.
   assert.deepEqual(timeOf(spaces.camp, end), { season: 'summer' })
 })
+
+// docs/art/README.md, "Band by season", the Act 3 winter row: alpenglow with the sun 0 to +12 degrees at azimuth
+// 160-220 and fog 60-240; blue hour with no sun and fog 30-160; sodium in ice fog with no sun and fog 6-70.
+const DEEP_WINTER: readonly Clock[] = ['1967-12-21T12:00', '1968-01-15T10:30', '1968-02-15T15:00', '1968-01-02T21:00']
+const outside = ['downtown', 'camp', 'flood', 'line'] as const
+
+test('winter takes each band from the Act 3 row, outdoors at any hour', () => {
+  const fog: Readonly<Record<Weather, readonly [number, number]>> = { clear: [60, 240], dusk: [30, 160], night: [6, 70] }
+  outside.forEach((id) =>
+    [undefined, ...DEEP_WINTER].forEach((c) =>
+      weathers.forEach((w) => {
+        const l = lighting(id, 'winter', w, c)
+        assert.equal(l.grade, bandOf[w])
+        assert.deepEqual([l.fogStart, l.fogEnd], fog[w], `${id} ${w} ${c}`)
+        assert.equal(l.sunUp, w === 'clear', `${id} ${w} ${c}: only the clean band has a sun`)
+        assert.equal(l.rain, false)
+        if (w !== 'clear') return
+        assert.ok(l.sunElevation >= 0 && l.sunElevation <= 12, `${id} ${c} elevation ${l.sunElevation}`)
+        assert.ok(l.sunAzimuth >= 160 && l.sunAzimuth <= 220, `${id} ${c} azimuth ${l.sunAzimuth}`)
+      }),
+    ),
+  )
+})
+
+// The real solstice sun at noon is about 1.7 degrees up (docs/art/README.md, Light): the clean band keeps it, and
+// only clamps the hours when the real sun is down.
+test('the winter sun is the real one where it clears the hills, held low in the south where it does not', () => {
+  const noon = sunAt('1967-12-21T12:00')
+  assert.ok(noon.elevation > 0 && noon.elevation < 3, `solstice noon ${noon.elevation}`)
+  const l = lighting('downtown', 'winter', 'clear', '1967-12-21T12:00')
+  assert.deepEqual([l.sunAzimuth, l.sunElevation], [noon.azimuth, noon.elevation])
+  assert.equal(lighting('downtown', 'winter', 'clear', '1968-01-02T21:00').sunElevation, 0)
+})
+
+// At danger nothing past 70 m is visible: linear fog at its end is opaque, and the fog ends the world at one block.
+test('winter danger closes the world at 70 m, and each sodium lamp throws a 4 m halo into the ice fog', () => {
+  outside.forEach((id) => assert.ok(lighting(id, 'winter', 'night').fogEnd <= 70, id))
+  const lamp = lighting('flood', 'winter', 'night').lamp
+  assert.equal(lamp?.color, '#ff9a3c')
+  assert.equal(lamp?.halo, 4)
+  // Ice fog belongs to deep winter only: the flood's rain-night lamp and winter's blue-hour lamp carry no halo.
+  assert.equal(lighting('flood', 'flood', 'night').lamp?.halo, undefined)
+  assert.equal(lighting('flood', 'winter', 'dusk').lamp?.halo, undefined)
+})
+
+test('breath fog and snow load are outdoors in winter only', () => {
+  weathers.forEach((w) => {
+    outside.forEach((id) => {
+      const l = lighting(id, 'winter', w)
+      assert.deepEqual([l.breath, l.snowLoad], [true, true], `${id} ${w}`)
+      ;(['summer', 'flood'] as const).forEach((s) => assert.deepEqual([lighting(id, s, w).breath, lighting(id, s, w).snowLoad], [false, false]))
+    })
+    ;(['bar', 'room', 'story'] as const).forEach((id) => {
+      const l = lighting(id, 'winter', w)
+      assert.deepEqual([l.breath, l.snowLoad, l.rain], [false, false, false], `${id} ${w}`)
+    })
+  })
+})
