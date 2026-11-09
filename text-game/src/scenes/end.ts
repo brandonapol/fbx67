@@ -66,8 +66,8 @@ const tolliverLine = (s: State, won: boolean): string =>
       ? 'Testifies against Ashby, loses his council seat, and loses the parcel when the claim is won.'
       : 'Tried to come clean after Jake told him about the plane. It wasn\'t enough. Keeps his seat, and the family\'s claim stalls.'
     : won
-      ? 'Loses the parcel when the claim is won. Nobody ever told Jake about the sump drain, so nobody ever told Ray. Keeps his seat.'
-      : 'Nobody ever told Jake about the sump drain, so nobody ever told Ray. Keeps his seat and sells the fish camp to the road builders in 1970.'
+      ? `Loses the parcel when the claim is won. Nobody ever told Jake about the sump drain, so nobody ever told ${N.tolliverFirst}. Keeps his seat.`
+      : `Nobody ever told Jake about the sump drain, so nobody ever told ${N.tolliverFirst}. Keeps his seat and sells the fish camp to the road builders in 1970.`
 
 const epilogues = (s: State): readonly string[] => {
   const e = ending(s)
