@@ -1,11 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { isEnd, replay } from '../../text-game/src/engine.ts'
+import { replay } from '../../text-game/src/engine.ts'
 import { readFileSync } from 'node:fs'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
-import { JOG, ROUND_TIME, TURN_GO, WALK, available, ended, focus, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
+import { JOG, ROUND_TIME, TURN_GO, WALK, available, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
 import { DT, back, hold, holdWhenSafe, holdWhenWatched, playPrologue, routes, talk, walk } from './drive.ts'
 import { angleBetween, length, vec } from './world.ts'
 import { spaces } from './levels.ts'
@@ -233,34 +233,26 @@ const golden = (ending: string): readonly number[] => {
   return route.path.split(',').map(Number)
 }
 
-const pressAll = (g: Game, ns: readonly number[]): Game =>
-  ns.reduce((cur, n) => {
-    const b = cur.panel?.buttons[n - 1]
-    if (!b) throw new Error(`${cur.story.scene} has no button ${n}`)
-    return press(cur, b.id)
-  }, g)
-
-test('Continue as Wade on the end card shows the menu of Act 1, every option a note button', () => {
+test('Continue as Wade on the end card leaves the flood for the text build at the story path', () => {
   const end = playPrologue('texas', 'stove')
   const card = end.panel!
   assert.deepEqual(card.buttons, [{ id: 'continue', label: 'Continue as Wade' }])
   const g = press(end, 'continue')
-  const m = menu(g.story)
   assert.equal(g.story.scene, 'a1_flood')
-  assert.equal(g.panel?.kind, 'story')
-  assert.equal(g.panel?.title, m.title)
-  assert.equal(g.panel?.text, m.text)
-  assert.deepEqual(g.panel?.buttons, m.options.map((o) => ({ id: `note:${o.note}`, label: o.label })))
+  assert.equal(g.panel, undefined)
+  assert.ok(handedOff(g))
+  assert.deepEqual(g.path, golden('best').slice(0, g.path.length))
+  assert.equal(textBuildHash(g), `#path=${g.path.join(',')}`)
 })
 
-test('the golden best route plays from the prologue to its ending through panels alone', () => {
-  const path = golden('best')
-  const prologue = playPrologue('texas', 'stove')
-  assert.deepEqual(prologue.path, path.slice(0, prologue.path.length))
-  const g = pressAll(press(prologue, 'continue'), path.slice(prologue.path.length))
-  assert.deepEqual(g.path, path)
-  assert.deepEqual(g.story, replay(path).at(-1))
-  assert.ok(isEnd(g.story))
-  assert.equal(g.panel?.title, menu(g.story).title)
-  assert.deepEqual(g.panel?.buttons, [])
+test('the float dock, a prologue scene with no space, stays a panel over the room and its fly button enters the camp', () => {
+  const room = interact(walk(talk(start(), 'texas'), [[0, 4.2]]))
+  const dock = press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep')
+  assert.equal(dock.story.scene, 'p_dock')
+  assert.equal(dock.space, 'room')
+  assert.equal(handedOff(dock), false)
+  assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
+  const camp = press(dock, 'note:fly')
+  assert.equal(camp.space, 'camp')
+  assert.equal(handedOff(camp), false)
 })

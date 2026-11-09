@@ -37,6 +37,7 @@ export type Game = Readonly<{
   holding?: Holding
   hidden?: CacheSpot
   busts: number
+  handoff?: true
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -116,7 +117,8 @@ export const seen = (g: Game): boolean => g.space === 'camp' && sees(watcher(g),
 const leftPrologue = (from: State, to: State): boolean => menu(from).act === 'Prologue' && menu(to).act !== 'Prologue'
 
 const arrive = (g: Game): Game => {
-  const r = route(g.story)
+  const r = route(g.story, g.space)
+  if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return { ...g, panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note)) }
   if (r.space !== g.space) return enter(g, r.space)
   return { ...g, panel: storyPanel(g.story, [], [close(spaces[r.space].back ?? 'Back.')]) }
@@ -219,5 +221,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
 }
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
+
+export const handedOff = (g: Game): boolean => g.handoff === true
 
 export const textBuildHash = (g: Game): string => `#path=${g.path.join(',')}`
