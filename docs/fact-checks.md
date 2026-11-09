@@ -55,9 +55,9 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 47 | Civilian janitorial crews on base | Act 2 | Plausible; access rules unknown | Medium. Lucy gets in on a cousin's crew; needs a pass and a reason. |
 | 48 | Squadron-commander office security | Act 2 | Plausible | Low. A forced file cabinet is right; sign-out sheets there are odd (item 5). |
 | 49 | Munitions sign-out practice, beyond item 5 | Act 2 | Partly | Low. The forged sheets are fiction; where they live is the question. |
-| 50 | The bush strip in November | Act 2 | Plausible; name and "truck pass" open | Low. Phillips Field fits; a pass at a bush strip does not. |
-| 51 | A 1967 hotel bar, a councilman and men from Outside | Act 2 | Plausible; bar must be fictional | Low. Alaska's drinking age was 19; the Pioneer is gone (item 23). |
-| 52 | A community hall for the Chiefs meeting | Act 2 | Plausible; hall unnamed | Low-medium. Keep it unnamed; consultants should read the scene. |
+| 50 | The bush strip in November | Act 2 | Plausible; Phillips Field sourced | Low. Phillips Field (1950-1992) fits; a pass at a bush strip does not. |
+| 51 | A 1967 hotel bar, a councilman and men from Outside | Act 2 | Plausible; bar must be fictional | Low. Alaska's drinking age was 21 in 1967, not 19 (item 43); the Pioneer is gone (item 23). |
+| 52 | A community hall for the Chiefs meeting | Act 2 | Plausible; hall unnamed | Low-medium. Lodge halls were used (FNA potlatch, Eagles Hall, 1965); consultants should read the scene. |
 | 53 | Trooper traffic stops on the Richardson, beyond item 14 | Act 2 | Plausible; jurisdiction fits | Low. A Trooper stop outside the city is right; "no reason" needs a pretext. |
 | 54 | Daylight and temperature on 12 December | Act 3 | Confirmed | None. About four hours of sun; "three hours of grey light" is conservative. |
 | 55 | A bush plane's winter survival kit | Act 3 | Plausible | Low. The scene's tools match practice; add what a pilot would have carried. |
@@ -721,6 +721,7 @@ Ordered by impact.
    - Janitorial access (item 47): *Proposal:* Lucy's cousin lends her a contract badge and a key; she is not simply "on the crew".
    - Sign-out sheets (items 48, 49): *Proposal:* the commander's cabinet holds copies of sign-outs for EOD issues, not the master accountability records.
    - Bush strip (item 50): *Proposal:* the "truck pass" line becomes "a truck" or "a ride to the strip" unless the strip is on or beside Eielson; name it Phillips Field only if the owner wants that.
+   - Hotel bar (item 51): *Proposal:* if Wade is ever shown ordering, it is a Coke; he is under 21.
    - Richardson stop (item 53): *Proposal:* give Barnette a pretext (a taillight, a speed check) so the search is plausible.
    - Search skis (item 56): *Proposal:* the team issues Wade army-surplus mountain skis or snowshoes; the joke about water skiing stays.
    - Survival kit and cold (items 55, 58): *Proposal:* mention a sleeping bag, an axe and a tin of matches in the crash scene, and a plugged-in car and ice fog in the parking lot. Additions, not rewrites.
@@ -996,25 +997,34 @@ base for air taxis and guides until the late 1970s, which fits a bush strip in t
 changeover and the gap before skis. A "truck pass" implies a controlled gate, which suits Eielson (where Jake works)
 and not a general aviation field; no source says Phillips Field had one.
 
-**Recommended change.** **Proposal:** keep "the bush strip" unnamed; or name it Phillips Field because item 35
-sources it. Change "truck pass for the strip" to "a truck and a base sticker", or place the pass at Eielson's gate.
+**Sources (second pass).** Phillips Field was a dirt strip begun in April 1950 by operators who could not afford to
+move when Weeks Field closed. It lay a few miles northwest of downtown toward College, on land owned by the Phillips
+family, and until the late 1970s most air taxis, guides and small-plane pilots around Fairbanks were based there. It
+closed in April 1992 for the Johansen Expressway (https://www.sketchesofalaska.com/?p=3905;
+https://jukebox.uaf.edu/jess-bachner). A family-run field of private hangars and tie-downs fits "the bush strip" and
+does not fit a vehicle pass.
+
+**Recommended change.** **Proposal:** keep "the bush strip" unnamed; or name it Phillips Field because item 35 and this
+item source it. Change "truck pass for the strip" to "a truck and a base sticker", or place the pass at Eielson's gate.
 
 ### 51. A 1967 hotel bar where a councilman drinks with men from Outside
 
 **Claim.** In October Lucy wants ears in the hotel bar downtown where Councilman Tolliver drinks with men from
 Outside. A uniform with a guitar can sit in the corner; a Native woman asking questions cannot (`a2_hotel`).
 
-**Verdict.** Plausible. The bar must be fictional.
+**Verdict.** Plausible. The bar must be fictional. The first pass's drinking age was wrong (corrected below).
 
-**Evidence.** Item 22 confirms the Nordale Hotel on Second; item 23 says the Pioneer had burned in 1952, so it cannot
-be used; item 21 says bar names are invented. Alaska's drinking age was 19 in the 1960s, so a 19-year-old airman
-playing in a bar is legal (from general knowledge; not verified here). A live guitar in the corner of a hotel bar is
-ordinary. The Alaska Equal Rights Act of 1945 barred discrimination in public places, but in practice Native patrons
-were turned away or watched in many Interior bars (general knowledge, unchecked); the scene's "cannot" is about that
-practice, not the law.
+**Evidence.** Item 22 confirms the Nordale Hotel on Second; item 23 says the Pioneer had burned in 1952, so it cannot be
+used; item 21 says bar names are invented. The first pass said Alaska's drinking age was 19 in the 1960s. **That was
+wrong:** it was 21 in 1967 and was lowered to 19 only in 1970 (item 43 has the sources). A 19-year-old airman playing
+guitar in the corner is still plausible, since he is working, not buying; whether a minor could legally play in a
+licensed bar in 1967 is unchecked. A live guitar in the corner of a hotel bar is ordinary. The Alaska Equal Rights Act
+of 1945 barred discrimination in public places, but in practice Native patrons were turned away or watched in many
+Interior bars (general knowledge, unchecked); the scene's "cannot" is about that practice, not the law.
 
 **Recommended change.** None required. **Proposal:** name no real hotel; call it "the hotel bar", as now. If a name
-is needed, invent one (item 21).
+is needed, invent one (item 21). Wade drinks a Coke on the bandstand, or the bartender sets one by him without
+asking, if the scene ever shows him ordering.
 
 ### 52. A community hall for the Chiefs meeting
 
@@ -1029,8 +1039,15 @@ knowledge). No source names a Fairbanks hall used in October 1967. An airman, ev
 and asked to stand in the back is a story choice; the Eli and Lucy rule applies, so the meeting must be about their
 aims, not Wade's.
 
-**Recommended change.** None required. **Proposal:** leave the hall unnamed and ask a Lower Tanana or Tanana Chiefs
-consultant to read the scene (see items 36 and 40) before it ships.
+**Sources (second pass).** The Tanana Chiefs' 1962 organizing meeting of villages was held at Tanana, not Fairbanks
+(https://en.wikipedia.org/wiki/Tanana_Chiefs_Conference). In Fairbanks the Fairbanks Native Association held its
+first meeting on 29 March 1963, incorporated in January 1967, and held its first potlatch in 1965 in the Eagles Hall
+(https://jukebox.uaf.edu/node/4336). A rented lodge hall is therefore exactly the kind of room a Native meeting in
+Fairbanks used in the mid-1960s. No source found names a Tanana Chiefs meeting in Fairbanks in October 1967.
+
+**Recommended change.** None required. **Proposal:** leave the hall unnamed, or make it "a lodge hall", and ask a
+Lower Tanana or Tanana Chiefs consultant to read the scene (see items 36 and 40) before it ships. Do not name the
+Eagles Hall without that review.
 
 ### 53. Trooper traffic stops on the Richardson, beyond item 14
 
@@ -1046,6 +1063,11 @@ Wade sees it, not how a stop would be written up (general knowledge, unchecked).
 
 **Recommended change.** **Proposal:** give Barnette a pretext, a broken taillight or an unregistered borrowed truck,
 and keep Wade's feeling that it was for no reason.
+
+**Act 2 items with no new source.** Items 46 to 49 and 53 (the photo lab, janitorial crews, the commander's office,
+sign-outs and the Richardson stop) turned up nothing usable in a light search; base procedure of this kind lives in
+unit histories, not on the open web. Their verdicts and proposals stand as written, and their open items below are
+unchanged.
 
 ### Act 3 (Lucy)
 
