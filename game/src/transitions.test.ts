@@ -13,7 +13,7 @@ const stuck = (g: Game): boolean => !handedOff(g) && (g.panel ? g.panel.buttons.
 
 talks.forEach((who) =>
   (Object.keys(routes) as (keyof typeof routes)[]).forEach((spot) =>
-    test(`${who}, ${spot}: every step of the prologue moves on, and Continue as Wade leaves the flood`, () => {
+    test(`${who}, ${spot}: every step of the prologue moves on, and Continue as Wade puts him on the line`, () => {
       const steps = [...prologueSteps(who, spot), press(prologueSteps(who, spot).at(-1)!, 'continue')]
       steps.forEach((g, i) => {
         assert.ok(!stuck(g), `stuck at ${where(g)}`)
@@ -25,7 +25,8 @@ talks.forEach((who) =>
       })
       const last = steps.at(-1)!
       assert.equal(last.story.scene, 'a1_flood')
-      assert.ok(handedOff(last), `still in ${where(last)} after Continue as Wade`)
+      assert.equal(last.space, 'line', `in ${where(last)} after Continue as Wade`)
+      assert.equal(handedOff(last), false)
       assert.equal(last.panel, undefined)
     }),
   ),

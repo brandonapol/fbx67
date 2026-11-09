@@ -8,6 +8,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spaces } from '../src/levels.ts'
 import type { Sample } from '../src/probe.ts'
+import { poses } from '../src/probe.ts'
 import { MB, breaches, parseBudgets, perfMarkdown, summarize } from './budget.ts'
 import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
@@ -354,14 +355,17 @@ test('the prologue plays end to end with the keyboard', { timeout: 2700000 }, as
 const START_FRAMES = 40
 
 starts.forEach((s) =>
-  test(`a link at ${s.scene} starts there with its menu, and renders`, { timeout: 300000 }, async () => {
+  test(`a link at ${s.scene} starts there, in its space or with its menu, and renders`, { timeout: 300000 }, async () => {
     const opened = await open({ path: s.path })
     const { page, errors } = opened
     try {
       const g = await game(page)
       assert.equal(g.story.scene, s.scene)
-      assert.equal(g.panel?.kind, 'story')
-      assert.equal(await page.locator('#panel-title').textContent(), g.panel.title)
+      assert.equal(g.space, poses[s.pose].space)
+      if (g.space === 'story') {
+        assert.equal(g.panel?.kind, 'story')
+        assert.equal(await page.locator('#panel-title').textContent(), g.panel.title)
+      } else assert.equal(g.panel, undefined)
       assert.match(await page.evaluate(() => (window as any).__prologue.textBuild()), new RegExp(`#path=${s.path}$`))
       await page.evaluate(() => (window as any).__prologue.record(true))
       await frames(page, START_FRAMES)

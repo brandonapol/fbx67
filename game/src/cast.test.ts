@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { INDOOR_PACE, JOG_SPEED, RUN_SPEED, WALK_SPEED, castFor, castIds, clipFor, clipIds, clipUrl, playbackRate } from './cast.ts'
+import { INDOOR_PACE, JOG_SPEED, RUN_SPEED, WALK_SPEED, bodies, castFor, castIds, clipFor, clipIds, clipUrl, playbackRate } from './cast.ts'
 
 const still = { speed: 0, sneaking: false, activity: 'stand', talking: false } as const
 
@@ -58,4 +58,13 @@ test('walk playback follows speed within limits', () => {
 
 test('clip urls are per character', () => {
   assert.equal(clipUrl('/fbx67/play/', 'wade', 'sit'), '/fbx67/play/characters/anims/wade/sit.glb')
+})
+
+test('each point of view has its body: Owen and Wade their own model and clips, Wade higher-eyed and lighter-footed', () => {
+  assert.equal(bodies.owen.cast, 'owen')
+  assert.equal(bodies.wade.cast, 'wade')
+  assert.equal(bodies.lucy.cast, undefined, 'no Lucy model yet')
+  assert.ok(bodies.wade.eye > bodies.owen.eye)
+  assert.ok(bodies.wade.tread.pitch > bodies.owen.tread.pitch)
+  assert.ok(bodies.wade.tread.weight < bodies.owen.tread.weight)
 })

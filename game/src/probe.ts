@@ -17,6 +17,8 @@ export const poses: Readonly<Record<string, Pose>> = {
   // The skiff shot at blue hour and at danger (heat at and past HEAT_LIMIT); 'skiff' itself is alpenglow.
   skiff_dusk: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 2 },
   skiff_night: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 4 },
+  // Act 1's first frame: Wade on the sandbag line, the woman from Minto at his shoulder, the river past the bags.
+  line: { space: 'line', pos: vec(0.7, -1.2), facing: Math.PI, t: 0, shot: { eye: [3.2, 2.6, 3.6], at: [0, 1.1, -3] } },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }

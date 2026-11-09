@@ -117,8 +117,8 @@ const flood: Readonly<Record<Band, Lighting>> = {
 // The band's key where it is not the sun: streetlights at blue hour, sodium lamps at danger.
 const streetKey: Readonly<Record<Band, string | undefined>> = { alpenglow: undefined, blueHour: '#ffd9a0', sodium: '#ff9a3c' }
 
-// The one streetlight each outdoor space has today, at its lamp head.
-const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [6.5, 3.85, -4.5] }
+// The one streetlight each flooded space has today, at its lamp head.
+const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [6.5, 3.85, -4.5], line: [-6.6, 3.85, 2.5] }
 
 // Interiors are lit by their practicals: bulbs at about 2700 K (#ffb877) and the window, with warm bounce in the shade.
 const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
