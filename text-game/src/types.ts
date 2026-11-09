@@ -47,6 +47,14 @@ export type Place =
   | 'nlCafe'
   | 'bushStrip'
   | 'richardsonHighway'
+  | 'crashSite'
+  | 'searchRidge'
+  | 'hospital'
+  | 'hospitalLot'
+  | 'tolliversHouse'
+  | 'tolliversOffice'
+  | 'tolliversCabin'
+  | 'troopersPost'
 
 export type Clock = `${number}-${number}-${number}T${number}:${number}`
 

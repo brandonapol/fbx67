@@ -173,6 +173,19 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
   and off the map.
 - `bushStrip`: Curly's tie-down at Phillips Field, north of the river (Nov 8). Off the map (see Phillips Field above).
 - `richardsonHighway`: the road between town and the base, where Barnette pulls Wade over (Nov 30). Off the map.
+- `crashSite`: Jake's wreck in a stand of black spruce on a hillside, a day's ski from the road (Dec 12 to 13). Its
+  own space, not downtown.
+- `searchRidge`: the ridge and creek drainage near the plane's last heading, where the ground team splits up (Dec 13).
+  Its own space, with `crashSite` below it.
+- `hospital`: St. Joseph's, the front desk and the ward (Dec 13 to Jan 3). Off the map: backdrop on the north bank.
+- `hospitalLot`: St. Joseph's parking lot at forty below, ice fog and headbolt-heater cords (Dec 26; item 58). Off the
+  map, with the hospital.
+- `tolliversHouse`: outside Tolliver's house in the dark, where Wade waits with a borrowed rifle (Dec 28). The design
+  does not place it; off the map.
+- `tolliversOffice`: Tolliver's office downtown, where Wade walks down Cushman with a charge in a lunchbox (Dec 28). Not
+  yet a building on the map, a gap to fill.
+- `tolliversCabin`: Tolliver's hunting cabin out the road, where Wade drives with the kerosene (Dec 29). Off the map.
+- `troopersPost`: the State Troopers' office where Barnette takes down Wade's story about Lucy (Dec 29). Off the map.
 
 ### Ours
 
