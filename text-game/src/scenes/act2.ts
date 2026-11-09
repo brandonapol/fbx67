@@ -105,7 +105,7 @@ Tolliver sounds like a man with a lot to lose. You can't tell if any of it means
     act,
     title: 'Half a Conversation',
     text: () => `
-From the door you catch pieces over your own playing. Tolliver's voice carries when he's angry: "...my land..." and something about '52. The other man never raises his. Whatever he says, he says to Tolliver and nobody else.
+From the door you catch pieces over your own playing. ${N.tolliverLast}'s voice carries when he's angry: "...my land..." and something about '52. The other man never raises his. Whatever he says, he says to ${N.tolliverLast} and nobody else.
 
 Two hours and a sore hand, for a councilman complaining about his land.`,
     choices: () => [{ label: 'Pack up and go tell Lucy.', note: 'tellLucy', next: 'a2_chiefs' }],
@@ -286,7 +286,7 @@ ${s.eliTrust > 0 ? 'She tells three people: Eli, Jake, and you.' : 'She doesn\'t
 
 ${[
   s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of it.' : '',
-  keyMissed(s) ? 'On base, the photo lab\'s duty sergeant has finally noticed his spare key went missing for a night in September. He\'s asking around the barracks who borrowed it, and somebody gave him your name.' : '',
+  keyMissed(s) ? 'On base, the photo lab\'s duty sergeant has finally gone back through the key sign-out sheet and found a night in September nobody signed for. He\'s asking around the barracks who borrowed it, and somebody gave him your name.' : '',
 ].filter(Boolean).join('\n\n')}`,
     choices: () => [{ label: 'Go home and write to Mama.', note: 'writeMama', apply: (s) => (keyMissed(s) ? heat(1)(s) : s), next: 'a2_letter_work' }],
   },

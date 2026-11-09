@@ -249,8 +249,8 @@ test('the drawers carry the heat now; the borrowed key adds none until it is mis
 test('the borrowed key is missed at a2_flight: one more heat, and the sergeant has Wade\'s name', () => {
   const key: State = { ...initialState, scene: 'a2_flight', photoLab: 'key', heat: 2 }
   const lunch: State = { ...key, photoLab: 'lunch' }
-  assert.match(render(key), /spare key went missing/)
-  assert.doesNotMatch(render(lunch), /spare key/)
+  assert.match(render(key), /key sign-out sheet/)
+  assert.doesNotMatch(render(lunch), /sign-out sheet/)
   assert.equal(send(key, 'writeMama').heat - key.heat, 1)
   assert.equal(send(lunch, 'writeMama').heat, lunch.heat)
 })

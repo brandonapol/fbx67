@@ -78,9 +78,11 @@ From the decision at `a2_hotel` until Wade packs up his guitar, at `a2_chiefs`. 
   in `a2_hotel_set`. *Pieces* applies `guitar`, `sitFar` and `tellLucy` (`a2_hotel_pieces`): Tolliver's voice and
   nothing from the quiet man, so no evidence. *Skipped* applies `skip`. The menu is `theHotelBar`; every note lands on
   `a2_chiefs`. At heat 0 *pieces* and *skipped* land on the same state, since the skip's heat has nothing to take off.
-- **What shades heat or trust.** Only the skip (-1 heat). How well Wade plays shades what he hears (Rule 3), and the
-  `hotelTalk` evidence is read later: Lucy repeats the quiet man's words before the Major's cabinet, Wade remembers
-  Tolliver in Act 3, and he knows the voice at Ashby's lunch in Act 4.
+  Above it, *pieces* is worse than skipping: a night of being seen for nothing. That is intended; in the engine only
+  playing badly gets there, and in the text build the far stool is the uncertain bet that doesn't pay.
+- **What shades heat or trust.** Only the skip (-1 heat): going at all forgoes it. How well Wade plays shades what
+  he hears (Rule 3), and the `hotelTalk` evidence is read later: Lucy repeats the quiet man's words before the
+  Major's cabinet, Wade remembers Tolliver in Act 3, and he knows the voice at Ashby's lunch in Act 4.
 - **New state.** None.
 
 ## 3. The Major's cabinet
@@ -109,7 +111,8 @@ squadron building on base.
   beat, `a2_co_seen`) or `getOut`. All four set `coJob` to `wade` and give the `coFiles` evidence. *Refused* applies
   `refuse` and the beat after it (`a2_co_lucy`): Lucy goes in herself on her cousin's janitorial crew, gets the files
   and is seen (`coJob` `lucy`, `coFiles`, +2 `lucyHeat`, which #101 gates). The menu is `theMajorsCabinet`; every note
-  lands on `a2_curly`. `code.seen` and `forced.unseen` land on the same state: both are +2 heat.
+  lands on `a2_curly`. `code.seen` and `forced.unseen` land on the same state: both are +2 heat. The duty log in
+  `a2_co_seen` and the pry marks are colour; no later scene reads them, so neither is state.
 - **What shades heat or trust.**
 
   | Detail | Effect |

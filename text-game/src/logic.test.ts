@@ -10,6 +10,7 @@ import {
   hankRemembers,
   iceJam,
   keyMissed,
+  pendingHeat,
   middleFlavor,
   missingForBest,
   momVerdict,
@@ -166,4 +167,5 @@ test('only the borrowed key is missed', () => {
     [undefined, 'lunch', 'key'].map((photoLab) => keyMissed({ ...initialState, photoLab } as State)),
     [false, false, true],
   )
+  assert.deepEqual([pendingHeat({ ...initialState, photoLab: 'lunch' }), pendingHeat({ ...initialState, photoLab: 'key' })], [0, 1])
 })
