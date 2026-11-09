@@ -94,8 +94,9 @@ tickets, not here.
 Each line says what was seen, not what it means ("A backward bowline in yellow line, tail outside the loop, cut off
 Owen's sawhorse," never "proof Curly did it"), in Wade's voice, or Lucy's where a line has one and the scene is hers.
 The lines live in `text-game/src/queries.ts` as a `Record<Evidence, ...>`, so adding an `Evidence` value without a
-line fails the typecheck, and a unit test (`text-game/src/queries.test.ts`) checks the lines against the oil rule. The
-in-game journal (#51) reads this query as its source.
+line fails the typecheck. Unit tests in `text-game/src/queries.test.ts` run the story lint (`storyLint.ts`) over the
+source with the oil rule on, since the notebook can open before Act 4, and the oil rule over every rendered line. The
+in-game journal ([#51](https://github.com/brandonapol/fbx67/issues/51)) reads this query as its source.
 
 ### Ambient talk
 
