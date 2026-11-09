@@ -52,15 +52,21 @@ Runs, in order:
 2. `test:unit`: `src/*.test.ts`. Truth tables for the logic gates, state bounds, engine errors, scene order, liveness rules (each must commute with every later step), and golden transcript replay.
 3. `test:matrix`: rebuilds the decision matrix and fails if its counts differ from `routes/matrix-summary.json`. After an intended story change, run `npm run matrix:summary` (or `npm run golden`) and commit the result.
 4. `verify`: differential test. Plays random games from both the real state and its canonical (pruned) form and asserts identical text and endings. This is what makes the explorer's shortcuts trustworthy. `--seed-offset N` (alias `--seed N`) starts at a different seed, for rotating seeds in CI.
-5. `explore`: walks every path (about 50 trillion) by merging equivalent states, and renders each distinct state once. Fails on any choice error, scene text that throws or shows `undefined`/`NaN`, unreachable scene, unreachable ending, or a transition whose clock runs backward (`src/clock.ts` whitelists the Act 3 POV overlap by scene pair). Takes about 15 s and 0.5 GB.
+5. `explore`: walks every path (about 50 trillion) by merging equivalent states, and renders each distinct state once. Fails on any choice error, scene text that throws or shows `undefined`/`NaN`, unreachable scene, unreachable ending, a sweep over its budget (below), or a transition whose clock runs backward (`src/clock.ts` whitelists the Act 3 POV overlap by scene pair). Takes about 15 to 30 s and 0.6 GB of heap. The JSON report carries `mergedStates`, `edges`, `seconds`, `peakHeapMB` and `peakRssMB`.
+
+### The sweep budget
+
+`explore-budget.json` caps `mergedStates` and `peakHeapMB` at about twice what the sweep measured when the budget was set (its `baseline`). New state for Acts 1 to 3 multiplies the graph, so a run over either limit fails `explore --strict` (and `make test/text/explore`) with the number it hit. `--budget-table FILE` writes a Markdown table of baseline, current run and budget; the explore and nightly jobs put it in their summaries, so the trend since the baseline is visible on every run.
+
+When the budget fails, first look for fields that stop mattering after some scene and mark them dead in `src/liveness.ts`, so equivalent states merge again. If the growth is real and wanted, raise the budget on purpose: a PR that changes `explore-budget.json` (new `limit`, and a new `baseline` with today's date if you re-measured) and says in its description why the story needs the extra states. Keep `peakHeapMB` under the 1.5 GB heap the `explore` script runs with, so a blow-up fails with a message instead of an out-of-memory crash.
 
 ## CI
 
 GitHub Actions workflows in `../.github/workflows/`, all run from `text-game/` on the Node version in `.nvmrc`:
 
 - `text-game-checks.yml` (PRs and pushes to `main` touching `text-game/`): typecheck, unit tests with golden transcript replay, `verify` seeded from the run number, and the matrix summary check.
-- `text-game-explore.yml` (PRs and pushes touching `text-game/src/` or dependencies): the exhaustive `explore --strict` sweep with a 1.5 GB heap. The JSON report goes to the job summary.
-- `text-game-nightly.yml` (daily, or run by hand): full sweep, `verify` at 20,000 trials with a rotating seed, and matrix regeneration. Reports, including runtime and peak memory, are uploaded as the `text-game-reports-<run>` artifact.
+- `text-game-explore.yml` (PRs and pushes touching `text-game/src/` or dependencies): the exhaustive `explore --strict` sweep with a 1.5 GB heap. The JSON report and the budget table go to the job summary.
+- `text-game-nightly.yml` (daily, or run by hand): full sweep with the budget trend in the job summary, `verify` at 20,000 trials with a rotating seed, and matrix regeneration. Reports, including runtime and peak memory, are uploaded as the `text-game-reports-<run>` artifact.
 
 Jobs run on `ubuntu-latest` unless the repository variable `TEXT_GAME_RUNNER` names another runner label, such as an Actions Runner Controller scale set.
 

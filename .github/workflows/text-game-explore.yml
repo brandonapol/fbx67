@@ -8,6 +8,7 @@ on:
       - text-game/package.json
       - text-game/package-lock.json
       - text-game/.nvmrc
+      - text-game/explore-budget.json
       - .github/workflows/text-game-explore.yml
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - text-game/package.json
       - text-game/package-lock.json
       - text-game/.nvmrc
+      - text-game/explore-budget.json
       - .github/workflows/text-game-explore.yml
   workflow_dispatch:
 
@@ -50,7 +52,7 @@ jobs:
       - name: Exhaustive sweep
         run: |
           mkdir -p reports
-          npm run -s explore > reports/explore.json
+          npm run -s explore -- --budget-table reports/budget.md > reports/explore.json
 
       - name: Summary
         if: always()
@@ -58,6 +60,11 @@ jobs:
           [ -s reports/explore.json ] || exit 0
           {
             echo '### Exhaustive sweep'
+            if [ -s reports/budget.md ]; then
+              echo '#### Against the budget (explore-budget.json)'
+              cat reports/budget.md
+              echo
+            fi
             echo '```json'
             cat reports/explore.json
             echo '```'

@@ -43,7 +43,7 @@ jobs:
       - name: Exhaustive sweep
         run: |
           mkdir -p reports
-          npm run -s explore -- --verbose > reports/explore.json 2> reports/explore-depths.log
+          npm run -s explore -- --verbose --budget-table reports/budget.md > reports/explore.json 2> reports/explore-depths.log
 
       - name: Verify liveness pruning
         run: node src/verify.ts --trials "$VERIFY_TRIALS" --seed "$(( GITHUB_RUN_NUMBER * VERIFY_TRIALS ))" > reports/verify.json
@@ -57,6 +57,11 @@ jobs:
         run: |
           {
             echo '### Nightly'
+            if [ -s reports/budget.md ]; then
+              echo '#### Sweep trend: baseline, tonight, budget'
+              cat reports/budget.md
+              echo
+            fi
             for f in explore verify matrix-summary; do
               [ -s "reports/$f.json" ] || continue
               echo "#### $f"
