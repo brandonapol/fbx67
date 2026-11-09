@@ -22,6 +22,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // Act 1's first frame: Wade on the sandbag line, the woman from Minto at his shoulder, the river past the bags.
   line: { space: 'line', pos: vec(0.7, -1.2), facing: Math.PI, t: 0, shot: { eye: [3.2, 2.6, 3.6], at: [0, 1.1, -3] } },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
+  // The same street from the same data on a flood day and late in freeze-up (snow down, cars plugged in, smoke up).
+  downtown_flood: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-08-15T12:00' } },
+  downtown_freezeup: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-10-28T12:30' } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 

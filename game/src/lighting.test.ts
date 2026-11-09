@@ -2,24 +2,27 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import type { Weather } from '../../text-game/src/story.ts'
-import { season, weather } from '../../text-game/src/story.ts'
+import { clock, season, weather } from '../../text-game/src/story.ts'
+import { sceneIds } from '../../text-game/src/sceneIds.ts'
 import { initialState } from '../../text-game/src/state.ts'
 import { replay } from '../../text-game/src/engine.ts'
 import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { spaces } from './levels.ts'
-import type { Band, BandedSeason, Cell, Lighting } from './lighting.ts'
+import type { Band, BandedSeason, Cell, LitSeason, Lighting } from './lighting.ts'
 import { MIDNIGHT_SUN, bandBySeason, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
 import { sunAt } from './sun.ts'
 
 const weathers: readonly Weather[] = ['clear', 'dusk', 'night']
-const of = (id: keyof typeof spaces, w: Weather, at?: Clock): Lighting => lighting(id, spaces[id].season, w, at)
+// The season the story plays each space in (its scenes' clocks): the flooded street and the sandbag line in August.
+const playedIn = (id: keyof typeof spaces): LitSeason => (id === 'flood' || id === 'line' ? 'flood' : 'summer')
+const of = (id: keyof typeof spaces, w: Weather, at?: Clock, s: LitSeason = playedIn(id)): Lighting => lighting(id, s, w, at)
 const at = (scene: SceneId): State => ({ ...initialState, scene })
 const ELEVEN: Clock = '1967-07-14T23:00'
 
 // docs/art/README.md, Light: the Prologue's sun at 11 pm is north-northwest (330-350), its disc 0 to +4 degrees up.
 test('the Prologue sun at eleven sits north-northwest, just above the horizon, in every summer space and weather', () => {
-  const summer = (Object.keys(spaces) as (keyof typeof spaces)[]).filter((id) => spaces[id].season === 'summer')
-  assert.ok(summer.includes('downtown'))
+  // The Prologue's spaces: every one the July story is set in, and downtown, which it walks.
+  const summer = (['bar', 'boarding', 'room', 'camp', 'downtown', 'story'] as const)
   summer.forEach((id) =>
     [undefined, ELEVEN, '1967-07-14T23:20' as const].forEach((c) =>
       weathers.forEach((w) => {
@@ -59,8 +62,11 @@ test('each space is lit at its scene: the bar at eleven, the flood on 14 August,
   assert.deepEqual(timeOf(spaces.bar, at('p_bar')), { season: 'summer', clock: '1967-07-14T23:00' })
   assert.deepEqual(timeOf(spaces.flood, at('p_end')), { season: 'flood', clock: '1967-08-14T21:00' })
   assert.deepEqual(timeOf(spaces.story, at('a1_flood')), { season: 'summer' })
-  // A scene with no clock keeps the space's own season and the default sun.
-  assert.deepEqual(lightingFor(spaces.downtown, at('a2_major')), of('downtown', 'clear'))
+  // A scene with no clock is in the season of the last dated scene before it, with the default sun.
+  const before = sceneIds.slice(0, sceneIds.indexOf('a3_camp')).map(at).findLast((x) => clock(x) !== undefined)!
+  const was = season(before)!
+  assert.notEqual(was, 'summer', 'the story is past July by Act 3')
+  assert.deepEqual(lightingFor(spaces.downtown, at('a3_camp')), of('downtown', 'clear', undefined, was === 'breakup' ? 'winter' : was))
 })
 
 test('summer fog is 30-220 m outdoors and 2-60 m indoors', () => {
@@ -213,7 +219,7 @@ test('breath fog and snow load are outdoors in winter only', () => {
 // docs/art/README.md, "Band by season", read from the README itself so the code's one copy of the table cannot drift.
 // A cell is "<key>; sun none; fog **a-b m**" or "<key>; sun **lo to +hi degrees**, azimuth **lo-hi**; fog **a-b m**".
 const readme = readFileSync(new URL('../../docs/art/README.md', import.meta.url), 'utf8')
-const rowTitle: Readonly<Record<BandedSeason, string>> = { flood: 'Act 1, flood', winter: 'Act 3, winter' }
+const rowTitle: Readonly<Record<BandedSeason, string>> = { flood: 'Act 1, flood', freezeup: 'Act 2, fall', winter: 'Act 3, winter' }
 const columns: readonly Band[] = ['alpenglow', 'blueHour', 'sodium']
 
 const parseCell = (cell: string): Cell => {
@@ -275,4 +281,33 @@ test('each Act 1 band is reached on a story path and lights the flooded street f
     // Owen's room ('room') is lit by its practical whatever the weather outside.
     assert.equal(lightingFor(spaces.room, s, path).lamp?.color, '#ffd29a')
   })
+})
+
+// The test's playedIn is the story's own: a space the story has left, with no path, is in its place's first season.
+test('each space with a place is lit in the season of its first dated scene', () => {
+  ;(['bar', 'room', 'camp', 'flood', 'line'] as const).forEach((id) => {
+    const away = at(id === 'bar' ? 'p_end' : 'p_bar')
+    assert.equal(timeOf(spaces[id], away).season, playedIn(id), id)
+  })
+})
+
+// docs/art/README.md, "Band by season", the Act 2 fall row: the clean band's sun 0 to +12 degrees at azimuth 160-230,
+// the real one where it is inside that; short days, so the evening and the morning hold it at the horizon.
+test('freeze-up holds a low southern sun in the clean band, and its danger has no ice-fog halo', () => {
+  const FALL: readonly Clock[] = ['1967-09-12T08:30', '1967-10-05T18:30', '1967-10-28T12:30', '1967-11-20T12:00']
+  FALL.forEach((c) => {
+    const l = lighting('downtown', 'freezeup', 'clear', c)
+    assert.equal(l.sunUp, true)
+    assert.ok(l.sunElevation >= 0 && l.sunElevation <= 12, `${c} elevation ${l.sunElevation}`)
+    assert.ok(l.sunAzimuth >= 160 && l.sunAzimuth <= 230, `${c} azimuth ${l.sunAzimuth}`)
+    assert.deepEqual([l.rain, l.breath, l.snowLoad], [false, false, false])
+  })
+  const nov = sunAt('1967-11-20T12:00')
+  assert.ok(nov.elevation > 0 && nov.elevation < 12 && nov.azimuth > 160 && nov.azimuth < 230, 'late November is the real sun')
+  assert.deepEqual(
+    [lighting('downtown', 'freezeup', 'clear', '1967-11-20T12:00').sunAzimuth, lighting('downtown', 'freezeup', 'clear', '1967-11-20T12:00').sunElevation],
+    [nov.azimuth, nov.elevation],
+  )
+  assert.equal(lighting('line', 'freezeup', 'night').lamp?.halo, undefined, 'frost haze, not ice fog')
+  assert.deepEqual([lighting('line', 'freezeup', 'night').fogStart, lighting('line', 'freezeup', 'night').fogEnd], [15, 100])
 })

@@ -1,13 +1,13 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 import type { Activity } from './cast.ts'
-import type { Act, Place } from '../../text-game/src/types.ts'
+import type { Act, Clock, Place } from '../../text-game/src/types.ts'
+import type { Season } from '../../text-game/src/story.ts'
 import { N } from '../../text-game/src/names.ts'
 import { CENTER, SIZE, doorSpots, gaps, pieces, spawnAt } from './downtown.ts'
+import { standing, townLayer } from './freezeup.ts'
 
 export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'story'
-
-export type Season = 'summer' | 'flood'
 
 export type Prop = Readonly<{
   box: Box
@@ -46,7 +46,6 @@ export type Space = Readonly<{
   place?: Place
   name: string
   back?: string
-  season: Season
   size: Readonly<{ w: number; d: number }>
   center?: Vec
   interior: boolean
@@ -92,7 +91,6 @@ export const bar: Space = {
   back: 'Back to the table.',
   name: 'The Silver Pan',
   interior: true,
-  season: 'summer',
   size: { w: 12, d: 10 },
   ground: '#5a3d2b',
   spawn: vec(0, 3.0),
@@ -153,7 +151,6 @@ export const boarding: Space = {
   act: 'Prologue',
   name: 'The boarding house',
   interior: true,
-  season: 'summer',
   size: { w: 16, d: 14 },
   ground: '#6b5641',
   spawn: vec(0, 6.2),
@@ -222,7 +219,6 @@ export const room: Space = {
   place: 'owensRoom',
   name: "Owen's room",
   interior: true,
-  season: 'summer',
   size: { w: 6, d: 6 },
   ground: '#6b5641',
   spawn: vec(0, 1.2),
@@ -278,7 +274,6 @@ export const camp: Space = {
   place: 'surveyCamp',
   name: 'The survey camp',
   interior: false,
-  season: 'summer',
   size: { w: 28, d: 24 },
   ground: '#6f7a4a',
   spawn: vec(-8.2, 3.6),
@@ -345,7 +340,6 @@ export const flood: Space = {
   place: 'boardingHouse',
   name: 'High water',
   interior: false,
-  season: 'flood',
   size: { w: 20, d: 16 },
   ground: '#5b4a33',
   spawn: vec(0, 6.4),
@@ -378,7 +372,6 @@ export const line: Space = {
   place: 'floodedStreet',
   name: 'The sandbag line on Cushman',
   interior: false,
-  season: 'flood',
   size: { w: 20, d: 16 },
   ground: '#4e4636',
   spawn: vec(0.7, -1.2),
@@ -412,12 +405,11 @@ export const downtown: Space = {
   act: 'Prologue',
   name: 'Downtown Fairbanks',
   interior: false,
-  season: 'summer',
   size: SIZE,
   center: CENTER,
   ground: '#6c665a',
   spawn: vec(secondAve.x, secondAve.z),
-  props: pieces,
+  props: [...pieces, ...standing],
   figures: [],
   spots: doorSpots,
 }
@@ -428,7 +420,6 @@ export const story: Space = {
   id: 'story',
   name: 'Second Rush',
   interior: true,
-  season: 'summer',
   size: { w: 8, d: 8 },
   ground: '#16181d',
   spawn: vec(0, 0),
@@ -438,6 +429,11 @@ export const story: Space = {
 }
 
 export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, story }
+
+// What a space shows in a season: its own props, and downtown's seasonal layer (freezeup.ts). The season is the
+// story's, never the space's (timeOf in lighting.ts). Season layers add nothing solid, so collision reads s.props.
+export const propsIn = (s: Space, season: Season, clock?: Clock): readonly Prop[] =>
+  s.id === 'downtown' ? [...s.props, ...townLayer(season, clock)] : s.props
 
 export const centerOf = (s: Space): Vec => s.center ?? vec(0, 0)
 

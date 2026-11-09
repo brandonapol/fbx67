@@ -1,7 +1,9 @@
 import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
+import type { Clock } from '../../text-game/src/types.ts'
 import type { Figure, Prop, Space } from './levels.ts'
-import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, spaces } from './levels.ts'
+import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, propsIn, spaces } from './levels.ts'
+import { stageOf } from './freezeup.ts'
 import type { Pose } from './camera.ts'
 import { FOV, NEAR } from './camera.ts'
 import type { Lighting, Time } from './lighting.ts'
@@ -9,13 +11,15 @@ import type { Cast } from './characters.ts'
 import { loadCast } from './characters.ts'
 import type { CastId } from './cast.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
-import { grades, lighting, skyColor, sunDirection, timeOf } from './lighting.ts'
+import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
 
 const FAR_CLIP = 200
 
-export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readonly [number, number, number] }>
+// clock, on a probe capture only, shows the space at another hour of the story: its season is the story's for that
+// date (timeAt in lighting.ts), so one shot can show the same town in July, the flood and freeze-up.
+export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readonly [number, number, number]; clock?: Clock }>
 
 // The camera is written only by sync and pose. A held shot wins over the follow camera until pose(undefined).
 export type View = Readonly<{
@@ -294,7 +298,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const root = new pc.Entity(space.id)
     const c = centerOf(space)
     primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
-    const toggles = space.props.flatMap((p) => {
+    const toggles = propsIn(space, t.season, t.clock).flatMap((p) => {
       const e = addProp(root, p)
       return e && p.while ? [[e, p.while] as const] : []
     })
@@ -346,8 +350,13 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   const sync = (g: Game, dt: number, cam: Pose): void => {
     const space = spaces[g.space]
     const here = state.built?.id === g.space ? state.built : undefined
-    const t = timeOf(space, g.story, g.path)
-    const rebuild = !here || here.weather !== weather(g.story) || here.time.season !== t.season
+    const t = state.held?.clock ? timeAt(state.held.clock) : timeOf(space, g.story, g.path)
+    // A new season, or a new freeze-up stage (ice, then snow, then the river skimming over), rebuilds the space.
+    const rebuild =
+      !here ||
+      here.weather !== weather(g.story) ||
+      here.time.season !== t.season ||
+      stageOf(here.time.season, here.time.clock) !== stageOf(t.season, t.clock)
     if (rebuild) dispose(state.built)
     // The light snaps to the story's clock at each scene; the space itself stays as it is.
     if (!rebuild && here.time.clock !== t.clock) light(lighting(space.id, t.season, weather(g.story), t.clock), space)
