@@ -7,10 +7,11 @@ import { FOV, NEAR } from './camera.ts'
 import type { Lighting, Time } from './lighting.ts'
 import type { Cast } from './characters.ts'
 import { loadCast } from './characters.ts'
+import type { CastId } from './cast.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
-import { owenMotion, seen, watcher } from './prologue.ts'
+import { inWorld, playerBody, playerMotion, seen, watcher } from './prologue.ts'
 
 const FAR_CLIP = 200
 
@@ -267,8 +268,20 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   app.root.addChild(lamp)
 
   const cast = await loadCast(app, base)
-  const owen = cast.spawn('owen')
-  app.root.addChild(owen)
+  // One entity per cast member the player has been; only the story's pov is in the world.
+  const players = new Map<CastId, pc.Entity>()
+  const playerFor = (who: CastId | undefined): pc.Entity | undefined => {
+    players.forEach((e, id) => {
+      if (id !== who) e.enabled = false
+    })
+    if (!who) return undefined
+    const had = players.get(who)
+    if (had) return had
+    const e = cast.spawn(who)
+    app.root.addChild(e)
+    players.set(who, e)
+    return e
+  }
 
   const light = (l: Lighting, space: Space): void => {
     applyLighting(app, sun, lamp, frame, l, !space.interior)
@@ -336,18 +349,21 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     if (!rebuild && here.time.clock !== t.clock) light(lighting(space.id, t.season, weather(g.story), t.clock), space)
     const b: Built = rebuild ? build(g, t) : { ...here, time: t }
     state.built = b
-    const motion = owenMotion(g)
-    const owenClip = clipFor(motion)
-    cast.play(owen, owenClip, playbackRate(owenClip, motion.speed))
+    const player = playerFor(playerBody(g).cast)
+    const motion = playerMotion(g)
+    const clip = clipFor(motion)
+    if (player) cast.play(player, clip, playbackRate(clip, motion.speed))
     spaces[g.space].figures.forEach((f) => {
       const e = b.figures.get(f.id)
       if (!e || !castFor(f.id)) return
       const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
     })
-    owen.setLocalPosition(g.pos.x, 0, g.pos.z)
-    owen.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
-    owen.enabled = spaces[g.space].act !== undefined && (!cam.close || state.held !== undefined)
+    if (player) {
+      player.setLocalPosition(g.pos.x, 0, g.pos.z)
+      player.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
+      player.enabled = inWorld(g) && (!cam.close || state.held !== undefined)
+    }
     if (b.cone && b.coneMats) {
       const w = watcher(g)
       b.cone.setLocalPosition(w.at.x, 0, w.at.z)

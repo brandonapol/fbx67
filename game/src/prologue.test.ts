@@ -5,10 +5,10 @@ import { readFileSync } from 'node:fs'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
-import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, owenMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
+import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, inWorld, playerBody, playerMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
 import { DT, back, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toRoom, walk, walkLeg } from './drive.ts'
 import { angleBetween, length, vec } from './world.ts'
-import { clipFor } from './cast.ts'
+import { bodies, clipFor } from './cast.ts'
 import { spaces } from './levels.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
@@ -196,8 +196,8 @@ test('outdoors, run held settles into the jog clip, never the sprint', () => {
   const camp = { ...atCamp(), pos: vec(-2, -1.5) }
   const north: Input = { dir: vec(0, -1), hold: false, run: true }
   const steps = Array.from({ length: 90 }).reduce<readonly Game[]>((acc) => [...acc, tick(acc[acc.length - 1], north, DT)], [camp])
-  steps.forEach((g, i) => assert.notEqual(clipFor(owenMotion(g)), 'run', `sprint clip at step ${i}`))
-  assert.equal(clipFor(owenMotion(steps[steps.length - 1])), 'jog')
+  steps.forEach((g, i) => assert.notEqual(clipFor(playerMotion(g)), 'run', `sprint clip at step ${i}`))
+  assert.equal(clipFor(playerMotion(steps[steps.length - 1])), 'jog')
 })
 
 test('indoors, run held never plays the run clip and Owen stays at or under the indoor pace', () => {
@@ -206,7 +206,7 @@ test('indoors, run held never plays the run clip and Owen stays at or under the 
   const steps = Array.from({ length: 90 }).reduce<readonly Game[]>((acc) => [...acc, tick(acc[acc.length - 1], north, DT)], [bar])
   steps.forEach((g, i) => {
     assert.ok(length(g.vel) <= INDOOR_PACE + 1e-9, `over the indoor pace at step ${i}`)
-    assert.notEqual(clipFor(owenMotion(g)), 'run', `run clip at step ${i}`)
+    assert.notEqual(clipFor(playerMotion(g)), 'run', `run clip at step ${i}`)
   })
   assert.ok(Math.abs(length(steps[steps.length - 1].vel) - INDOOR_PACE) < 1e-6)
   const walking: Input = { ...north, run: false }
@@ -216,9 +216,9 @@ test('indoors, run held never plays the run clip and Owen stays at or under the 
 
 test('the clip follows the simulated velocity, not the frame displacement', () => {
   const bar = press(start(), 'close')
-  assert.equal(clipFor(owenMotion({ ...bar, vel: vec(0, -WALK) })), 'walk')
-  assert.equal(clipFor(owenMotion({ ...bar, vel: vec(0, 0) })), 'idle')
-  assert.equal(clipFor(owenMotion({ ...atCamp(), vel: vec(0, -JOG) })), 'jog')
+  assert.equal(clipFor(playerMotion({ ...bar, vel: vec(0, -WALK) })), 'walk')
+  assert.equal(clipFor(playerMotion({ ...bar, vel: vec(0, 0) })), 'idle')
+  assert.equal(clipFor(playerMotion({ ...atCamp(), vel: vec(0, -JOG) })), 'jog')
 })
 
 test('Owen eases to a stop, and against a wall his velocity is zero', () => {
@@ -266,14 +266,18 @@ const golden = (ending: string): readonly number[] => {
   return route.path.split(',').map(Number)
 }
 
-test('Continue as Wade on the end card leaves the flood for the text build at the story path', () => {
+test('Continue as Wade on the end card puts Wade on the sandbag line, with no menu in between', () => {
   const end = playPrologue('texas', 'stove')
   const card = end.panel!
   assert.deepEqual(card.buttons, [{ id: 'continue', label: 'Continue as Wade' }])
   const g = press(end, 'continue')
   assert.equal(g.story.scene, 'a1_flood')
+  assert.equal(g.space, 'line')
   assert.equal(g.panel, undefined)
-  assert.ok(handedOff(g))
+  assert.equal(handedOff(g), false)
+  assert.equal(playerBody(g), bodies.wade)
+  assert.ok(inWorld(g))
+  assert.equal(inWorld(end), false, 'nobody stands in the prologue flood under the end card')
   assert.deepEqual(g.path, golden('best').slice(0, g.path.length))
   assert.equal(textBuildHash(g), `#path=${g.path.join(',')}`)
 })

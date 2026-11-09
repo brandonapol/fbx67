@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, handedOff, interact, label, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { focus, handedOff, interact, label, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
@@ -412,7 +412,7 @@ view.app.on('update', (dtRaw: number) => {
   placeRig(live.g)
   const g = live.g
   const sway = bob(g.t, length(g.vel), topSpeed(frame.input, spaces[g.space].interior), reducedMotion.matches)
-  const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway)
+  const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway, playerBody(g).eye)
   live.rig = next.rig
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)

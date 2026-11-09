@@ -1,6 +1,6 @@
 import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { menu, place, send } from '../../text-game/src/story.ts'
+import { menu, place, pov, send } from '../../text-game/src/story.ts'
 import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
@@ -8,8 +8,8 @@ import type { SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 
-import type { Motion } from './cast.ts'
-import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
+import type { Body, Motion } from './cast.ts'
+import { INDOOR_PACE, JOG_SPEED, WALK_SPEED, bodies } from './cast.ts'
 
 export { HIDE_TIME, ROUND_TIME } from './levels.ts'
 
@@ -121,6 +121,9 @@ export const failed = (text: string): Game => ({
 // A door downtown opens when the story is at the place behind it.
 const doorOpen = (g: Game, id: string): boolean => doors.some((d) => d.id === id && d.place === place(g.story))
 
+// The story's menu has this note: a spot that sends it is live, by what the story offers rather than a scene id.
+const offers = (g: Game, note: string): boolean => menu(g.story).options.some((o) => o.note === note)
+
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
@@ -129,6 +132,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
     if (g.space === 'flood') return g.story.scene === 'p_end'
     if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
+    if (g.space === 'line') return offers(g, 'findEli')
     return true
   })
 
@@ -163,7 +167,9 @@ const arrive = (g: Game): Game => {
     return { ...g, panel: storyPanel(g.story, notes, notes.length ? [] : [restart]) }
   }
   if (r.space !== g.space) return enter(g, r.space)
-  return { ...g, panel: storyPanel(g.story, [], [close(spaces[r.space].back ?? 'Back.')]) }
+  const back = spaces[r.space].back
+  if (back) return { ...g, panel: storyPanel(g.story, [], [close(back)]) }
+  return { ...g, panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note)) }
 }
 
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
@@ -199,6 +205,7 @@ export const interact = (g: Game): Game => {
     if (door && doorOpen(g, id)) return arrive(g)
     if (door?.locked) return { ...g, panel: locked(door.title) }
   }
+  if (g.space === 'line' && id === 'woman') return { ...g, panel: storyPanel(g.story, ['findEli', 'stayOnLine'], [close('Keep passing bags.')]) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
@@ -271,7 +278,14 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
 }
 
-export const owenMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: 'stand', talking: false })
+// The player is whoever the story's pov(state) says: Owen in the prologue, Wade from Act 1 on.
+export const playerBody = (g: Game): Body => bodies[pov(g.story)]
+
+// The player stands in the world only in a space of the story's act: not over the story backdrop, and not in the
+// prologue's flood under the end card, where the story has already moved on to Wade.
+export const inWorld = (g: Game): boolean => spaces[g.space].act === menu(g.story).act
+
+export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: 'stand', talking: false })
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
 
