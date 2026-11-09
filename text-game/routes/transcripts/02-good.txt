@@ -70,29 +70,35 @@ You climb in.
 
 You are Wade Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
-Your sergeant puts you on a sandbag line. Across the street, a riverboat is pulling elders off a porch. The man at the tiller is about your age, and he's shorthanded.
+Your sergeant puts you on a sandbag line across Cushman Street, thigh-deep, passing bags hand to hand. He counts heads every quarter hour.
 
-  1. Stay on the sandbag line. Orders are orders.
-  2. Wade over and help the riverboat.
+A woman in a man's rain slicker comes down the line looking at faces until she stops at yours, maybe because you're the youngest. She's from Minto. Her mother is in a house out at the edge of town, past where the trucks can go, and the water is at her windows. "Eli has a boat that can get in there. Eli, he runs freight on the river. He's somewhere in town. I can't find him and I can't leave her."
+
+The sergeant is looking the other way. For now.
+
+  1. Go find Eli. You can take a chewing-out.
+  2. Stay on the line. Orders are orders. Send her to someone who can go.
 
 == Act 1: Flood :: The Cabin ==
 
-That evening the boatman, Eli, needs a strong back, and your sergeant lends you out. Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
+Someone else carries the woman's message. That evening the boatman she was looking for, Eli, needs a strong back, and your sergeant lends you out. Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
 It's a man, held under by a yellow braided line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
 
 The line is tied off in a bowline, but backward, the tail sitting outside the loop. You learned your knots tying up your cousins' boat on the reservoir, and every bowline you ever saw there had the tail inside. Somebody tied this one, and tied it his own way.
 
   1. Point out the knot to Eli. Nobody tangles into a bowline.
-  2. Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the hospital.
+  2. Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the help tent.
 
 == Act 1: Flood :: An Accident ==
 
-Investigator Vernon Barnette of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
+St. Joseph's took water on the first floor and sent everyone it could carry up the hill, so that is where you and Eli bring Owen: the help tent on the high ground south of town. They put him on a cot at the back, under a tarp.
+
+Investigator Vernon Barnette of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He lifts the tarp and looks at Owen for about a minute.
 
 "Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
 
-St. Joseph's took water on the first floor and moved most of its patients out. In what's left, a nurse named Joan Halvorsen is cleaning up in a hallway full of cots.
+A nurse named Joan Halvorsen is still at the tarp after he's gone, sleeves rolled to the elbow, looking at the dead man's neck longer than she needs to.
 
   1. Ask Joan if anything about the body looked wrong.
   2. Make her laugh. She looks like she needs it.

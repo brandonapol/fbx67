@@ -79,3 +79,40 @@ test('place, clock and goal read the current scene', () => {
   assert.equal(clock(flood), '1967-08-15T09:00')
   assert.equal(goal(flood), 'Hold the sandbag line.')
 })
+
+const toFlood = [1, 1, 1, 1, 1, 1]
+const openings = {
+  stay: [...toFlood, 2],
+  errand: [...toFlood, 1, 1, 1, 1, 1, 1, 1, 1],
+  direct: [...toFlood, 1, 1, 1, 2, 1, 1, 1],
+} as const
+
+test('the three Act 1 openings reach the cabin with the trust and Joan they earned', () => {
+  const at = (path: readonly number[]) => replay(path).at(-1)!
+  const scenesOf = (path: readonly number[]) => replay(path).map((s) => s.scene)
+  Object.values(openings).forEach((path) => assert.equal(at(path).scene, 'a1_body'))
+  assert.deepEqual([at(openings.stay).eliTrust, at(openings.stay).joan], [0, 0])
+  assert.deepEqual([at(openings.errand).eliTrust, at(openings.errand).joan], [1, 1])
+  assert.deepEqual([at(openings.direct).eliTrust, at(openings.direct).joan], [1, 0])
+  assert.ok(scenesOf(openings.errand).includes('a1_trail'))
+  assert.ok(!scenesOf(openings.direct).includes('a1_errand'))
+  assert.ok(!scenesOf(openings.stay).includes('a1_track'))
+})
+
+test('every opening meets Joan at the help tent and hears about the bruising', () => {
+  Object.values(openings).forEach((path) =>
+    [1, 2].forEach((knot) =>
+      [1, 2].forEach((pick) => {
+        const states = replay([...path, knot, ...(knot === 1 ? [1] : []), pick])
+        const tent = states.find((s) => s.scene === 'a1_ruling')!
+        assert.equal(place(tent), 'helpTent')
+        assert.ok(states.at(-1)!.evidence.includes('bruising'))
+      }),
+    ),
+  )
+})
+
+test('Wade\'s goal on the search names Eli', () => {
+  const track = replay([...toFlood, 1]).at(-1)!
+  assert.match(goal(track) ?? '', /Find Eli/)
+})

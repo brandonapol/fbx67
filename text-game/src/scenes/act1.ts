@@ -4,6 +4,14 @@ import { addEvidence, eliTrust, heat, joan, mom, pipe, set } from '../state.ts'
 
 const act = 'Act 1: Flood' as const
 
+const findEli = `Find ${N.eli}. Tell him about the woman's mother.`
+
+const message = `"There's a woman from Minto on the sandbag line on Cushman," you say. "Her mother's stuck in a house out at the edge of town, past where the trucks can go. She says only your boat can get there."`
+
+const delivered = `${N.eli} doesn't ask your name. He knows whose mother it is before you've finished, and he knows the house. He tips the last of the furniture onto a porch and is turning the bow back into the current while you're still talking.
+
+"Tell her I'm going," he says. Then, over the motor: "Get back to your line before they shoot you for it, Texas. I'll come find you tonight. I could use a strong back."`
+
 export const act1: readonly Scene[] = [
   {
     id: 'a1_flood',
@@ -15,11 +23,132 @@ export const act1: readonly Scene[] = [
     text: () => `
 You are ${N.wade} Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
-Your sergeant puts you on a sandbag line. Across the street, a riverboat is pulling elders off a porch. The man at the tiller is about your age, and he's shorthanded.`,
+Your sergeant puts you on a sandbag line across Cushman Street, thigh-deep, passing bags hand to hand. He counts heads every quarter hour.
+
+A woman in a man's rain slicker comes down the line looking at faces until she stops at yours, maybe because you're the youngest. She's from Minto. Her mother is in a house out at the edge of town, past where the trucks can go, and the water is at her windows. "Eli has a boat that can get in there. Eli, he runs freight on the river. He's somewhere in town. I can't find him and I can't leave her."
+
+The sergeant is looking the other way. For now.`,
     choices: () => [
-      { label: 'Stay on the sandbag line. Orders are orders.', next: 'a1_body' },
-      { label: 'Wade over and help the riverboat.', apply: eliTrust(1), next: 'a1_body' },
+      { label: 'Go find Eli. You can take a chewing-out.', next: 'a1_track' },
+      { label: 'Stay on the line. Orders are orders. Send her to someone who can go.', next: 'a1_body' },
     ],
+  },
+  {
+    id: 'a1_track',
+    act,
+    title: 'Which Way He Went',
+    place: 'floodedStreet',
+    clock: '1967-08-15T09:20',
+    goal: findEli,
+    text: () => `
+You slip off the end of the line and wade north. Nobody stops you.
+
+A man in hip waders is carrying a mattress out of a rooming house over his head. You ask about a boat, a riverboat, a man named Eli.
+
+"Went by twenty minutes ago with a load of kids," he says, without putting the mattress down. "Toward Lacey. Hold this end, would you?"
+
+You hold the end until he gets it onto a porch roof.`,
+    choices: () => [{ label: 'Head for Lacey Street.', next: 'a1_track_2' }],
+  },
+  {
+    id: 'a1_track_2',
+    act,
+    title: 'Coffee on Second',
+    place: 'floodedStreet',
+    clock: '1967-08-15T09:45',
+    goal: findEli,
+    text: () => `
+On Second Avenue a woman leans out of an upstairs window with a coffee pot and a stack of paper cups, lowering them on a string to anybody who looks cold.
+
+"Eli, with the riverboat? He dropped the kids at the school and went back out. Up Cushman, toward Third." She lowers you a cup. "Drink it before it floats away."`,
+    choices: () => [{ label: 'Drink it and keep going.', next: 'a1_couple' }],
+  },
+  {
+    id: 'a1_couple',
+    act,
+    title: 'The Porch on Third',
+    place: 'floodedStreet',
+    clock: '1967-08-15T10:05',
+    goal: findEli,
+    text: () => `
+An old couple sits on the top step of a porch just short of Third, their feet an inch above the water. He has a cane across his knees. She has a paper slip in her hand and keeps folding and unfolding it.
+
+"Eli? He was tied up right there on Third a few minutes ago," the man says. "Pulling the Sorensens out."
+
+His wife holds out the slip. It's a prescription, his heart pills, the bottle went under with the kitchen. "They've got a help tent up on the high ground past Fifth. The nurses from St. Joseph's. We can't get there." She doesn't ask. She just keeps holding it out.`,
+    choices: () => [
+      { label: 'Take the slip to the help tent. Eli can wait an hour.', next: 'a1_errand' },
+      { label: '"I\'ll send somebody." Go to Third while Eli\'s still there.', next: 'a1_eli' },
+    ],
+  },
+  {
+    id: 'a1_eli',
+    act,
+    title: 'The Riverboat',
+    place: 'floodedStreet',
+    clock: '1967-08-15T10:15',
+    goal: findEli,
+    text: () => `
+The riverboat is idling at the corner of Third, a long flat-bottomed freighter with a kicker on the back, low in the water with somebody's furniture. The man at the tiller is about your age. He's shoving a dresser off the bow to make room.
+
+You wade up and catch the gunwale.`,
+    choices: () => [{ label: 'Tell him.', apply: eliTrust(1), next: 'a1_delivered' }],
+  },
+  {
+    id: 'a1_errand',
+    act,
+    title: 'The Help Tent',
+    place: 'helpTent',
+    clock: '1967-08-15T10:45',
+    goal: 'Get the old man his heart pills.',
+    text: () => `
+The help tent is three army tents and a line of cots on the high ground south of town, where the water stops. Everybody St. Joseph's could carry out is here.
+
+A nurse with her sleeves rolled to the elbow reads the slip, reads it again, and goes into a crate of bottles that came out of the hospital pharmacy in a rowboat. She's ${N.joan}. She counts out pills into an envelope and writes the dose on it in block letters an old man could read.
+
+"You walked up here for somebody else's prescription," she says. "In that water." She looks you over, your soaked fatigues. "Tell him one in the morning, with food. And tell him the nurse said to stay off that porch."`,
+    choices: () => [{ label: 'Take the envelope back down the hill.', apply: joan(1), next: 'a1_trail' }],
+  },
+  {
+    id: 'a1_trail',
+    act,
+    title: 'A Block or Two South',
+    place: 'floodedStreet',
+    clock: '1967-08-15T11:40',
+    goal: findEli,
+    text: () => `
+The old man takes the envelope in both hands. His wife reads Joan's block letters out loud to him twice.
+
+On Third the riverboat is gone. A boy bailing a skiff with a coffee can points with it. "Eli? Went a block or two south. Somebody was waving a sheet off a roof."
+
+You find the sheet on Fifth, and under it a family on a roof, and below them the riverboat, and the man at the tiller handing a baby down into it.`,
+    choices: () => [{ label: 'Wait for the baby, then tell him.', apply: eliTrust(1), next: 'a1_delivered' }],
+  },
+  {
+    id: 'a1_delivered',
+    act,
+    title: 'The Message',
+    place: 'floodedStreet',
+    clock: '1967-08-15T12:00',
+    goal: 'Get back to the sandbag line.',
+    text: () => `
+${message}
+
+${delivered}`,
+    choices: () => [{ label: 'Wade back to Cushman Street.', next: 'a1_line' }],
+  },
+  {
+    id: 'a1_line',
+    act,
+    title: 'The Sergeant',
+    place: 'floodedStreet',
+    clock: '1967-08-15T12:40',
+    goal: 'Hold the sandbag line.',
+    text: () => `
+Your sergeant sees you coming a block off. By the time you reach the line he has his speech ready, and it's a long one: where you were, who you think you are, what the Air Force does to airmen who wander off, and what he'll do first.
+
+The woman from Minto is gone from the line. Nobody else there knows where you went, and he doesn't write anything down. He just puts you on the heaviest end of the line for the rest of the afternoon.`,
+    choices: () => [{ label: 'Pass the bags.', next: 'a1_body' }],
   },
   {
     id: 'a1_body',
@@ -29,14 +158,14 @@ Your sergeant puts you on a sandbag line. Across the street, a riverboat is pull
     clock: '1967-08-15T18:00',
     goal: 'Find out what the pole hit.',
     text: (s) => `
-${s.eliTrust > 0 ? 'The boatman, Eli, owes you one, and he says so.' : 'That evening the boatman, Eli, needs a strong back, and your sergeant lends you out.'} Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
+${s.eliTrust > 0 ? `That evening ${N.eli} ties the riverboat up at the end of the sandbag line and asks your sergeant for you by name. The woman's mother is out and dry, he says. He owes you one, and he says so.` : `Someone else carries the woman's message. That evening the boatman she was looking for, ${N.eli}, needs a strong back, and your sergeant lends you out.`} Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
 
 It's a man, held under by a yellow braided line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
 
 The line is tied off in a bowline, but backward, the tail sitting outside the loop. You learned your knots tying up your cousins' boat on the reservoir, and every bowline you ever saw there had the tail inside. Somebody tied this one, and tied it his own way.`,
     choices: () => [
       { label: 'Point out the knot to Eli. Nobody tangles into a bowline.', apply: pipe(addEvidence('knot'), eliTrust(1)), next: 'a1_knot' },
-      { label: 'Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the hospital.', apply: addEvidence('knot'), next: 'a1_ruling' },
+      { label: 'Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the help tent.', apply: addEvidence('knot'), next: 'a1_ruling' },
     ],
   },
   {
@@ -58,15 +187,17 @@ You cut the line a hand's width above the knot and a hand's width below, so it s
     id: 'a1_ruling',
     act,
     title: 'An Accident',
-    place: 'stJosephs',
+    place: 'helpTent',
     clock: '1967-08-15T20:00',
     goal: 'Find out what the nurse saw.',
-    text: () => `
-${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He looks at Owen for about a minute.
+    text: (s) => `
+St. Joseph's took water on the first floor and sent everyone it could carry up the hill, so that is where you and Eli bring Owen: the help tent on the high ground south of town. They put him on a cot at the back, under a tarp.
+
+${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He lifts the tarp and looks at Owen for about a minute.
 
 "Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
 
-St. Joseph's took water on the first floor and moved most of its patients out. In what's left, a nurse named ${N.joan} is cleaning up in a hallway full of cots.`,
+${s.joan > 0 ? `${N.joan}, the nurse who counted out the old man's pills this morning, is still at the tarp after he's gone. She looks up and knows you. "You again," she says, and doesn't sound sorry about it.` : `A nurse named ${N.joan} is still at the tarp after he's gone, sleeves rolled to the elbow, looking at the dead man's neck longer than she needs to.`}`,
     choices: () => [
       { label: 'Ask Joan if anything about the body looked wrong.', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_joan_ask' },
       { label: 'Make her laugh. She looks like she needs it.', apply: pipe(addEvidence('bruising'), joan(2)), next: 'a1_joan_laugh' },
@@ -76,7 +207,7 @@ St. Joseph's took water on the first floor and moved most of its patients out. I
     id: 'a1_joan_ask',
     act,
     title: 'Joan',
-    place: 'stJosephs',
+    place: 'helpTent',
     clock: '1967-08-15T20:15',
     goal: 'Listen to Joan.',
     text: () => `
@@ -87,7 +218,7 @@ Joan lowers her voice. Bruises on his left shoulder and the side of his neck, sh
     id: 'a1_joan_laugh',
     act,
     title: 'Joan',
-    place: 'stJosephs',
+    place: 'helpTent',
     clock: '1967-08-15T20:15',
     goal: 'Listen to Joan.',
     text: () => `
