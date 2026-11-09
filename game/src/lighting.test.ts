@@ -1,26 +1,64 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Weather } from '../../text-game/src/story.ts'
+import { initialState } from '../../text-game/src/state.ts'
+import { replay } from '../../text-game/src/engine.ts'
+import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { spaces } from './levels.ts'
 import type { Lighting } from './lighting.ts'
-import { bandOf, grades, lighting, skyColor, sunDirection } from './lighting.ts'
+import { MIDNIGHT_SUN, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
+import { sunAt } from './sun.ts'
 
 const weathers: readonly Weather[] = ['clear', 'dusk', 'night']
-const of = (id: keyof typeof spaces, w: Weather): Lighting => lighting(id, spaces[id].season, w)
+const of = (id: keyof typeof spaces, w: Weather, at?: Clock): Lighting => lighting(id, spaces[id].season, w, at)
+const at = (scene: SceneId): State => ({ ...initialState, scene })
+const ELEVEN: Clock = '1967-07-14T23:00'
 
-// docs/art/README.md, Light: the Prologue's sun is north-northwest (330-350), its disc 0 to +4 degrees up.
-test('the Prologue sun sits north-northwest, just above the horizon, in every summer space and weather', () => {
+// docs/art/README.md, Light: the Prologue's sun at 11 pm is north-northwest (330-350), its disc 0 to +4 degrees up.
+test('the Prologue sun at eleven sits north-northwest, just above the horizon, in every summer space and weather', () => {
   const summer = (Object.keys(spaces) as (keyof typeof spaces)[]).filter((id) => spaces[id].season === 'summer')
   assert.ok(summer.includes('downtown'))
   summer.forEach((id) =>
-    weathers.forEach((w) => {
-      const l = of(id, w)
-      assert.ok(l.sunAzimuth >= 330 && l.sunAzimuth <= 350, `${id} ${w} azimuth ${l.sunAzimuth}`)
-      assert.ok(l.sunElevation >= 0 && l.sunElevation <= 4, `${id} ${w} elevation ${l.sunElevation}`)
-      assert.equal(l.sunUp, true)
-      assert.equal(l.grade, 'summer', 'the Prologue is not banded')
-    }),
+    [undefined, ELEVEN, '1967-07-14T23:20' as const].forEach((c) =>
+      weathers.forEach((w) => {
+        const l = of(id, w, c)
+        assert.ok(l.sunAzimuth >= 330 && l.sunAzimuth <= 350, `${id} ${w} ${c} azimuth ${l.sunAzimuth}`)
+        assert.ok(l.sunElevation >= 0 && l.sunElevation <= 4, `${id} ${w} ${c} elevation ${l.sunElevation}`)
+        assert.equal(l.sunUp, true)
+        assert.equal(l.grade, 'summer', 'the Prologue is not banded')
+      }),
+    ),
   )
+})
+
+// The one stated cheat: the real sun is down at eleven (docs/fact-checks.md item 38), so the disc is held up; it
+// keeps the real azimuth where that is inside the rule's arc.
+test('the midnight-sun cheat holds the disc up only while the real sun is below it', () => {
+  assert.ok(sunAt(ELEVEN).elevation < 0, 'the real sun is down at eleven')
+  assert.deepEqual(summerSun(ELEVEN), { sunAzimuth: sunAt(ELEVEN).azimuth, sunElevation: MIDNIGHT_SUN.elevation })
+  // Past midnight the real sun is just east of north; the cheat keeps it at the arc's north end, not its west end.
+  assert.ok(sunAt('1967-07-15T00:30').azimuth < 20)
+  assert.equal(summerSun('1967-07-15T00:30').sunAzimuth, 350)
+  const morning = summerSun('1967-07-15T07:30')
+  assert.deepEqual(morning, { sunAzimuth: sunAt('1967-07-15T07:30').azimuth, sunElevation: sunAt('1967-07-15T07:30').elevation })
+})
+
+// Same town, another hour: the camp at ten in the morning is lit by the real sun, high in the southeast.
+test('the July morning at the camp follows the real sun, not the 11 pm sun', () => {
+  const morning = lightingFor(spaces.camp, at('p_camp'))
+  const evening = of('camp', 'clear', ELEVEN)
+  assert.ok(morning.sunElevation > 30, `elevation ${morning.sunElevation}`)
+  assert.ok(morning.sunAzimuth > 90 && morning.sunAzimuth < 180, `azimuth ${morning.sunAzimuth}`)
+  assert.equal(morning.sunUp, true)
+  assert.deepEqual({ ...morning, sunAzimuth: 0, sunElevation: 0 }, { ...evening, sunAzimuth: 0, sunElevation: 0 }, 'only the sun moves')
+})
+
+test('each space is lit at its scene: the bar at eleven, the flood on 14 August, the story backdrop at no hour', () => {
+  assert.deepEqual(timeOf(spaces.bar, at('p_bar')), { season: 'summer', clock: '1967-07-14T23:00' })
+  assert.deepEqual(timeOf(spaces.flood, at('p_end')), { season: 'flood', clock: '1967-08-14T21:00' })
+  assert.deepEqual(timeOf(spaces.story, at('a1_flood')), { season: 'summer' })
+  // A scene with no clock keeps the space's own season and the default sun.
+  assert.deepEqual(lightingFor(spaces.downtown, at('a2_major')), of('downtown', 'clear'))
 })
 
 test('summer fog is 30-220 m outdoors and 2-60 m indoors', () => {
@@ -28,14 +66,23 @@ test('summer fog is 30-220 m outdoors and 2-60 m indoors', () => {
   ;(['bar', 'room'] as const).forEach((id) => assert.deepEqual([of(id, 'clear').fogStart, of(id, 'clear').fogEnd], [2, 60]))
 })
 
-// docs/art/README.md, "Band by season", the Act 1 flood row: sun none; fog 10-120, 8-80, 4-40.
-test('the flood takes each band from the Act 1 row: no sun, and its fog range', () => {
+// docs/art/README.md, "Band by season", the Act 1 flood row: sun none; fog 10-120, 8-80, 4-40. The overcast hides
+// the sun at every hour, so the clock does not move the flood's light.
+test('the flood takes each band from the Act 1 row: no sun, and its fog range, at any hour', () => {
   const fog: Readonly<Record<Weather, readonly [number, number]>> = { clear: [10, 120], dusk: [8, 80], night: [4, 40] }
   weathers.forEach((w) => {
-    const l = of('flood', w)
+    const l = of('flood', w, '1967-08-14T21:00')
     assert.equal(l.grade, bandOf[w])
     assert.equal(l.sunUp, false, `${w}: the flood is overcast`)
     assert.deepEqual([l.fogStart, l.fogEnd], fog[w])
+    assert.deepEqual(of('flood', w, '1967-08-15T09:00'), l)
+  })
+})
+
+test('rain falls outdoors in the flood and never indoors', () => {
+  weathers.forEach((w) => {
+    assert.equal(of('flood', w).rain, true)
+    ;(['bar', 'room', 'story'] as const).forEach((id) => assert.equal(lighting(id, 'flood', w).rain, false, `${id} ${w}`))
   })
 })
 
@@ -88,4 +135,17 @@ test('indoor fog is darker than the sky haze outside', () => {
     return 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)
   }
   ;(['bar', 'room'] as const).forEach((id) => assert.ok(luma(of(id, 'clear').fog) < luma(of('downtown', 'clear').fog) / 2, id))
+})
+
+// Hiding at the camp sends the story on to p_end (14 August, the flood) while Owen is still on the gravel bar in July:
+// the camp keeps the hour of the last scene set there, read from the path, so a rebuild (the probe resets the view
+// before every capture) does not lose it.
+test('a space keeps the hour of its last scene when the story moves on to another place', () => {
+  const path = [3, 1, 1, 1, 3]
+  const end = replay(path).at(-1)!
+  assert.equal(end.scene, 'p_end')
+  assert.deepEqual(timeOf(spaces.camp, end, path), { season: 'summer', clock: '1967-07-15T10:00' })
+  assert.deepEqual(lightingFor(spaces.camp, end, path), lightingFor(spaces.camp, at('p_camp')))
+  // With no path there to read, the space falls back to its own season and the default sun, never the flood's rain.
+  assert.deepEqual(timeOf(spaces.camp, end), { season: 'summer' })
 })
