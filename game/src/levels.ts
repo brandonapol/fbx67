@@ -2,8 +2,9 @@ import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 import type { Activity } from './cast.ts'
 import type { Act, Place } from '../../text-game/src/types.ts'
+import { CENTER, SIZE, doorSpots, pieces, spawnAt } from './downtown.ts'
 
-export type SpaceId = 'bar' | 'room' | 'camp' | 'flood' | 'story'
+export type SpaceId = 'bar' | 'room' | 'camp' | 'flood' | 'downtown' | 'story'
 
 export type Season = 'summer' | 'flood'
 
@@ -15,6 +16,7 @@ export type Prop = Readonly<{
   solid?: boolean
   occludes?: boolean
   glow?: boolean
+  flat?: boolean
   shape?: 'box' | 'cylinder' | 'cone'
 }>
 
@@ -38,6 +40,7 @@ export type Space = Readonly<{
   back?: string
   season: Season
   size: Readonly<{ w: number; d: number }>
+  center?: Vec
   interior: boolean
   ground: string
   spawn: Vec
@@ -229,6 +232,25 @@ export const flood: Space = {
   spots: [{ id: 'skiff', x: 0.2, z: 4.6, r: 1.4, prompt: 'Get in the skiff' }],
 }
 
+// Downtown in world coordinates off docs/town-map.md (see downtown.ts). No story place routes here: the prologue's
+// walks start here when the story moves to a place downtown reaches on foot, and end at its door.
+const secondAve = spawnAt('secondAve')
+
+export const downtown: Space = {
+  id: 'downtown',
+  act: 'Prologue',
+  name: 'Downtown Fairbanks',
+  interior: false,
+  season: 'summer',
+  size: SIZE,
+  center: CENTER,
+  ground: '#6c665a',
+  spawn: vec(secondAve.x, secondAve.z),
+  props: pieces,
+  figures: [],
+  spots: doorSpots,
+}
+
 // The backdrop for a scene that has no space yet, outside any act: its menu plays as a panel here, with no player in
 // the world, until a scene's place has a space.
 export const story: Space = {
@@ -244,7 +266,9 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood, downtown, story }
+
+export const centerOf = (s: Space): Vec => s.center ?? vec(0, 0)
 
 export const owenLook = owen
 

@@ -1,11 +1,12 @@
 import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { menu, send } from '../../text-game/src/story.ts'
+import { menu, place, send } from '../../text-game/src/story.ts'
 import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
 import type { SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
+import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 
 import type { Motion } from './cast.ts'
 import { INDOOR_PACE, RUN_SPEED, WALK_SPEED } from './cast.ts'
@@ -23,7 +24,7 @@ export const TURN_GO = 0.5
 
 export type Button = Readonly<{ id: string; label: string }>
 
-export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end' | 'error'; title: string; text: string; buttons: readonly Button[] }>
+export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end' | 'error' | 'locked'; title: string; text: string; buttons: readonly Button[] }>
 
 export type Holding = Readonly<{ id: string; note?: string; progress: number; time: number }>
 
@@ -75,12 +76,12 @@ export const sendNote = (g: Game, note: string): Game => {
   return { ...g, story: send(g.story, note), path: [...g.path, option.n] }
 }
 
-const enter = (g: Game, space: SpaceId): Game => ({
+const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: number = Math.PI): Game => ({
   ...g,
   space,
-  pos: spaces[space].spawn,
-  facing: Math.PI,
-  view: Math.PI,
+  pos,
+  facing,
+  view: facing,
   vel: zero,
   t: 0,
   panel: undefined,
@@ -117,6 +118,9 @@ export const failed = (text: string): Game => ({
   panel: { kind: 'error', title: "Can't start there", text, buttons: [restart] },
 })
 
+// A door downtown opens when the story is at the place behind it.
+const doorOpen = (g: Game, id: string): boolean => doors.some((d) => d.id === id && d.place === place(g.story))
+
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
@@ -124,6 +128,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'bar') return i.id === 'door' ? talked(g) : i.id === 'hank' ? g.story.scene === 'p_bar' : true
     if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
     if (g.space === 'flood') return g.story.scene === 'p_end'
+    if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
     return true
   })
 
@@ -138,7 +143,19 @@ export const seen = (g: Game): boolean => g.space === 'camp' && sees(watcher(g),
 
 const leftPrologue = (from: State, to: State): boolean => menu(from).act === 'Prologue' && menu(to).act !== 'Prologue'
 
+// The walk between two rooms: the story has moved to a place downtown reaches on foot from the space Owen is in.
+const walkFrom = (g: Game): Game | undefined => {
+  const leg = legs.find((l) => l.from === g.space && l.place === place(g.story))
+  if (!leg) return undefined
+  const s = spawnAt(leg.spawn)
+  return enter(g, 'downtown', vec(s.x, s.z), yawOf(s.facing))
+}
+
+const locked = (title: string): Panel => ({ kind: 'locked', title, text: 'The door is locked.', buttons: [close('Step back.')] })
+
 const arrive = (g: Game): Game => {
+  const walking = walkFrom(g)
+  if (walking) return walking
   const r = route(g.story, g.space)
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') {
@@ -177,6 +194,11 @@ export const interact = (g: Game): Game => {
   }
   if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, ['sleep']) }
   if (g.space === 'camp' && id === 'plane') return arrive(g)
+  if (g.space === 'downtown') {
+    const door = doors.find((d) => d.id === id)
+    if (door && doorOpen(g, id)) return arrive(g)
+    if (door?.locked) return { ...g, panel: locked(door.title) }
+  }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }

@@ -98,8 +98,13 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lighting['lamp']>>> = {
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 
+// Downtown is the one outdoor space as big as the town: fog never has to hide more than the play area
+// (docs/art/README.md, Summer: outdoors start 30 m, end 220 m).
+const DOWNTOWN_FOG = { fogStart: 30, fogEnd: 220 } as const
+
 export const lighting = (space: SpaceId, season: Season, weather: Weather): Lighting => {
   const base = outdoor[`${season}:${weather}`]
+  if (space === 'downtown') return { ...base, ...DOWNTOWN_FOG }
   const lamp = indoorLamp[space]
   return lamp ? { ...base, sunIntensity: base.sunIntensity * 0.5, fogStart: 40, fogEnd: 90, lamp } : base
 }
