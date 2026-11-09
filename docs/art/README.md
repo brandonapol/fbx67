@@ -75,6 +75,9 @@ looks down.
   - **Prologue, July at 11 pm:** azimuth **330-350 degrees** (north-northwest), disc **0 to +4 degrees** above the
     horizon. This is a deliberate cheat under "plausible, not archival": the Prologue text says "The midnight sun is
     still up at eleven", so the engine keeps the disc up.
+  - The rest of the Prologue's summer is the real sun at the scene's `clock(state)` (`game/src/sun.ts`, standard
+    time): the July morning at the camp has it high in the southeast. Only while the real sun is below **+3
+    degrees** does the cheat hold the disc at +3, its azimuth clamped into the 330-350 arc.
   - The real sky: at 64.84 N, 147.72 W, 23:00 on July 1 / 15 / 31 puts the sun at **-1.5 / -3.0 / -6.3 degrees** on
     standard time (UTC-10), or **+0.7 / -0.8 / -4.0 degrees** on daylight time. Whether Alaska kept daylight saving
     in 1967 is open ([`fact-checks.md`](../fact-checks.md) item 38).

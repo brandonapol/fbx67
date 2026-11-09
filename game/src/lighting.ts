@@ -1,5 +1,8 @@
-import type { Weather } from '../../text-game/src/story.ts'
-import type { Season, SpaceId } from './levels.ts'
+import type { Clock, State } from '../../text-game/src/types.ts'
+import type { Season as StorySeason, Weather } from '../../text-game/src/story.ts'
+import { clock, season, weather } from '../../text-game/src/story.ts'
+import type { Season, Space, SpaceId } from './levels.ts'
+import { sunAt } from './sun.ts'
 
 // Light, sky, fog and grade per space, season and moral weather, from docs/art/README.md ("Light", "Summer, the
 // Prologue" and "Moral weather"). Pure data: render.ts applies it, and lighting.test.ts holds it to the art rules.
@@ -48,6 +51,7 @@ export const grades: Readonly<Record<Lighting['grade'], Grade>> = {
 }
 
 // The Prologue, July at 11 pm: the sun north-northwest, its disc just up (the stated cheat in docs/art/README.md).
+// With a story clock the sun is the real one (sun.ts); these are the sun's place when a scene has no clock.
 const summer: Lighting = {
   grade: 'summer',
   sky: { zenith: '#8592b4', horizon: '#7d8fb8', sunward: '#f3b98a' },
@@ -124,10 +128,34 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
 
 // Indoor fog is smoke in lamplight: warm and dark, never the sky's haze.
 // Indoors fog veils the far wall of a 12 m room 10-20% (docs/art/README.md, Summer: start 2 m, end 60 m).
-const INDOOR = { fogStart: 2, fogEnd: 60, fog: '#4a3a2e', ambient: '#a49482', sunIntensity: summer.sunIntensity * 0.5 } as const
+// No rain falls indoors, whatever the season outside.
+const INDOOR = {
+  fogStart: 2,
+  fogEnd: 60,
+  fog: '#4a3a2e',
+  ambient: '#a49482',
+  sunIntensity: summer.sunIntensity * 0.5,
+  rain: false,
+} as const
 
-const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting => {
-  if (season === 'summer') return summer
+// The midnight-sun cheat (docs/art/README.md, Light): the Prologue text keeps the sun up at eleven, so while the real
+// sun is below this elevation the disc is held here, in the north-northwest arc the rule gives for 11 pm.
+export const MIDNIGHT_SUN = { elevation: 3, azimuth: [330, 350] } as const
+
+const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
+
+// The summer sun at a clock: the real sun when it is above the cheat's disc, else the cheat. Azimuths are compared
+// as signed degrees around north, so 8 degrees past north clamps to 350, not 330.
+export const summerSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevation'> => {
+  const real = sunAt(at)
+  if (real.elevation >= MIDNIGHT_SUN.elevation) return { sunAzimuth: real.azimuth, sunElevation: real.elevation }
+  const signed = real.azimuth > 180 ? real.azimuth - 360 : real.azimuth
+  const [lo, hi] = MIDNIGHT_SUN.azimuth
+  return { sunAzimuth: clamp(signed, lo - 360, hi - 360) + 360, sunElevation: MIDNIGHT_SUN.elevation }
+}
+
+const outdoors = (space: SpaceId, season: Season, weather: Weather, when?: Clock): Lighting => {
+  if (season === 'summer') return when === undefined ? summer : { ...summer, ...summerSun(when) }
   const band = bandOf[weather]
   const base = flood[band]
   const key = streetKey[band]
@@ -138,11 +166,27 @@ const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting =>
 // The story backdrop belongs to no place: a slate floor fading into slate, lit only enough to read as a room.
 const STORY = { fog: '#3a3f4c', fogStart: 0, fogEnd: 12, ambient: '#8a93a6' } as const
 
-export const lighting = (space: SpaceId, season: Season, weather: Weather): Lighting => {
-  const base = outdoors(space, season, weather)
+export const lighting = (space: SpaceId, season: Season, weather: Weather, when?: Clock): Lighting => {
+  const base = outdoors(space, season, weather, when)
   const lamp = indoorLamp[space]
   if (!lamp) return base
   return { ...base, ...INDOOR, ...(space === 'story' ? STORY : {}), lamp }
+}
+
+const isLit = (x: StorySeason | undefined): x is Season => x === 'summer' || x === 'flood'
+
+// When a space is lit: the story's clock, and the season from it (docs/story-api.md, "Where, when and what next").
+// A scene with no clock, or a season the engine has no light for yet (freeze-up, winter, breakup), keeps the space's
+// own. The story backdrop belongs to no place and no hour, so it keeps its own too.
+export const timeOf = (space: Space, s: State): Readonly<{ season: Season; clock?: Clock }> => {
+  if (space.id === 'story') return { season: space.season }
+  const story = season(s)
+  return { season: isLit(story) ? story : space.season, clock: clock(s) }
+}
+
+export const lightingFor = (space: Space, s: State): Lighting => {
+  const t = timeOf(space, s)
+  return lighting(space.id, t.season, weather(s), t.clock)
 }
 
 // The unit vector toward the sun in world space (x east, y up, z south).
