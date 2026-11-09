@@ -29,7 +29,7 @@ Every mission comes with a short list of the endings it accepts. The game must r
 | Major's cabinet | code or forced, seen or not; or refused (Lucy goes herself) |
 | Ski search | reached the wreck (always), route taken |
 | Search for Eli (Act 1) | errand: ran it / skipped it |
-| The body (Act 1) | pointed out the knot / cut it silently |
+| The body (Act 1) | knot: pointed it out / cut it silently |
 | Barfight (Act 1) | opened (got up / stayed seated), move (shove / rack / bottle), stood with Eli (yes / no), caught (clean / red-handed) |
 | The wire (Act 4) | got a full confession / got part of it / got caught wearing it |
 | Ice jam (Act 4) | stopped it / caught the Major / it blew |

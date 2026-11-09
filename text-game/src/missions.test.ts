@@ -57,6 +57,44 @@ test('the search moves Joan only on the errand, Eli trust by one either way, and
   assert.deepEqual([skipped.joan - atTrack.joan, skipped.eliTrust - atTrack.eliTrust, skipped.heat - atTrack.heat], [0, 1, 0])
 })
 
+// The search on the go path, and the stay path's single bag line, both land on a1_body.
+const atBodyGo = sendMission(atTrack, 'ranIt')
+const atBodyStay = replay([1, 1, 1, 1, 1, 1, 2]).at(-1) as State
+
+test('the body offers knot: pointed it out / cut it silently at a1_body on both paths', () => {
+  ;[atBodyGo, atBodyStay].forEach((s) => {
+    assert.equal(s.scene, 'a1_body')
+    const m = mission(s)
+    assert.ok(m)
+    assert.equal(`${m.title}. ${m.detail}: ${m.endings.map((e) => e.label).join(' / ')}`, 'The body. Knot: pointed it out / cut it silently')
+    assert.deepEqual(
+      m.endings.map((e) => e.note),
+      ['pointedItOut', 'cutItSilently'],
+    )
+  })
+})
+
+test('each body note agrees with playing its scenes one note at a time', () => {
+  ;[atBodyGo, atBodyStay].forEach((s) => {
+    assert.deepEqual(sendMission(s, 'pointedItOut'), ['pointOutKnot', 'liftBody'].reduce(send, s))
+    assert.deepEqual(sendMission(s, 'cutItSilently'), send(s, 'cutKnot'))
+  })
+})
+
+test('the body always grants the knot, moves Eli trust only when pointed out, and never heat', () => {
+  ;[atBodyGo, atBodyStay].forEach((s) => {
+    const pointed = sendMission(s, 'pointedItOut')
+    const cut = sendMission(s, 'cutItSilently')
+    ;[pointed, cut].forEach((out) => {
+      assert.equal(out.scene, 'a1_ruling')
+      assert.ok(out.evidence.includes('knot'))
+      assert.equal(out.heat, s.heat)
+    })
+    assert.equal(pointed.eliTrust - s.eliTrust, 1)
+    assert.equal(cut.eliTrust, s.eliTrust)
+  })
+})
+
 test('every mission note ends at its end scene, and the notes cover every way through', () => {
   missions.forEach((m) => {
     const starts = allAt(m.start)

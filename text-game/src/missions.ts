@@ -27,4 +27,17 @@ const searchForEli: Mission = {
   ],
 }
 
-export const missions: readonly Mission[] = [searchForEli]
+// docs/acts/act1-missions.md, section 2. Both paths reach a1_body; only the choice moves trust.
+const theBody: Mission = {
+  id: 'theBody',
+  title: 'The body',
+  detail: 'Knot',
+  start: 'a1_body',
+  end: 'a1_ruling',
+  endings: [
+    { note: 'pointedItOut', label: 'pointed it out', applies: ['pointOutKnot', 'liftBody'] },
+    { note: 'cutItSilently', label: 'cut it silently', applies: ['cutKnot'] },
+  ],
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody]
