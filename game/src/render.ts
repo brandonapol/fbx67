@@ -4,11 +4,11 @@ import type { Figure, Prop, Space } from './levels.ts'
 import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, spaces } from './levels.ts'
 import type { Pose } from './camera.ts'
 import { FOV, NEAR } from './camera.ts'
-import type { Lighting } from './lighting.ts'
+import type { Lighting, Time } from './lighting.ts'
 import type { Cast } from './characters.ts'
 import { loadCast } from './characters.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
-import { grades, lightingFor, skyColor, sunDirection, timeOf } from './lighting.ts'
+import { grades, lighting, skyColor, sunDirection, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { owenMotion, seen, watcher } from './prologue.ts'
 
@@ -228,8 +228,7 @@ type Built = Readonly<{
   coneMats?: readonly [pc.StandardMaterial, pc.StandardMaterial]
   rain: readonly pc.Entity[]
   weather: string
-  season: string
-  clock?: string
+  time: Time
 }>
 
 export const createView = async (canvas: HTMLCanvasElement, base: string): Promise<View> => {
@@ -276,7 +275,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     if (camera.camera) camera.camera.farClip = farClipFor(l)
   }
 
-  const build = (g: Game): Built => {
+  const build = (g: Game, t: Time): Built => {
     const space = spaces[g.space]
     const root = new pc.Entity(space.id)
     const c = centerOf(space)
@@ -294,8 +293,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       })
       root.addChild(cone)
     }
-    const t = timeOf(space, g.story)
-    const l = lightingFor(space, g.story)
+    const l = lighting(space.id, t.season, weather(g.story), t.clock)
     const rain = l.rain
       ? Array.from({ length: 220 }, (_, i) => {
           const r = primitive(root, 'box', '#c8d0da', [((i * 7.31) % 24) - 12, (i * 3.7) % 9, ((i * 5.17) % 18) - 9], [0.02, 0.5, 0.02], {
@@ -306,7 +304,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story), season: t.season, clock: t.clock }
+    return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story), time: t }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -329,16 +327,15 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   }
 
   const sync = (g: Game, dt: number, cam: Pose): void => {
-    const t = timeOf(spaces[g.space], g.story)
-    if (!state.built || state.built.id !== g.space || state.built.weather !== weather(g.story) || state.built.season !== t.season) {
-      dispose(state.built)
-      state.built = build(g)
-    } else if (state.built.clock !== t.clock) {
-      // The light snaps to the story's clock at each scene; the space itself stays as it is.
-      light(lightingFor(spaces[g.space], g.story), spaces[g.space])
-      state.built = { ...state.built, clock: t.clock }
-    }
-    const b = state.built
+    const space = spaces[g.space]
+    const here = state.built?.id === g.space ? state.built : undefined
+    const t = timeOf(space, g.story, g.path)
+    const rebuild = !here || here.weather !== weather(g.story) || here.time.season !== t.season
+    if (rebuild) dispose(state.built)
+    // The light snaps to the story's clock at each scene; the space itself stays as it is.
+    if (!rebuild && here.time.clock !== t.clock) light(lighting(space.id, t.season, weather(g.story), t.clock), space)
+    const b: Built = rebuild ? build(g, t) : { ...here, time: t }
+    state.built = b
     const motion = owenMotion(g)
     const owenClip = clipFor(motion)
     cast.play(owen, owenClip, playbackRate(owenClip, motion.speed))

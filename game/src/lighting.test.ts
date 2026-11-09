@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Weather } from '../../text-game/src/story.ts'
 import { initialState } from '../../text-game/src/state.ts'
+import { replay } from '../../text-game/src/engine.ts'
 import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { spaces } from './levels.ts'
 import type { Lighting } from './lighting.ts'
@@ -134,4 +135,17 @@ test('indoor fog is darker than the sky haze outside', () => {
     return 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)
   }
   ;(['bar', 'room'] as const).forEach((id) => assert.ok(luma(of(id, 'clear').fog) < luma(of('downtown', 'clear').fog) / 2, id))
+})
+
+// Hiding at the camp sends the story on to p_end (14 August, the flood) while Owen is still on the gravel bar in July:
+// the camp keeps the hour of the last scene set there, read from the path, so a rebuild (the probe resets the view
+// before every capture) does not lose it.
+test('a space keeps the hour of its last scene when the story moves on to another place', () => {
+  const path = [3, 1, 1, 1, 3]
+  const end = replay(path).at(-1)!
+  assert.equal(end.scene, 'p_end')
+  assert.deepEqual(timeOf(spaces.camp, end, path), { season: 'summer', clock: '1967-07-15T10:00' })
+  assert.deepEqual(lightingFor(spaces.camp, end, path), lightingFor(spaces.camp, at('p_camp')))
+  // With no path there to read, the space falls back to its own season and the default sun, never the flood's rain.
+  assert.deepEqual(timeOf(spaces.camp, end), { season: 'summer' })
 })
