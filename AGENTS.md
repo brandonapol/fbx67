@@ -27,7 +27,7 @@ text-game/src/matrix.ts       one runnable path per combination of plot decision
 text-game/routes/             golden routes, transcripts and the matrix summary, generated and committed
 web/                          the browser build (Vite, vanilla TypeScript) on GitHub Pages
 game/                         the engine build (PlayCanvas, TypeScript), served under /play/
-git/hooks/                    the pre-commit hook, installed by make setup/hooks
+git/hooks/                    the repo's hooks; make setup/hooks installs launchers in .git/hooks
 ```
 
 ### Where to read next

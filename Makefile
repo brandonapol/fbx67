@@ -25,8 +25,12 @@ setup/web: ## npm ci in web
 setup/game: ## npm ci in game
 	cd $(GAME) && npm ci
 
-setup/hooks: ## Point git at the repo's hooks (pre-commit runs check/fast)
-	git config core.hooksPath git/hooks
+setup/hooks: ## Install the repo's git/hooks as launchers in .git/hooks (pre-commit runs check/fast)
+	scripts/install-hooks.bash
+
+.PHONY: test/hooks
+test/hooks: ## The hook installer leaves core.hooksPath unset and keeps existing hooks
+	scripts/install-hooks.test.bash
 
 .PHONY: check check/fast check/text check/web check/game check/markdown check/routes check/attribution
 check: check/text check/web check/game check/routes ## The whole gate CI runs on a pull request
