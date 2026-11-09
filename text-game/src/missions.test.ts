@@ -110,9 +110,11 @@ test('every mission note ends at its end scene, and the notes cover every way th
   })
 })
 
+// A refusal or a skip may land where a detail does (the hotel bar's pieces and skipped, at heat 0), so only the
+// single-detail missions without one are held to a state per note.
 test('the single-detail missions give every note its own state', () => {
   missions
-    .filter((m) => m.details.length === 1)
+    .filter((m) => m.details.length === 1 && !m.or)
     .forEach((m) =>
       allAt(m.start).forEach((start) => {
         assert.equal(new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note)))).size, m.endings.length, `${m.id}: two notes give the same state`)
@@ -251,4 +253,44 @@ test('the borrowed key is missed at a2_flight: one more heat, and the sergeant h
   assert.doesNotMatch(render(lunch), /spare key/)
   assert.equal(send(key, 'writeMama').heat - key.heat, 1)
   assert.equal(send(lunch, 'writeMama').heat, lunch.heat)
+})
+
+// Every state that reaches the hotel bar: each photo lab note from every way into Act 2.
+const atHotel = allAt('a2_hotel')
+
+test('the hotel bar offers heard: most / pieces, or skipped at a2_hotel', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3]).at(-1) as State
+  assert.equal(s.scene, 'a2_hotel')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The hotel bar. Heard: most / pieces; or skipped')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    ['heardMost', 'heardPieces', 'skipped'],
+  )
+})
+
+test('each hotel bar note agrees with playing its scenes one note at a time', () => {
+  const s = atHotel[0]
+  assert.deepEqual(sendMission(s, 'heardMost'), ['guitar', 'sitClose', 'tellLucy'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'heardPieces'), ['guitar', 'sitFar', 'tellLucy'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'skipped'), send(s, 'skip'))
+})
+
+test('only hearing most of it gives the hotel talk; only skipping moves heat', () => {
+  atHotel.forEach((s) => {
+    const [most, pieces, skipped] = ['heardMost', 'heardPieces', 'skipped'].map((n) => sendMission(s, n))
+    assert.deepEqual([most, pieces, skipped].map((o) => o.evidence.includes('hotelTalk')), [true, false, false])
+    assert.deepEqual([most.heat, pieces.heat], [s.heat, s.heat])
+    assert.equal(skipped.heat, Math.max(0, s.heat - 1))
+    assert.equal(JSON.stringify(pieces) === JSON.stringify(skipped), s.heat === 0)
+  })
+})
+
+test('Lucy repeats the quiet man\'s words only when Wade heard most of it', () => {
+  const s = atHotel[0]
+  const toOffice = (n: string) => ['listen', 'continue'].reduce(send, sendMission(s, n))
+  assert.equal(toOffice('heardMost').scene, 'a2_co_ask')
+  assert.match(render(toOffice('heardMost')), /Before is what counts/)
+  assert.doesNotMatch(render(toOffice('heardPieces')), /Before is what counts/)
 })

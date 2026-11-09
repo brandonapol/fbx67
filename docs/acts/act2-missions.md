@@ -52,3 +52,33 @@ From the decision at `a2_photos` until Wade hands Lucy the photographs (or doesn
 - **New state.** `photoLab` (`lunch` or `key`, unset on refusal), the photo-lab method the design adopts. Its reader is
   `keyMissed` in `logic.ts`: at `a2_flight` the sergeant has Wade's name, and leaving the scene adds the heat. The
   liveness rules drop it after `a2_flight`.
+
+## 2. The hotel bar
+
+From the decision at `a2_hotel` until Wade packs up his guitar, at `a2_chiefs`. October, downtown.
+
+- **Way in.** The prompt at `a2_hotel` is *Bring your guitar* or *Skip it* (`guitar`, `skip`). Skipping is -1 heat:
+  one less night of a uniform being seen in town.
+- **Objective.** Play the evening in the hotel bar and listen to Tolliver's back booth.
+- **Verbs.** *Play*: a short rhythm game over a set of songs; *Lean*: Wade's attention on the booth, which the
+  subtitles show as fragments; *Move*: between songs, Wade can take another stool. Music is cover: while he plays well
+  nobody looks at him, and the closer he sits and the cleaner he plays, the more of the booth's talk gets through. A
+  missed chord or a dead stop makes the room look up, and the booth goes quiet for a while.
+- **Partial information.** Even the best evening is half a conversation: Tolliver loud and angry, the other man
+  quiet, his back to the room, never named. The player hears words, not what they mean.
+- **Seen and busted.** Busted is stopping dead next to the booth, or leaning in without playing, until Tolliver or the
+  other man turns and stares: retry from the last song. There is no seen ending; playing badly costs only what Wade
+  hears.
+- **Checkpoints.** Each song is one.
+- **The note.**
+
+  > The hotel bar. Heard: most / pieces; or skipped
+
+  *Most* applies `guitar`, `sitClose` (the `hotelTalk` evidence) and `tellLucy`; the text build asks where Wade sits,
+  in `a2_hotel_set`. *Pieces* applies `guitar`, `sitFar` and `tellLucy` (`a2_hotel_pieces`): Tolliver's voice and
+  nothing from the quiet man, so no evidence. *Skipped* applies `skip`. The menu is `theHotelBar`; every note lands on
+  `a2_chiefs`. At heat 0 *pieces* and *skipped* land on the same state, since the skip's heat has nothing to take off.
+- **What shades heat or trust.** Only the skip (-1 heat). How well Wade plays shades what he hears (Rule 3), and the
+  `hotelTalk` evidence is read later: Lucy repeats the quiet man's words before the Major's cabinet, Wade remembers
+  Tolliver in Act 3, and he knows the voice at Ashby's lunch in Act 4.
+- **New state.** None.

@@ -120,4 +120,20 @@ const thePhotoLab: Mission = {
   endings: [...combos(wayIn, drawers), { note: 'refused', label: 'refused', applies: ['refuse'] }],
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab]
+// docs/acts/act2-missions.md, section 2. How well Wade plays and how close he sits decide what he hears; the text
+// build asks where he sits. Only hearing most of it gives the hotelTalk evidence.
+const theHotelBar: Mission = {
+  id: 'theHotelBar',
+  title: 'The hotel bar',
+  details: [{ name: 'Heard', labels: ['most', 'pieces'] }],
+  or: 'skipped',
+  start: 'a2_hotel',
+  end: 'a2_chiefs',
+  endings: [
+    { note: 'heardMost', label: 'most', applies: ['guitar', 'sitClose', 'tellLucy'] },
+    { note: 'heardPieces', label: 'pieces', applies: ['guitar', 'sitFar', 'tellLucy'] },
+    { note: 'skipped', label: 'skipped', applies: ['skip'] },
+  ],
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar]
