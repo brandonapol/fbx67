@@ -41,6 +41,11 @@ under Higgsfield's terms of service for paid plans.
 | `owen` | Owen Marsh | image_to_3d from reference `3771fb58-c6d8-4252-8c9e-8cdf8ad03d73` | `3483ed5e-e7f9-416d-9fd6-af396ceacc51` |
 | `wade` | Wade | image_to_3d from reference `f8c7e080-5262-4a2d-a32e-405017a08d05` | `b502c233-e9f8-4cee-8a49-3687c0b9b58e` |
 | `hank` | Hank Lyle | image_to_3d from reference `abc304e0-fec0-4a76-9a74-1eb4b28b42c7` | `1d003f05-f141-4d03-9875-0078f048c190` |
+| `wadeWinter` | Wade (winter parka) | image_to_3d from reference `fb3b3a92-4e0e-4d7d-8201-d9e7c8bcdab2` | `a4e25813-90d0-4b3a-b76f-65d56559a222` |
+
+Wade (winter parka), `wadeWinter`: Higgsfield `image_to_3d`, job `a4e25813-90d0-4b3a-b76f-65d56559a222`, from reference image
+`fb3b3a92-4e0e-4d7d-8201-d9e7c8bcdab2`. Prompt: winter-parka Wade, A-pose, plain grey background. Retargeted with the
+shared clips like the rest of the cast. Nothing selects it by season yet; it is available as an asset only.
 
 Reference prompt pattern: "Character turnaround reference for 3D modeling, single figure, full body from head to
 boots, straight-on front view, symmetrical A-pose with arms angled about 45 degrees away from the body, hands open
