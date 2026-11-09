@@ -47,21 +47,23 @@ test('the schedule lookup puts each person where the story clock says', () => {
   })
   assert.deepEqual(where(walkHome), {
     preacher: 'secondAvenue', cabbie: 'secondAvenue', touristHusband: 'secondAvenue', touristWife: 'secondAvenue',
-    landlady: 'boardingHouse porch', boarder: 'boardingHouse porch',
   })
+  // That night the landlady and the boarder are in the boarding house parlor, staged as its figures, not on the porch.
+  assert.deepEqual(spaces.boarding.figures.map((f) => [f.id, f.during]).sort(), [['boarder', 'owensRoom'], ['landlady', 'owensRoom']])
   const morning = where(walkToRiver)
   assert.equal(morning.reporter, 'cushman')
   assert.equal(morning.foreman, 'nlCafe')
   assert.equal(morning.touristWife, 'cushman')
   assert.equal(morning.daughter, 'firstAvenue')
   assert.equal(morning.fisherman, 'floatDock')
+  assert.equal(morning.landlady, 'boardingHouse porch', 'staged in the parlor at night only; on the porch in the morning')
   assert.equal(Object.keys(morning).length, 14)
   assert.deepEqual(scheduled(at('p_camp')), [], 'nobody from town is at the camp')
 })
 
 test('at least 25 distinct people across the bar, the street and the dock, each with a schedule and a slot kind', () => {
   const placed = new Set(states.flatMap((s) => poses(s, 1, 0).map((p) => p.who)))
-  const standing = new Set(spaces.bar.figures.map((f) => f.id))
+  const standing = new Set(Object.values(spaces).flatMap((sp) => sp.figures.map((f) => f.id)))
   const town = new Set(prologueTown.map((a) => a.id))
   const everyone = new Set([...placed, ...[...standing].filter((id) => town.has(id))])
   assert.ok(everyone.size >= 25, `${everyone.size} people`)

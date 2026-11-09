@@ -35,6 +35,9 @@ export type Figure = Readonly<{
   height: number
   hood?: boolean
   activity?: Activity
+  // The story place while which this figure stands in for its townsperson, so the town does not place them again;
+  // the space's own place when it has one.
+  during?: Place
 }>
 
 export type Space = Readonly<{
@@ -196,8 +199,8 @@ export const boarding: Space = {
     { box: { x: -7.9, z: 1.6, w: 0.08, d: 1.2 }, h: 1.0, y: 1.0, color: '#ffd9a0', glow: true },
   ],
   figures: [
-    { id: 'landlady', at: vec(-4.5, 3.4), facing: Math.PI / 2, coat: '#7b5e78', skin: '#e2b994', hair: '#b8b2a8', height: 1.6 },
-    { id: 'boarder', at: vec(-3.0, 1.1), facing: -Math.PI / 2, coat: '#3e4a5a', skin: '#d8a880', hair: '#3a2c20', height: 1.78 },
+    { id: 'landlady', at: vec(-4.5, 3.4), facing: Math.PI / 2, coat: '#7b5e78', skin: '#e2b994', hair: '#b8b2a8', height: 1.6, during: 'owensRoom' },
+    { id: 'boarder', at: vec(-3.0, 1.1), facing: -Math.PI / 2, coat: '#3e4a5a', skin: '#d8a880', hair: '#3a2c20', height: 1.78, during: 'owensRoom' },
   ],
   spots: [
     { id: 'landlady', x: -4.5, z: 3.4, r: 2.4, prompt: 'Say good evening' },

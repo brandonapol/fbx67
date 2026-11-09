@@ -1,6 +1,7 @@
 import type { State } from '../../text-game/src/types.ts'
 import type { Ambient, Window } from '../../text-game/src/ambient/format.ts'
 import { present, within } from '../../text-game/src/ambient/select.ts'
+import { place } from '../../text-game/src/story.ts'
 import { prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
 import type { Activity } from './cast.ts'
 import type { SpaceId } from './levels.ts'
@@ -172,10 +173,15 @@ export const spotOf = (w: Window): string => w.spot ?? w.place
 
 export const spaceOf = (spot: string): AmbientSpace | undefined => slots.find((s) => s.spot === spot)?.space
 
-// People a space already stands as its own figures (Hank behind the bar) are not placed again.
-const staged = new Set(Object.values(spaces).flatMap((sp) => sp.figures.map((f) => f.id)))
+// People a space already stands as its own figures (Hank behind the bar, the landlady in her parlor) are not placed
+// again while the story is at the place that space stages them for.
+const staged = (s: State): ReadonlySet<string> =>
+  new Set(Object.values(spaces).flatMap((sp) => sp.figures.filter((f) => (f.during ?? sp.place) === place(s)).map((f) => f.id)))
 
-export const scheduled = (s: State): readonly Ambient[] => present(s, prologueTown).filter((a) => !staged.has(a.id))
+export const scheduled = (s: State): readonly Ambient[] => {
+  const here = staged(s)
+  return present(s, prologueTown).filter((a) => !here.has(a.id))
+}
 
 // Everyone here now, in cast order, takes a free slot at their spot of the first kind they want that has room, or any
 // free slot there if none does. The seed picks among equal choices.
