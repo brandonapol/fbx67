@@ -1,5 +1,6 @@
 import type { Bus } from './mixer.ts'
 import type { Ground } from './footsteps.ts'
+import { SEASON_F } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
 import { CURLY_PERIOD, REEL_AT, TYPEWRITER_AT, WORK } from './levels.ts'
 import type { Game } from './prologue.ts'
@@ -47,6 +48,11 @@ export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'gl
   | 'knock'
   | 'keys'
   | 'boots'
+  | 'cough'
+  | 'impact'
+  | 'snap'
+  | 'calls'
+  | 'fall'
 
 export type Condition = 'writing' | 'refueling'
 
@@ -278,7 +284,70 @@ const cell: Soundscape = {
 
 export const act1Soundscapes: Readonly<Record<Act1Space, Soundscape>> = { line, hospital, barfight, cell }
 
-// The spaces built so far. An Act 1 or Act 2 bed joins here when its space is added to levels.ts.
+// Act 3, deep winter: the town at forty below, the flight home, Lucy's night at the wreck, and Wade's search on skis.
+export type Act3Space = 'icefog' | 'cockpit' | 'crash' | 'slope'
+
+export const FIRE_AT = vec(1.5, 2)
+export const SPRUCE_AT = vec(-6, -8)
+export const SEARCHERS_AT = vec(0, -30)
+
+const deepWinter = SEASON_F.winter
+
+const wind = (gain: number): readonly Layer[] => [
+  { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 300, gain, wobble: { rate: 0.05, depth: 0.8, on: 'gain' } },
+  { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 800, q: 0.6, gain: gain * 0.4, wobble: { rate: 0.09, depth: 0.8, on: 'freq' } },
+]
+
+// Ice fog swallows the town: no wind, a low hush, one plugged-in car somewhere down the block.
+const icefog: Soundscape = {
+  ground: { surface: 'snow', regions: [], tempF: deepWinter },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 180, gain: 0.18 },
+    { kind: 'idle', bus: 'ambience', gain: 0.08, at: vec(5, 6), rpm: 680 },
+  ],
+  events: [
+    { spot: 'raven', bus: 'ambience', every: [15, 40], at: vec(0, -12), spread: 10 },
+    { spot: 'snap', bus: 'ambience', every: [12, 35], spread: 14 },
+  ],
+}
+
+// The flight home: the engine's drone and the slipstream; it coughs on the water in the fuel.
+const cockpit: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [
+    { kind: 'idle', bus: 'ambience', gain: 0.35, at: vec(0, -1.5), rpm: 2300 },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 1500, gain: 0.12, wobble: { rate: 0.2, depth: 0.3, on: 'gain' } },
+  ],
+  events: [{ spot: 'cough', bus: 'sfx', every: [8, 20], at: vec(0, -1.5), spread: 0.2 }],
+}
+
+// Lucy's night: the fire she keeps going, the wind down the slope, spruce cracking in the cold.
+const crash: Soundscape = {
+  ground: { surface: 'snow', regions: [], tempF: deepWinter },
+  layers: [
+    ...wind(0.22),
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 120, gain: 0.2, at: FIRE_AT, wobble: { rate: 0.4, depth: 0.3, on: 'gain' } },
+  ],
+  events: [
+    { spot: 'crackle', bus: 'ambience', every: [0.05, 0.5], at: FIRE_AT, spread: 0.2 },
+    { spot: 'snap', bus: 'ambience', every: [10, 30], at: SPRUCE_AT, spread: 8 },
+  ],
+}
+
+// Wade's search: the wind on the slope, his own ski track underfoot, the search team calling and dropping away.
+const slope: Soundscape = {
+  ground: { surface: 'ski', regions: [], tempF: deepWinter },
+  layers: wind(0.28),
+  events: [
+    { spot: 'calls', bus: 'voice', every: [25, 60], at: SEARCHERS_AT, spread: 12 },
+    { spot: 'snap', bus: 'ambience', every: [12, 35], at: SPRUCE_AT, spread: 10 },
+  ],
+}
+
+// The crash itself ('impact') and Wade's falls ('fall') are beats, not weather: the missions fire them.
+export const act3Soundscapes: Readonly<Record<Act3Space, Soundscape>> = { icefog, cockpit, crash, slope }
+
+// The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
 export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK

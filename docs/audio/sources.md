@@ -54,6 +54,17 @@ of audio files: every sound below is synthesized at run time with the Web Audio 
 | Hotel bar murmur and glasses        | Act 2 hotel bar         | Procedural: walla (5 voices), clinks                       | Original, repo |
 | Hall room tone                      | Act 2 community hall    | Procedural: low-passed brown noise                         | Original, repo |
 | Coffee urn perking                  | Act 2 community hall    | Procedural: rising sine bubbles, element hum               | Original, repo |
+| Snow at forty below                 | Act 3 outdoors          | Procedural: noise grains, temperature from the season      | Original, repo |
+| Ice-fog hush                        | Act 3 town              | Procedural: low-passed brown noise, one far idling car     | Original, repo |
+| Engine drone, slipstream            | Act 3 flight            | Procedural: low sawtooth engine, high-passed pink noise    | Original, repo |
+| Engine coughing and quitting        | Act 3 flight            | Procedural: sawtooth coughs, a falling wind-down           | Original, repo |
+| Spruce impact                       | Act 3 crash             | Procedural: noise branch cracks, brown thud, metal, slough | Original, repo |
+| Fire through the night              | Act 3 crash             | Procedural: wobbling brown noise, noise crackles           | Original, repo |
+| Wind on the slope                   | Act 3 crash, slope      | Procedural: slow-modulated brown, pink noise               | Original, repo |
+| Spruce cracking in the cold         | Act 3 outdoors          | Procedural: band-passed noise crack, brown boom            | Original, repo |
+| Ski glide                           | Act 3 slope             | Procedural: band-passed pink hiss, pitch by temperature    | Original, repo |
+| Falls on skis                       | Act 3 slope             | Procedural: ski clatter, brown thump, snow whump           | Original, repo |
+| Search team calling, fading out     | Act 3 slope             | Procedural: distant sawtooth formant calls, each quieter   | Original, repo |
 
 "Original, repo" means the sound is the output of code written for this project: no third-party recording or sample
 is involved, so it carries whatever license the repository carries.
@@ -68,6 +79,12 @@ is involved, so it carries whatever license the repository carries.
 - **Act 2 spaces.** The four Act 2 beds live in `act2Soundscapes` in `soundscape.ts`, keyed by `town`, `base`,
   `hotel` and `hall`. They play once those spaces exist in `levels.ts`: add the ids to `SpaceId` and move each bed
   into `soundscapes`.
+
+- **Act 3 spaces.** The four Act 3 beds live in `act3Soundscapes` in `soundscape.ts`, keyed by `icefog` (the town
+  at forty below), `cockpit` (the flight home), `crash` (Lucy's night at the wreck) and `slope` (Wade's search on
+  skis). They play once those spaces exist in `levels.ts`, the same way as Act 2. The cough runs on a timer in the
+  cockpit bed; the spruce impact (`impact`) and a fall on skis (`fall`) are beats the missions fire. Snow underfoot
+  takes its temperature from the story's season (`SEASON_F` in `footsteps.ts`) whenever the scene has a clock.
 
 - **A low tier for phones.** The bar's walla runs 7 voices (about 30 nodes) and a gravel step 7 grains. No Act 1 bed
   builds more nodes than the bar (a unit test holds it); the barfight's walla runs 6 voices. A low tier
