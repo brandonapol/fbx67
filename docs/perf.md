@@ -6,7 +6,8 @@ below, so a budget changes here and nowhere else.
 ## How it is measured
 
 The smoke test plays the prologue in headless Chromium and, in each space, walks back and forth for 10 s while the
-page records one sample per frame (see `game/src/probe.ts`). The first 5 frames after recording starts or the player
+page records one sample per frame. `story`, the backdrop for scenes with no space yet, is sampled for 40 frames in
+each act's start from a path (`game/smoke/starts.ts`) while its menu is open (see `game/src/probe.ts`). The first 5 frames after recording starts or the player
 enters a space are dropped, so a space's first build and shader compiles do not count. Every space in
 `game/src/levels.ts` must have a row below, and a space that was sampled but has no row fails. 1 MB is 10^6 bytes.
 
