@@ -4,6 +4,7 @@ import type { AnimLayerLike } from './probe.ts'
 import { freezeAnims, posed, poses } from './probe.ts'
 import { centerOf, spaces } from './levels.ts'
 import { start } from './prologue.ts'
+import { weather } from '../../text-game/src/story.ts'
 
 type Log = string[]
 
@@ -68,4 +69,12 @@ test('a pose replaces position, facing and time, and refuses the wrong space', (
   const p = posed(g, poses.bar!)
   assert.deepEqual([p.pos, p.facing, p.t, p.holding, p.story], [poses.bar!.pos, poses.bar!.facing, 0, undefined, g.story])
   assert.throws(() => posed(g, poses.letter!), /pose is for room/)
+})
+
+test('the skiff band poses put the same shot in each moral-weather band', () => {
+  const g = { ...start(), space: 'flood' as const }
+  const band = (name: string) => weather(posed(g, poses[name]!).story)
+  assert.deepEqual([band('skiff'), band('skiff_dusk'), band('skiff_night')], ['clear', 'dusk', 'night'])
+  assert.deepEqual(poses.skiff_dusk!.shot, poses.skiff!.shot)
+  assert.deepEqual(poses.skiff_night!.shot, poses.skiff!.shot)
 })
