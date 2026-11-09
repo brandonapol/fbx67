@@ -133,7 +133,7 @@ boat up.
 | Co-op Drug | B1, south side of Second next to the Nordale (535 Second Avenue), facing the Blanchfield lane's mouth | x 39..57, z 64..78 | (48, 64), north onto Second | 0.90 | 2 floors, 8 m |
 | Cushman Street bridge | over the river | x −6..6, z −60..2 | | | see [Bridge](#bridge) |
 | Immaculate Conception church | north bank, by the bridge's north end | x −40..−22, z −88..−66 | backdrop | | steeple about 15 m |
-| St. Joseph's Hospital | north bank, a little downstream (west) of the church | x −130..−80, z −118..−82 | backdrop | | 4 floors (a guess) |
+| St. Joseph's Hospital (`stJosephs`) | north bank, a little downstream (west) of the church | x −130..−80, z −118..−82 | backdrop | | 4 floors (a guess) |
 | Northward Building | south of Third between Lacey and Noble | x 88..154, z 112..160 | backdrop | | 8 floors, about 26 m |
 | Gravel lot (Pioneer Hotel site) | First Avenue across Barnette, a full block west of the N.C., off the map | x −112..−92, z 16..32 | backdrop | | none |
 
@@ -147,7 +147,19 @@ Off the map:
   "the Exposition", not "Alaskaland".
 - **Phillips Field**, the bush strip on the north side of the river beyond the railroad yards, where most small
   operators were based. Curly's hangar belongs there.
-- **Eielson Air Force Base**, about 26 miles southeast.
+- **Eielson Air Force Base**, about 26 miles southeast. `eielsonBarracks` is Wade's bunk there (the Act 1 letter
+  home); there is no interior to walk, so it has no coordinates.
+
+Place ids used by the scenes that are not on the walkable map (the `Place` type in `text-game/src/types.ts`):
+
+- `floodCabin`: the half-sunk cabin on the edge of town where Eli's pole finds Owen (Aug 15). Off the map: the
+  scene needs no spot downtown, and the flood tables already cover the water. A spot, if the engine wants one, is
+  a gap to fill.
+- `stJosephs`: the hospital's flooded first floor, a hallway of cots (Aug 15). The building is the backdrop above;
+  the scene is an interior we do not build.
+- `cityJail`: the Fairbanks PD cell and front desk (Aug 20). Off the map: no jail is placed downtown, and the scene
+  never walks to or from it.
+- `eielsonBarracks`: see the Eielson entry above.
 
 ### Ours
 
