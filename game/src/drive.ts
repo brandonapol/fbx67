@@ -111,3 +111,12 @@ export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof 
 }
 
 export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => prologueSteps(who, spot).at(-1)!
+
+// Where Wade stands in the jail to talk: at the bars, inside the cell, and in front of the desk once he is let out.
+export const jailStands = { barnette: vec(-1.95, 0.2), ashby: vec(0.9, 0.1) } as const
+
+// Walks to whoever in the jail is in play and talks to them.
+export const jailTalk = (g: Game, who: keyof typeof jailStands): Game => {
+  const s = jailStands[who]
+  return interact(walk(g, [[s.x, s.z]]))
+}

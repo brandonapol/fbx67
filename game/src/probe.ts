@@ -21,6 +21,8 @@ export const poses: Readonly<Record<string, Pose>> = {
   skiff_night: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 4 },
   // Act 1's first frame: Wade on the sandbag line, the woman from Minto at his shoulder, the river past the bags.
   line: { space: 'line', pos: vec(0.7, -1.2), facing: Math.PI, t: 0, shot: { eye: [3.2, 2.6, 3.6], at: [0, 1.1, -3] } },
+  // Act 1's morning in the drunk tank: Wade in the cell, Barnette at the bars, the desk beyond.
+  cell: { space: 'jail', pos: vec(-3.6, 1.4), facing: Math.PI / 2, t: 0, shot: { eye: [-4.6, 2.4, 3.6], at: [-0.5, 1.1, -0.5] } },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
   // The same street from the same data on a flood day and late in freeze-up (snow down, cars plugged in, smoke up).
   downtown_flood: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-08-15T12:00' } },

@@ -2,7 +2,7 @@ import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Clock } from '../../text-game/src/types.ts'
 import type { Figure, Prop, Space } from './levels.ts'
-import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, propsIn, spaces } from './levels.ts'
+import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, present, propsIn, spaces } from './levels.ts'
 import { stageOf } from './freezeup.ts'
 import type { Pose } from './camera.ts'
 import { FOV, NEAR } from './camera.ts'
@@ -84,7 +84,7 @@ const addProp = (root: pc.Entity, p: Prop): pc.Entity | undefined => {
 }
 
 const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
-  const who = castFor(f.id)
+  const who = castFor(f.cast ?? f.id)
   if (who) {
     const c = cast.spawn(who)
     c.setLocalPosition(f.at.x, 0, f.at.z)
@@ -368,7 +368,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     if (player) cast.play(player, clip, playbackRate(clip, motion.speed))
     spaces[g.space].figures.forEach((f) => {
       const e = b.figures.get(f.id)
-      if (!e || !castFor(f.id)) return
+      if (!e) return
+      e.enabled = present(f, g.story)
+      if (!castFor(f.cast ?? f.id)) return
       const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
     })
