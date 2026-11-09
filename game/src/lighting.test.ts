@@ -72,3 +72,19 @@ test('the sky warms toward the sun and holds the fog color below the horizon', (
   assert.deepEqual(below, [0xc4, 0xaa, 0x9a])
   skyColor(l, [0, 1, 0]).forEach((v) => assert.ok(Number.isFinite(v) && v >= 0 && v <= 1))
 })
+
+// A brightness of 0 is a black frame: PlayCanvas grades in HDR with brightness as a multiplier.
+test('every grade keeps the frame: brightness, contrast and saturation are multipliers near 1', () => {
+  Object.entries(grades).forEach(([name, g]) => {
+    ;[g.brightness, g.contrast, g.saturation].forEach((v) => assert.ok(v >= 0.6 && v <= 1.4, `${name}: ${v}`))
+    assert.ok(g.vignette >= 0 && g.vignette <= 0.6, `${name} vignette ${g.vignette}`)
+  })
+})
+
+test('indoor fog is darker than the sky haze outside', () => {
+  const luma = (hex: string) => {
+    const n = parseInt(hex.slice(1), 16)
+    return 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)
+  }
+  ;(['bar', 'room'] as const).forEach((id) => assert.ok(luma(of(id, 'clear').fog) < luma(of('downtown', 'clear').fog) / 2, id))
+})

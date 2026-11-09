@@ -9,7 +9,8 @@ export type Band = 'alpenglow' | 'blueHour' | 'sodium'
 
 export const bandOf: Readonly<Record<Weather, Band>> = { clear: 'alpenglow', dusk: 'blueHour', night: 'sodium' }
 
-// The post-tonemap grade: PlayCanvas CameraFrame's grading (brightness, contrast, saturation, tint) and vignette.
+// The grade: PlayCanvas CameraFrame's grading, applied in HDR before tonemapping (brightness is an exposure multiplier,
+// 1 leaves the frame alone; tint multiplies), and the vignette's strength.
 export type Grade = Readonly<{ brightness: number; contrast: number; saturation: number; tint: string; vignette: number }>
 
 export type Sky = Readonly<{ zenith: string; horizon: string; sunward: string }>
@@ -37,13 +38,13 @@ export type Lighting = Readonly<{
 
 export const grades: Readonly<Record<Lighting['grade'], Grade>> = {
   // Muted and grounded: warmth comes from the light, so the grade only pulls saturation down a touch.
-  summer: { brightness: 0, contrast: 1.04, saturation: 0.88, tint: '#fff8f0', vignette: 0.25 },
+  summer: { brightness: 1.3, contrast: 1.06, saturation: 0.78, tint: '#fff8f0', vignette: 0.25 },
   // Clean: rose-gold, lifted and soft.
-  alpenglow: { brightness: 0.02, contrast: 0.98, saturation: 0.95, tint: '#fff0ea', vignette: 0.2 },
+  alpenglow: { brightness: 1.05, contrast: 0.98, saturation: 0.95, tint: '#fff0ea', vignette: 0.2 },
   // Strained: cold and flattened.
-  blueHour: { brightness: -0.02, contrast: 1.06, saturation: 0.72, tint: '#dde6ff', vignette: 0.35 },
+  blueHour: { brightness: 0.92, contrast: 1.06, saturation: 0.72, tint: '#dde6ff', vignette: 0.35 },
   // Danger: sodium amber, crushed and close.
-  sodium: { brightness: -0.04, contrast: 1.14, saturation: 0.62, tint: '#ffe2bf', vignette: 0.5 },
+  sodium: { brightness: 0.85, contrast: 1.14, saturation: 0.62, tint: '#ffe2bf', vignette: 0.5 },
 }
 
 // The Prologue, July at 11 pm: the sun north-northwest, its disc just up (the stated cheat in docs/art/README.md).
@@ -121,8 +122,9 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 
+// Indoor fog is smoke in lamplight: warm and dark, never the sky's haze.
 // Indoors fog veils the far wall of a 12 m room 10-20% (docs/art/README.md, Summer: start 2 m, end 60 m).
-const INDOOR = { fogStart: 2, fogEnd: 60, ambient: '#5a4434', sunIntensity: summer.sunIntensity * 0.5 } as const
+const INDOOR = { fogStart: 2, fogEnd: 60, fog: '#3a2c22', ambient: '#8a7c70', sunIntensity: summer.sunIntensity * 0.5 } as const
 
 const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting => {
   if (season === 'summer') return summer
