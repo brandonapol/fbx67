@@ -6,7 +6,8 @@ import type { Gait } from './footsteps.ts'
 import { pace, standing, strideFor, surfaceAt } from './footsteps.ts'
 import { CURLY_PERIOD, WORK, spaces } from './levels.ts'
 import { INDOOR_PACE, JOG, WALK, interact, press, start, still, tick } from './prologue.ts'
-import { DT, talk, walk } from './drive.ts'
+import { DT, talk, toRoom, walk } from './drive.ts'
+import { legs } from './downtown.ts'
 import { arrivals, ducked, holds, refueling, soundscapes, sourceAt, walked } from './soundscape.ts'
 import { beatAt, midiHz, noiseSamples } from './synth.ts'
 import { createAudio } from './audio.ts'
@@ -102,16 +103,21 @@ test('walking a real route counts steps from the distance the game moved', () =>
 
 test('changing space is not walking, and the room door closes on arrival', () => {
   const bar = walk(talk(start(), 'texas'), [[0, 4.2]])
-  const room = interact(bar)
+  const street = interact(bar)
+  assert.equal(street.space, 'downtown')
+  assert.equal(walked(bar, street), 0)
+  assert.deepEqual(arrivals(bar, street), [])
+  const door = walk(street, legs[0]!.route)
+  const room = interact(door)
   assert.equal(room.space, 'room')
-  assert.equal(walked(bar, room), 0)
-  assert.deepEqual(arrivals(bar, room), ['door'])
+  assert.equal(walked(door, room), 0)
+  assert.deepEqual(arrivals(door, room), ['door'])
   assert.deepEqual(arrivals(room, tick(room, still, DT)), [])
   assert.deepEqual(arrivals(undefined, room), [])
 })
 
 test('the typewriter runs while the letter is open, and the jerry can while Curly refuels', () => {
-  const room = interact(walk(talk(start(), 'texas'), [[0, 4.2]]))
+  const room = toRoom(talk(start(), 'texas'))
   const desk = interact(walk(room, [[1.6, -0.8]]))
   assert.ok(!holds('writing', room))
   assert.ok(holds('writing', desk))

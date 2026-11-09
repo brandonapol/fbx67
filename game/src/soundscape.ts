@@ -130,9 +130,18 @@ const flood: Soundscape = {
   events: [],
 }
 
+const downtown: Soundscape = {
+  ground: { surface: 'gravel', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 320, gain: 0.18, wobble: { rate: 0.07, depth: 0.7, on: 'gain' } },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 900, q: 0.7, gain: 0.08, wobble: { rate: 0.11, depth: 0.8, on: 'gain' } },
+  ],
+  events: [{ spot: 'car', bus: 'ambience', every: [6, 18], spread: 8 }],
+}
+
 const story: Soundscape = { ground: { surface: 'wood', regions: [] }, layers: [], events: [] }
 
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood, downtown, story }
 
 export type Act2Space = 'town' | 'base' | 'hotel' | 'hall'
 

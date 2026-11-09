@@ -6,7 +6,7 @@ import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
 import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, owenMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
-import { DT, back, hold, holdWhenSafe, holdWhenWatched, playPrologue, routes, talk, walk } from './drive.ts'
+import { DT, back, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toRoom, walk, walkLeg } from './drive.ts'
 import { angleBetween, length, vec } from './world.ts'
 import { clipFor } from './cast.ts'
 import { spaces } from './levels.ts'
@@ -31,8 +31,8 @@ talks.forEach((who, ti) =>
 
 const atCamp = () => {
   const bar = talk(start(), 'texas')
-  const room = interact(walk(bar, [[0, 4.2]]))
-  return press(press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep'), 'note:fly')
+  const room = toRoom(bar)
+  return press(walkLeg(press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep')), 'note:fly')
 }
 
 test('the door only opens after a conversation, and Hank only sells the round before one', () => {
@@ -42,14 +42,17 @@ test('the door only opens after a conversation, and Hank only sells the round be
   assert.deepEqual(available(after).map((i) => i.id).sort(), ['curly', 'door', 'wade'])
 })
 
-test('the letter is read in the room, the dock panel follows, and no hiding note is sent before the camp', () => {
-  const room = interact(walk(talk(start(), 'munitions'), [[0, 4.2]]))
+test('the letter is read in the room, the walk to the dock follows, and no hiding note is sent before the camp', () => {
+  const room = toRoom(talk(start(), 'munitions'))
   const desk = interact(walk(room, [[1.6, -0.8]]))
   assert.equal(desk.panel?.title, 'Owen: A Letter to Lucy')
   assert.deepEqual(desk.panel?.buttons, [{ id: 'note:sleep', label: menu(desk.story).options[0].label }])
   assert.equal(desk.story.owenCache, undefined)
-  const dock = press(desk, 'note:sleep')
-  assert.equal(dock.space, 'room')
+  const morning = press(desk, 'note:sleep')
+  assert.equal(morning.space, 'downtown')
+  assert.equal(morning.panel, undefined)
+  const dock = walkLeg(morning)
+  assert.equal(dock.space, 'downtown')
   assert.equal(dock.story.scene, 'p_dock')
   assert.equal(dock.panel?.title, 'Owen: The Float Dock')
   assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
@@ -267,11 +270,13 @@ test('Continue as Wade on the end card leaves the flood for the text build at th
   assert.equal(textBuildHash(g), `#path=${g.path.join(',')}`)
 })
 
-test('the float dock, a prologue scene with no space, stays a panel over the room and its fly button enters the camp', () => {
-  const room = interact(walk(talk(start(), 'texas'), [[0, 4.2]]))
-  const dock = press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep')
-  assert.equal(dock.story.scene, 'p_dock')
-  assert.equal(dock.space, 'room')
+test('the float dock, a prologue scene with no space, is the end of the morning walk: its menu opens on the float', () => {
+  const morning = press(interact(walk(toRoom(talk(start(), 'texas')), [[1.6, -0.8]])), 'note:sleep')
+  assert.equal(morning.story.scene, 'p_dock')
+  assert.equal(morning.space, 'downtown')
+  assert.equal(morning.panel, undefined)
+  const dock = walkLeg(morning)
+  assert.equal(dock.space, 'downtown')
   assert.equal(handedOff(dock), false)
   assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
   const camp = press(dock, 'note:fly')
