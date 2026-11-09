@@ -1,8 +1,11 @@
-import type { Clock, State } from '../../text-game/src/types.ts'
-import type { Season as StorySeason, Weather } from '../../text-game/src/story.ts'
+import type { Clock, Place, SceneId, State } from '../../text-game/src/types.ts'
+import type { Season, Weather } from '../../text-game/src/story.ts'
 import { clock, place, season, weather } from '../../text-game/src/story.ts'
 import { replay } from '../../text-game/src/engine.ts'
-import type { Season, Space, SpaceId } from './levels.ts'
+import { seasonOn } from '../../text-game/src/queries.ts'
+import { initialState } from '../../text-game/src/state.ts'
+import { sceneIds, sceneIndex } from '../../text-game/src/sceneIds.ts'
+import type { Space, SpaceId } from './levels.ts'
 import { sunAt } from './sun.ts'
 
 // Light, sky, fog and grade per space, season and moral weather, from docs/art/README.md ("Light", "Summer, the
@@ -28,9 +31,8 @@ export type Lamp = Readonly<{
   halo?: number
 }>
 
-// The seasons the engine has light for: the spaces' own (levels.ts) and deep winter, which only the story's clock
-// reaches (Act 3, December to February).
-export type LitSeason = Season | 'winter'
+// The story's seasons the engine has light for (season(state) in text-game/src/story.ts). Breakup has no row yet.
+export type LitSeason = Exclude<Season, 'breakup'>
 
 export type Lighting = Readonly<{
   grade: Band | 'summer'
@@ -86,7 +88,7 @@ const summer: Lighting = {
 
 // docs/art/README.md, "Band by season": each cell's sun (absent where the cell says "sun none") and fog range in
 // meters. This is the table's one copy in code; lighting.test.ts reads the README and holds these rows to it. The
-// Act 2 fall and Act 4 breakup rows come with their season layers.
+// Act 4 breakup row comes with its season layer.
 export type Arc = Readonly<{ elevation: readonly [number, number]; azimuth: readonly [number, number] }>
 export type Cell = Readonly<{ sun?: Arc; fog: readonly [number, number] }>
 export type BandedSeason = Exclude<LitSeason, 'summer'>
@@ -94,6 +96,12 @@ export type BandedSeason = Exclude<LitSeason, 'summer'>
 export const bandBySeason: Readonly<Record<BandedSeason, Readonly<Record<Band, Cell>>>> = {
   // Act 1, flood (Aug 1967, overcast): overcast daylight, overcast dusk with streetlights, night in rain.
   flood: { alpenglow: { fog: [10, 120] }, blueHour: { fog: [8, 80] }, sodium: { fog: [4, 40] } },
+  // Act 2, fall (Sep-Nov, freeze-up): alpenglow under a low southern sun, blue hour, sodium lamps in frost haze.
+  freezeup: {
+    alpenglow: { sun: { elevation: [0, 12], azimuth: [160, 230] }, fog: [60, 240] },
+    blueHour: { fog: [30, 160] },
+    sodium: { fog: [15, 100] },
+  },
   // Act 3, winter (Dec-Feb): alpenglow under a sun that barely clears the hills, blue hour, sodium in ice fog.
   winter: {
     alpenglow: { sun: { elevation: [0, 12], azimuth: [160, 220] }, fog: [60, 240] },
@@ -134,9 +142,11 @@ const palette: Readonly<Record<Band, Palette>> = {
   },
 }
 
-// What the air does in each banded season: rain in the flood; breath and snow load in deep winter.
+// What the air does in each banded season: rain in the flood; breath and snow load in deep winter. Freeze-up's ice and
+// first snow are on the ground, in the town's layer (freezeup.ts), not in the air.
 const AIR: Readonly<Record<BandedSeason, Pick<Lighting, 'rain' | 'breath' | 'snowLoad'>>> = {
   flood: { rain: true, breath: false, snowLoad: false },
+  freezeup: { rain: false, breath: false, snowLoad: false },
   winter: { rain: false, breath: true, snowLoad: true },
 }
 
@@ -177,8 +187,8 @@ const INDOOR = {
 // sun is below this elevation the disc is held here, in the north-northwest arc the rule gives for 11 pm.
 export const MIDNIGHT_SUN = { elevation: 3, azimuth: [330, 350] } as const
 
-// The winter clean band's sun (the Act 3 row). Without a clock it sits a little east of south, a few degrees up, as
-// it does near noon in late December.
+// The winter clean band's sun (the Act 3 row). Without a clock the clean band's disc (fall's or winter's) sits a
+// little east of south, a few degrees up, as it does near noon in late December; both rows' arcs hold it.
 export const WINTER_SUN: Arc = bandBySeason.winter.alpenglow.sun!
 const WINTER_NOON = { sunAzimuth: 185, sunElevation: 2 } as const
 const WINTER_SUN_INTENSITY = 1.4
@@ -238,9 +248,15 @@ export const lighting = (space: SpaceId, season: LitSeason, weather: Weather, wh
   return { ...base, ...INDOOR, ...(space === 'story' ? STORY : {}), lamp }
 }
 
-const isLit = (x: StorySeason | undefined): x is LitSeason => x === 'summer' || x === 'flood' || x === 'winter'
+// Breakup has no light of its own yet; March is still snow and ice, so it is lit as winter until its row lands.
+const litAs = (x: Season): LitSeason => (x === 'breakup' ? 'winter' : x)
+
+// The story backdrop belongs to no place and no hour.
+const BACKDROP: LitSeason = 'summer'
 
 export type Time = Readonly<{ season: LitSeason; clock?: Clock }>
+
+const sceneAt = (scene: SceneId): State => ({ ...initialState, scene })
 
 // The scene whose hour a space shows: the current one when it is set here (or the space spans places, as downtown
 // does); once the story has moved on to another place, the last scene on the path that was set here. Hiding at the
@@ -250,15 +266,31 @@ const sceneHere = (space: Space, s: State, path: readonly number[]): State | und
     ? s
     : replay(path).findLast((x) => place(x) === space.place)
 
+// Every dated scene, in play order, read once from the story.
+const cache: { dated?: readonly State[] } = {}
+const datedScenes = (): readonly State[] => (cache.dated ??= sceneIds.map(sceneAt).filter((x) => clock(x) !== undefined))
+
+// The story's first dated scene at a place: its season, when there is no path to say which visit this is.
+const firstAt = (p: Place): State | undefined => datedScenes().find((x) => place(x) === p)
+
+// The nearest scene at or before this one, in play order, that has a clock: an undated scene is in its season.
+const lastDated = (s: State): State | undefined => datedScenes().findLast((x) => sceneIndex(x.scene) <= sceneIndex(s.scene))
+
 // When a space is lit: the story's clock, and the season from it (docs/story-api.md, "Where, when and what next").
-// A scene with no clock, or a season the engine has no light for yet (freeze-up, breakup), keeps the space's
-// own. The story backdrop belongs to no place and no hour, so it keeps its own too.
+// The season is always the story's: a scene with no clock is in the season of the last dated scene before it, and
+// takes the default sun. A space the story has left, with no path to read, is in the season of its place's first
+// dated scene. The story backdrop belongs to no place and no hour.
 export const timeOf = (space: Space, s: State, path: readonly number[] = []): Time => {
-  const here = space.id === 'story' ? undefined : sceneHere(space, s, path)
-  if (!here) return { season: space.season }
-  const story = season(here)
-  return { season: isLit(story) ? story : space.season, clock: clock(here) }
+  if (space.id === 'story') return { season: BACKDROP }
+  const here = sceneHere(space, s, path)
+  const dated = here ? lastDated(here) : space.place && firstAt(space.place)
+  const lit = litAs((dated && season(dated)) ?? 'summer')
+  const at = here && clock(here)
+  return at === undefined ? { season: lit } : { season: lit, clock: at }
 }
+
+// A date's time, its season from the story's own ranges (seasonOn in text-game/src/queries.ts).
+export const timeAt = (c: Clock): Time => ({ season: litAs(seasonOn(c)), clock: c })
 
 export const lightingFor = (space: Space, s: State, path: readonly number[] = []): Lighting => {
   const t = timeOf(space, s, path)

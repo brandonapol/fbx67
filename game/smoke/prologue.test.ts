@@ -284,6 +284,8 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'downtown')
   await capture(page, 'downtown')
+  await capture(page, 'downtown_flood')
+  await capture(page, 'downtown_freezeup')
   await tour(page, [33, 50.5], [40, 50.5])
   await walkRoute(page, legs[0]!.route)
   await aim(page, Math.PI, 0)
