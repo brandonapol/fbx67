@@ -80,7 +80,9 @@ asked for Wade by name, on the stay path the sergeant lent him out (the scene te
   > The body. Knot: pointed it out / cut it silently
 
   *Pointed it out* applies `pointOutKnot` (the knot, +1 Eli trust) and `liftBody`. *Cut it silently* applies
-  `cutKnot` (the knot). Both existing; no new state.
+  `cutKnot` (the knot). Both existing; no new state. The menu is `theBody` in
+  [`missions.ts`](../../text-game/src/missions.ts), notes `pointedItOut` and `cutItSilently`; both land on
+  `a1_ruling`.
 - **What shades heat or trust.** Only the choice. Nothing about how it is played.
 - **Out.** A fade to the help tent at night (`a1_ruling`, a conversation). The engine offers no "show Barnette"
   prompt there.

@@ -135,6 +135,9 @@ ending.
 Both paths cut the knot and lift the body. The lift is Wade's and Eli's together, the heavy wet weight of a man; it
 belongs to both branches, though only this one names it as a choice.
 
+The body mission ends with the fade: the engine sends one note, *pointed it out* or *cut it silently*
+([`act1-missions.md`](act1-missions.md), section 2).
+
 ### `a1_ruling`: An Accident
 
 - **Present.** Owen on a cot at the back of the help tent under a tarp. Barnette, with six drownings and a town
