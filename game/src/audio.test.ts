@@ -101,7 +101,7 @@ test('walking a real route counts steps from the distance the game moved', () =>
   assert.equal(gait.steps, Math.floor(standing.phase + dist / strideFor(INDOOR_PACE)))
 })
 
-test('changing space is not walking, and the room door closes on arrival', () => {
+test('changing space is not walking, and the boarding house door closes on arrival', () => {
   const bar = walk(talk(start(), 'texas'), [[0, 4.2]])
   const street = interact(bar)
   assert.equal(street.space, 'downtown')
@@ -109,7 +109,7 @@ test('changing space is not walking, and the room door closes on arrival', () =>
   assert.deepEqual(arrivals(bar, street), [])
   const door = walk(street, legs[0]!.route)
   const room = interact(door)
-  assert.equal(room.space, 'room')
+  assert.equal(room.space, 'boarding')
   assert.equal(walked(door, room), 0)
   assert.deepEqual(arrivals(door, room), ['door'])
   assert.deepEqual(arrivals(room, tick(room, still, DT)), [])
@@ -118,11 +118,11 @@ test('changing space is not walking, and the room door closes on arrival', () =>
 
 test('the typewriter runs while the letter is open, and the jerry can while Curly refuels', () => {
   const room = toRoom(talk(start(), 'texas'))
-  const desk = interact(walk(room, [[1.6, -0.8]]))
+  const desk = interact(walk(room, [[0.6, -1.0]]))
   assert.ok(!holds('writing', room))
   assert.ok(holds('writing', desk))
   assert.equal(desk.story.scene, 'p_letter')
-  assert.ok(!holds('writing', press(desk, 'note:sleep')))
+  assert.ok(!holds('writing', press(desk, 'finish')))
   const camp = { ...press(start(), 'close'), space: 'camp' as const, pos: spaces.camp.spawn }
   assert.ok(refueling(0) && refueling(WORK - 0.01) && !refueling(WORK + 0.01) && refueling(CURLY_PERIOD))
   assert.equal(holds('refueling', { ...camp, t: 1 }), true)

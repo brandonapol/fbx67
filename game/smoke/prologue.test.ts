@@ -14,6 +14,7 @@ import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
 import { starts } from './starts.ts'
 import { legs } from '../src/downtown.ts'
+import { HALL } from '../src/drive.ts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright') as typeof import('playwright')
@@ -287,13 +288,27 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await walkRoute(page, legs[0]!.route)
   await aim(page, Math.PI, 0)
   await page.keyboard.press('e')
+  assert.equal((await game(page)).space, 'boarding')
+  await snap(page, '05-hall', 10)
+  await capture(page, 'parlor')
+  await tour(page, [0, 6.2], [0, 1.5])
+  await walk(page, HALL)
+  await aim(page, Math.PI, 0)
+  await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'room')
   await snap(page, '05-room', 10)
-  await tour(page, [0, 2], [1.6, -0.8])
+  await tour(page, [0, 1.2], [0.6, -1.0])
   await page.keyboard.press('e')
+  assert.equal((await game(page)).panel?.kind, 'letter')
   await snap(page, '06-letter')
   await capture(page, 'letter')
   await page.keyboard.press('1')
+  assert.deepEqual((await game(page)).panel?.buttons.map((b: { id: string }) => b.id), ['fold'])
+  await page.keyboard.press('1')
+  assert.equal((await game(page)).letter, 'folded')
+  await walk(page, [[-0.6, 0.6]])
+  await aim(page, -Math.PI / 2, 0)
+  await page.keyboard.press('e')
   assert.equal((await game(page)).story.scene, 'p_dock')
   assert.equal((await game(page)).space, 'downtown')
   await walkRoute(page, legs[1]!.route)

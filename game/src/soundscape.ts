@@ -1,7 +1,7 @@
 import type { Bus } from './mixer.ts'
 import type { Ground } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
-import { CURLY_PERIOD, WORK } from './levels.ts'
+import { CURLY_PERIOD, REEL_AT, TYPEWRITER_AT, WORK } from './levels.ts'
 import type { Game } from './prologue.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
@@ -68,7 +68,8 @@ export type Soundscape = Readonly<{
 
 export const JUKEBOX_AT = vec(-5.4, -1.6)
 export const STOVE_AT = vec(5.1, -3.8)
-export const REEL_AT = vec(1.6, -2.25)
+export { REEL_AT }
+export const RADIO_AT = vec(-7.4, 3.4)
 export const DRUM_AT = vec(-6.8, 6.6)
 export const CREEK_Z = 9.2
 
@@ -95,8 +96,19 @@ const room: Soundscape = {
   ],
   events: [
     { spot: 'car', bus: 'ambience', every: [8, 22], at: vec(0.4, -9), spread: 6 },
-    { spot: 'typewriter', bus: 'sfx', every: [0.09, 0.4], at: REEL_AT, spread: 0.1, when: 'writing' },
+    { spot: 'typewriter', bus: 'sfx', every: [0.09, 0.4], at: TYPEWRITER_AT, spread: 0.1, when: 'writing' },
   ],
+  arrival: 'door',
+}
+
+// The ground floor: the landlady's radio, an AM station low in the parlor, and the street through the front door.
+const boarding: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 130, gain: 0.3 },
+    { kind: 'noise', bus: 'music', color: 'pink', filter: 'bandpass', freq: 1100, q: 1.6, gain: 0.12, at: RADIO_AT, wobble: { rate: 0.4, depth: 0.5, on: 'gain' } },
+  ],
+  events: [{ spot: 'car', bus: 'ambience', every: [8, 22], at: vec(0, 9), spread: 6 }],
   arrival: 'door',
 }
 
@@ -267,12 +279,12 @@ const cell: Soundscape = {
 export const act1Soundscapes: Readonly<Record<Act1Space, Soundscape>> = { line, hospital, barfight, cell }
 
 // The spaces built so far. An Act 1 or Act 2 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood, line, downtown, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 
 export const holds = (when: Condition | undefined, g: Game): boolean => {
-  if (when === 'writing') return g.story.scene === 'p_letter' && g.panel?.kind === 'story'
+  if (when === 'writing') return g.panel?.kind === 'letter' && (g.typed ?? 0) < g.panel.text.length
   if (when === 'refueling') return g.space === 'camp' && !g.panel && refueling(g.t)
   return true
 }
