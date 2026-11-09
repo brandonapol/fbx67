@@ -118,7 +118,9 @@ const flood: Soundscape = {
   events: [],
 }
 
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood }
+const story: Soundscape = { ground: { surface: 'wood', regions: [] }, layers: [], events: [] }
+
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood, story }
 
 export type Act2Space = 'town' | 'base' | 'hotel' | 'hall'
 

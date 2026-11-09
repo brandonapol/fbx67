@@ -3,7 +3,7 @@ import { vec } from './world.ts'
 import type { Activity } from './cast.ts'
 import type { Act, Place } from '../../text-game/src/types.ts'
 
-export type SpaceId = 'bar' | 'room' | 'camp' | 'flood'
+export type SpaceId = 'bar' | 'room' | 'camp' | 'flood' | 'story'
 
 export type Season = 'summer' | 'flood'
 
@@ -32,8 +32,8 @@ export type Figure = Readonly<{
 
 export type Space = Readonly<{
   id: SpaceId
-  act: Act
-  place: Place
+  act?: Act
+  place?: Place
   name: string
   back?: string
   season: Season
@@ -229,7 +229,22 @@ export const flood: Space = {
   spots: [{ id: 'skiff', x: 0.2, z: 4.6, r: 1.4, prompt: 'Get in the skiff' }],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood }
+// The backdrop for a scene that has no space yet, outside any act: its menu plays as a panel here, with no player in
+// the world, until a scene's place has a space.
+export const story: Space = {
+  id: 'story',
+  name: 'Second Rush',
+  interior: true,
+  season: 'summer',
+  size: { w: 8, d: 8 },
+  ground: '#16181d',
+  spawn: vec(0, 0),
+  props: edges(8, 8),
+  figures: [],
+  spots: [],
+}
+
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood, story }
 
 export const owenLook = owen
 

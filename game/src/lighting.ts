@@ -95,6 +95,7 @@ const outdoor: Readonly<Record<Key, Lighting>> = {
 const indoorLamp: Readonly<Partial<Record<SpaceId, Lighting['lamp']>>> = {
   bar: { color: '#ffb877', intensity: 2.2, range: 14, at: [0, 2.6, 0] },
   room: { color: '#ffd29a', intensity: 1.8, range: 8, at: [1.2, 2.2, -1.2] },
+  story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 
 export const lighting = (space: SpaceId, season: Season, weather: Weather): Lighting => {

@@ -244,7 +244,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     })
     owen.setLocalPosition(g.pos.x, 0, g.pos.z)
     owen.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
-    owen.enabled = !cam.close || state.held !== undefined
+    owen.enabled = spaces[g.space].act !== undefined && (!cam.close || state.held !== undefined)
     if (b.cone && b.coneMats) {
       const w = watcher(g)
       b.cone.setLocalPosition(w.at.x, 0, w.at.z)

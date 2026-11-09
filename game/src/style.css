@@ -235,12 +235,14 @@ body #sound {
   box-shadow: 0 8px 30px var(--shadow);
 }
 
-#panel[data-kind='busted'] {
+#panel[data-kind='busted'],
+#panel[data-kind='error'] {
   border-color: var(--danger);
   border-width: 2px;
 }
 
-#panel[data-kind='busted'] #panel-title {
+#panel[data-kind='busted'] #panel-title,
+#panel[data-kind='error'] #panel-title {
   color: var(--danger);
 }
 
