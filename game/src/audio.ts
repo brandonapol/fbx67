@@ -1,5 +1,5 @@
 import type { Bus, Volumes } from './mixer.ts'
-import { BUSES, LIMITER, STORAGE_KEY, busGains, parseVolumes, serializeVolumes, withVolume } from './mixer.ts'
+import { BUSES, LIMITER, STORAGE_KEY, busGains, clamp01, parseVolumes, serializeVolumes, withVolume } from './mixer.ts'
 import type { Gait } from './footsteps.ts'
 import { pace, standing, surfaceAt } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
@@ -20,6 +20,8 @@ export type Audio = Readonly<{
   volumes: () => Volumes
   setVolume: (bus: Bus, v: number) => void
   status: () => Status
+  cover: () => number
+  setCover: (v: number) => void
 }>
 
 type Placed = Readonly<{ voice: Voice; panner?: PannerNode; at?: Vec; alongX?: boolean }>
@@ -116,8 +118,9 @@ const scatter = (rand: Rand, at: Vec, spread: number): Vec => {
 export const createAudio = (store: Storage | undefined): Audio => {
   const saved = storage(store)
   const rand = mulberry(1967)
-  const live: { volumes: Volumes; graph?: Graph; scene?: Scene; prev?: Game; gains?: Volumes; gait: Gait; failed: boolean } = {
+  const live: { volumes: Volumes; graph?: Graph; scene?: Scene; prev?: Game; gains?: Volumes; gait: Gait; failed: boolean; cover: number } = {
     volumes: parseVolumes(saved.get()),
+    cover: 0,
     gait: standing,
     failed: false,
   }
@@ -211,14 +214,15 @@ export const createAudio = (store: Storage | undefined): Audio => {
     const { gait, falls } = pace(live.gait, walked(live.prev, g), dt)
     live.gait = gait
     if (!falls) return
-    const surface = surfaceAt(soundscapes[g.space].ground, g.pos)
-    oneShot(gr, 'sfx', g.pos, (dest) => footstep(gr.ctx, gr.buffers, surface, dest, rand))
+    const ground = soundscapes[g.space].ground
+    const surface = surfaceAt(ground, g.pos)
+    oneShot(gr, 'sfx', g.pos, (dest) => footstep(gr.ctx, gr.buffers, surface, dest, rand, ground.tempF))
   }
 
   const run = (gr: Graph, g: Game, dt: number): void => {
     const now = gr.ctx.currentTime
     listen(gr.ctx, g.pos)
-    const gains = busGains(live.volumes, ducked(g))
+    const gains = busGains(live.volumes, ducked(g), live.cover)
     BUSES.filter((b) => live.gains?.[b] !== gains[b]).forEach((b) => gr.buses[b].gain.setTargetAtTime(gains[b], now, SMOOTH))
     live.gains = gains
     if (live.scene?.space !== g.space) {
@@ -263,6 +267,10 @@ export const createAudio = (store: Storage | undefined): Audio => {
     setVolume: (bus, v) => {
       live.volumes = withVolume(live.volumes, bus, v)
       saved.set(serializeVolumes(live.volumes))
+    },
+    cover: () => live.cover,
+    setCover: (v) => {
+      live.cover = clamp01(v)
     },
     status: () => (live.failed ? 'unavailable' : !live.graph ? 'locked' : live.graph.ctx.state === 'running' ? 'running' : 'suspended'),
   }

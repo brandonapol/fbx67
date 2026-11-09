@@ -23,11 +23,17 @@ export const clamp01 = (v: number): number => (Number.isFinite(v) ? Math.min(1, 
 
 export const sliderGain = (v: number): number => clamp01(v) ** 2
 
-export const busGain = (volumes: Volumes, bus: Bus, ducked: boolean): number =>
-  sliderGain(volumes[bus]) * (ducked && DUCKED.includes(bus) ? DUCK : 1)
+export const COVER_FLOOR = 0.15
 
-export const busGains = (volumes: Volumes, ducked: boolean): Volumes =>
-  Object.fromEntries(BUSES.map((b) => [b, busGain(volumes, b, ducked)])) as Volumes
+export const COVERED: Bus = 'voice'
+
+export const coverGain = (cover: number): number => COVER_FLOOR + (1 - COVER_FLOOR) * (1 - clamp01(cover))
+
+export const busGain = (volumes: Volumes, bus: Bus, ducked: boolean, cover = 0): number =>
+  sliderGain(volumes[bus]) * (ducked && DUCKED.includes(bus) ? DUCK : 1) * (bus === COVERED ? coverGain(cover) : 1)
+
+export const busGains = (volumes: Volumes, ducked: boolean, cover = 0): Volumes =>
+  Object.fromEntries(BUSES.map((b) => [b, busGain(volumes, b, ducked, cover)])) as Volumes
 
 export const withVolume = (volumes: Volumes, bus: Bus, v: number): Volumes => ({ ...volumes, [bus]: clamp01(v) })
 
