@@ -12,13 +12,16 @@ export type Mission = Readonly<{
   id: string
   title: string
   details: readonly MissionDetail[]
+  // An ending outside the details' combinations (refused, skipped), as the menu reads after "or".
+  or?: string
   start: SceneId
   end: SceneId
   endings: readonly MissionEnding[]
 }>
 
-// The note's menu as docs/story-api.md writes it: "Title. Detail: a / b. Detail: c / d".
-export const missionMenu = (m: Mission): string => [m.title, ...m.details.map((d) => `${d.name}: ${d.labels.join(' / ')}`)].join('. ')
+// The note's menu as docs/story-api.md writes it: "Title. Detail: a / b. Detail: c / d; or e".
+export const missionMenu = (m: Mission): string =>
+  [m.title, ...m.details.map((d) => `${d.name}: ${d.labels.join(' / ')}`)].join('. ') + (m.or ? `; or ${m.or}` : '')
 
 // docs/acts/act1-missions.md, section 1.
 const searchForEli: Mission = {
@@ -87,4 +90,68 @@ const theBarfight: Mission = {
   endings: barfightEndings,
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight]
+// Every combination of two two-way details, as notes a.b with labels "a, b", applying each pick's choice in order.
+const combos = (first: Detail, second: Detail): readonly MissionEnding[] =>
+  first.picks.flatMap((a) =>
+    second.picks.map((b) => ({
+      note: `${a.note}.${b.note}`,
+      label: `${a.label}, ${b.label}`,
+      applies: [a, b].flatMap((p) => (p.choice ? [p.choice] : [])),
+    })),
+  )
+
+const wayIn: Detail = { name: 'Way in', picks: [{ note: 'lunch', label: 'lunch', choice: 'lunch' }, { note: 'key', label: 'key', choice: 'afterLockup' }] }
+const drawers: Detail = {
+  name: 'Drawers',
+  picks: [
+    { note: 'crossChecked', label: 'cross-checked', choice: 'crossCheck' },
+    { note: 'pulledAll', label: 'pulled all', choice: 'pullAll' },
+  ],
+}
+
+// docs/acts/act2-missions.md, section 1. The key's heat comes later, when it is missed (photoLab, keyMissed).
+const thePhotoLab: Mission = {
+  id: 'thePhotoLab',
+  title: 'The photo lab',
+  details: [wayIn, drawers].map((d) => ({ name: d.name, labels: d.picks.map((p) => p.label) })),
+  or: 'refused',
+  start: 'a2_photos',
+  end: 'a2_hotel',
+  endings: [...combos(wayIn, drawers), { note: 'refused', label: 'refused', applies: ['refuse'] }],
+}
+
+// docs/acts/act2-missions.md, section 2. How well Wade plays and how close he sits decide what he hears; the text
+// build asks where he sits. Only hearing most of it gives the hotelTalk evidence.
+const theHotelBar: Mission = {
+  id: 'theHotelBar',
+  title: 'The hotel bar',
+  details: [{ name: 'Heard', labels: ['most', 'pieces'] }],
+  or: 'skipped',
+  start: 'a2_hotel',
+  end: 'a2_chiefs',
+  endings: [
+    { note: 'heardMost', label: 'most', applies: ['guitar', 'sitClose', 'tellLucy'] },
+    { note: 'heardPieces', label: 'pieces', applies: ['guitar', 'sitFar', 'tellLucy'] },
+    { note: 'skipped', label: 'skipped', applies: ['skip'] },
+  ],
+}
+
+const gotIn: Detail = { name: 'Got in', picks: [{ note: 'code', label: 'code', choice: 'combo' }, { note: 'forced', label: 'forced', choice: 'forced' }] }
+const seen: Detail = { name: 'Seen', picks: [{ note: 'seen', label: 'yes', choice: 'goNow' }, { note: 'unseen', label: 'no', choice: 'getOut' }] }
+
+// docs/acts/act2-missions.md, section 3. Each way in and getaway applies search, the way in, then the getaway; seen
+// plays the duty desk's beat. Refused, Lucy goes in herself and is seen (lucyHeat).
+const theMajorsCabinet: Mission = {
+  id: 'theMajorsCabinet',
+  title: 'The Major\'s cabinet',
+  details: [gotIn, seen].map((d) => ({ name: d.name, labels: d.picks.map((p) => p.label) })),
+  or: 'refused (Lucy goes herself)',
+  start: 'a2_co_ask',
+  end: 'a2_curly',
+  endings: [
+    ...combos(gotIn, seen).map((e) => ({ ...e, applies: ['search', ...e.applies, ...(e.applies.includes('goNow') ? ['continue'] : [])] })),
+    { note: 'refused', label: 'refused', applies: ['refuse', 'continue'] },
+  ],
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet]

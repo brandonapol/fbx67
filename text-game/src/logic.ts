@@ -14,6 +14,12 @@ export type BarfightMemory = BarfightMove | 'seat'
 
 export const hankRemembers = (s: State): BarfightMemory => s.barfightMove ?? 'seat'
 
+// The photo lab's spare key is missed in November if Wade borrowed it to go in after lockup (design: photo-lab method).
+export const keyMissed = (s: State): boolean => s.photoLab === 'key'
+
+// Heat a choice already made will still add later. Any new deferred heat goes here, so the matrix keys on it.
+export const pendingHeat = (s: State): number => (keyMissed(s) ? 1 : 0)
+
 export const leakIsWadesFault = (s: State): boolean => s.leakedFlightDate
 
 export const curlyTalks = (s: State): boolean => s.curlyPlan === 'warn'

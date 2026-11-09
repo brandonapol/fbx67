@@ -1,5 +1,5 @@
 import { N } from '../names.ts'
-import { type BarfightMemory, hankRemembers } from '../logic.ts'
+import { type BarfightMemory, hankRemembers, keyMissed } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, set } from '../state.ts'
 import type { Choice, Scene, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
@@ -48,8 +48,8 @@ Lucy needs the aerial photographs Owen worked from, and they are in a records ro
 
 You know the lab clerk takes a long lunch. You also know the duty sergeant locks up at 1700 sharp.`,
     choices: () => [
-      { label: 'Go in during the clerk\'s lunch.', note: 'lunch', next: 'a2_photos_files' },
-      { label: 'Go in after lockup with a borrowed key.', note: 'afterLockup', apply: heat(1), next: 'a2_photos_files' },
+      { label: 'Go in during the clerk\'s lunch.', note: 'lunch', apply: set({ photoLab: 'lunch' }), next: 'a2_photos_files' },
+      { label: 'Go in after lockup with a borrowed key.', note: 'afterLockup', apply: set({ photoLab: 'key' }), next: 'a2_photos_files' },
       { label: 'Refuse. It isn\'t worth a court-martial for some old pictures.', note: 'refuse', apply: eliTrust(-1), next: 'a2_hotel' },
     ],
   },
@@ -73,8 +73,21 @@ ${has(s, 'aerialPhotos') ? 'Lucy spreads the photos across her kitchen table nex
 
 October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks with men from Outside. A uniform with a guitar can sit in the corner. A Native woman asking questions cannot.`,
     choices: () => [
-      { label: 'Bring your guitar. Play in the corner and listen.', note: 'guitar', apply: addEvidence('hotelTalk'), next: 'a2_hotel_heard' },
+      { label: 'Bring your guitar. Play in the corner and listen.', note: 'guitar', next: 'a2_hotel_set' },
       { label: 'Skip it. You\'ve been seen too much lately.', note: 'skip', apply: heat(-1), next: 'a2_chiefs' },
+    ],
+  },
+  {
+    id: 'a2_hotel_set',
+    act,
+    title: 'The Corner',
+    text: () => `
+The hotel bar is warm and half full: contractors from Outside waiting out freeze-up, two professors from the university over a chessboard, a waitress who calls everybody "dear." ${N.tolliver} has the back booth with a man in a gray suit who sits with his back to the room.
+
+The bartender doesn't care where you play, as long as you play.`,
+    choices: () => [
+      { label: 'Take the stool by their booth and play the quiet ones.', note: 'sitClose', apply: addEvidence('hotelTalk'), next: 'a2_hotel_heard' },
+      { label: 'Set up by the door and play what the room wants.', note: 'sitFar', next: 'a2_hotel_pieces' },
     ],
   },
   {
@@ -85,6 +98,16 @@ October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks
 Under the music you catch half of it. Tolliver, the councilman, red in the face: "...my land, my title, been my land since '52..." The other man is quieter, with his back to you, and you never see his face. "...after the claims settle it won't matter whose title it is. Before is what counts."
 
 Tolliver sounds like a man with a lot to lose. You can't tell if any of it means anything.`,
+    choices: () => [{ label: 'Pack up and go tell Lucy.', note: 'tellLucy', next: 'a2_chiefs' }],
+  },
+  {
+    id: 'a2_hotel_pieces',
+    act,
+    title: 'Half a Conversation',
+    text: () => `
+From the door you catch pieces over your own playing. ${N.tolliverLast}'s voice carries when he's angry: "...my land..." and something about '52. The other man never raises his. Whatever he says, he says to ${N.tolliverLast} and nobody else.
+
+Two hours and a sore hand, for a councilman complaining about his land.`,
     choices: () => [{ label: 'Pack up and go tell Lucy.', note: 'tellLucy', next: 'a2_chiefs' }],
   },
   {
@@ -159,7 +182,20 @@ The squadron building is dark except for the duty desk. The Major's cabinet has 
 The cabinet opens. Munitions sign-out sheets, flight schedules, typed pages that look like copies of letters, carbon copies of nothing in particular. There's too much to read by flashlight. You photograph all of it with Lucy's camera and put everything back.
 
 You can't tell what any of it means. Lucy will have to read it.`,
-    choices: () => [{ label: 'Get out.', note: 'getOut', next: 'a2_curly' }],
+    choices: () => [
+      { label: 'Wait in the dark for the duty airman to finish his rounds, then get out.', note: 'getOut', next: 'a2_curly' },
+      { label: 'Don\'t wait. Go now, while he\'s still on his rounds.', note: 'goNow', apply: heat(1), next: 'a2_co_seen' },
+    ],
+  },
+  {
+    id: 'a2_co_seen',
+    act,
+    title: 'The Duty Desk',
+    text: () => `
+The duty airman looks up from his comic book as a shape crosses the end of the hall. "Hey!" By the time he's around the desk you're out the side door and into the dark between the buildings.
+
+He never saw your face. He'll write it in the duty log all the same: somebody in the squadron building after hours, headed for the side door.`,
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_curly' }],
   },
   {
     id: 'a2_co_lucy',
@@ -248,8 +284,11 @@ The skis are on. Jake will fly Lucy up to Owen's camp the first clear week: Dece
 
 ${s.eliTrust > 0 ? 'She tells three people: Eli, Jake, and you.' : 'She doesn\'t want to tell you. But Jake needs a hand loading the plane the night before, and Eli says you\'re the only one with a truck pass for the strip. So she tells three people: Eli, Jake, and you.'}
 
-${s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of it.' : ''}`,
-    choices: () => [{ label: 'Go home and write to Mama.', note: 'writeMama', next: 'a2_letter_work' }],
+${[
+  s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of it.' : '',
+  keyMissed(s) ? 'On base, the photo lab\'s duty sergeant has finally gone back through the key sign-out sheet and found a night in September nobody signed for. He\'s asking around the barracks who borrowed it, and somebody gave him your name.' : '',
+].filter(Boolean).join('\n\n')}`,
+    choices: () => [{ label: 'Go home and write to Mama.', note: 'writeMama', apply: (s) => (keyMissed(s) ? heat(1)(s) : s), next: 'a2_letter_work' }],
   },
   {
     id: 'a2_letter_work',

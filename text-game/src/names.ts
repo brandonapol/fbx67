@@ -1,5 +1,6 @@
 const ray = 'Ray'
-const tolliver = `${ray} Tolliver` as const
+const tolliverLast = 'Tolliver'
+const tolliver = `${ray} ${tolliverLast}` as const
 const dottie = 'Dottie'
 const hank = 'Hank'
 
@@ -20,6 +21,7 @@ export const N = {
   councilman: `Councilman ${tolliver}`,
   tolliver,
   tolliverFirst: ray,
+  tolliverLast,
   bar: 'the Silver Pan',
   gossip: `${dottie} Vinson`,
   gossipShort: dottie,

@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
-import { choicesOf, choose, replay } from './engine.ts'
+import { choicesOf, choose, render, replay } from './engine.ts'
 import { menu, mission, send, sendMission } from './story.ts'
 import { missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
@@ -110,9 +110,11 @@ test('every mission note ends at its end scene, and the notes cover every way th
   })
 })
 
+// A refusal or a skip may land where a detail does (the hotel bar's pieces and skipped, at heat 0), so only the
+// single-detail missions without one are held to a state per note.
 test('the single-detail missions give every note its own state', () => {
   missions
-    .filter((m) => m.details.length === 1)
+    .filter((m) => m.details.length === 1 && !m.or)
     .forEach((m) =>
       allAt(m.start).forEach((start) => {
         assert.equal(new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note)))).size, m.endings.length, `${m.id}: two notes give the same state`)
@@ -201,4 +203,135 @@ test('getting up records the move for Hank; staying seated leaves him the stool'
     moves.map((m) => sendMission(s, note('stayedSeated', m, 'leftEli', 'clean')).barfightMove),
     [undefined, undefined, undefined],
   )
+})
+
+// Act 2. Every state that reaches the photo lab, from every Act 1 path.
+const atPhotos = allAt('a2_photos')
+const photoNotes = ['lunch.crossChecked', 'lunch.pulledAll', 'key.crossChecked', 'key.pulledAll', 'refused']
+
+test('the photo lab offers way in, drawers, or refused at a2_photos', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1]).at(-1) as State
+  assert.equal(s.scene, 'a2_photos')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The photo lab. Way in: lunch / key. Drawers: cross-checked / pulled all; or refused')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    photoNotes,
+  )
+})
+
+test('each photo lab note agrees with playing its scenes one note at a time', () => {
+  const s = atPhotos[0]
+  assert.deepEqual(sendMission(s, 'lunch.crossChecked'), ['lunch', 'crossCheck'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'key.pulledAll'), ['afterLockup', 'pullAll'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'refused'), send(s, 'refuse'))
+})
+
+test('the photo lab gives every note its own state, and the photos on every way in', () => {
+  atPhotos.forEach((s) => {
+    const outs = photoNotes.map((n) => sendMission(s, n))
+    assert.equal(new Set(outs.map((o) => JSON.stringify(o))).size, photoNotes.length)
+    outs.forEach((o, i) => assert.equal(o.evidence.includes('aerialPhotos'), photoNotes[i] !== 'refused'))
+  })
+})
+
+test('the drawers carry the heat now; the borrowed key adds none until it is missed', () => {
+  const s = atPhotos[0]
+  const heatOf = (n: string) => sendMission(s, n).heat - s.heat
+  assert.deepEqual(photoNotes.map(heatOf), [1, 2, 1, 2, 0])
+  assert.deepEqual(
+    photoNotes.map((n) => sendMission(s, n).photoLab),
+    ['lunch', 'lunch', 'key', 'key', undefined],
+  )
+})
+
+test('the borrowed key is missed at a2_flight: one more heat, and the sergeant has Wade\'s name', () => {
+  const key: State = { ...initialState, scene: 'a2_flight', photoLab: 'key', heat: 2 }
+  const lunch: State = { ...key, photoLab: 'lunch' }
+  assert.match(render(key), /key sign-out sheet/)
+  assert.doesNotMatch(render(lunch), /sign-out sheet/)
+  assert.equal(send(key, 'writeMama').heat - key.heat, 1)
+  assert.equal(send(lunch, 'writeMama').heat, lunch.heat)
+})
+
+// Every state that reaches the hotel bar: each photo lab note from every way into Act 2.
+const atHotel = allAt('a2_hotel')
+
+test('the hotel bar offers heard: most / pieces, or skipped at a2_hotel', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3]).at(-1) as State
+  assert.equal(s.scene, 'a2_hotel')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The hotel bar. Heard: most / pieces; or skipped')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    ['heardMost', 'heardPieces', 'skipped'],
+  )
+})
+
+test('each hotel bar note agrees with playing its scenes one note at a time', () => {
+  const s = atHotel[0]
+  assert.deepEqual(sendMission(s, 'heardMost'), ['guitar', 'sitClose', 'tellLucy'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'heardPieces'), ['guitar', 'sitFar', 'tellLucy'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'skipped'), send(s, 'skip'))
+})
+
+test('only hearing most of it gives the hotel talk; only skipping moves heat', () => {
+  atHotel.forEach((s) => {
+    const [most, pieces, skipped] = ['heardMost', 'heardPieces', 'skipped'].map((n) => sendMission(s, n))
+    assert.deepEqual([most, pieces, skipped].map((o) => o.evidence.includes('hotelTalk')), [true, false, false])
+    assert.deepEqual([most.heat, pieces.heat], [s.heat, s.heat])
+    assert.equal(skipped.heat, Math.max(0, s.heat - 1))
+    assert.equal(JSON.stringify(pieces) === JSON.stringify(skipped), s.heat === 0)
+  })
+})
+
+test('Lucy repeats the quiet man\'s words only when Wade heard most of it', () => {
+  const s = atHotel[0]
+  const toOffice = (n: string) => ['listen', 'continue'].reduce(send, sendMission(s, n))
+  assert.equal(toOffice('heardMost').scene, 'a2_co_ask')
+  assert.match(render(toOffice('heardMost')), /Before is what counts/)
+  assert.doesNotMatch(render(toOffice('heardPieces')), /Before is what counts/)
+})
+
+// Every state that reaches the Major's office, across the photo lab, the hotel bar and the Chiefs.
+const atOffice = allAt('a2_co_ask')
+const cabinetNotes = ['code.seen', 'code.unseen', 'forced.seen', 'forced.unseen', 'refused']
+
+test('the Major\'s cabinet offers got in, seen, or refused at a2_co_ask', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1]).at(-1) as State
+  assert.equal(s.scene, 'a2_co_ask')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The Major\'s cabinet. Got in: code / forced. Seen: yes / no; or refused (Lucy goes herself)')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    cabinetNotes,
+  )
+})
+
+test('each cabinet note agrees with playing its scenes one note at a time', () => {
+  const s = atOffice[0]
+  assert.deepEqual(sendMission(s, 'code.unseen'), ['search', 'combo', 'getOut'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'forced.seen'), ['search', 'forced', 'goNow', 'continue'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'refused'), ['refuse', 'continue'].reduce(send, s))
+})
+
+test('the cabinet: code +1 heat, forced +2, seen +1 more; refused puts the heat on Lucy instead', () => {
+  const s = { ...atOffice[0], heat: 0, lucyHeat: 0 }
+  const out = cabinetNotes.map((n) => sendMission(s, n))
+  assert.deepEqual(out.map((o) => o.heat), [2, 1, 3, 2, 0])
+  assert.deepEqual(out.map((o) => o.lucyHeat), [0, 0, 0, 0, 2])
+  assert.deepEqual(out.map((o) => o.coJob), ['wade', 'wade', 'wade', 'wade', 'lucy'])
+  out.forEach((o) => assert.ok(o.evidence.includes('coFiles')))
+  // The way in and the getaway carry only heat, so the code and seen land where forcing it unseen does.
+  assert.deepEqual(out[0], out[3])
+  assert.equal(new Set(out.map((o) => JSON.stringify(o))).size, cabinetNotes.length - 1)
+})
+
+test('seen plays the duty desk: the duty log, never Wade\'s face', () => {
+  const s = ['search', 'combo', 'goNow'].reduce(send, atOffice[0])
+  assert.equal(s.scene, 'a2_co_seen')
+  assert.match(render(s), /never saw your face/)
 })

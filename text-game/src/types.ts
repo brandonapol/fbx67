@@ -46,6 +46,7 @@ export type State = Readonly<{
   barfightMove?: BarfightMove
   momHonesty: number
   leakedFlightDate: boolean
+  photoLab?: 'lunch' | 'key'
   coJob?: 'wade' | 'lucy'
   curlyPlan?: 'warn' | 'confront' | 'ignore'
   eliTrespass?: 'quiet' | 'report' | 'leverage'
