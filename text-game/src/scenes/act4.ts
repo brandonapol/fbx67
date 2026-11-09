@@ -16,7 +16,7 @@ March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on
 
 Everybody in Fairbanks suddenly knows why a road north matters, and a pipeline after it, and why the gravel and the river crossings on the way matter. The best of both on the lower Chatanika are on Eli and Lucy's fish camp.
 
-${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to the last of Owen\'s tapes.' : s.afterConfession === 'turn' ? 'Lucy is suspended and won\'t speak to you. You hear about Owen\'s tapes from Dottie at the café, secondhand.' : 'Lucy listens to the last of Owen\'s tapes without you. Eli tells you about it later, flatly.'} The final reel cracked in the crash, and it took Jake all winter on crutches to splice it. On it, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
+${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to the last of Owen\'s tapes.' : s.afterConfession === 'turn' ? `Lucy is suspended and won't speak to you. You hear about Owen's tapes from ${N.gossipShort} at the café, secondhand.` : 'Lucy listens to the last of Owen\'s tapes without you. Eli tells you about it later, flatly.'} The final reel cracked in the crash, and it took Jake all winter on crutches to splice it. On it, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
 Lucy plays it three times. She doesn't say who she thinks "he" is.
 
@@ -80,11 +80,11 @@ ${s.curlyPlan === 'ignore' ? 'You go out to Birch Hill instead, where they burie
     text: (s) =>
       councilmanFlips(s)
         ? `
-Jake is up on crutches. Because you showed him the sump drain on that hillside, he knows the crash wasn't his fault. He went to see his uncle, Ray Tolliver.
+Jake is up on crutches. Because you showed him the sump drain on that hillside, he knows the crash wasn't his fault. He went to see his uncle, ${N.tolliver}.
 
 "I told him somebody put water in my fuel, Wade. I told him I almost died. He didn't know. He knew about the land. He didn't know about the plane." Jake looks out the window. "He's going to talk to the Trooper."`
         : `
-Jake is up on crutches. Nobody ever told him about the sump drain, so he still thinks the crash was his fault, that he missed it in the cold. He won't fly again this year. His uncle, Ray Tolliver, sends flowers.`,
+Jake is up on crutches. Nobody ever told him about the sump drain, so he still thinks the crash was his fault, that he missed it in the cold. He won't fly again this year. His uncle, ${N.tolliver}, sends flowers.`,
     choices: (s) => [
       { label: 'Continue.', apply: councilmanFlips(s) ? addEvidence('councilmanFlips') : undefined, next: 'a4_icejam' },
     ],

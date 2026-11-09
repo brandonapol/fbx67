@@ -36,11 +36,14 @@ check/fast: ## Seconds: typecheck and unit tests for whichever package has stage
 	@if $(STAGED) | grep -q '^$(WEB)/'; then $(MAKE) --no-print-directory check/web; fi
 	@if $(STAGED) | grep -q '^$(GAME)/'; then $(MAKE) --no-print-directory check/game/typecheck test/game/unit; fi
 
-check/text: check/text/typecheck test/text/unit test/text/verify test/text/matrix ## Typecheck, unit, verify, matrix
+check/text: check/text/typecheck check/text/lint test/text/unit test/text/verify test/text/matrix ## Typecheck, lint, unit, verify, matrix
 
-.PHONY: check/text/typecheck
+.PHONY: check/text/typecheck check/text/lint
 check/text/typecheck: ## tsc --noEmit on text-game
 	cd $(TEXT) && npm run -s typecheck
+
+check/text/lint: ## Story lint over scene sources: the oil rule and placeholder names
+	cd $(TEXT) && node --test --test-reporter=dot src/storyLint.test.ts
 
 check/web: ## Typecheck web
 	cd $(WEB) && npm run -s typecheck

@@ -47,7 +47,7 @@ Use the existing targets rather than crafting shell commands. If an action needs
 | Target                  | What it does                                                          |
 | ----------------------- | --------------------------------------------------------------------- |
 | `make setup`            | `npm ci` in both packages and the git hooks                           |
-| `make check`            | the whole gate: typecheck, unit, verify, matrix, web typecheck, routes |
+| `make check`            | the whole gate: typecheck, story lint, unit, verify, matrix, web typecheck, routes |
 | `make check/fast`       | typecheck and unit tests for the packages with staged files           |
 | `make check/attribution PR=<n>` | fail if a pull request carries AI attribution                 |
 | `make test/text/unit`   | unit tests and golden route replay                                    |

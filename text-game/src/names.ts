@@ -1,3 +1,7 @@
+const ray = 'Ray'
+const tolliver = `${ray} Tolliver` as const
+const dottie = 'Dottie'
+
 export const N = {
   wade: 'Wade',
   eli: 'Eli',
@@ -12,8 +16,11 @@ export const N = {
   barnette: 'Investigator Vernon Barnette',
   cop: 'Officer Tom Peter',
   co: 'Major Dekker',
-  councilman: 'Councilman Ray Tolliver',
+  councilman: `Councilman ${tolliver}`,
+  tolliver,
+  tolliverFirst: ray,
   bar: 'the Silver Pan',
-  gossip: 'Dottie Vinson',
+  gossip: `${dottie} Vinson`,
+  gossipShort: dottie,
   bartender: 'Hank Lyle',
 } as const
