@@ -30,7 +30,7 @@ export type Place =
   | 'boardingHouse'
   | 'floodedStreet'
   | 'floodCabin'
-  | 'stJosephs'
+  | 'helpTent'
   | 'landOffice'
   | 'cityJail'
   | 'eielsonBarracks'
