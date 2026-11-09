@@ -5,6 +5,7 @@ import { initialState } from './state.ts'
 import { ending, missingForBest } from './logic.ts'
 import { mulberry, pickIndex } from './random.ts'
 import { choicePath, flag, int, orExit, value } from './args.ts'
+import { mission } from './story.ts'
 import type { State } from './types.ts'
 
 const summary = (s: State) => ({
@@ -17,6 +18,12 @@ const footer = (path: readonly number[], s: State): string =>
   isEnd(s)
     ? `\nPATH: ${path.join(',')}\nENDING: ${ending(s)}`
     : `\nPATH: ${path.join(',') || '(start)'}\nNEXT: rerun with --choices ${[...path, 'N'].join(',')} where N is 1-${choicesOf(s).length}`
+
+// The engine build sends one of these notes for the whole mission; the text build plays its scenes one by one.
+const missionLine = (s: State): string => {
+  const m = mission(s)
+  return m ? `\n\nMISSION: ${m.title}. ${m.detail}: ${m.endings.map((e) => `${e.label} (${e.note})`).join(' / ')}` : ''
+}
 
 const randomPath = (seed: number): readonly number[] => {
   const rnd = mulberry(seed)
@@ -34,7 +41,7 @@ const runReplay = (path: readonly number[]) => {
   const last = states[states.length - 1]
   if (flag(argv, '--state')) return console.log(JSON.stringify(summary(last), null, 2))
   const shown = flag(argv, '--last') ? [last] : states
-  console.log(shown.map(render).join('\n\n'))
+  console.log(shown.map(render).join('\n\n') + missionLine(last))
   console.log(footer(path, last))
 }
 
@@ -42,7 +49,7 @@ const interactive = async () => {
   const rl = createInterface({ input: stdin, output: stdout })
   const loop = async (s: State, path: readonly number[]): Promise<void> => {
     const cs = choicesOf(s)
-    console.log('\n' + render(s))
+    console.log('\n' + render(s) + missionLine(s))
     if (cs.length === 0) {
       console.log(`\nPATH: ${path.join(',')}`)
       return rl.close()
