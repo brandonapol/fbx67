@@ -124,7 +124,7 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
 
 // Indoor fog is smoke in lamplight: warm and dark, never the sky's haze.
 // Indoors fog veils the far wall of a 12 m room 10-20% (docs/art/README.md, Summer: start 2 m, end 60 m).
-const INDOOR = { fogStart: 2, fogEnd: 60, fog: '#3a2c22', ambient: '#8a7c70', sunIntensity: summer.sunIntensity * 0.5 } as const
+const INDOOR = { fogStart: 2, fogEnd: 60, fog: '#4a3a2e', ambient: '#a49482', sunIntensity: summer.sunIntensity * 0.5 } as const
 
 const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting => {
   if (season === 'summer') return summer
@@ -136,7 +136,7 @@ const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting =>
 }
 
 // The story backdrop belongs to no place: a slate floor fading into slate, lit only enough to read as a room.
-const STORY = { fog: '#2a2e38', fogStart: 0, fogEnd: 16 } as const
+const STORY = { fog: '#3a3f4c', fogStart: 0, fogEnd: 12, ambient: '#8a93a6' } as const
 
 export const lighting = (space: SpaceId, season: Season, weather: Weather): Lighting => {
   const base = outdoors(space, season, weather)
