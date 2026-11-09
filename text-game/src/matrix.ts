@@ -16,7 +16,13 @@ type Sig = Readonly<Pick<State, SigField>>
 
 const isSigField = (k: string): k is SigField => sigFields.some((f) => f === k)
 
-type Node = Readonly<{ state: State; sig: Sig; sample: readonly number[] }>
+// A path is its last choice and the path before it, so nodes share their prefixes instead of each copying the whole
+// path: the frontier is hundreds of thousands of nodes deep into Act 4, and copies ran CI out of heap.
+type Path = Readonly<{ up: Path; choice: number }> | undefined
+
+const choicesIn = (p: Path, acc: readonly number[] = []): readonly number[] => (p ? choicesIn(p.up, [p.choice, ...acc]) : acc)
+
+type Node = Readonly<{ state: State; sig: Sig; sample: Path }>
 
 const sigOf = (prev: Sig, s: State): Sig => ({
   barfight: s.barfight ?? prev.barfight,
@@ -49,24 +55,25 @@ const run = (frontier: ReadonlyMap<string, Node>, found: Map<string, Node>): Map
       const s = canonical(raw)
       // Heat still to come is part of the key, or a path owing it merges with one that doesn't (the borrowed key).
       const k = `${sigKey(sig)}#${s.scene}#${s.heat}#${pendingHeat(s)}`
-      if (!next.has(k)) next.set(k, { state: s, sig, sample: [...node.sample, i + 1] })
+      if (!next.has(k)) next.set(k, { state: s, sig, sample: { up: node.sample, choice: i + 1 } })
     })
   })
   return run(next, found)
 }
 
-const found = run(new Map([['start', { state: initialState, sig: sigOf({ leakedFlightDate: false, sharedWreck: false }, initialState), sample: [] }]]), new Map())
+const found = run(new Map([['start', { state: initialState, sig: sigOf({ leakedFlightDate: false, sharedWreck: false }, initialState), sample: undefined }]]), new Map())
 
 const rows = [...found.values()]
   .map((n) => {
-    const full = replay(n.sample)
+    const sample = choicesIn(n.sample)
+    const full = replay(sample)
     const last = full[full.length - 1]
     return {
       decisions: n.sig,
       heat: last.heat > HEAT_LIMIT ? 'hot' : 'cool',
       ending: ending(last),
       missingForBest: missingForBest(last),
-      path: n.sample.join(','),
+      path: sample.join(','),
     }
   })
   .sort((a, b) => sigKey(a.decisions).localeCompare(sigKey(b.decisions)))
