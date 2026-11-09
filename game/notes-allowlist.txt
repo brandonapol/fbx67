@@ -4,8 +4,6 @@
 a1_letter:honest
 a1_letter:lie
 a1_letter:soft
-a1_lucy:noIdea
-a1_lucy:offerPhotos
 a2_chiefs:listen
 a2_chiefs:offerHelp
 a2_chiefs:slipOut

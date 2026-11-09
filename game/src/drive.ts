@@ -139,3 +139,12 @@ export const jailTalk = (g: Game, who: keyof typeof jailStands): Game => {
   const s = jailStands[who]
   return interact(walk(g, [[s.x, s.z]]))
 }
+
+// Where Wade stands in the land office to reach things: by the wet ledger pile, and at the foot of the stair by Lucy.
+export const officeStands = { ledgers: vec(-2.5, -2.0), lucy: vec(3.4, -2.4) } as const
+
+// Walks to the pile or to Lucy in the land office and uses what is there.
+export const officeReach = (g: Game, at: keyof typeof officeStands): Game => {
+  const s = officeStands[at]
+  return interact(walk(g, [[s.x, s.z]]))
+}
