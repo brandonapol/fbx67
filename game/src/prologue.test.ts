@@ -192,6 +192,14 @@ test('Owen walks by default everywhere, jogs with run outdoors and walks briskly
   assert.ok(Math.abs(length(run(camp, { ...north, run: true }, 40).vel) - JOG) < 1e-6)
 })
 
+test('outdoors, run held settles into the jog clip, never the sprint', () => {
+  const camp = { ...atCamp(), pos: vec(-2, -1.5) }
+  const north: Input = { dir: vec(0, -1), hold: false, run: true }
+  const steps = Array.from({ length: 90 }).reduce<readonly Game[]>((acc) => [...acc, tick(acc[acc.length - 1], north, DT)], [camp])
+  steps.forEach((g, i) => assert.notEqual(clipFor(owenMotion(g)), 'run', `sprint clip at step ${i}`))
+  assert.equal(clipFor(owenMotion(steps[steps.length - 1])), 'jog')
+})
+
 test('indoors, run held never plays the run clip and Owen stays at or under the indoor pace', () => {
   const bar = press(start(), 'close')
   const north: Input = { dir: vec(0, -1), hold: false, run: true }
@@ -210,7 +218,7 @@ test('the clip follows the simulated velocity, not the frame displacement', () =
   const bar = press(start(), 'close')
   assert.equal(clipFor(owenMotion({ ...bar, vel: vec(0, -WALK) })), 'walk')
   assert.equal(clipFor(owenMotion({ ...bar, vel: vec(0, 0) })), 'idle')
-  assert.equal(clipFor(owenMotion({ ...atCamp(), vel: vec(0, -JOG) })), 'run')
+  assert.equal(clipFor(owenMotion({ ...atCamp(), vel: vec(0, -JOG) })), 'jog')
 })
 
 test('Owen eases to a stop, and against a wall his velocity is zero', () => {

@@ -213,7 +213,12 @@ The core cast and the first nine clips cost about 215 credits.
 - Textures are WebP, which shrinks the download but not GPU memory. KTX2/Basis is decided above, not yet built.
 - No mesh LODs yet (#40). No props in hands yet: drinking clips need a glass on the hand bone.
 - Clips are generic library motion. Character-specific gestures (Curly's bowline, Wade's guitar) need new clips.
-- The run clip is a sprint; the `jog` clip (Run_02) is the town pace, not yet wired into game code.
+- Locomotion picks one clip per speed band (`clipFor` in `game/src/cast.ts`), not a blend tree: walk (or sneak)
+  up to 2.45 m/s, jog to 4.4 m/s, run above. Owen walks at 1.4 m/s, walks briskly indoors at 1.8 and jogs
+  outdoors at 3.5; the sprint clip is for chases. Each moving clip plays at `speed / authored speed`, where the
+  authored speed comes from the clip's feet in stance (forward kinematics on the Higgsfield source, the toe's
+  speed while it is on the ground): `jog` (Run_02) about 4.0 m/s, `run` (RunFast) about 5.3 m/s. These are
+  estimates from a handful of frames. The walk keeps the 1.4 m/s it was tuned to by eye in #60.
 
 ## Follow-ups
 
