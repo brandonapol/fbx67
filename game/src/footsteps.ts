@@ -1,6 +1,6 @@
 import type { Box, Vec } from './world.ts'
 
-export type Surface = 'wood' | 'gravel' | 'mud' | 'water' | 'snow'
+export type Surface = 'wood' | 'gravel' | 'mud' | 'water' | 'snow' | 'concrete'
 
 export type Region = Readonly<{ box: Box; surface: Surface }>
 

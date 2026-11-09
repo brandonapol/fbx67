@@ -322,6 +322,21 @@ const guitarVoice = (ctx: BaseAudioContext, l: Extract<Layer, { kind: 'guitar' }
   return { out: g, tick, stop: () => (s.stopped = true) }
 }
 
+const outboardVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Extract<Layer, { kind: 'outboard' }>, rand: Rand): Voice => {
+  const g = gainNode(ctx, l.gain)
+  const motor = ctx.createOscillator()
+  motor.type = 'sawtooth'
+  motor.frequency.value = l.rpm / 60
+  const throttle = lfo(ctx, between(rand, 0.1, 0.3), (l.rpm / 60) * 0.08, motor.frequency)
+  motor.connect(filter(ctx, 'bandpass', 700, 1.4)).connect(gainNode(ctx, 0.6)).connect(g)
+  const rasp = loop(ctx, buffers.white)
+  rasp.connect(filter(ctx, 'bandpass', 2400, 0.9)).connect(gainNode(ctx, 0.12)).connect(g)
+  rasp.start(ctx.currentTime, between(rand, 0, BUFFER_SECONDS))
+  const nodes = [motor, throttle, rasp]
+  nodes.slice(0, 2).forEach((n) => n.start())
+  return { out: g, stop: (at) => nodes.forEach((n) => n.stop(at)) }
+}
+
 export const layerVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Layer, rand: Rand): Voice => {
   if (l.kind === 'noise') return noiseVoice(ctx, buffers, l, rand)
   if (l.kind === 'walla') return wallaVoice(ctx, buffers, l, rand)
@@ -329,11 +344,121 @@ export const layerVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Layer, ra
   if (l.kind === 'idle') return idleVoice(ctx, buffers, l, rand)
   if (l.kind === 'hum') return humVoice(ctx, l)
   if (l.kind === 'guitar') return guitarVoice(ctx, l, rand)
+  if (l.kind === 'outboard') return outboardVoice(ctx, buffers, l, rand)
   return reelVoice(ctx, buffers, l, rand)
+}
+
+const latest = (ends: readonly number[], at: number): number => ends.reduce((a, b) => Math.max(a, b), at)
+
+const concreteStep = (ctx: BaseAudioContext, buffers: Buffers, dest: AudioNode, rand: Rand, at: number, scale: number): number => {
+  const k = between(rand, 0.85, 1.15)
+  return Math.max(
+    burst(ctx, buffers, dest, 'white', 'bandpass', 2600 * k, 1.8, at, 0.22 * scale, 0.001, 0.035, rand),
+    burst(ctx, buffers, dest, 'brown', 'lowpass', 260 * k, 1, at, 0.5 * scale, 0.003, 0.07, rand),
+  )
+}
+
+export const BOOTS = 6
+
+export const bootGain = (i: number): number => Math.sin(((i + 0.5) / BOOTS) * Math.PI)
+
+export const ROAR_SECONDS: readonly [number, number] = [1.2, 2.2]
+
+const act1Spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest: AudioNode, rand: Rand, at: number): number | undefined => {
+  if (which === 'sandbag')
+    return Math.max(
+      burst(ctx, buffers, dest, 'brown', 'lowpass', between(rand, 130, 190), 1, at, 0.9, 0.005, 0.25, rand),
+      burst(ctx, buffers, dest, 'white', 'bandpass', 1800, 1.2, at, 0.07, 0.003, 0.12, rand),
+      rand() < 0.4 ? burst(ctx, buffers, dest, 'pink', 'bandpass', 700, 3, at + 0.05, 0.12, 0.02, 0.2, rand, 300) : at,
+    )
+  if (which === 'shout') {
+    const mouth = filter(ctx, 'lowpass', 1800)
+    const f1 = filter(ctx, 'bandpass', between(rand, 600, 800), 3)
+    const f2 = filter(ctx, 'bandpass', between(rand, 1100, 1400), 4)
+    f1.connect(mouth)
+    f2.connect(mouth)
+    mouth.connect(dest)
+    const f = between(rand, 140, 220)
+    const calls = 1 + Math.floor(rand() * 2)
+    return latest(
+      Array.from({ length: calls }, (_, i) => {
+        const t = at + i * between(rand, 0.55, 0.8)
+        const len = between(rand, 0.3, 0.5)
+        return Math.max(tone(ctx, f1, 'sawtooth', f, t, 0.3, 0.06, len, f * 0.82), tone(ctx, f2, 'sawtooth', f, t, 0.15, 0.06, len, f * 0.82))
+      }),
+      at,
+    )
+  }
+  if (which === 'drip') {
+    const f = between(rand, 900, 1500)
+    const peak = between(rand, 0.03, 0.07)
+    return Math.max(tone(ctx, dest, 'sine', f, at, peak, 0.001, 0.06, f * 1.6), tone(ctx, dest, 'sine', f, at + 0.12, peak * 0.25, 0.001, 0.08, f * 1.6))
+  }
+  if (which === 'shove')
+    return Math.max(
+      burst(ctx, buffers, dest, 'pink', 'bandpass', 600, 1, at, 0.25, 0.04, 0.15, rand, 1400),
+      burst(ctx, buffers, dest, 'brown', 'lowpass', 200, 1, at + 0.12, 0.7, 0.004, 0.18, rand),
+    )
+  if (which === 'stove') {
+    const hit = burst(ctx, buffers, dest, 'brown', 'lowpass', 300, 1, at, 0.8, 0.003, 0.15, rand)
+    return latest([hit, ...[180, 437, 692].map((f, i) => tone(ctx, dest, 'sine', f * between(rand, 0.97, 1.03), at, [0.2, 0.12, 0.07][i], 0.002, 1.1 - i * 0.3))], at)
+  }
+  if (which === 'bottle') {
+    const shards = Array.from({ length: 5 }, (_, i) =>
+      burst(ctx, buffers, dest, 'white', 'highpass', between(rand, 3000, 7000), 0.8, at + i * between(rand, 0.01, 0.04), between(rand, 0.08, 0.25), 0.001, between(rand, 0.03, 0.09), rand),
+    )
+    const rings = Array.from({ length: 3 }, () => tone(ctx, dest, 'sine', between(rand, 2600, 4200), at + between(rand, 0, 0.12), 0.05, 0.001, between(rand, 0.1, 0.25)))
+    return latest([...shards, ...rings], at)
+  }
+  if (which === 'antlers') {
+    const knocks = 3 + Math.floor(rand() * 2)
+    const clatter = Array.from({ length: knocks }, (_, i) =>
+      burst(ctx, buffers, dest, 'pink', 'bandpass', between(rand, 600, 1100), 6, at + i * between(rand, 0.06, 0.14), between(rand, 0.2, 0.4), 0.002, 0.05, rand),
+    )
+    return latest([...clatter, burst(ctx, buffers, dest, 'brown', 'lowpass', 180, 1, at + knocks * 0.1, 0.6, 0.004, 0.2, rand)], at)
+  }
+  if (which === 'roar') {
+    const rise = between(rand, ROAR_SECONDS[0], ROAR_SECONDS[1])
+    const fall = rise * 1.5
+    return Math.max(
+      burst(ctx, buffers, dest, 'pink', 'bandpass', 700, 0.9, at, 0.35, rise, fall, rand, 1100),
+      burst(ctx, buffers, dest, 'pink', 'bandpass', 1600, 1.4, at, 0.15, rise, fall, rand, 2100),
+    )
+  }
+  if (which === 'knock') {
+    const knocks = 1 + Math.floor(rand() * 3)
+    return latest(
+      Array.from({ length: knocks }, (_, i) => {
+        const t = at + i * between(rand, 0.15, 0.4)
+        return Math.max(
+          tone(ctx, dest, 'triangle', between(rand, 80, 110), t, 0.2, 0.002, 0.18),
+          burst(ctx, buffers, dest, 'white', 'bandpass', between(rand, 1000, 1400), 8, t, 0.3, 0.001, 0.12, rand),
+        )
+      }),
+      at,
+    )
+  }
+  if (which === 'keys') {
+    const ring = 6 + Math.floor(rand() * 4)
+    return latest(
+      Array.from({ length: ring }, () => tone(ctx, dest, 'sine', between(rand, 3000, 6000), at + between(rand, 0, 0.4), between(rand, 0.02, 0.05), 0.001, between(rand, 0.08, 0.2))),
+      at,
+    )
+  }
+  if (which === 'boots') {
+    const stride = between(rand, 0.5, 0.6)
+    return latest(
+      Array.from({ length: BOOTS }, (_, i) => concreteStep(ctx, buffers, dest, rand, at + i * stride, 1.4 * bootGain(i))),
+      at,
+    )
+  }
+  return undefined
 }
 
 export const spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest: AudioNode, rand: Rand): number => {
   const at = ctx.currentTime + 0.01
+  const act1 = act1Spot(ctx, buffers, which, dest, rand, at)
+  if (act1 !== undefined) return act1
   if (which === 'clink') {
     const f = between(rand, 2400, 3600)
     const peak = between(rand, 0.04, 0.12)
@@ -406,6 +531,7 @@ export const footstep = (ctx: BaseAudioContext, buffers: Buffers, surface: Surfa
     const squeak = snow.squeak > 0.3 ? tone(ctx, dest, 'triangle', between(rand, 1500, 2100), at + 0.03, 0.04 * snow.squeak, 0.01, 0.07) : at
     return Math.max(crunch, pack, squeak)
   }
+  if (surface === 'concrete') return concreteStep(ctx, buffers, dest, rand, at, 1)
   if (surface === 'wood')
     return Math.max(
       burst(ctx, buffers, dest, 'brown', 'bandpass', 200 * k, 2.5, at, 0.7, 0.003, 0.09, rand),
