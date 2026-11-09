@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
 import { sceneIds, sceneIndex } from './sceneIds.ts'
 import { scenes } from './scenes/index.ts'
-import { evidenceIds, notebook, oneHanded, pov, season, seasonOn } from './queries.ts'
+import { boughtRound, evidenceIds, notebook, oneHanded, pov, season, seasonOn } from './queries.ts'
+import { replay } from './engine.ts'
 import * as story from './story.ts'
 import type { Clock, Evidence, SceneId, State } from './types.ts'
 
@@ -94,4 +95,14 @@ test('notebook speaks as Lucy in her scenes where it has a Lucy line', () => {
   const lucy = notebook(at('a3_found', { evidence: held }))
   assert.notEqual(lucy[0].line, wade[0].line)
   assert.equal(lucy[1].line, wade[1].line)
+})
+
+test('boughtRound holds only in the scene the round leads to', () => {
+  const states = replay([3, 1])
+  assert.deepEqual(states.map((s) => [s.scene, boughtRound(s)]), [
+    ['p_bar', false],
+    ['p_talk_round', true],
+    ['p_letter', false],
+  ])
+  assert.equal(boughtRound(replay([1]).at(-1)!), false)
 })

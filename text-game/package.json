@@ -14,7 +14,7 @@
     "matrix:check": "node --max-old-space-size=4096 src/matrix.ts --check routes/matrix-summary.json",
     "golden": "node --max-old-space-size=4096 src/matrix.ts --golden routes/golden.json --write-summary routes/matrix-summary.json",
     "route": "node --max-old-space-size=4096 src/matrix.ts --where",
-    "test:unit": "node --test src/*.test.ts",
+    "test:unit": "node --test src/*.test.ts src/ambient/*.test.ts",
     "test:matrix": "node --max-old-space-size=4096 src/matrix.ts --check routes/matrix-summary.json",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && npm run test:unit && npm run test:matrix && npm run verify && npm run explore"
