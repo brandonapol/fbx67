@@ -137,11 +137,14 @@ on #94: 60 to 90 seconds, a few verbs, no combo system, no game-over.
 
   So the fight adds at most 1 heat, as the bottle does today, and Eli trust moves from -1 to +1. The cell
   (`a1_tank`, decision 1) stays a conversation: it is deliberate, and it is where the big trust and heat moves are.
-- **New state.** *Stood with Eli* and *Caught* have no choice in the text build yet. They shade existing counters
-  and need no new field, but the barfight menu has to offer them so the sweep tries them; that's #153. On the seated
-  path the text build has no move today: #153 gives `a1_tank_sat` the same move menu. Because the effects collapse
-  (heat 0 or 1, trust -1, 0 or +1), the text build only needs one option per distinct effect, not every
-  combination, to keep the sweep budget.
+- **New state.** None: *Stood with Eli* and *Caught* shade existing counters. The menu is `theBarfight` in
+  [`missions.ts`](../../text-game/src/missions.ts): every combination of the four details is a note, written
+  `opened.move.stood.caught` (for example `gotUp.rack.stoodWithEli.redHanded`), and all of them land on `a1_tank`.
+  In the text build both openings lead to the same moves (`a1_tank_sat` offers them after Curly drags Wade in); a
+  shove or the rack goes on to `a1_headlights` (`clean`, or `redHanded` for +1 heat), and a bottle skips it, since
+  its point of heat is the shared one; then `a1_whistle` asks where Wade stood (`stoodWithEli` +1 Eli trust, or
+  `leftEli`). So the text build offers one option per distinct effect, and the bottle's two caught notes, and shove
+  against rack, land on the same state until the move carries state (#205).
 - **Out.** The officer's whistle; a cutscene to the car (Curly's twenty) and the cell (`a1_tank`).
 
 ## Follow-ups

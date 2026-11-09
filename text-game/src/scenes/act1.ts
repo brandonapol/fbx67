@@ -1,4 +1,4 @@
-import type { Scene } from '../types.ts'
+import type { BarfightMove, Choice, Scene, State } from '../types.ts'
 import { N } from '../names.ts'
 import { addEvidence, eliTrust, heat, joan, mom, pipe, set } from '../state.ts'
 
@@ -11,6 +11,18 @@ const message = `"There's a woman from Minto on the sandbag line on Cushman," yo
 const delivered = `${N.eli} doesn't ask your name. He knows whose mother it is before you've finished, and he knows the house. He tips the last of the furniture onto a porch and is turning the bow back into the current while you're still talking.
 
 "Tell her I'm going," he says. Then, over the motor: "Get back to your line before they shoot you for it, Texas. I'll come find you tonight. I could use a strong back."`
+
+// The fight's moves, offered whether Wade got up or Curly dragged him in. Hank remembers the move only when Wade got
+// up; dragged in, he is the airman who stayed on his stool (hankRemembers). A room move he is still holding when the
+// law comes in can catch him red-handed; a broken bottle already carries its point of heat, so it skips that prompt.
+const fightMoves = (gotUp: boolean): readonly Choice[] => {
+  const move = (m: BarfightMove) => (gotUp ? set({ barfightMove: m }) : (s: State) => s)
+  return [
+    { label: 'Shove the drunk into the stove.', note: 'shove', apply: move('shove'), next: 'a1_headlights' },
+    { label: 'Grab the moose rack off the wall.', note: 'mooseRack', apply: move('mooseRack'), next: 'a1_headlights' },
+    { label: 'Break a bottle and hope that ends it.', note: 'bottle', apply: pipe(move('bottle'), heat(1)), next: 'a1_whistle' },
+  ]
+}
 
 export const act1: readonly Scene[] = [
   {
@@ -266,12 +278,7 @@ He wipes the bar. "That's the speech. Drink your beer."
 A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
 
 The floor is slick with mud. There's a hot stove, a moose rack on the wall, and a lot of bottles.`,
-    choices: () => [
-      { label: 'Shove the drunk into the stove.', note: 'shove', apply: set({ barfightMove: 'shove' }), next: 'a1_tank' },
-      { label: 'Grab the moose rack off the wall.', note: 'mooseRack', apply: set({ barfightMove: 'mooseRack' }), next: 'a1_tank' },
-      { label: 'Break a bottle and hope that ends it.', note: 'bottle', apply: pipe(set({ barfightMove: 'bottle' }), heat(1)), next: 'a1_tank' },
-      { label: 'Stay in your seat. Not your fight.', note: 'stayInSeat', apply: eliTrust(-1), next: 'a1_tank_sat' },
-    ],
+    choices: () => [...fightMoves(true), { label: 'Stay in your seat. Not your fight.', note: 'stayInSeat', apply: eliTrust(-1), next: 'a1_tank_sat' }],
   },
   {
     id: 'a1_tank_sat',
@@ -282,7 +289,37 @@ The floor is slick with mud. There's a hot stove, a moose rack on the wall, and 
     goal: 'Get out of the fight in one piece.',
     text: () => `
 You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.`,
-    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a1_tank' }],
+    choices: () => fightMoves(false),
+  },
+  {
+    id: 'a1_headlights',
+    act,
+    title: 'Headlights',
+    place: 'silverPan',
+    clock: '1967-08-19T21:30',
+    goal: 'Keep Eli out of trouble.',
+    text: () => `
+Headlights sweep across the front window. Outside, a siren winds down to nothing. Nobody else in the Pan seems to have noticed. You still have hold of what you grabbed.`,
+    choices: () => [
+      { label: 'Let go and step back with your hands where they can be seen.', note: 'clean', next: 'a1_whistle' },
+      { label: 'Hang on. He started it.', note: 'redHanded', apply: heat(1), next: 'a1_whistle' },
+    ],
+  },
+  {
+    id: 'a1_whistle',
+    act,
+    title: 'The Whistle',
+    place: 'silverPan',
+    clock: '1967-08-19T21:30',
+    goal: 'Keep Eli out of trouble.',
+    text: () => `
+The door bangs open and a whistle cuts through the noise. The fight stops the way a song stops when somebody pulls the jukebox plug.
+
+Eli is by the stove, his lip split, the drunk's friend sitting in the mud at his feet.`,
+    choices: () => [
+      { label: 'You are at his shoulder. Nobody got him two on one.', note: 'stoodWithEli', apply: eliTrust(1), next: 'a1_tank' },
+      { label: 'You are across the room, where the fight took you.', note: 'leftEli', next: 'a1_tank' },
+    ],
   },
   {
     id: 'a1_tank',
