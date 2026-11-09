@@ -48,6 +48,17 @@ const places = [
   'landOffice',
   'cityJail',
   'eielsonBarracks',
+  'majorsOffice',
+  'squadronBuilding',
+  'photoLab',
+  'photoRecords',
+  'baseHangar',
+  'lucysKitchen',
+  'hotelBar',
+  'communityHall',
+  'nlCafe',
+  'bushStrip',
+  'richardsonHighway',
 ] as const satisfies readonly Place[]
 const everyPlace: [Exclude<Place, (typeof places)[number]>] extends [never] ? true : false = true
 

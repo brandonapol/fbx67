@@ -208,7 +208,7 @@
   <text class="tl" x="356" y="-17">eielsonGate, eielsonBarracks, barracksWindow,</text>
   <text class="tl" x="356" y="-12.6">squadronBuilding, majorsOffice, photoLab,</text>
   <text class="tl" x="356" y="-8.2">photoRecords, baseHangar, munitionsFence.</text>
-  <text class="tl" x="356" y="-3.8">Only eielsonBarracks is in the Place type.</text>
+  <text class="tl" x="356" y="-3.8">All but the gate, window and fence are Places.</text>
 
   <text class="tlb" x="356" y="6">Season</text>
   <text class="tl" x="356" y="11">Frost in September, first snow in October,</text>

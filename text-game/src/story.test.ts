@@ -5,7 +5,7 @@ import { choicesOf, choose, replay } from './engine.ts'
 import { canonicalKey } from './liveness.ts'
 import { clock, goal, menu, offers, place, send, weather } from './story.ts'
 import { scenes } from './scenes/index.ts'
-import type { State } from './types.ts'
+import type { Scene, State } from './types.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
 const spots = ['stove', 'cache', 'marker'] as const
@@ -65,14 +65,24 @@ test('weather follows heat and trust', () => {
   assert.equal(weather(at({ eliTrust: -3 })), 'night')
 })
 
-const placed = scenes.filter((sc) => sc.act === 'Prologue' || sc.act === 'Act 1: Flood')
+const placedActs: readonly Scene['act'][] = ['Prologue', 'Act 1: Flood', 'Act 2: Freeze-up']
+const placed = scenes.filter((sc) => placedActs.includes(sc.act))
 
-test('every prologue and Act 1 scene says where, when and what next', () => {
-  assert.ok(placed.some((sc) => sc.act === 'Act 1: Flood'))
+test('every scene from the prologue through Act 2 says where, when and what next', () => {
+  placedActs.forEach((act) => assert.ok(placed.some((sc) => sc.act === act), `no ${act} scenes`))
   placed.forEach((sc) => {
     assert.ok(sc.place, `${sc.id} has no place`)
     assert.match(sc.clock ?? '', /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, `${sc.id} has no clock`)
     assert.ok(sc.goal, `${sc.id} has no goal`)
+  })
+})
+
+test('an Act 2 café visit is at the café, keeps the goal of the decision it puts off, and comes after it', () => {
+  const byId = (id: string) => scenes.find((sc) => sc.id === id)!
+  ;[['a2_co_ask', 'a2_co_gossip'], ['a2_heat', 'a2_heat_gossip']].forEach(([from, cafe]) => {
+    assert.equal(byId(cafe).place, 'nlCafe')
+    assert.equal(byId(cafe).goal, byId(from).goal)
+    assert.ok(byId(cafe).clock! > byId(from).clock!, `${cafe} runs before ${from}`)
   })
 })
 

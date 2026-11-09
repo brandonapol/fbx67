@@ -67,12 +67,12 @@ Each scene can carry three fields, `place`, `clock` and `goal`, written in its s
 
 | Query | Returns | Example |
 |---|---|---|
-| `place(state)` | one of a fixed set of place ids (`Place` in `text-game/src/types.ts`): `silverPan`, `owensRoom`, `floatDock`, `surveyCamp`, `boardingHouse`, `floodedStreet`, `floodCabin`, `helpTent`, `landOffice`, `cityJail`, `eielsonBarracks` | `floatDock` |
+| `place(state)` | one of a fixed set of place ids (`Place` in `text-game/src/types.ts`): `silverPan`, `owensRoom`, `floatDock`, `surveyCamp`, `boardingHouse`, `floodedStreet`, `floodCabin`, `helpTent`, `landOffice`, `cityJail`, `eielsonBarracks`, `majorsOffice`, `squadronBuilding`, `photoLab`, `photoRecords`, `baseHangar`, `lucysKitchen`, `hotelBar`, `communityHall`, `nlCafe`, `bushStrip`, `richardsonHighway` | `floatDock` |
 | `clock(state)` | local date and time, `YYYY-MM-DDTHH:MM` (`Clock` in `types.ts`), for sun angle and season; weather such as the flood comes from the date, not the place | `1967-07-15T07:30` |
 | `season(state)` | `summer`, `flood`, `freezeup`, `winter` or `breakup`, from `clock(state)`; `undefined` when the scene has no clock | `flood` |
 | `goal(state)` | a short objective line: where the story wants the player next | `Fly north with Curly to the survey camp.` |
 
-Every prologue scene has all three, and a unit test (`text-game/src/story.test.ts`) enforces that and checks that the prologue clock never runs backward. Scenes in later acts do not have them yet, so the queries return `undefined` there; the game must handle that until each act is filled in. A new place id is added to `Place` when a scene needs it. `boardingHouse` is the outside of Owen's boarding house and its door; `owensRoom` is his room inside it. Until the game has a dock space, it shows the `p_dock` panel over the room, and its `fly` button enters the camp.
+Every scene from the prologue through Act 2 has all three, and a unit test (`text-game/src/story.test.ts`) enforces that; the sweep (`explore.ts`) checks that the clock never runs backward on any move. The fields are fixed per scene, not read from state: `a2_photos_files` keeps the lunch-hour clock on the borrowed-key night too (the records room has no windows), `a2_hotel`'s clock is the date of Lucy's ask, not of the photographs she has spread out, and `a2_heat` is on the Richardson Highway whether or not Barnette stops Wade. Scenes from Act 3 on do not have them yet, so the queries return `undefined` there; the game must handle that until each act is filled in. A new place id is added to `Place` when a scene needs it. `boardingHouse` is the outside of Owen's boarding house and its door; `owensRoom` is his room inside it. Until the game has a dock space, it shows the `p_dock` panel over the room, and its `fly` button enters the camp.
 
 `season(state)` is a pure function of the date, not the place. Its ranges are constants in `text-game/src/queries.ts`
 (`SEASON_STARTS`), after the band-by-season table in `docs/art/README.md`: **flood** from 12 August to 31 August (the
@@ -80,8 +80,8 @@ Chena tops its banks in the second week; the prologue's last scene, 14 August, i
 September to 30 November, **winter** 1 December to the end of February, **breakup** 1 March to 31 May, **summer** 1
 June to 11 August (the prologue's July). The engine lights each space from this query and `clock(state)`
 (`timeOf` in `game/src/lighting.ts`): the sun from the date and hour, the season's light from the date. A scene with
-no clock, or a season the engine has no light for yet (freeze-up, winter, breakup), keeps the space's own `Season`,
-and the story backdrop ignores the clock.
+no clock takes the season of the last dated scene before it. Freeze-up is lit; only breakup, which the engine has no
+light for yet, falls back to winter. The story backdrop ignores the clock.
 
 ### Who the player is
 
