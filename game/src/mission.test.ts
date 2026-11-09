@@ -4,7 +4,7 @@ import { replay } from '../../text-game/src/engine.ts'
 import type { Visit } from './talk.ts'
 import { near, perform, reply, showing, step, verbs, visit } from './talk.ts'
 import { ended, interact, press, start, still } from './prologue.ts'
-import { back, holdWhenSafe, leaveBar, playPrologue, routes, walk, walkLeg } from './drive.ts'
+import { back, holdWhenSafe, leaveBar, playPrologue, routes, toBed, upstairs, walk, walkLeg, writeLetter } from './drive.ts'
 
 // The headless mission test (#42): play the prologue in the engine build's logic with no renderer, using every small
 // interaction on the way (greet, talk with a reply, ask about, use, buy), and prove the mission still completes on
@@ -41,15 +41,14 @@ test('the prologue completes headless with greet, talk, ask, use and buy along t
   const after = perform(go(bought, [[4.6, -2.2], [4.6, -1.4]]), 'airmanJukebox', 'talk')
   assert.match(after.talk.log.at(-1)!.text, /bought .* a beer/, 'after the round, the airman says so')
 
-  const room = then(after, (g) => walkLeg(leaveBar(g)))
+  const room = then(after, (g) => upstairs(walkLeg(leaveBar(g))))
   assert.equal(room.game.space, 'room')
-  const reel = go(room, [[-0.3, -1.6]])
+  const reel = go(room, [[2.3, -1.5]])
   assert.deepEqual(verbs(reel, near(reel)!), ['use'])
   const taped = perform(reel, 'reelToReel', 'use')
 
   const end = then(taped, (g) => {
-    const desk = interact(walk(g, [[1.6, -0.8]]))
-    const camp = press(walkLeg(press(desk, 'note:sleep')), 'note:fly')
+    const camp = press(walkLeg(toBed(writeLetter(g))), 'note:fly')
     const hidden = holdWhenSafe(walk(camp, routes.stove))
     const skiff = interact(walk(interact(walk(hidden, back('stove'))), [[0.2, 5.4]]))
     return press(skiff, 'note:continue')

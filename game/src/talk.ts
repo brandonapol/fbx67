@@ -8,7 +8,7 @@ import { N } from '../../text-game/src/names.ts'
 import type { Game, Input } from './prologue.ts'
 import { available, press, tick } from './prologue.ts'
 import type { SpaceId } from './levels.ts'
-import { spaces } from './levels.ts'
+import { REEL_AT, spaces } from './levels.ts'
 import { poses } from './ambient.ts'
 import type { Interactable } from './world.ts'
 import { distance, pick } from './world.ts'
@@ -53,7 +53,7 @@ const everyone: readonly Ambient[] = [...prologueTown, ...prologueThings]
 export const thingSpots: Readonly<Record<string, Readonly<{ space: SpaceId; x: number; z: number }>>> = {
   jukebox: { space: 'bar', x: 5.5, z: -0.5 },
   chair: { space: 'bar', x: 1.7, z: 0.9 },
-  reelToReel: { space: 'room', x: -0.4, z: -2.4 },
+  reelToReel: { space: 'room', x: REEL_AT.x, z: REEL_AT.z },
 }
 
 // Everyone Owen could address in the space now: a figure the space stands itself (Hank, at his spot), the town's

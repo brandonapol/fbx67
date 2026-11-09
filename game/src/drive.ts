@@ -89,7 +89,7 @@ export const typeOut = (g: Game, n = 0): Game => {
   return typeOut(tick(g, still, DT), n + 1)
 }
 
-export const writeLetter = (room: Game): Game => press(typeOut(interact(walk(room, [[0.6, -1.0]]))), 'fold')
+export const writeLetter = (room: Game): Game => press(typeOut(interact(walk(room, [[0.6, -0.4], [0.6, -1.0]]))), 'fold')
 
 export const toBed = (room: Game): Game => interact(walk(room, [[-0.6, 0.6]]))
 
