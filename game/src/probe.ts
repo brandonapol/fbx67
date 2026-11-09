@@ -13,6 +13,7 @@ export const poses: Readonly<Record<string, Pose>> = {
   letter: { space: 'room', pos: vec(1.6, -0.8), facing: Math.PI, t: 0, shot: { eye: [-1.5, 6.5, 6], at: [0.6, 0.9, -0.6] } },
   hidden: { space: 'camp', pos: vec(1.8, -7.5), facing: Math.PI, t: 1, shot: { eye: [-2, 4.6, -4.4], at: [1.8, 0.6, -8.4] } },
   skiff: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] } },
+  story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
 export const WARMUP_FRAMES = 5
@@ -103,9 +104,9 @@ export const installProbe = (view: View, live: Live): void => {
     if (rec.age >= WARMUP_FRAMES) rec.pending = { space, triangles: triangles(app), cpuMs }
   })
 
-  const capture = async (name: string): Promise<void> => {
-    const pose = poses[name]
-    if (!pose) throw new Error(`no capture pose named ${name}`)
+  const capture = async (name: string, at: string = name): Promise<void> => {
+    const pose = poses[at]
+    if (!pose) throw new Error(`no capture pose named ${at}`)
     const saved = hold.saved ?? live.get()
     hold.saved = saved
     live.set(posed(saved, pose))

@@ -111,7 +111,10 @@ deep cold, from the space's temperature. Escape closes the sound panel.
     fixed shot (`poses` in `src/probe.ts`, `View.pose` in `src/render.ts`), hides the HUD and compares the frame with
     `smoke/baselines/` (pixelmatch; a frame fails past 0.2% changed pixels);
   - walks back and forth in each space for 10 s, recording draw calls, triangles, texture memory and CPU frame time,
-    and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md).
+    and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md);
+  - opens one start per act from a path (`smoke/starts.ts`: `a1_flood`, `a2_major`, `a3_camp`, `a4_news`), checks
+    the scene and its menu panel, records its perf samples and captures frame `<scene>.png` from the start's pose. A
+    later act ticket adds its start as one entry there, with a pose in `src/probe.ts` for the space it starts in.
 
   It refuses a port that serves another build, so parallel worktrees need their own `SMOKE_PORT`. Everything lands
   in `smoke-report/` (`SMOKE_REPORT=<dir>` moves it): `frames/`, `diff/` for changed frames,

@@ -11,6 +11,7 @@ import type { Sample } from '../src/probe.ts'
 import { MB, breaches, parseBudgets, perfMarkdown, summarize } from './budget.ts'
 import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
+import { starts } from './starts.ts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright') as typeof import('playwright')
@@ -115,16 +116,23 @@ const snap = async (p: Page, name: string, settle = 0): Promise<void> => {
 
 const checked: FrameResult[] = []
 
-const capture = async (p: Page, name: string): Promise<void> => {
-  await p.evaluate((n) => (window as any).__prologue.capture(n), name)
+const capture = async (p: Page, name: string, pose: string = name): Promise<void> => {
+  await p.evaluate(([n, at]) => (window as any).__prologue.capture(n, at), [name, pose] as const)
   checked.push(checkFrame(dirs, name, await p.screenshot({ timeout: 120000 })))
   await p.evaluate(() => (window as any).__prologue.release())
 }
 
-type Run = { downloadBytes?: number; samples?: readonly Sample[]; over?: readonly string[] }
+type Run = { downloadBytes?: number; samples: Sample[] }
 
-const publish = (run: Run): readonly string[] => {
-  const perf = { downloadMB: (run.downloadBytes ?? 0) / MB, spaces: summarize(run.samples ?? [], Object.keys(spaces)) }
+const run: Run = { samples: [] }
+
+const collect = async (p: Page): Promise<void> => {
+  const got = (await p.evaluate(() => (window as any).__prologue?.samples?.()).catch(() => undefined)) as Sample[] | undefined
+  run.samples.push(...(got ?? []))
+}
+
+const publish = (): readonly string[] => {
+  const perf = { downloadMB: (run.downloadBytes ?? 0) / MB, spaces: summarize(run.samples, Object.keys(spaces)) }
   const md = `${framesMarkdown(checked, artifact)}\n${perfMarkdown(perf, budgets)}`
   mkdirSync(report, { recursive: true })
   writeFileSync(join(report, 'perf.json'), `${JSON.stringify({ budgets, ...perf }, null, 2)}\n`)
@@ -157,7 +165,7 @@ after(async () => {
 
 type Opened = Readonly<{ page: Page; errors: string[]; initial: Request[]; close: () => Promise<void> }>
 
-const open = async (opts: Readonly<{ touch?: boolean; pad?: boolean }> = {}): Promise<Opened> => {
+const open = async (opts: Readonly<{ touch?: boolean; pad?: boolean; path?: string }> = {}): Promise<Opened> => {
   const browser = state.browser
   if (!browser) throw new Error('no browser')
   const context = await browser.newContext({ viewport: { width: 960, height: 600 }, hasTouch: !!opts.touch })
@@ -188,13 +196,13 @@ const open = async (opts: Readonly<{ touch?: boolean; pad?: boolean }> = {}): Pr
       })
     })
   }
-  await page.goto(url)
+  await page.goto(opts.path === undefined ? url : `${url}#path=${opts.path}`)
   await page.waitForFunction(() => (window as any).__prologue?.capture !== undefined)
   loading.on = false
   return { page, errors, initial, close: () => context.close() }
 }
 
-const play = async ({ page, errors, initial }: Opened, run: Run): Promise<void> => {
+const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   run.downloadBytes = await fetched(initial)
   await snap(page, '01-bar')
   await capture(page, 'bar')
@@ -299,27 +307,40 @@ const play = async ({ page, errors, initial }: Opened, run: Run): Promise<void> 
   assert.deepEqual(errors, [])
 }
 
-test('the prologue plays end to end with the keyboard, inside its frame and perf budgets', { timeout: 1500000 }, async () => {
-  const run: Run = {}
+test('the prologue plays end to end with the keyboard', { timeout: 1500000 }, async () => {
   const opened = await open()
   try {
-    await play(opened, run)
+    await play(opened)
   } finally {
-    run.samples = await opened.page.evaluate(() => (window as any).__prologue?.samples?.()).catch(() => undefined)
+    await collect(opened.page)
     await opened.close()
-    try {
-      run.over = publish(run)
-    } catch (e) {
-      console.error('could not publish the smoke report:', e)
-    }
   }
-  assert.deepEqual(
-    checked.filter((f) => f.verdict === 'changed' || f.verdict === 'missing').map((f) => f.name),
-    [],
-    `frames differ from game/smoke/baselines; see ${report}`,
-  )
-  assert.deepEqual(run.over, [], 'over the budget in docs/perf.md')
 })
+
+const START_FRAMES = 40
+
+starts.forEach((s) =>
+  test(`a link at ${s.scene} starts there with its menu, and renders`, { timeout: 300000 }, async () => {
+    const opened = await open({ path: s.path })
+    const { page, errors } = opened
+    try {
+      const g = await game(page)
+      assert.equal(g.story.scene, s.scene)
+      assert.equal(g.panel?.kind, 'story')
+      assert.equal(await page.locator('#panel-title').textContent(), g.panel.title)
+      assert.match(await page.evaluate(() => (window as any).__prologue.textBuild()), new RegExp(`#path=${s.path}$`))
+      await page.evaluate(() => (window as any).__prologue.record(true))
+      await frames(page, START_FRAMES)
+      await page.evaluate(() => (window as any).__prologue.record(false))
+      await snap(page, `start-${s.scene}`)
+      await capture(page, s.scene, s.pose)
+      assert.deepEqual(errors, [])
+    } finally {
+      await collect(page)
+      await opened.close()
+    }
+  }),
+)
 
 const setPad = (p: Page, axes: readonly number[], buttons: readonly number[]) =>
   p.evaluate(
@@ -405,4 +426,14 @@ test('touch walks with the stick, orbits with a drag and holds the prompt button
   assert.equal((await game(page)).panel, undefined)
   assert.deepEqual(errors, [])
   await close()
+})
+
+test('every frame matches its baseline and every space holds its budget in docs/perf.md', () => {
+  const over = publish()
+  assert.deepEqual(
+    checked.filter((f) => f.verdict === 'changed' || f.verdict === 'missing').map((f) => f.name),
+    [],
+    `frames differ from game/smoke/baselines; see ${report}`,
+  )
+  assert.deepEqual(over, [], 'over the budget in docs/perf.md')
 })
