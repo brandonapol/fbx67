@@ -5,10 +5,13 @@ import { prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
 import type { Activity } from './cast.ts'
 import type { SpaceId } from './levels.ts'
 import { spaces } from './levels.ts'
-import { yawOf } from './downtown.ts'
 import type { Vec } from './world.ts'
 import { add, length, normalize, scale, sub, vec } from './world.ts'
 import { mulberry } from './synth.ts'
+
+// downtown.ts exports this, and it lands in the town-map PR. This layer stacks on the story work, which does not
+// carry that file, so the conversion lives here.
+const yawOf = (f: Vec): number => Math.atan2(f.x, f.z)
 
 // Ambient life, first layer (issue #44): where the prologue's town stands and walks. Who is around, and when, is the
 // story's data (text-game/src/ambient/prologueTown.ts, keyed by place and story clock); what they say comes from the
@@ -33,12 +36,16 @@ export type SlotKind =
   | 'fishing'
   | 'dock'
 
+// Downtown is a space id once the town-map layer has landed. This layer's PR is on the story stack, whose SpaceId
+// does not name it yet, so the slots carry the id themselves.
+export type AmbientSpace = SpaceId | 'downtown'
+
 // An authored point in a space. `spot` is the story's place for the bar, or the window's town-map spot downtown.
 // `face` is a unit vector, as the spawns write it. A stroll slot is a beat walked back and forth from `at` to `to`, by
 // up to `seats` people abreast: a couple, a family.
 export type Slot = Readonly<{
   id: string
-  space: SpaceId
+  space: AmbientSpace
   spot: string
   kind: SlotKind
   at: Vec
@@ -53,7 +60,7 @@ const S = vec(0, 1)
 const E = vec(1, 0)
 const W = vec(-1, 0)
 
-const at = (space: SpaceId, spot: string) => (id: string, kind: SlotKind, x: number, z: number, face: Vec, activity: Activity = 'stand'): Slot => ({
+const at = (space: AmbientSpace, spot: string) => (id: string, kind: SlotKind, x: number, z: number, face: Vec, activity: Activity = 'stand'): Slot => ({
   id: `${spot}.${id}`,
   space,
   spot,
@@ -163,7 +170,7 @@ export const windowNow = (s: State, a: Ambient): Window | undefined => a.at.find
 
 export const spotOf = (w: Window): string => w.spot ?? w.place
 
-export const spaceOf = (spot: string): SpaceId | undefined => slots.find((s) => s.spot === spot)?.space
+export const spaceOf = (spot: string): AmbientSpace | undefined => slots.find((s) => s.spot === spot)?.space
 
 // People a space already stands as its own figures (Hank behind the bar) are not placed again.
 const staged = new Set(Object.values(spaces).flatMap((sp) => sp.figures.map((f) => f.id)))
@@ -184,7 +191,7 @@ export const assign = (s: State, seed: number): Claims => {
   }, {})
 }
 
-export type Pose = Readonly<{ who: string; slot: string; space: SpaceId; at: Vec; yaw: number; activity: Activity; speed: number }>
+export type Pose = Readonly<{ who: string; slot: string; space: AmbientSpace; at: Vec; yaw: number; activity: Activity; speed: number }>
 
 export const STROLL_SPEED = 1.1
 // Shoulder to shoulder on a beat: two bodies' radii and a little air.
