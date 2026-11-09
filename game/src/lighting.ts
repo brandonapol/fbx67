@@ -1,6 +1,7 @@
 import type { Clock, State } from '../../text-game/src/types.ts'
 import type { Season as StorySeason, Weather } from '../../text-game/src/story.ts'
-import { clock, season, weather } from '../../text-game/src/story.ts'
+import { clock, place, season, weather } from '../../text-game/src/story.ts'
+import { replay } from '../../text-game/src/engine.ts'
 import type { Season, Space, SpaceId } from './levels.ts'
 import { sunAt } from './sun.ts'
 
@@ -175,17 +176,28 @@ export const lighting = (space: SpaceId, season: Season, weather: Weather, when?
 
 const isLit = (x: StorySeason | undefined): x is Season => x === 'summer' || x === 'flood'
 
+export type Time = Readonly<{ season: Season; clock?: Clock }>
+
+// The scene whose hour a space shows: the current one when it is set here (or the space spans places, as downtown
+// does); once the story has moved on to another place, the last scene on the path that was set here. Hiding at the
+// camp sends the story to 14 August while Owen is still on the gravel bar in July.
+const sceneHere = (space: Space, s: State, path: readonly number[]): State | undefined =>
+  space.place === undefined || place(s) === space.place
+    ? s
+    : replay(path).findLast((x) => place(x) === space.place)
+
 // When a space is lit: the story's clock, and the season from it (docs/story-api.md, "Where, when and what next").
 // A scene with no clock, or a season the engine has no light for yet (freeze-up, winter, breakup), keeps the space's
 // own. The story backdrop belongs to no place and no hour, so it keeps its own too.
-export const timeOf = (space: Space, s: State): Readonly<{ season: Season; clock?: Clock }> => {
-  if (space.id === 'story') return { season: space.season }
-  const story = season(s)
-  return { season: isLit(story) ? story : space.season, clock: clock(s) }
+export const timeOf = (space: Space, s: State, path: readonly number[] = []): Time => {
+  const here = space.id === 'story' ? undefined : sceneHere(space, s, path)
+  if (!here) return { season: space.season }
+  const story = season(here)
+  return { season: isLit(story) ? story : space.season, clock: clock(here) }
 }
 
-export const lightingFor = (space: Space, s: State): Lighting => {
-  const t = timeOf(space, s)
+export const lightingFor = (space: Space, s: State, path: readonly number[] = []): Lighting => {
+  const t = timeOf(space, s, path)
   return lighting(space.id, t.season, weather(s), t.clock)
 }
 
