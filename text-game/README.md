@@ -52,7 +52,7 @@ Runs, in order:
 2. `test:unit`: `src/*.test.ts`. Truth tables for the logic gates, state bounds, engine errors, scene order, liveness rules (each must commute with every later step), and golden transcript replay.
 3. `test:matrix`: rebuilds the decision matrix and fails if its counts differ from `routes/matrix-summary.json`. After an intended story change, run `npm run matrix:summary` (or `npm run golden`) and commit the result.
 4. `verify`: differential test. Plays random games from both the real state and its canonical (pruned) form and asserts identical text and endings. This is what makes the explorer's shortcuts trustworthy. `--seed-offset N` (alias `--seed N`) starts at a different seed, for rotating seeds in CI.
-5. `explore`: walks every path (about 50 trillion) by merging equivalent states, and renders each distinct state once. Fails on any choice error, scene text that throws or shows `undefined`/`NaN`, unreachable scene, or unreachable ending. Takes about 15 s and 0.5 GB.
+5. `explore`: walks every path (about 50 trillion) by merging equivalent states, and renders each distinct state once. Fails on any choice error, scene text that throws or shows `undefined`/`NaN`, unreachable scene, unreachable ending, or a transition whose clock runs backward (`src/clock.ts` whitelists the Act 3 POV overlap by scene pair). Takes about 15 s and 0.5 GB.
 
 ## CI
 

@@ -76,11 +76,6 @@ test('every prologue and Act 1 scene says where, when and what next', () => {
   })
 })
 
-test('the prologue and Act 1 clock only runs forward', () => {
-  const times = placed.map((sc) => sc.clock ?? '')
-  times.slice(1).forEach((t, i) => assert.ok(t >= times[i], `${t} comes before ${times[i]}`))
-})
-
 test('place, clock and goal read the current scene', () => {
   const dock = replay([1, 1, 1]).at(-1)!
   assert.equal(place(initialState), 'silverPan')
