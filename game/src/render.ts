@@ -10,7 +10,7 @@ import { loadCast } from './characters.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
 import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
-import { seen, watcher } from './prologue.ts'
+import { owenMotion, seen, watcher } from './prologue.ts'
 
 export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readonly [number, number, number] }>
 
@@ -208,7 +208,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }
 
-  const state: { built?: Built; last?: Readonly<{ x: number; z: number }>; held?: Shot } = {}
+  const state: { built?: Built; held?: Shot } = {}
 
   const isCast = (e: pc.GraphNode | null): boolean => (e ? e.tags.has('cast') || isCast(e.parent) : false)
 
@@ -233,11 +233,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       state.built = build(g)
     }
     const b = state.built
-    const moved = state.last ? Math.hypot(g.pos.x - state.last.x, g.pos.z - state.last.z) : 0
-    state.last = g.pos
-    const speed = dt > 0 ? moved / dt : 0
-    const owenClip = clipFor({ speed, sneaking: g.space === 'camp', activity: 'stand', talking: false })
-    cast.play(owen, owenClip, playbackRate(owenClip, speed))
+    const motion = owenMotion(g)
+    const owenClip = clipFor(motion)
+    cast.play(owen, owenClip, playbackRate(owenClip, motion.speed))
     spaces[g.space].figures.forEach((f) => {
       const e = b.figures.get(f.id)
       if (!e || !castFor(f.id)) return

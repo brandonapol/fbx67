@@ -7,13 +7,16 @@ import { add, angleBetween, angleTo, distance, length, move, normalize, pick, sc
 import type { SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 
-import { RUN_SPEED, WALK_SPEED } from './cast.ts'
+import type { Motion } from './cast.ts'
+import { INDOOR_PACE, RUN_SPEED, WALK_SPEED } from './cast.ts'
 
 export { HIDE_TIME, ROUND_TIME } from './levels.ts'
 
 export const WALK = WALK_SPEED
 export const JOG = RUN_SPEED
+export { INDOOR_PACE }
 export const ACCEL = 9
+export const INDOOR_ACCEL = 5
 export const DECEL = 12
 export const TURN_RATE = 10
 export const TURN_GO = 0.5
@@ -198,15 +201,16 @@ const toward = (from: Vec, to: Vec, rate: number): Vec => {
 
 export const ahead = (facing: number): Vec => vec(Math.sin(facing), Math.cos(facing))
 
-export const topSpeed = (input: Input): number => (input.run ? JOG : WALK)
+export const topSpeed = (input: Input, interior: boolean): number => (input.run ? (interior ? INDOOR_PACE : JOG) : WALK)
 
 const walk = (g: Game, input: Input, dt: number): Game => {
   const push = Math.min(1, length(input.dir))
   const heading = push > 0 ? angleTo(zero, input.dir) : g.facing
   const facing = push > 0 ? turn(g.facing, heading, TURN_RATE * dt) : g.facing
   const off = angleBetween(facing, heading)
-  const want = off <= TURN_GO ? topSpeed(input) * push * Math.cos(off) : 0
-  const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? ACCEL : DECEL) * dt)
+  const interior = spaces[g.space].interior
+  const want = off <= TURN_GO ? topSpeed(input, interior) * push * Math.cos(off) : 0
+  const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? (interior ? INDOOR_ACCEL : ACCEL) : DECEL) * dt)
   const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
   const step = arriving ? scale(normalize(input.dir), input.limit ?? 0) : scale(vel, dt)
   const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(spaces[g.space])) : g.pos
@@ -219,6 +223,8 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   const walked = walk({ ...g, t }, input, dt)
   return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
 }
+
+export const owenMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: 'stand', talking: false })
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
 

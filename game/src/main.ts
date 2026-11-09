@@ -398,7 +398,7 @@ view.app.on('update', (dtRaw: number) => {
   live.g = tick(live.g, frame.input, dt)
   placeRig(live.g)
   const g = live.g
-  const sway = bob(g.t, length(g.vel), topSpeed(frame.input), reducedMotion.matches)
+  const sway = bob(g.t, length(g.vel), topSpeed(frame.input, spaces[g.space].interior), reducedMotion.matches)
   const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway)
   live.rig = next.rig
   view.sync(g, dt, next.pose)
