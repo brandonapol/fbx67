@@ -14,7 +14,14 @@ const best: readonly number[] = (
   .map(Number)
 
 test('each space answers to the act and place the story names for it', () => {
-  Object.values(spaces).forEach((s) => assert.equal(spaceFor(s.act, s.place), s.id))
+  Object.values(spaces).forEach((s) => s.act && assert.equal(spaceFor(s.act, s.place), s.id))
+})
+
+test('the story backdrop belongs to no act: a spaceless scene of any act shows its menu there', () => {
+  assert.equal(spaces.story.act, undefined)
+  const flood = replay([1, 1, 1, 1, 1, 1]).at(-1)!
+  assert.deepEqual(route(flood, 'story'), { to: 'menu' })
+  assert.deepEqual(route(replay([1, 1, 1, 1]).at(-1)!, 'story'), { to: 'space', space: 'camp' })
 })
 
 test('a place the engine has no space for, or no place at all, has no space; a prologue one shows its menu', () => {

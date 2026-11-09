@@ -1,6 +1,7 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, handedOff, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { focus, handedOff, interact, label, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { startFrom } from './start.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
 import { mountSoundPanel } from './sound-panel.ts'
@@ -63,6 +64,8 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
 type Drag = Readonly<{ id: number; origin: Stick; at: Stick }>
 
+const first = startFrom(window.location.hash, window.location.search)
+
 const live: {
   g: Game
   rig: Rig
@@ -80,8 +83,8 @@ const live: {
   orbit?: Drag & Readonly<{ moved: boolean }>
   turn: { x: number; y: number }
 } = {
-  g: start(),
-  rig: rigFor(Math.PI, armFor(spaces.bar)),
+  g: first,
+  rig: rigFor(first.facing, armFor(spaces[first.space])),
   rigFor: '',
   controls: parseControls(store.read(STORAGE_KEY)),
   device: 'keyboard',
@@ -122,7 +125,17 @@ const act = (f: (g: Game) => Game): void => {
   if (handedOff(live.g)) window.location.href = textBuild(live.g)
 }
 
-const choose = (id: string): void => act((g) => press(g, id))
+const forgetStart = (): void => {
+  const u = new URL(window.location.href)
+  u.hash = ''
+  u.searchParams.delete('from')
+  window.history.replaceState(null, '', u)
+}
+
+const choose = (id: string): void => {
+  if (id === 'restart') forgetStart()
+  act((g) => press(g, id))
+}
 
 const renderHelp = (): void => {
   helpEl.textContent = help(live.device, live.controls)
