@@ -1,110 +1,177 @@
 import type { Weather } from '../../text-game/src/story.ts'
 import type { Season, SpaceId } from './levels.ts'
 
+// Light, sky, fog and grade per space, season and moral weather, from docs/art/README.md ("Light", "Summer, the
+// Prologue" and "Moral weather"). Pure data: render.ts applies it, and lighting.test.ts holds it to the art rules.
+
+// The three moral-weather bands of design.md, keyed by the story's weather. The Prologue (summer) is not banded.
+export type Band = 'alpenglow' | 'blueHour' | 'sodium'
+
+export const bandOf: Readonly<Record<Weather, Band>> = { clear: 'alpenglow', dusk: 'blueHour', night: 'sodium' }
+
+// The post-tonemap grade: PlayCanvas CameraFrame's grading (brightness, contrast, saturation, tint) and vignette.
+export type Grade = Readonly<{ brightness: number; contrast: number; saturation: number; tint: string; vignette: number }>
+
+export type Sky = Readonly<{ zenith: string; horizon: string; sunward: string }>
+
+export type Lamp = Readonly<{ color: string; intensity: number; range: number; at: readonly [number, number, number] }>
+
 export type Lighting = Readonly<{
-  sky: string
+  grade: Band | 'summer'
+  sky: Sky
   ambient: string
   sun: string
   sunIntensity: number
-  sunPitch: number
-  sunYaw: number
+  // Compass degrees: azimuth clockwise from north (world -z; x is east), elevation above the horizon.
+  sunAzimuth: number
+  sunElevation: number
+  // False when the band's key is not the sun ("sun none" in the band table): the directional light is then a soft
+  // sky fill with no shadows, and the sky has no glow toward it.
+  sunUp: boolean
   fog: string
   fogStart: number
   fogEnd: number
-  lamp?: Readonly<{ color: string; intensity: number; range: number; at: readonly [number, number, number] }>
+  lamp?: Lamp
   rain: boolean
 }>
 
-type Key = `${Season}:${Weather}`
+export const grades: Readonly<Record<Lighting['grade'], Grade>> = {
+  // Muted and grounded: warmth comes from the light, so the grade only pulls saturation down a touch.
+  summer: { brightness: 0, contrast: 1.04, saturation: 0.88, tint: '#fff8f0', vignette: 0.25 },
+  // Clean: rose-gold, lifted and soft.
+  alpenglow: { brightness: 0.02, contrast: 0.98, saturation: 0.95, tint: '#fff0ea', vignette: 0.2 },
+  // Strained: cold and flattened.
+  blueHour: { brightness: -0.02, contrast: 1.06, saturation: 0.72, tint: '#dde6ff', vignette: 0.35 },
+  // Danger: sodium amber, crushed and close.
+  sodium: { brightness: -0.04, contrast: 1.14, saturation: 0.62, tint: '#ffe2bf', vignette: 0.5 },
+}
 
-const outdoor: Readonly<Record<Key, Lighting>> = {
-  'summer:clear': {
-    sky: '#f3b98a',
-    ambient: '#6f6a7f',
-    sun: '#ffc98a',
-    sunIntensity: 1.6,
-    sunPitch: -14,
-    sunYaw: 200,
-    fog: '#e9b693',
-    fogStart: 30,
-    fogEnd: 75,
-    rain: false,
-  },
-  'summer:dusk': {
-    sky: '#7d8fb8',
-    ambient: '#4f5a7a',
-    sun: '#c9b6e0',
-    sunIntensity: 0.8,
-    sunPitch: -8,
-    sunYaw: 200,
-    fog: '#6f7ea6',
-    fogStart: 18,
-    fogEnd: 50,
-    rain: false,
-  },
-  'summer:night': {
-    sky: '#1d2233',
-    ambient: '#2a2f45',
-    sun: '#ffb35c',
-    sunIntensity: 0.35,
-    sunPitch: -30,
-    sunYaw: 120,
-    fog: '#3a3326',
-    fogStart: 6,
-    fogEnd: 22,
-    rain: false,
-  },
-  'flood:clear': {
-    sky: '#8d939a',
-    ambient: '#6a6f78',
-    sun: '#c9cdd2',
+// The Prologue, July at 11 pm: the sun north-northwest, its disc just up (the stated cheat in docs/art/README.md).
+const summer: Lighting = {
+  grade: 'summer',
+  sky: { zenith: '#8592b4', horizon: '#7d8fb8', sunward: '#f3b98a' },
+  ambient: '#5f5a66',
+  sun: '#ffc48a',
+  sunIntensity: 2.4,
+  sunAzimuth: 340,
+  sunElevation: 3,
+  sunUp: true,
+  fog: '#c4aa9a',
+  fogStart: 30,
+  fogEnd: 220,
+  rain: false,
+}
+
+// Act 1, the flood (August 1967, overcast): each band's key and palette from the band table, sun none.
+const flood: Readonly<Record<Band, Lighting>> = {
+  alpenglow: {
+    grade: 'alpenglow',
+    sky: { zenith: '#7f8fb5', horizon: '#f2b8a8', sunward: '#f2b8a8' },
+    ambient: '#9aa5c4',
+    sun: '#ffc7a6',
     sunIntensity: 0.7,
-    sunPitch: -55,
-    sunYaw: 160,
-    fog: '#8a8f96',
+    sunAzimuth: 200,
+    sunElevation: 55,
+    sunUp: false,
+    fog: '#e7c4c0',
+    fogStart: 10,
+    fogEnd: 120,
+    rain: true,
+  },
+  blueHour: {
+    grade: 'blueHour',
+    sky: { zenith: '#2f3d6b', horizon: '#6d7fae', sunward: '#6d7fae' },
+    ambient: '#4a5680',
+    sun: '#8b9ac4',
+    sunIntensity: 0.35,
+    sunAzimuth: 200,
+    sunElevation: 55,
+    sunUp: false,
+    fog: '#4f5f8a',
     fogStart: 8,
-    fogEnd: 34,
+    fogEnd: 80,
     rain: true,
   },
-  'flood:dusk': {
-    sky: '#5f6878',
-    ambient: '#4a5263',
-    sun: '#a9b4c8',
-    sunIntensity: 0.5,
-    sunPitch: -40,
-    sunYaw: 160,
-    fog: '#5f6878',
-    fogStart: 6,
-    fogEnd: 26,
-    rain: true,
-  },
-  'flood:night': {
-    sky: '#1b1f27',
-    ambient: '#262b36',
-    sun: '#ffb35c',
-    sunIntensity: 0.25,
-    sunPitch: -40,
-    sunYaw: 160,
-    fog: '#2b2a24',
+  sodium: {
+    grade: 'sodium',
+    sky: { zenith: '#1a1a20', horizon: '#3a3026', sunward: '#3a3026' },
+    ambient: '#2a2622',
+    sun: '#8a6f50',
+    sunIntensity: 0.15,
+    sunAzimuth: 200,
+    sunElevation: 55,
+    sunUp: false,
+    fog: '#6b5a44',
     fogStart: 4,
-    fogEnd: 16,
+    fogEnd: 40,
     rain: true,
   },
 }
 
-const indoorLamp: Readonly<Partial<Record<SpaceId, Lighting['lamp']>>> = {
+// The band's key where it is not the sun: streetlights at blue hour, sodium lamps at danger.
+const streetKey: Readonly<Record<Band, string | undefined>> = { alpenglow: undefined, blueHour: '#ffd9a0', sodium: '#ff9a3c' }
+
+// The one streetlight each outdoor space has today, at its lamp head.
+const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [6.5, 3.85, -4.5] }
+
+// Interiors are lit by their practicals: bulbs at about 2700 K (#ffb877) and the window, with warm bounce in the shade.
+const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   bar: { color: '#ffb877', intensity: 2.2, range: 14, at: [0, 2.6, 0] },
   room: { color: '#ffd29a', intensity: 1.8, range: 8, at: [1.2, 2.2, -1.2] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 
-// Downtown is the one outdoor space as big as the town: fog never has to hide more than the play area
-// (docs/art/README.md, Summer: outdoors start 30 m, end 220 m).
-const DOWNTOWN_FOG = { fogStart: 30, fogEnd: 220 } as const
+// Indoors fog veils the far wall of a 12 m room 10-20% (docs/art/README.md, Summer: start 2 m, end 60 m).
+const INDOOR = { fogStart: 2, fogEnd: 60, ambient: '#5a4434', sunIntensity: summer.sunIntensity * 0.5 } as const
+
+const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting => {
+  if (season === 'summer') return summer
+  const band = bandOf[weather]
+  const base = flood[band]
+  const key = streetKey[band]
+  const at = streetlight[space]
+  return key && at ? { ...base, lamp: { color: key, intensity: band === 'sodium' ? 2.6 : 1.8, range: 16, at } } : base
+}
 
 export const lighting = (space: SpaceId, season: Season, weather: Weather): Lighting => {
-  const base = outdoor[`${season}:${weather}`]
-  if (space === 'downtown') return { ...base, ...DOWNTOWN_FOG }
+  const base = outdoors(space, season, weather)
   const lamp = indoorLamp[space]
-  return lamp ? { ...base, sunIntensity: base.sunIntensity * 0.5, fogStart: 40, fogEnd: 90, lamp } : base
+  return lamp ? { ...base, ...INDOOR, lamp } : base
+}
+
+// The unit vector toward the sun in world space (x east, y up, z south).
+export const sunDirection = (l: Pick<Lighting, 'sunAzimuth' | 'sunElevation'>): readonly [number, number, number] => {
+  const a = (l.sunAzimuth * Math.PI) / 180
+  const e = (l.sunElevation * Math.PI) / 180
+  return [Math.sin(a) * Math.cos(e), Math.sin(e), -Math.cos(a) * Math.cos(e)]
+}
+
+const rgb = (hex: string): readonly [number, number, number] => {
+  const n = parseInt(hex.slice(1), 16)
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]
+}
+
+const mix = (a: readonly number[], b: readonly number[], t: number): readonly [number, number, number] => [
+  a[0]! + (b[0]! - a[0]!) * t,
+  a[1]! + (b[1]! - a[1]!) * t,
+  a[2]! + (b[2]! - a[2]!) * t,
+]
+
+// The analytic sky in sRGB for a unit view direction: horizon to zenith by height, warming toward the sun near the
+// horizon, and the sun's disc and halo when it is up. Below the horizon it is the fog color, so the ground's far edge
+// meets it without a seam; the first few degrees above blend fog into sky.
+const HAZE_BAND = 0.08
+
+export const skyColor = (l: Lighting, dir: readonly [number, number, number]): readonly [number, number, number] => {
+  if (dir[1] <= 0) return rgb(l.fog)
+  const up = dir[1]
+  const sky = mix(rgb(l.sky.horizon), rgb(l.sky.zenith), Math.pow(up, 0.5))
+  const away = mix(rgb(l.fog), sky, Math.min(1, up / HAZE_BAND))
+  if (!l.sunUp) return away
+  const s = sunDirection(l)
+  const cos = dir[0] * s[0] + dir[1] * s[1] + dir[2] * s[2]
+  const toward = Math.pow(Math.max(0, (cos + 1) / 2), 3) * (1 - Math.pow(up, 0.6))
+  const glow = mix(away, rgb(l.sky.sunward), toward)
+  const disc = cos > 0.9995 ? 1 : Math.pow(Math.max(0, cos), 600) * 0.6
+  return mix(glow, rgb(l.sun), disc)
 }

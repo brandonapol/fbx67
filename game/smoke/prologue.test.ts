@@ -327,6 +327,8 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await page.keyboard.press('e')
   await snap(page, '10-skiff')
   await capture(page, 'skiff')
+  await capture(page, 'skiff_dusk')
+  await capture(page, 'skiff_night')
   await page.keyboard.press('1')
   const end = await game(page)
   assert.equal(end.panel?.kind, 'end')

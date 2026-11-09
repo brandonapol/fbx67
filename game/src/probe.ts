@@ -5,7 +5,8 @@ import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
 
-export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot }>
+// heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band.
+export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number }>
 
 export const poses: Readonly<Record<string, Pose>> = {
   bar: { space: 'bar', pos: vec(0, 3.9), facing: Math.PI, t: 0, shot: { eye: [0, 9.5, 9.5], at: [0, 0.9, 0] } },
@@ -13,6 +14,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   letter: { space: 'room', pos: vec(1.6, -0.8), facing: Math.PI, t: 0, shot: { eye: [-1.5, 6.5, 6], at: [0.6, 0.9, -0.6] } },
   hidden: { space: 'camp', pos: vec(1.8, -7.5), facing: Math.PI, t: 1, shot: { eye: [-2, 4.6, -4.4], at: [1.8, 0.6, -8.4] } },
   skiff: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] } },
+  // The skiff shot at blue hour and at danger (heat at and past HEAT_LIMIT); 'skiff' itself is alpenglow.
+  skiff_dusk: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 2 },
+  skiff_night: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 4 },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
@@ -53,7 +57,8 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
-  return { ...g, pos: p.pos, facing: p.facing, t: p.t, holding: undefined }
+  const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
+  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined }
 }
 
 const triangles = (app: pc.AppBase): number =>

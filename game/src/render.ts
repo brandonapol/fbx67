@@ -8,7 +8,7 @@ import type { Lighting } from './lighting.ts'
 import type { Cast } from './characters.ts'
 import { loadCast } from './characters.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
-import { lighting } from './lighting.ts'
+import { grades, lighting, skyColor, sunDirection } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { owenMotion, seen, watcher } from './prologue.ts'
 
@@ -115,8 +115,87 @@ const fan = (device: pc.GraphicsDevice, range: number, half: number, steps = 18)
   return mesh
 }
 
-const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, lamp: pc.Entity, l: Lighting): void => {
-  if (camera.camera) camera.camera.clearColor = color(l.sky)
+// The sky cubemap's face size: big enough that the sun's halo is a smooth gradient, small enough to build per space.
+const SKY_FACE = 128
+
+// Face directions in the WebGL cubemap order (+x, -x, +y, -y, +z, -z), for u and v in -1..1 (v down the face).
+const faceDir = [
+  (u: number, v: number) => [1, -v, -u],
+  (u: number, v: number) => [-1, -v, u],
+  (u: number, v: number) => [u, 1, v],
+  (u: number, v: number) => [u, -1, -v],
+  (u: number, v: number) => [u, -v, 1],
+  (u: number, v: number) => [-u, -v, -1],
+] as const
+
+const skyCubemap = (device: pc.GraphicsDevice, l: Lighting): pc.Texture => {
+  const n = SKY_FACE
+  const levels = faceDir.map((dir) => {
+    const px = new Uint8Array(n * n * 4)
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const d = dir(((x + 0.5) / n) * 2 - 1, ((y + 0.5) / n) * 2 - 1)
+        const len = Math.hypot(d[0], d[1], d[2])
+        const c = skyColor(l, [d[0] / len, d[1] / len, d[2] / len])
+        const i = (y * n + x) * 4
+        px[i] = Math.round(c[0] * 255)
+        px[i + 1] = Math.round(c[1] * 255)
+        px[i + 2] = Math.round(c[2] * 255)
+        px[i + 3] = 255
+      }
+    }
+    return px
+  })
+  return new pc.Texture(device, {
+    name: 'sky',
+    cubemap: true,
+    width: n,
+    height: n,
+    format: pc.PIXELFORMAT_SRGBA8,
+    mipmaps: false,
+    minFilter: pc.FILTER_LINEAR,
+    magFilter: pc.FILTER_LINEAR,
+    addressU: pc.ADDRESS_CLAMP_TO_EDGE,
+    addressV: pc.ADDRESS_CLAMP_TO_EDGE,
+    levels: [levels],
+  })
+}
+
+// Point the light's -Y (its direction of travel) away from the sun.
+const aimSun = (sun: pc.Entity, l: Lighting): void => {
+  const d = sunDirection(l)
+  const axis = new pc.Vec3(d[2], 0, -d[0])
+  const q = new pc.Quat()
+  if (axis.length() > 1e-6) q.setFromAxisAngle(axis.normalize(), (Math.acos(Math.min(1, d[1])) * 180) / Math.PI)
+  sun.setRotation(q)
+}
+
+// Outdoors the sun gets three cascades over the shadow distance, at 2048 px each (a 4096 px atlas); indoors one.
+const shadowsFor = (outdoor: boolean, l: Lighting) => ({
+  castShadows: l.sunUp,
+  numCascades: outdoor ? 3 : 1,
+  shadowResolution: outdoor ? 4096 : 2048,
+  shadowDistance: outdoor ? 90 : 40,
+})
+
+const applyGrade = (frame: pc.CameraFrame, l: Lighting): void => {
+  const g = grades[l.grade]
+  frame.grading.enabled = true
+  frame.grading.brightness = g.brightness
+  frame.grading.contrast = g.contrast
+  frame.grading.saturation = g.saturation
+  frame.grading.tint = color(g.tint)
+  frame.vignette.intensity = g.vignette
+  frame.vignette.inner = 0.55
+  frame.vignette.outer = 1.3
+  frame.vignette.curvature = 0.6
+  frame.update()
+}
+
+const applyLighting = (app: pc.Application, sun: pc.Entity, lamp: pc.Entity, frame: pc.CameraFrame, l: Lighting, outdoor: boolean): void => {
+  const old = app.scene.skybox
+  app.scene.skybox = skyCubemap(app.graphicsDevice, l)
+  old?.destroy()
   app.scene.ambientLight = color(l.ambient)
   app.scene.fog.type = pc.FOG_LINEAR
   app.scene.fog.color = color(l.fog)
@@ -125,8 +204,9 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
   if (sun.light) {
     sun.light.color = color(l.sun)
     sun.light.intensity = l.sunIntensity
+    Object.assign(sun.light, shadowsFor(outdoor, l))
   }
-  sun.setLocalEulerAngles(90 + l.sunPitch, l.sunYaw, 0)
+  aimSun(sun, l)
   lamp.enabled = l.lamp !== undefined
   if (l.lamp && lamp.light) {
     lamp.light.color = color(l.lamp.color)
@@ -134,6 +214,7 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
     lamp.light.range = l.lamp.range
     lamp.setLocalPosition(l.lamp.at[0], l.lamp.at[1], l.lamp.at[2])
   }
+  applyGrade(frame, l)
 }
 
 // The fog end plus a 20% margin (docs/art/README.md, "Beyond the play area"), never nearer than the blockout's 200 m.
@@ -163,12 +244,18 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   camera.addComponent('camera', { fov: FOV, nearClip: NEAR, farClip: FAR_CLIP })
   app.root.addChild(camera)
 
+  // HDR scene, ACES tonemapping, a little bloom on emissives and the sun, then the grade and vignette per band.
+  const frame = new pc.CameraFrame(app, camera.camera as pc.CameraComponent)
+  frame.rendering.toneMapping = pc.TONEMAP_ACES
+  frame.bloom.intensity = 0.015
+  frame.bloom.blurLevel = 12
+
   const sun = new pc.Entity('sun')
   sun.addComponent('light', {
     type: 'directional',
     castShadows: true,
-    shadowDistance: 40,
-    shadowResolution: 2048,
+    shadowType: pc.SHADOW_PCF5_32F,
+    cascadeDistribution: 0.6,
     shadowBias: 0.3,
     normalOffsetBias: 0.05,
   })
@@ -209,7 +296,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
           return r
         })
       : []
-    applyLighting(app, camera, sun, lamp, l)
+    applyLighting(app, sun, lamp, frame, l, !space.interior)
     if (camera.camera) camera.camera.farClip = farClipFor(l)
     app.root.addChild(root)
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
