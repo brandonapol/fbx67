@@ -7,11 +7,11 @@ export type Start = Readonly<{ scene: SceneId; path: string; pose: string }>
 
 export const starts: readonly Start[] = [
   { scene: 'a1_flood', path: '1,1,1,1,1,1', pose: 'line' },
-  { scene: 'a2_major', path: '1,1,1,1,1,1,2,2,1,1,1,1,2,1,1', pose: 'story' },
-  { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,2,1,1,1,3,2,1,1,2,1,2,1,1,1,2,1', pose: 'story' },
+  { scene: 'a2_major', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1', pose: 'story' },
+  { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,2,1', pose: 'story' },
   {
     scene: 'a4_news',
-    path: '1,1,1,1,1,1,2,2,1,1,1,1,2,1,1,1,3,2,1,1,2,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1',
+    path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1',
     pose: 'story',
   },
 ]

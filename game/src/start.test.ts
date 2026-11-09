@@ -13,7 +13,7 @@ const best = (
   JSON.parse(readFileSync(new URL('../../text-game/routes/golden.json', import.meta.url), 'utf8')) as readonly { ending: string; path: string }[]
 ).find((r) => r.ending === 'best')!.path
 
-const major = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1]
+const major = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1]
 
 const from = (path: readonly number[]): Game => startFrom(`#path=${path.join(',')}`, '')
 
