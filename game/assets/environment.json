@@ -1,0 +1,73 @@
+{
+  "props": {
+    "crate": {
+      "source": "polyhaven",
+      "asset": "wooden_crate_02",
+      "name": "Wooden Crate 02",
+      "authors": "James Ray Cock (modeling), Jurita Burger (graphic design)",
+      "license": "CC0-1.0",
+      "resolution": "1k",
+      "files": {
+        "wooden_crate_02_1k.gltf": "a69eb62fd20e6badb6bb56f052930e06",
+        "wooden_crate_02.bin": "08d98507231cdeda1070d1a2d0646254",
+        "textures/wooden_crate_02_diff_1k.jpg": "45bca8f49da9d541e06bc926ab001c81",
+        "textures/wooden_crate_02_nor_gl_1k.jpg": "314226b31765168cd8070898f8a7e18e",
+        "textures/wooden_crate_02_arm_1k.jpg": "a7537612dbfb7fd25e756074eec5624e"
+      }
+    },
+    "jerrycan": {
+      "source": "polyhaven",
+      "asset": "metal_jerrycan",
+      "name": "Metal Jerrycan",
+      "authors": "Sean Buckley",
+      "license": "CC0-1.0",
+      "resolution": "1k",
+      "files": {
+        "metal_jerrycan_1k.gltf": "bd328cec77ebf1c6889abba620abc4b6",
+        "metal_jerrycan.bin": "10b2255555debf5e8e0effb5735b2a39",
+        "textures/metal_jerrycan_diff_1k.jpg": "d265ad6d7ae3583dbd1212743092ecc7",
+        "textures/metal_jerrycan_nor_gl_1k.jpg": "659b660e67aafc748364fa9d8a23059e",
+        "textures/metal_jerrycan_arm_1k.jpg": "b1aa1ec8f9944e784b64ef64e3b0f7f1"
+      }
+    }
+  },
+  "materials": {
+    "siding": {
+      "source": "polyhaven",
+      "asset": "weathered_plank_siding",
+      "name": "Weathered Plank Siding",
+      "authors": "Dimitrios Savva",
+      "license": "CC0-1.0",
+      "resolution": "1k",
+      "tileMeters": 1.57,
+      "files": {
+        "diff": "90f818fd61602ac7268ee89857e77396",
+        "nor_gl": "e2db9c3a055a85707eb453ee09624cfb",
+        "arm": "501c945deaf0d07e39fc869b7c5b8bc5"
+      }
+    }
+  },
+  "buildings": {
+    "storefront": {
+      "kind": "falseFront",
+      "material": "siding",
+      "width": 7.2,
+      "depth": 12,
+      "wallHeight": 3.6,
+      "roofPitchDegrees": 25,
+      "frontHeight": 6,
+      "wall": 0.15,
+      "openings": [
+        { "kind": "window", "x": 0.6, "width": 2.2, "sill": 0.7, "height": 1.8 },
+        { "kind": "door", "x": 3.1, "width": 1.0, "sill": 0, "height": 2.2 },
+        { "kind": "window", "x": 4.4, "width": 2.2, "sill": 0.7, "height": 1.8 }
+      ],
+      "surfaces": {
+        "siding": { "baseColor": [1, 1, 1], "roughness": 1, "metallic": 0 },
+        "trim": { "baseColor": [0.74, 0.7, 0.62], "roughness": 0.8, "metallic": 0 },
+        "roof": { "baseColor": [0.13, 0.12, 0.11], "roughness": 0.9, "metallic": 0 },
+        "glass": { "baseColor": [0.05, 0.06, 0.07], "roughness": 0.1, "metallic": 0 }
+      }
+    }
+  }
+}

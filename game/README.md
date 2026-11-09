@@ -71,6 +71,9 @@ src/sound-panel.ts the volume sliders
 src/main.ts       devices, HUD and the frame loop
 src/drive.ts      a headless player for tests
 src/probe.ts      test-only hooks: fixed capture poses and per-frame stats; loaded only with ?test=1
+src/props.ts      the glTF loader for every model (meshopt decoding), and prop placement
+src/viewer.ts     viewer.html: the generated assets and one animated character, for make test/assets
+tools/            asset generators: characters.ts, assets.ts and procedural.ts (docs/art/pipeline.md)
 smoke/            the end-to-end browser test, frame comparison and budget checks
 smoke/baselines/  the committed frame per capture pose
 ```

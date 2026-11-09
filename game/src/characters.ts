@@ -1,6 +1,7 @@
 import * as pc from 'playcanvas'
 import type { CastId, ClipId } from './cast.ts'
 import { castIds, clipIds, clipUrl, modelUrl } from './cast.ts'
+import { loadContainer } from './props.ts'
 
 export type Cast = Readonly<{
   spawn: (who: CastId) => pc.Entity
@@ -8,11 +9,6 @@ export type Cast = Readonly<{
 }>
 
 const BLEND = 0.25
-
-const loadContainer = (app: pc.Application, url: string): Promise<pc.Asset> =>
-  new Promise((resolve, reject) =>
-    app.assets.loadFromUrl(url, 'container', (err, asset) => (err || !asset ? reject(new Error(`${url}: ${err}`)) : resolve(asset))),
-  )
 
 type Loaded = Readonly<{ model: pc.Asset; clips: ReadonlyMap<ClipId, pc.AnimTrack> }>
 
