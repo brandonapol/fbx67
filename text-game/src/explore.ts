@@ -1,10 +1,14 @@
 import { argv, exit } from 'node:process'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { getHeapStatistics } from 'node:v8'
 import { allSceneIds, choicesOf, choose, render, sceneOf } from './engine.ts'
 import { backwardClock } from './clock.ts'
 import { initialState } from './state.ts'
 import { ending, type Ending } from './logic.ts'
 import { canonical } from './liveness.ts'
 import type { State } from './types.ts'
+import { value } from './args.ts'
+import { budgetFailures, budgetTable, parseBudget } from './budget.ts'
 
 const KEYED = {
   scene: true,
@@ -63,6 +67,13 @@ type Graph = {
   scenes: Set<string>
   errors: string[]
   rendered: number
+  peakHeap: number
+}
+
+const HEAP_SAMPLE_EVERY = 4096
+
+const sampleHeap = (g: Graph): void => {
+  g.peakHeap = Math.max(g.peakHeap, getHeapStatistics().used_heap_size)
 }
 
 const trailOf = (g: Graph, id: number): readonly number[] =>
@@ -83,6 +94,7 @@ const intern = (g: Graph, key: string, parent: number, via: number): [number, bo
 const visit = (g: Graph, id: number, s: State): void => {
   g.scenes.add(s.scene)
   g.rendered += 1
+  if (g.rendered % HEAP_SAMPLE_EVERY === 0) sampleHeap(g)
   const broken = textProblem(s)
   if (broken) g.errors.push(`${broken} (path ${trailOf(g, id).join(',')})`)
   const choices = choicesOf(s)
@@ -119,11 +131,13 @@ const explore = () => {
     scenes: new Set(),
     errors: [],
     rendered: 0,
+    peakHeap: 0,
   }
   const start = canonical(initialState)
   const [root] = intern(g, packedKey(start), -1, 0)
   visit(g, root, start)
 
+  sampleHeap(g)
   const n = g.ids.size
   const paths: bigint[] = Array.from({ length: n }, () => 0n)
   const depths: bigint[] = Array.from({ length: n }, () => 0n)
@@ -151,6 +165,7 @@ const explore = () => {
       sample: mine.length ? trailOf(g, mine[0].id).join(',') : '(unreachable)',
     }
   }
+  sampleHeap(g)
   return { g, maxDepth, widths, tallies: endings.map((e) => ({ e, ...tally(e) })) }
 }
 
@@ -162,6 +177,11 @@ if (argv.includes('--verbose')) widths.forEach((w, d) => console.error(`depth ${
 
 const totalPaths = tallies.reduce((a, t) => a + t.paths, 0n)
 const unreachable = allSceneIds().filter((id) => !g.scenes.has(id))
+const measured = { mergedStates: g.ids.size, peakHeapMB: Math.round(g.peakHeap / 2 ** 20) }
+const budget = parseBudget(readFileSync(new URL('../explore-budget.json', import.meta.url), 'utf8'))
+const overBudget = budgetFailures(measured, budget)
+const tableOut = value(argv, '--budget-table')
+if (tableOut !== undefined) writeFileSync(tableOut, `${budgetTable(measured, budget)}\n`)
 
 console.log(
   JSON.stringify(
@@ -170,9 +190,11 @@ console.log(
       distinctEndStates: tallies.reduce((a, t) => a + t.distinctStates, 0),
       maxDepth,
       peakFrontier: Math.max(...widths),
-      mergedStates: g.ids.size,
+      mergedStates: measured.mergedStates,
+      edges: g.edges.reduce((a, e) => a + e.length, 0),
       renderedStates: g.rendered,
       seconds: Number(seconds.toFixed(1)),
+      peakHeapMB: measured.peakHeapMB,
       peakRssMB: Math.round(process.resourceUsage().maxRSS / 1024),
       endings: tallies.map((t) => ({
         ending: t.e,
@@ -185,6 +207,7 @@ console.log(
       unreachableScenes: unreachable,
       errors: g.errors.slice(0, 20),
       errorCount: g.errors.length,
+      budget: { limit: budget.limit, baseline: budget.baseline, over: overBudget },
     },
     null,
     2,
@@ -195,9 +218,10 @@ const failures = [
   ...(g.errors.length ? ['choice, text or clock errors'] : []),
   ...(unreachable.length ? ['unreachable scenes'] : []),
   ...tallies.filter((t) => t.mergedStates === 0).map((t) => `ending ${t.e} unreachable`),
+  ...overBudget,
 ]
 
 if (argv.includes('--strict') && failures.length) {
-  console.error(`FAIL: ${failures.join('; ')}`)
+  failures.forEach((f) => console.error(`FAIL: ${f}`))
   exit(1)
 }
