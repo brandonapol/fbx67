@@ -4,8 +4,9 @@ The playable 3D build, on [PlayCanvas](https://playcanvas.com/). It plays the st
 copies its text or re-implements its gates: each mission ends by sending the story one note from the menu the scene
 offers (see [`docs/story-api.md`](../docs/story-api.md)).
 
-Today it plays the prologue as Owen: the Silver Pan, the letter to Lucy, hiding the notes at the survey camp while
-Curly refuels, and the skiff in the flood. "Continue as Wade" on the end card puts the player on the sandbag line on
+Today it plays the prologue as Owen: the Silver Pan, the walk home, the boarding house (the landlady in her parlor,
+then the letter to Lucy typed out at the desk upstairs), hiding the notes at the survey camp while Curly refuels, and
+the skiff in the flood. "Continue as Wade" on the end card puts the player on the sandbag line on
 Cushman as Wade, where Act 1 opens; its later scenes play as menus there until their spaces exist, and Act 2 goes on
 in the text build at the path played so far.
 
@@ -70,7 +71,7 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
 src/world.ts      vectors, collision, line of sight, the watcher cone, target picking; pure
 src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, interior and exterior arms; pure
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
-src/levels.ts     the spaces as data (the prologue's, Act 1's sandbag line, the story backdrop), and Curly's look schedule
+src/levels.ts     the spaces as data (the prologue's, the boarding house's hall among them, Act 1's sandbag line, the story backdrop), and Curly's look schedule
 src/router.ts     which space a scene plays in, from the story's place; pure
 src/start.ts      reads a #path= or ?from= link and replays it through the story; pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure

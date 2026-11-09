@@ -88,7 +88,9 @@ looks down.
   - Sun shadows are on, at least **2048 px** per cascade.
 - **Interiors are lit by their practicals.** Bare bulbs and shaded fixtures at about **2700 K** (`#ffb877`), neon,
   a stove, and the window. The window is the key; bulbs are fill. Warm bounce off wood floors lifts the shadows. No
-  unmotivated light: every bright area has a source the player can find in frame.
+  unmotivated light: every bright area has a source the player can find in frame. Owen's boarding house: the hall
+  and the bathroom each have one bare bulb, the parlor a shaded floor lamp and the radio's lit dial, and Owen's room
+  the midnight sun through a thin curtain over the desk, with the ceiling bulb as fill.
 - **Haze and shafts.** Smoke indoors, dust and mosquito haze outdoors in summer, ice fog in deep winter. Wherever the
   sun or a lamp crosses haze, it shows as a shaft or a halo.
 - **Shadow floor.** Measured as Rec.709 luma (0.2126 R + 0.7152 G + 0.0722 B) on the final sRGB frame at
