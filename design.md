@@ -79,7 +79,7 @@ The claim rests on proof of use. A BLM land examiner's summer field check of the
 
 Wade and Eli find Owen tied under with a backward bowline, tail outside the loop, not the way anyone on Wade's cousins' boat ever tied one. Wade cuts the line on both sides of the knot and keeps it. St. Joseph's is half-flooded, so Owen's body goes to the help tent. Joan sees it there and tells Wade about the left-handed bruising; her choice (ask her, or make her laugh) happens there. Barnette rules it an accident. The woman from Minto is a draft detail for the consultants' review, like the other Minto details. Lucy needs Owen's aerial photographs from the base. Hank's speech, then the barfight; Curly drags Wade in on his side; everyone lands in the drunk tank; Barnette demands a name (decision 1). Ashby pays the fine. First letter home.
 
-The engine build's beat sheet for these scenes (form, who is present, what the player's hands do, the space, and the transitions) is [docs/acts/act1.md](docs/acts/act1.md).
+The engine build's beat sheet for these scenes (form, who is present, what the player's hands do, the space, and the transitions) is [docs/acts/act1.md](docs/acts/act1.md). The mission specs (the search for Eli, the body, the barfight: verbs, checkpoints, retry and each note) are [docs/acts/act1-missions.md](docs/acts/act1-missions.md).
 
 **Act 2: Freeze-up (fall).** The Major mentions things Wade only wrote to Mama. Eli's own trip: at freeze-up he goes to Minto to sit with the elders and take their testimony for the refiled allotment. Wade isn't there and hears about it afterward, from Eli or Lucy. The scene moves no gate on its own; a bounded field is added only if it gates something (the testimony and Lucy's logbook entry together strengthen the claim). Heists: the base photo lab, the hotel bar (overhearing Tolliver and a quiet man: "before is what counts"), the Tanana Chiefs meeting (Eli speaks; Ashby is a guest; Wade can stay quiet, slip out, or make it about himself), the Major's cabinet (Wade does it, or refuses and Lucy goes in herself and is seen). Curly ties a tarp down with the same backward bowline, in the same yellow line, and flashes a roll of cash. Jake's warning about Curly (decision 3). The flight date is set. Letter home (decision 2: whether the date goes in it). Optionally lie low.
 
@@ -185,6 +185,7 @@ Engine direction: the 3D game talks to the narrative core only through typed sto
 - Lucy's trips to Anchorage as off-screen reports.
 - Fourth and fifth letter topics (work, friends, the investigation, how he's doing) in the engine build.
 - A named delegate at the Tanana Chiefs meeting with their own stake in the story.
+- How long the search for Eli took shades the light at the cabin that evening (lighting only, no state).
 
 ## Process Notes
 
