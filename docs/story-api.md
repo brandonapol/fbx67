@@ -78,8 +78,10 @@ Every prologue scene has all three, and a unit test (`text-game/src/story.test.t
 (`SEASON_STARTS`), after the band-by-season table in `docs/art/README.md`: **flood** from 12 August to 31 August (the
 Chena tops its banks in the second week; the prologue's last scene, 14 August, is already flood), **freezeup** 1
 September to 30 November, **winter** 1 December to the end of February, **breakup** 1 March to 31 May, **summer** 1
-June to 11 August (the prologue's July). The engine's per-space `Season` is migrated to this query in the season-layer
-tickets, not here.
+June to 11 August (the prologue's July). The engine lights each space from this query and `clock(state)`
+(`timeOf` in `game/src/lighting.ts`): the sun from the date and hour, the season's light from the date. A scene with
+no clock, or a season the engine has no light for yet (freeze-up, winter, breakup), keeps the space's own `Season`,
+and the story backdrop ignores the clock.
 
 ### Who the player is
 
