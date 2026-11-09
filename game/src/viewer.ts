@@ -58,7 +58,7 @@ const [[storefront, a], [crate, b], [jerrycan, c], [cast, d]] = await Promise.al
   timed('storefront', () => loadContainer(app, propUrl(base, 'storefront'))),
   timed('crate', () => loadContainer(app, propUrl(base, 'crate'))),
   timed('jerrycan', () => loadContainer(app, propUrl(base, 'jerrycan'))),
-  timed('cast (4 characters, 36 clips)', () => loadCast(app, base)),
+  timed('cast (4 characters, 40 clips)', () => loadCast(app, base)),
 ])
 place(spawnProp(storefront, 'storefront'), 0, 0, 0)
 place(spawnProp(crate, 'crate'), 5.3, -1.0, 12)

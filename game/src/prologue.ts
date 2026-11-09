@@ -9,12 +9,12 @@ import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 
 import type { Motion } from './cast.ts'
-import { INDOOR_PACE, RUN_SPEED, WALK_SPEED } from './cast.ts'
+import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
 
 export { HIDE_TIME, ROUND_TIME } from './levels.ts'
 
 export const WALK = WALK_SPEED
-export const JOG = RUN_SPEED
+export const JOG = JOG_SPEED
 export { INDOOR_PACE }
 export const ACCEL = 9
 export const INDOOR_ACCEL = 5
