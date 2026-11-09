@@ -123,6 +123,14 @@ the source, a speaker name that is neither in `names.ts` nor a role name, the oi
 (`undefined`, `${`, `TODO`), an empty line or one over 120 characters, and a line that is never heard at any place and
 time the story reaches. It runs in `make check/text/lint`.
 
+The things Owen can use in the prologue (the jukebox, the empty chair, the reel-to-reel) are `Ambient`s of kind
+`thing` in `text-game/src/ambient/prologueThings.ts`, with only `use` lines. The engine build's verbs live in
+`game/src/talk.ts`: Greet (tap), Talk (hold, with the reply on offer), Ask about (a radial of `topics`), Use on
+things, and Buy, which is the bar's own hold spot and sends the story's `round` note. Every line comes from `say`,
+and plays as a subtitle above its speaker for a reading time, then stays in a log; the person faces Owen while the
+exchange lasts. `game/src/mission.test.ts` plays the prologue headless with every verb on the way and checks the
+story ends on the same path as playing it without a word.
+
 The game never changes story facts directly. It only sends notes (Rule 1) and asks questions (Rule 5).
 
 ## What this means for the text build
