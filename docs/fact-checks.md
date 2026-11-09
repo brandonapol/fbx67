@@ -48,22 +48,22 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 36 | Native families in town in July | Map | Plausible; consultant review | Medium. Ordinary errands and work; avoid bar-room color and the period fire slur. |
 | 37 | Golden Days and the games on the riverbank | Map | Confirmed for 1961; plausible for 1967 | Low. Optional dressing. |
 | 42 | Owen's body to a help tent (issue #230) | Story | Plausible | Low. A field hospital or Red Cross station on high ground; no real site named. |
-| 43 | Fairbanks city jail and drunk tank, August 1967 | Act 1 | Plausible; location and procedure unknown | Low. Barnette (a Trooper) questioning a city prisoner, and an airman held without a call to base, are the soft spots. |
-| 44 | Airmen on flood duty downtown, beyond item 11 | Act 1 | Plausible | Low. Eielson airmen on a sandbag line in town is right; a hard-handed sergeant is fine. |
-| 45 | The land office during the flood | Act 1 | Plausible; resolved by owner decision | None. The land office is a two-story building with a staircase; the map says so. |
+| 43 | Fairbanks city jail and drunk tank, August 1967 | Act 1 | Plausible; jail in or near Old City Hall on Cushman | Low. Barnette (a Trooper) questioning a city prisoner, and an airman held without a call to base, are the soft spots. The drinking age was 21, so Wade (19) is served illegally. |
+| 44 | Airmen on flood duty downtown, beyond item 11 | Act 1 | Plausible | Low. Eielson's documented work was helicopter rescue; airmen on a sandbag line in town is plausible, not sourced. |
+| 45 | The land office during the flood | Act 1 | Confirmed (BLM Fairbanks district office existed); resolved by owner decision | None. The land office is a two-story building with a staircase; the map says so. |
 | 46 | Eielson photo lab and its records, beyond item 6 | Act 2 | Plausible | Low. Lunch-hour and 1700 lockup are fine; "court-martial" overstates the risk. |
 | 47 | Civilian janitorial crews on base | Act 2 | Plausible; access rules unknown | Medium. Lucy gets in on a cousin's crew; needs a pass and a reason. |
 | 48 | Squadron-commander office security | Act 2 | Plausible | Low. A forced file cabinet is right; sign-out sheets there are odd (item 5). |
 | 49 | Munitions sign-out practice, beyond item 5 | Act 2 | Partly | Low. The forged sheets are fiction; where they live is the question. |
-| 50 | The bush strip in November | Act 2 | Plausible; name and "truck pass" open | Low. Phillips Field fits; a pass at a bush strip does not. |
-| 51 | A 1967 hotel bar, a councilman and men from Outside | Act 2 | Plausible; bar must be fictional | Low. Alaska's drinking age was 19; the Pioneer is gone (item 23). |
-| 52 | A community hall for the Chiefs meeting | Act 2 | Plausible; hall unnamed | Low-medium. Keep it unnamed; consultants should read the scene. |
+| 50 | The bush strip in November | Act 2 | Plausible; Phillips Field sourced | Low. Phillips Field (1950-1992) fits; a pass at a bush strip does not. |
+| 51 | A 1967 hotel bar, a councilman and men from Outside | Act 2 | Plausible; bar must be fictional | Low. Alaska's drinking age was 21 in 1967, not 19 (item 43); the Pioneer is gone (item 23). |
+| 52 | A community hall for the Chiefs meeting | Act 2 | Plausible; hall unnamed | Low-medium. Lodge halls were used (FNA potlatch, Eagles Hall, 1965); consultants should read the scene. |
 | 53 | Trooper traffic stops on the Richardson, beyond item 14 | Act 2 | Plausible; jurisdiction fits | Low. A Trooper stop outside the city is right; "no reason" needs a pretext. |
-| 54 | Daylight and temperature on 12 December | Act 3 | Confirmed | None. About four hours of sun; "three hours of grey light" is conservative. |
-| 55 | A bush plane's winter survival kit | Act 3 | Plausible | Low. The scene's tools match practice; add what a pilot would have carried. |
-| 56 | USAF ground-search skis and gear, beyond item 10 | Act 3 | Partly | Low-medium. Wade on skis is fiction; issue skis were not recreational cross-country skis. |
-| 57 | Chena Hot Springs Road and Birch Hill cemetery | Act 3 | Plausible; both unverified for 1967 | Low. Both exist; dates unchecked. |
-| 58 | A hospital parking lot at forty below | Act 3 | Plausible | None. Plug-ins and ice fog are right; add them. |
+| 54 | Daylight and temperature on 12 December | Act 3 | Confirmed | None. About four hours of sun; "three hours of grey light" is conservative; -38 F is ordinary. |
+| 55 | A bush plane's winter survival kit | Act 3 | Confirmed (state law) | Low. Alaska law required food, an axe and, in winter, a sleeping bag; name them. |
+| 56 | USAF ground-search skis and gear, beyond item 10 | Act 3 | Partly | Low-medium. Wade on skis is fiction; issue skis were not recreational cross-country skis. Eielson ran the Arctic survival school. |
+| 57 | Chena Hot Springs Road and Birch Hill cemetery | Act 3 | Confirmed (Birch Hill); plausible (road) | Low. Birch Hill was the city's from 1957; Act 4's "county" should be "city". |
+| 58 | A hospital parking lot at forty below | Act 3 | Confirmed | None. Ice fog below about -30 F and headbolt heaters since about 1948; add them. |
 | 63 | Eielson's gate in 1967: Air Police, decals, visitor passes | Base map | Plausible | None. An AP at a shack and a pass office outside the fence; no procedure shown. |
 | 64 | The base's layout, dormitories and building types | Base map | Invented; types plausible | Low. The layout is ours; only the order (highway, gate, cantonment, flight line) should hold. |
 | 65 | Wade's squadron, and a major as its commander | Base map | Unknown | Medium. Which 1967 Eielson squadron had munitions airmen and a major in command is unchecked. |
@@ -717,12 +717,15 @@ Ordered by impact.
 7. **Act 1, Act 2 and Act 3 settings (items 43 to 58).** Proposals only; the owner can reject any of them.
    - Land office (item 45): **decided by the owner.** The land office is a two-story building with a staircase, and `town-map.md` now says so. The scene stays as written.
    - Drunk tank (item 43): *Proposal:* Barnette may question Wade there only because the Trooper investigator was already in the city for the flood and the drownings; add one line that the base was called.
+   - Drinking age (items 43, 51): Alaska's drinking age was 21 in 1967, not 19. *Proposal:* optional; one line in Hank's speech or the cell scene that Wade is underage and nobody on Second Avenue cares. No scene must change.
    - Janitorial access (item 47): *Proposal:* Lucy's cousin lends her a contract badge and a key; she is not simply "on the crew".
    - Sign-out sheets (items 48, 49): *Proposal:* the commander's cabinet holds copies of sign-outs for EOD issues, not the master accountability records.
    - Bush strip (item 50): *Proposal:* the "truck pass" line becomes "a truck" or "a ride to the strip" unless the strip is on or beside Eielson; name it Phillips Field only if the owner wants that.
+   - Hotel bar (item 51): *Proposal:* if Wade is ever shown ordering, it is a Coke; he is under 21.
    - Richardson stop (item 53): *Proposal:* give Barnette a pretext (a taillight, a speed check) so the search is plausible.
    - Search skis (item 56): *Proposal:* the team issues Wade army-surplus mountain skis or snowshoes; the joke about water skiing stays.
    - Survival kit and cold (items 55, 58): *Proposal:* mention a sleeping bag, an axe and a tin of matches in the crash scene, and a plugged-in car and ice fog in the parking lot. Additions, not rewrites.
+   - Curly's burial (item 57): *Proposal:* in Act 4, "a plot the county paid for" becomes "a plot the city paid for"; Alaska has no counties.
 
 ## Open items and what would settle them
 
@@ -745,8 +748,9 @@ Ordered by impact.
 - Whether Alaska observed daylight saving time in summer 1967 (item 38): Fairbanks Daily News-Miner sun tables, July 1967.
 - Whether downtown 2nd Avenue was paved by 1967 (item 39): dated photographs in the UAF archives.
 - Which way 2nd Avenue runs in 1967 (item 41): a period USGS or city street map.
-- Whether the city jail was in City Hall in August 1967, and whether a prisoner was released to base Air Police
-  (item 43): Fairbanks Daily News-Miner, August 1967; Fairbanks Police Department history.
+- Whether the city jail was still in Old City Hall or in the new 1960s police station in August 1967, and whether a
+  prisoner was released to base Air Police (item 43): the Old City Hall National Register nomination; Fairbanks
+  Daily News-Miner, August 1967; Fairbanks Police Department history.
 - Whether the BLM Fairbanks land office was in the Federal Building or a storefront in August 1967, and how many floors
   it had (items 30 and 45; the invented office is two-story by owner decision): BLM Alaska history, city directories.
 - Eielson contract custodial staffing and base access passes in 1967 (item 47): 5010th Air Base Wing histories at the
@@ -756,9 +760,11 @@ Ordered by impact.
   UAF archives.
 - Which Fairbanks hall hosted Tanana Chiefs meetings in 1967, if any (item 52): Tanana Chiefs Conference history, and a
   Lower Tanana consultant on how the scene should look.
-- When the Chena Hot Springs Road was open to winter traffic and when Birch Hill cemetery opened its present layout
-  (item 57): Fairbanks North Star Borough and state highway histories.
-- Exact Dec 12 1967 sunrise, sunset and temperature (item 54): Fairbanks Daily News-Miner weather table.
+- How far out the Chena Hot Springs Road was plowed in winter 1967-68, and whether Birch Hill buried in winter or held
+  bodies until spring (item 57): state highway histories; a Fairbanks funeral home or the city's cemetery records.
+- Exact Dec 12 1967 sunrise, sunset and temperature (item 54): Fairbanks Daily News-Miner weather table, or the
+  Alaska Climate Research Center's daily data.
+- Whether the 1967 Alaska emergency-equipment law already listed snowshoes (item 55): the Alaska statutes as of 1967.
 - How a Nenana family in town for the hospital should appear, and what they would say to a white surveyor (item 59):
   consultants.
 - Whether 1967 gravel on state land north of town was leased or sold as material sites (item 62): Alaska Division of
@@ -826,9 +832,10 @@ Questions raised by the art direction in [`art/README.md`](art/README.md#engine-
 
 ## Act 1 to 3 settings (issues #156, #157, #158)
 
-Items 43 to 58 check the places and procedures the first three acts use. No web search was done for this pass, and
-no new sources are cited: where a statement comes from general knowledge it says so, and anything not checked is
-marked unknown and listed under "Open items and what would settle them". Every **Proposal** below is a recommendation
+Items 43 to 58 check the places and procedures the first three acts use. The first pass (PR #246) did no web search;
+a second pass added a light web search and cites what it used under **Sources (second pass)** in each item. Where a
+statement still comes from general knowledge it says so, and anything not checked is marked unknown and listed under
+"Open items and what would settle them". Every **Proposal** below is a recommendation
 the owner can reject; none of it is applied to a scene. Sources already cited in items 1 to 42 are referred to by item
 number.
 
@@ -849,8 +856,26 @@ if the flood and six drownings had Troopers working in town. An airman picked up
 released or turned over to base Air Police, and his unit told (general knowledge, unchecked). A fine paid by a lawyer
 on the morning after is plausible for a minor charge.
 
+**Sources (second pass).** Old City Hall, the 1935 Art Deco building by Henry Bittman on Cushman, was built to hold the
+city offices and the police and fire stations, and a museum listing says it held the town jail for many years
+(https://en.wikipedia.org/wiki/Old_City_Hall_(Fairbanks,_Alaska);
+https://livingnewdeal.org/sites/old-city-hall-fairbanks-ak/; https://alaska.org/detail/fairbanks-community-museum). A
+new police and fire station was built in the 1960s (https://www.sketchesofalaska.com/?p=1387); the year was not found,
+so the lockup in August 1967 was either in City Hall or in that new station. Either way it is on or near Cushman, and
+item 34 puts only about 0.15 m of water at City Hall (800 Cushman), so the cells stayed in use during the flood.
+
+Alaska's drinking age was 21 in 1967; it was lowered to 19 in 1970 and raised back to 21 in 1984
+(https://en.wikipedia.org/wiki/History_of_alcohol_minimum_purchase_age_by_U.S._jurisdiction). A 1967-68 House bill
+proposed lowering it to 19
+(https://www.akleg.gov/pdf/billfiles/All%20Versions%20of%20Bills/(1967-1968)%2005/HB0354A.pdf), which shows the age was
+still 21 then; the change came in 1970. Wade is 19 and is served beer in the Silver Pan. That holds as practice (Second
+Avenue bars serving young airmen in uniform is the kind of thing a local would believe), but it is against the law, and
+it gives the city police a second charge to hang over Hank and a reason to send an underage airman back to base.
+
 **Recommended change.** None required. **Proposal:** one line that the base was called, so Wade's sergeant already
-knows when he gets back; this fits the heat the barfight is meant to raise.
+knows when he gets back; this fits the heat the barfight is meant to raise. **Proposal:** Hank's speech or the cell
+scene can own the drinking age in one line ("You're nineteen. Nobody on Second Avenue is nineteen."); no scene
+needs to change for accuracy, since the law was widely ignored.
 
 ### 44. Airmen on flood duty downtown, beyond item 11
 
@@ -864,7 +889,16 @@ crest was Aug 15. Airmen from a base 26 miles away working a downtown line in fa
 the shape military flood help took (general knowledge). A sergeant who gives a speech and a punishment duty instead
 of a charge is ordinary.
 
-**Recommended change.** None. If a line is added, a convoy of base trucks at the edge of downtown is cheap texture.
+**Sources (second pass).** Eielson's best-documented flood work was by air: H-21 helicopters lifted people off roofs to
+a pad on the University of Alaska campus
+(https://www.alaska.edu/uajourney/history-and-trivia/public-service-an-added-d/part-1/;
+https://en.wikipedia.org/wiki/1967_Fairbanks_flood). The sandbagging the same sources describe was mostly by volunteers,
+around the hospital and the campus heating plant. No source found puts an Eielson sandbag crew on a downtown street, and
+none rules it out; item 11's decorated 5010th Combat Support Group stays the best support.
+
+**Recommended change.** None. If a line is added, a convoy of base trucks at the edge of downtown is cheap texture,
+or an H-21 overhead, which is documented. Act 1's "the Air Force has trucked half of Eielson into town" is Wade's
+exaggeration and can stay.
 
 ### 45. The land office during the flood
 
@@ -875,13 +909,18 @@ of a charge is ordinary.
 
 **Evidence.** Item 30 found no source on where the BLM's Fairbanks office was in 1967 and left Lucy's office as an
 invented building on Second (`town-map.md`, `landOffice`). The map first gave it one floor; the scene's staircase
-implies at least two. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved ledgers
-are plausible. Federal land records were BLM's by the 1960s (general knowledge, unchecked), which makes a Native
+implies at least two. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved
+ledgers are plausible. Federal land records were BLM's by the 1960s (general knowledge, unchecked), which makes a Native
 clerk handling allotment papers there plausible but worth a consultant's read.
 
 **Decision (owner).** The land office is a two-story building with a staircase. The Act 1 scene's "up a staircase"
 stays, and `town-map.md` lists `landOffice` as 2 floors. No scene change. The question of whether the real BLM office
 was in the Federal Building stays open (item 30); the invented office does not depend on it.
+
+**Sources (second pass).** The BLM had a Fairbanks district office in 1967: the Alaska Legislature's 1967 resolution
+thanking the Bureau of Land Management for its aid to flood victims names Robert Krum, Fairbanks district director
+(https://www.akleg.gov/pdf/05/Bills/Final/SCR%202%20FSSLA%201967.pdf). So a federal land office in Fairbanks that
+was itself hit by the flood, and was helping in the cleanup, is right. Its street address was not found.
 
 **Recommended change.** None.
 
@@ -961,25 +1000,34 @@ base for air taxis and guides until the late 1970s, which fits a bush strip in t
 changeover and the gap before skis. A "truck pass" implies a controlled gate, which suits Eielson (where Jake works)
 and not a general aviation field; no source says Phillips Field had one.
 
-**Recommended change.** **Proposal:** keep "the bush strip" unnamed; or name it Phillips Field because item 35
-sources it. Change "truck pass for the strip" to "a truck and a base sticker", or place the pass at Eielson's gate.
+**Sources (second pass).** Phillips Field was a dirt strip begun in April 1950 by operators who could not afford to
+move when Weeks Field closed. It lay a few miles northwest of downtown toward College, on land owned by the Phillips
+family, and until the late 1970s most air taxis, guides and small-plane pilots around Fairbanks were based there. It
+closed in April 1992 for the Johansen Expressway (https://www.sketchesofalaska.com/?p=3905;
+https://jukebox.uaf.edu/jess-bachner). A family-run field of private hangars and tie-downs fits "the bush strip" and
+does not fit a vehicle pass.
+
+**Recommended change.** **Proposal:** keep "the bush strip" unnamed; or name it Phillips Field because item 35 and this
+item source it. Change "truck pass for the strip" to "a truck and a base sticker", or place the pass at Eielson's gate.
 
 ### 51. A 1967 hotel bar where a councilman drinks with men from Outside
 
 **Claim.** In October Lucy wants ears in the hotel bar downtown where Councilman Tolliver drinks with men from
 Outside. A uniform with a guitar can sit in the corner; a Native woman asking questions cannot (`a2_hotel`).
 
-**Verdict.** Plausible. The bar must be fictional.
+**Verdict.** Plausible. The bar must be fictional. The first pass's drinking age was wrong (corrected below).
 
-**Evidence.** Item 22 confirms the Nordale Hotel on Second; item 23 says the Pioneer had burned in 1952, so it cannot
-be used; item 21 says bar names are invented. Alaska's drinking age was 19 in the 1960s, so a 19-year-old airman
-playing in a bar is legal (from general knowledge; not verified here). A live guitar in the corner of a hotel bar is
-ordinary. The Alaska Equal Rights Act of 1945 barred discrimination in public places, but in practice Native patrons
-were turned away or watched in many Interior bars (general knowledge, unchecked); the scene's "cannot" is about that
-practice, not the law.
+**Evidence.** Item 22 confirms the Nordale Hotel on Second; item 23 says the Pioneer had burned in 1952, so it cannot be
+used; item 21 says bar names are invented. The first pass said Alaska's drinking age was 19 in the 1960s. **That was
+wrong:** it was 21 in 1967 and was lowered to 19 only in 1970 (item 43 has the sources). A 19-year-old airman playing
+guitar in the corner is still plausible, since he is working, not buying; whether a minor could legally play in a
+licensed bar in 1967 is unchecked. A live guitar in the corner of a hotel bar is ordinary. The Alaska Equal Rights Act
+of 1945 barred discrimination in public places, but in practice Native patrons were turned away or watched in many
+Interior bars (general knowledge, unchecked); the scene's "cannot" is about that practice, not the law.
 
 **Recommended change.** None required. **Proposal:** name no real hotel; call it "the hotel bar", as now. If a name
-is needed, invent one (item 21).
+is needed, invent one (item 21). Wade drinks a Coke on the bandstand, or the bartender sets one by him without
+asking, if the scene ever shows him ordering.
 
 ### 52. A community hall for the Chiefs meeting
 
@@ -994,8 +1042,15 @@ knowledge). No source names a Fairbanks hall used in October 1967. An airman, ev
 and asked to stand in the back is a story choice; the Eli and Lucy rule applies, so the meeting must be about their
 aims, not Wade's.
 
-**Recommended change.** None required. **Proposal:** leave the hall unnamed and ask a Lower Tanana or Tanana Chiefs
-consultant to read the scene (see items 36 and 40) before it ships.
+**Sources (second pass).** The Tanana Chiefs' 1962 organizing meeting of villages was held at Tanana, not Fairbanks
+(https://en.wikipedia.org/wiki/Tanana_Chiefs_Conference). In Fairbanks the Fairbanks Native Association held its
+first meeting on 29 March 1963, incorporated in January 1967, and held its first potlatch in 1965 in the Eagles Hall
+(https://jukebox.uaf.edu/node/4336). A rented lodge hall is therefore exactly the kind of room a Native meeting in
+Fairbanks used in the mid-1960s. No source found names a Tanana Chiefs meeting in Fairbanks in October 1967.
+
+**Recommended change.** None required. **Proposal:** leave the hall unnamed, or make it "a lodge hall", and ask a
+Lower Tanana or Tanana Chiefs consultant to read the scene (see items 36 and 40) before it ships. Do not name the
+Eagles Hall without that review.
 
 ### 53. Trooper traffic stops on the Richardson, beyond item 14
 
@@ -1012,6 +1067,11 @@ Wade sees it, not how a stop would be written up (general knowledge, unchecked).
 **Recommended change.** **Proposal:** give Barnette a pretext, a broken taillight or an unregistered borrowed truck,
 and keep Wade's feeling that it was for no reason.
 
+**Act 2 items with no new source.** Items 46 to 49 and 53 (the photo lab, janitorial crews, the commander's office,
+sign-outs and the Richardson stop) turned up nothing usable in a light search; base procedure of this kind lives in
+unit histories, not on the open web. Their verdicts and proposals stand as written, and their open items below are
+unchanged.
+
 ### Act 3 (Lucy)
 
 ### 54. Daylight and temperature on 12 December
@@ -1026,24 +1086,37 @@ to 13:50 (about four hours, noon altitude about 2 degrees); civil twilight about
 twilight's end and its start is about 17 hours. Minus 38 F is within the cold snaps Fairbanks has in December
 (general knowledge, unchecked for 1967). These are calculated, not read from a 1967 table.
 
+**Sources (second pass).** No daily record for December 1967 was found. For scale: Fairbanks's worst cold snap on
+record, 21 to 29 December 1961, averaged about -54 F for the week, and a climatologist counts a week averaging -40 F or
+colder as a great cold snap
+(https://alaskapublic.org/2019/01/09/fairbanks-famously-severe-cold-snaps-are-getting-less-cold-and-more-rare/). In the
+1960s -38 F in mid-December is an ordinary cold day, not a record.
+
 **Recommended change.** None. **Proposal:** "three hours of grey light" is conservative; leave it, since it also
 reflects a late landing and a short working window.
 
 ### 55. A bush plane's winter survival kit
 
-**Claim.** After the crash, Lucy and Jake survive by lighting a fire and a signal; the scene offers oil-soaked rags in
-a cowling for a smoke signal, a big X in the snow, or saving everything for the fire (`a3_survive_fire`, `a3_survive_jake`).
+**Claim.** After the crash, Lucy and Jake survive by lighting a fire and a signal; the scene offers oil-soaked rags in a
+cowling for a smoke signal, a big X in the snow, or saving everything for the fire (`a3_survive_fire`,
+`a3_survive_jake`).
 
-**Verdict.** Plausible.
+**Verdict.** Confirmed: the kit was required by state law.
 
-**Evidence.** Alaska pilots carried winter gear: sleeping bag, axe, matches or a fire starter, a stove, emergency
-food and a signal such as flares or a mirror. Whether a 1967 regulation required this was not checked, and the
-kit is unknown in the scene (general knowledge, unchecked). Burning oil-soaked rags makes a dark, visible smoke
+**Evidence.** Alaska law (now AS 02.35.110, "Emergency rations and equipment") bars flying in the state without
+emergency gear aboard: food for each occupant for a week, an axe or hatchet, and a first-aid kit, plus, from 15 October
+to 1 April, a pair of snowshoes and a sleeping bag
+(https://law.justia.com/codes/alaska/2010/title02/chapter02-35/sec-02-35-110;
+https://www.alaskasnewssource.com/content/news/Heres-what-survival-gear-Alaska-pilots-are-required-to-carry-490314391.html).
+The rule dates from a 1949 session law that already required sleeping bags and blankets in winter
+(https://www.akleg.gov/pdf/billfiles/SLAs/SLA%201949/CH%20128%20SLA%201949.pdf), so Jake's plane on 12 December 1967 had
+to carry them. The exact 1967 list (whether snowshoes were in it yet) is unchecked. Matches, a stove and signals were
+common practice on top of the law (general knowledge, unchecked). Burning oil-soaked rags makes a dark, visible smoke
 and is what a survival text of the time would suggest.
 
-**Recommended change.** None required. **Proposal:** name two things from the kit in the crash scene so the choices
-don't read as improvising from nothing. Lucy is "at least as capable as any pilot" at winter survival, per `design.md`,
-so she should be the one who knows what to reach for.
+**Recommended change.** None required. **Proposal:** name two things from the kit in the crash scene (the sleeping bag
+and the axe are the legally required ones) so the choices don't read as improvising from nothing. Lucy is "at least as
+capable as any pilot" at winter survival, per `design.md`, so she should be the one who knows what to reach for.
 
 ### 56. USAF ground-search skis and gear in 1967, beyond item 10
 
@@ -1059,22 +1132,42 @@ knowledge, unchecked). The Air Force Arctic Survival School was at Eielson in th
 unchecked), which supports airmen at Eielson having winter field training. The gag that Wade has never skied is
 unaffected.
 
+**Sources (second pass).** The USAF Arctic Survival Training school was running at Eielson in 1964, with week-long
+classes for aircrew (Air Weather Association, *Observer*, March 1964: https://airweaassn.org/observer/1964/196403.pdf;
+https://www.globalsecurity.org/military/agency/usaf/336trg.htm). So in 1967 Eielson had instructors and issue
+cold-weather gear on hand, and a ground team could draw from them. Skis in particular were not found in a source.
+
 **Recommended change.** **Proposal:** "cross-country skis" becomes "a pair of army-surplus mountain skis" or "skis
-with cable bindings", and a Fort Wainwright soldier on the team (item 10) for company.
+with cable bindings", and a Fort Wainwright soldier on the team (item 10) for company. An instructor from the
+survival school is another good companion.
 
 ### 57. The Chena Hot Springs Road and Birch Hill cemetery in 1967
 
 **Claim.** Curly "breaks into a hunting cabin up the Chena Hot Springs Road"; if ignored, "he took it into the ground at
 Birch Hill" (`a3_curly`).
 
-**Verdict.** Plausible. Both exist; 1967 details unverified.
+**Verdict.** Confirmed for Birch Hill; plausible for the road. One text fix: Alaska has no counties.
 
 **Evidence.** The Chena Hot Springs Road leaves the Steese area northeast of Fairbanks and runs about 56 miles to the
 hot springs, with homesteads and cabins along it; Birch Hill is the cemetery on the north side of town near the old
 military reservation (general knowledge, unchecked). Neither was checked for 1967 opening dates, surface or winter
 plowing. A cabin along it is outside the city, so it would be Trooper jurisdiction (item 14).
 
-**Recommended change.** None. If a date is ever needed, check the road's winter status first.
+**Sources (second pass).** Birch Hill Cemetery was laid out in 1938 on land Tony Zimmerman developed and gave to the
+town, run by a cemetery association, and deeded to the City of Fairbanks in 1957
+(https://en.wikipedia.org/wiki/Birch_Hill_Cemetery; https://www.sketchesofalaska.com/?p=811). In 1967 it is a city
+cemetery. The Chena Hot Springs Road began as a 1913 winter trail; the road reached Pleasant Valley by the 1950s and
+the springs in the 1960s, and its North Fork Chena bridge dates from 1967 and the Little Chena bridge from 1965
+(https://www.alaska.org/detail/chena-hot-springs-road; https://bridgecondition.com/bridge/alaska/ak-0234;
+https://bridgecondition.com/bridge/alaska/ak-0270). A hunting cabin within the first twenty or thirty miles in
+December 1967 is right; the far end may not have been plowed.
+
+Act 4 says Curly is buried at Birch Hill "in a plot the county paid for". Alaska has boroughs, not counties (the
+Fairbanks North Star Borough dates from 1964), and Birch Hill was the city's in 1967. Whether a winter burial
+was possible in frozen ground, or the body was held until spring, is unchecked.
+
+**Recommended change.** **Proposal:** "a plot the county paid for" becomes "a plot the city paid for". If a date is
+ever needed, check the road's winter status first.
 
 ### 58. A hospital parking lot at forty below
 
@@ -1089,8 +1182,15 @@ St. Joseph's or at a temporary site. At about -40, engine block heaters and plug
 thickest around vehicles and buildings, with exhaust hanging over lots. Smoking outside one-handed matches Wade's
 sling.
 
+**Sources (second pass).** Carl Benson's 1965 study at the Geophysical Institute found Fairbanks ice fog becomes a
+nuisance below about -35 C (-31 F), with car exhaust a major source because tailpipes sit so close to the ground,
+and tied the growth in winter driving to the headbolt heater, which came into use around 1948
+(https://www.dermotcole.com/reportingfromalaska/2024/2/4/6pooluhb8s82c3bew1vkcik84nu84l;
+https://www.uaf.edu/news/archives/2024/ice-fog-not-often-a-part-of-northern-life.php). UAF puts the onset at -30 to
+-35 F. So at forty below in 1967 a parking lot with engines running sits in ice fog, and plugged-in cars are the norm.
+
 **Recommended change.** None required. **Proposal:** add one line of ice fog and a row of cords running to idling
-or parked cars. Name St. Joseph's as item 16 recommends.
+or parked cars ("headbolt heater" is the period word). Name St. Joseph's as item 16 recommends.
 
 ## The prologue's town (issue #45)
 
