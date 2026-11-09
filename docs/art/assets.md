@@ -1,7 +1,33 @@
 # Asset log
 
 Every generated or third-party asset in the game, where it came from and under what terms. The machine-readable
-source of truth for characters is [`game/assets/characters.json`](../../game/assets/characters.json).
+sources of truth are [`game/assets/characters.json`](../../game/assets/characters.json) for characters and clips, and
+[`game/assets/environment.json`](../../game/assets/environment.json) for props, materials and procedural buildings,
+which pins every CC0 file by MD5. How each route works is in [`pipeline.md`](pipeline.md).
+
+## Props (CC0)
+
+From [Poly Haven](https://polyhaven.com/), [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/): no
+attribution required; credited here anyway. Rebuilt by `make generate/assets` into `game/public/props/`.
+
+| Id | Asset | Author | License | Source | Changes |
+| --- | --- | --- | --- | --- | --- |
+| `crate` | [Wooden Crate 02](https://polyhaven.com/a/wooden_crate_02) | James Ray Cock (modeling), Jurita Burger (graphic design) | CC0-1.0 | glTF, 1k | WebP textures, meshopt |
+| `jerrycan` | [Metal Jerrycan](https://polyhaven.com/a/metal_jerrycan) | Sean Buckley | CC0-1.0 | glTF, 1k | WebP textures, meshopt |
+
+## Materials (CC0)
+
+| Id | Asset | Author | License | Source | Used by |
+| --- | --- | --- | --- | --- | --- |
+| `siding` | [Weathered Plank Siding](https://polyhaven.com/a/weathered_plank_siding) | Dimitrios Savva | CC0-1.0 | diffuse, GL normal, ARM jpg, 1k | `storefront`, at 512 px WebP |
+
+## Procedural (ours)
+
+Generated from parameters by committed code; no third-party content except the materials above.
+
+| Id | Generator | Parameters |
+| --- | --- | --- |
+| `storefront` | `falseFrontPieces` in `game/tools/procedural.ts` | `buildings.storefront` in `environment.json` |
 
 ## Characters
 
