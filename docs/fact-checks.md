@@ -39,7 +39,7 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 27 | St. Joseph's Hospital's location | Map | Confirmed | None. North bank, downstream of the church. |
 | 28 | Co-op Drug | Map | Plausible | None. Building confirmed (1927); south side of Second, next to the Nordale. |
 | 29 | Polaris and Northward buildings | Map | Confirmed | None. The 1952 skyline. |
-| 30 | Federal Building, post office, post box | Map | Plausible | Low. Red, white and blue boxes in 1967; the land office stays a storefront. |
+| 30 | Federal Building, post office, post box | Map | Plausible | Low. Red, white and blue boxes in 1967; the land office stays an invented building on Second. |
 | 31 | Alaskaland / the A-67 exposition | Map | Confirmed | Low. In July 1967 say "A-67", not "Alaskaland". |
 | 32 | Street surfaces, boardwalks, summer dust | Map | Plausible | None. |
 | 33 | Building types | Map | Plausible | None. |
@@ -50,7 +50,7 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 42 | Owen's body to a help tent (issue #230) | Story | Plausible | Low. A field hospital or Red Cross station on high ground; no real site named. |
 | 43 | Fairbanks city jail and drunk tank, August 1967 | Act 1 | Plausible; location and procedure unknown | Low. Barnette (a Trooper) questioning a city prisoner, and an airman held without a call to base, are the soft spots. |
 | 44 | Airmen on flood duty downtown, beyond item 11 | Act 1 | Plausible | Low. Eielson airmen on a sandbag line in town is right; a hard-handed sergeant is fine. |
-| 45 | The land office during the flood | Act 1 | Plausible; building conflicts with the map | Medium. The scene has a staircase; the map has a one-floor storefront. |
+| 45 | The land office during the flood | Act 1 | Plausible; resolved by owner decision | None. The land office is a two-story building with a staircase; the map says so. |
 | 46 | Eielson photo lab and its records, beyond item 6 | Act 2 | Plausible | Low. Lunch-hour and 1700 lockup are fine; "court-martial" overstates the risk. |
 | 47 | Civilian janitorial crews on base | Act 2 | Plausible; access rules unknown | Medium. Lucy gets in on a cousin's crew; needs a pass and a reason. |
 | 48 | Squadron-commander office security | Act 2 | Plausible | Low. A forced file cabinet is right; sign-out sheets there are odd (item 5). |
@@ -546,7 +546,7 @@ building dates to 1933 (Old Federal Building, NRHP). U.S. street collection boxe
 white and blue from 1955, and all blue from 1971 (general postal history; not checked for Fairbanks). No source was
 found on whether the BLM's Fairbanks land office was in this building in 1967.
 
-**Recommended change.** Use a red, white and blue box. Lucy's land office is an invented storefront on the boarding
+**Recommended change.** Use a red, white and blue box. Lucy's land office is an invented two-story building on the boarding
 house's own block, facing Second; neither of Owen's routes passes its door. If a source puts the BLM office inside the Federal Building, move it
 there and have it closed at the hour Owen passes (he leaves early for the flight).
 
@@ -707,7 +707,7 @@ Ordered by impact.
 5. **Use the 1960 Chena ice-jam blasting.** An Air Force ordnance group blew a Chena jam at Fairbanks in 1960. It gives the CO's act a precedent and a cover story, and tells you who held demolition charges (EOD or ordnance, not line munitions).
 6. **Small text fixes.** "Prints" not "originals" for the aerial photographs; "grandfather" for Barnette, and "a jury let him off" for the bank; name St. Joseph's and note it closes in June 1968; soften "nobody is flying anywhere" at freeze-up; route the search through the Rescue Coordination Center; "Investigator" instead of "Inspector" until confirmed; add a preheated hangar to the fuel sabotage.
 7. **Act 1, Act 2 and Act 3 settings (items 43 to 58).** Proposals only; the owner can reject any of them.
-   - Land office (item 45): the scene's staircase needs a second floor, but `town-map.md` has a one-floor storefront. *Proposal:* have Lucy hauling the ledgers up onto high shelves and a loft, or move the office into the Federal Building (item 30).
+   - Land office (item 45): **decided by the owner.** The land office is a two-story building with a staircase, and `town-map.md` now says so. The scene stays as written.
    - Drunk tank (item 43): *Proposal:* Barnette may question Wade there only because the Trooper investigator was already in the city for the flood and the drownings; add one line that the base was called.
    - Janitorial access (item 47): *Proposal:* Lucy's cousin lends her a contract badge and a key; she is not simply "on the crew".
    - Sign-out sheets (items 48, 49): *Proposal:* the commander's cabinet holds copies of sign-outs for EOD issues, not the master accountability records.
@@ -740,7 +740,7 @@ Ordered by impact.
 - Whether the city jail was in City Hall in August 1967, and whether a prisoner was released to base Air Police
   (item 43): Fairbanks Daily News-Miner, August 1967; Fairbanks Police Department history.
 - Whether the BLM Fairbanks land office was in the Federal Building or a storefront in August 1967, and how many floors
-  it had (items 30 and 45): BLM Alaska history, city directories.
+  it had (items 30 and 45; the invented office is two-story by owner decision): BLM Alaska history, city directories.
 - Eielson contract custodial staffing and base access passes in 1967 (item 47): 5010th Air Base Wing histories at the
   Air Force Historical Research Agency.
 - Where demolition and sign-out records were kept at Eielson in 1967 (items 5, 48, 49): the same unit histories.
@@ -851,17 +851,19 @@ of a charge is ordinary.
 **Claim.** On Aug 16 Eli takes Wade to the land office, where Lucy is "hauling wet ledgers up a staircase"
 (`a1_lucy`, place `landOffice`, Aug 16). She is a clerk there; Ashby has "taken over" the family's claim.
 
-**Verdict.** Plausible, with a conflict. The staircase does not fit the map.
+**Verdict.** Plausible. The staircase conflict is resolved by an owner decision (below).
 
 **Evidence.** Item 30 found no source on where the BLM's Fairbanks office was in 1967 and left Lucy's office as an
-invented one-floor storefront on Second (`town-map.md`, `landOffice`, "1 floor"). The scene's staircase implies at
-least two floors. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved ledgers
+invented building on Second (`town-map.md`, `landOffice`). The map first gave it one floor; the scene's staircase
+implies at least two. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved ledgers
 are plausible. Federal land records were BLM's by the 1960s (general knowledge, unchecked), which makes a Native
 clerk handling allotment papers there plausible but worth a consultant's read.
 
-**Recommended change.** **Proposal:** keep the storefront and change "up a staircase" to "up onto the high shelves and
-into the loft", or follow item 30's alternative and move the office into the Federal Building, which has stairs.
-Either keeps the land thread; the first changes only a phrase.
+**Decision (owner).** The land office is a two-story building with a staircase. The Act 1 scene's "up a staircase"
+stays, and `town-map.md` lists `landOffice` as 2 floors. No scene change. The question of whether the real BLM office
+was in the Federal Building stays open (item 30); the invented office does not depend on it.
+
+**Recommended change.** None.
 
 ### Act 2 (winter)
 

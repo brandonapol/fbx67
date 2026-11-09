@@ -170,7 +170,7 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
 | | The Sluice Box (bar) | A1e, Second Avenue | x 44..56, z 34..48 | (50, 48) south | 0.67 | 1 floor, 5 m |
 | | The Blue Spruce Lounge | A2, corner of Second and Lacey | x 88..102, z 34..48 | (95, 48) south | 0.67 | 2 floors, 7 m |
 | `nlCafe` | Northern Lights Café | B1, corner of Second and Cushman | x 7..17, z 64..78 | (12, 64) north onto Second | 0.90 | 1 floor, 4.5 m |
-| `landOffice` | The land office | B2, south side of Second, east of Lacey | x 100..114, z 64..78 | (107, 64) north onto Second | 0.90 | 1 floor, false front 5 m |
+| `landOffice` | The land office | B2, south side of Second, east of Lacey | x 100..114, z 64..78 | (107, 64) north onto Second | 0.90 | 2 floors, false front 7 m |
 | `boardingHouse` | Owen's boarding house | B2, north side of Third | x 126..142, z 82..96 | (134, 96) south onto Third | 1.16 | 2 floors, 7 m |
 | `owensRoom` | Owen's room | upstairs at the back of the boarding house | x 131..137, z 82..88 | the stairs | 4.16 | |
 | | Quonset float shed | A2, First Avenue | x 130..150, z 18..28 | (140, 18) north onto First | 0.23 | 5 m arch |
@@ -181,7 +181,8 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
 
 **The land office** is Lucy's. It is on the boarding house's own block but faces Second; neither route passes its
 door, so Owen does not walk past it with her letter in his pocket. Whether the federal land office was in the Federal Building in 1967 is
-open (item 30); a storefront keeps us out of that question.
+open (item 30), so the office stays an invented building on Second. The owner decided it is a two-story building with
+a staircase between the floors (item 45), which the Act 1 scene uses when Lucy hauls ledgers upstairs.
 
 **Generic buildings** (pale on the map) are unnamed frame storefronts, rooming houses, cabins and sheds. See
 [Building types](#building-types).
@@ -342,7 +343,7 @@ set fires to get work; it appears in a 1969 magazine piece (item 36).
 **Ours** (invented, kept plausible):
 
 - **Bars:** the Silver Pan, the Ptarmigan, the Sluice Box and the Blue Spruce Lounge, and their lots.
-- **Owen and Lucy:** Owen's boarding house and room, and the land office as a storefront on Second.
+- **Owen and Lucy:** Owen's boarding house and room, and the land office, a two-story building on Second.
 - **On the river:** the float dock's spot, the quonset float shed, and Curly's plane. Floatplanes did use the Chena
   at Fairbanks, but a 1967 dock downtown is not documented (35).
 - **Lots:** the Northern Lights Café's corner (the café is design canon; its lot is ours) and the Pioneer lot's spot.
