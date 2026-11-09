@@ -140,11 +140,11 @@ You hear it before you feel it: a crack like green wood. Then you feel it.`,
     text: () => `
 Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
 
-Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
+Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle ${N.tolliverFirst}'ll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
 You wander over to the engine to get away from her look. You know hardware. The fuel cap gasket has been cut, and the sump bowl is solid ice. And the sump drain is jammed with a sliver of wood, wired so it looks clean: when Jake drained it on preflight, nothing could come out but the little gas above the plug. Somebody poured water in this tank and made sure Jake couldn't find it.`,
     choices: () => [
-      { label: 'Wake Jake and show him. It wasn\'t his fault. And if Jake knew, he might make his uncle Ray listen.', note: 'wakeJake', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
+      { label: `Wake Jake and show him. It wasn't his fault. And if Jake knew, he might make his uncle ${N.tolliverFirst} listen.`, note: 'wakeJake', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
       { label: 'Keep it to yourself until you know who.', note: 'keepIt', apply: addEvidence('wreckProof'), next: 'a3_home' },
     ],
   },
