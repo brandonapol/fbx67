@@ -1,5 +1,5 @@
 import type { Surface } from './footsteps.ts'
-import { snowAt } from './footsteps.ts'
+import { glideAt, snowAt } from './footsteps.ts'
 import type { Tread } from './cast.ts'
 import type { Color, Layer, Noise, Spot } from './soundscape.ts'
 
@@ -456,10 +456,77 @@ const act1Spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest: Au
   return undefined
 }
 
+export const CALLS = 4
+
+// The search team calling as they move off down the valley: each call quieter than the one before.
+export const callGain = (i: number): number => 0.6 ** i
+
+export const COUGHS: readonly [number, number] = [3, 5]
+
+const act3Spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest: AudioNode, rand: Rand, at: number): number | undefined => {
+  if (which === 'cough') {
+    const coughs = COUGHS[0] + Math.floor(rand() * (COUGHS[1] - COUGHS[0] + 1))
+    const f = between(rand, 70, 85)
+    const ends = Array.from({ length: coughs }, (_, i) => {
+      const t = at + i * between(rand, 0.25, 0.5)
+      return Math.max(
+        tone(ctx, dest, 'sawtooth', f * (1 - 0.08 * i), t, 0.3, 0.01, between(rand, 0.1, 0.2)),
+        burst(ctx, buffers, dest, 'brown', 'lowpass', 400, 1, t, 0.4, 0.005, 0.12, rand),
+      )
+    })
+    const last = latest(ends, at)
+    return tone(ctx, dest, 'sawtooth', f * 0.6, last, 0.2, 0.02, 1.2, f * 0.2)
+  }
+  if (which === 'impact') {
+    const branches = Array.from({ length: 8 }, (_, i) =>
+      burst(ctx, buffers, dest, 'white', 'highpass', between(rand, 2000, 5000), 0.8, at + i * between(rand, 0.03, 0.07), between(rand, 0.2, 0.5), 0.001, between(rand, 0.04, 0.1), rand),
+    )
+    const hit = at + 0.45
+    return latest(
+      [
+        ...branches,
+        burst(ctx, buffers, dest, 'brown', 'lowpass', 160, 1, hit, 1, 0.004, 0.6, rand),
+        burst(ctx, buffers, dest, 'pink', 'bandpass', 900, 4, hit, 0.4, 0.005, 0.5, rand, 300),
+        burst(ctx, buffers, dest, 'pink', 'lowpass', 600, 0.7, hit + 0.2, 0.25, 0.1, 1.4, rand),
+      ],
+      at,
+    )
+  }
+  if (which === 'snap')
+    return Math.max(
+      burst(ctx, buffers, dest, 'white', 'bandpass', between(rand, 1500, 2600), 1.2, at, 0.35, 0.001, 0.05, rand),
+      burst(ctx, buffers, dest, 'brown', 'lowpass', 140, 1, at, 0.3, 0.003, 0.35, rand),
+    )
+  if (which === 'calls') {
+    const far = filter(ctx, 'lowpass', 1100)
+    const f1 = filter(ctx, 'bandpass', between(rand, 550, 750), 3)
+    f1.connect(far)
+    far.connect(dest)
+    const f = between(rand, 130, 200)
+    return latest(
+      Array.from({ length: CALLS }, (_, i) => {
+        const t = at + i * between(rand, 1.4, 2.2)
+        return tone(ctx, f1, 'sawtooth', f, t, 0.3 * callGain(i), 0.08, between(rand, 0.4, 0.7), f * 0.85)
+      }),
+      at,
+    )
+  }
+  if (which === 'fall')
+    return latest(
+      [
+        ...[0, between(rand, 0.05, 0.12)].map((d) => burst(ctx, buffers, dest, 'pink', 'bandpass', between(rand, 1300, 1800), 6, at + d, 0.25, 0.001, 0.06, rand)),
+        burst(ctx, buffers, dest, 'brown', 'lowpass', 220, 1, at + 0.08, 0.8, 0.005, 0.25, rand),
+        burst(ctx, buffers, dest, 'pink', 'lowpass', 900, 0.7, at + 0.1, 0.2, 0.05, 0.6, rand),
+      ],
+      at,
+    )
+  return undefined
+}
+
 export const spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest: AudioNode, rand: Rand): number => {
   const at = ctx.currentTime + 0.01
-  const act1 = act1Spot(ctx, buffers, which, dest, rand, at)
-  if (act1 !== undefined) return act1
+  const act = act1Spot(ctx, buffers, which, dest, rand, at) ?? act3Spot(ctx, buffers, which, dest, rand, at)
+  if (act !== undefined) return act
   if (which === 'clink') {
     const f = between(rand, 2400, 3600)
     const peak = between(rand, 0.04, 0.12)
@@ -544,6 +611,13 @@ export const footstep = (
     const pack = burst(ctx, buffers, dest, 'brown', 'lowpass', 380 * k, 1, at, 0.4 * (1 - snow.squeak * 0.6), 0.02, snow.decay, rand)
     const squeak = snow.squeak > 0.3 ? tone(ctx, dest, 'triangle', between(rand, 1500, 2100) * p, at + 0.03, 0.04 * snow.squeak, 0.01, 0.07) : at
     return Math.max(crunch, pack, squeak)
+  }
+  if (surface === 'ski') {
+    const glide = glideAt(tempF)
+    return Math.max(
+      burst(ctx, buffers, dest, 'pink', 'bandpass', glide.freq * k, glide.q, at, 0.18, glide.length * 0.3, glide.length * 0.7, rand),
+      burst(ctx, buffers, dest, 'white', 'highpass', 4000 * p, 0.7, at, 0.03, glide.length * 0.2, glide.length * 0.5, rand),
+    )
   }
   if (surface === 'concrete') return concreteStep(ctx, buffers, dest, rand, at, 1, p)
   if (surface === 'wood')

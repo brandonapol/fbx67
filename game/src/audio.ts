@@ -1,11 +1,12 @@
 import type { Bus, Volumes } from './mixer.ts'
 import { BUSES, LIMITER, STORAGE_KEY, busGains, clamp01, parseVolumes, serializeVolumes, withVolume } from './mixer.ts'
 import type { Gait } from './footsteps.ts'
-import { pace, standing, surfaceAt } from './footsteps.ts'
+import { pace, standing, stepTempF, surfaceAt } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
 import { spaces } from './levels.ts'
 import type { Game } from './prologue.ts'
 import { playerBody } from './prologue.ts'
+import { season } from '../../text-game/src/story.ts'
 import type { Event } from './soundscape.ts'
 import { arrivals, ducked, holds, soundscapes, sourceAt, walked } from './soundscape.ts'
 import type { Buffers, Rand, Voice } from './synth.ts'
@@ -217,7 +218,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
     if (!falls) return
     const ground = soundscapes[g.space].ground
     const surface = surfaceAt(ground, g.pos)
-    oneShot(gr, 'sfx', g.pos, (dest) => footstep(gr.ctx, gr.buffers, surface, dest, rand, ground.tempF, playerBody(g).tread))
+    oneShot(gr, 'sfx', g.pos, (dest) => footstep(gr.ctx, gr.buffers, surface, dest, rand, stepTempF(ground, season(g.story)), playerBody(g).tread))
   }
 
   const run = (gr: Graph, g: Game, dt: number): void => {
