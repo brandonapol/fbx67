@@ -110,6 +110,9 @@ classes; data over code.
 - **Sweep for siblings.** A text bug on one route usually exists on its neighbors: check every scene that shares
   the constant or the gate.
 - **Fix the shared source of truth:** the gate in `logic.ts`, the constant, the name in `names.ts`.
+- **Every bug gets a regression test.** A bug found or fixed needs a test that fails before the fix and passes
+  after, committed in the same PR, so it cannot come back. If it cannot be tested, the PR says why.
+- **A bug found but not fixed in this task gets a ticket.** The ticket requires that same test.
 
 ### Verification before claiming done
 
