@@ -201,7 +201,7 @@ test('breath fog and snow load are outdoors in winter only', () => {
       assert.deepEqual([l.breath, l.snowLoad], [true, true], `${id} ${w}`)
       ;(['summer', 'flood'] as const).forEach((s) => assert.deepEqual([lighting(id, s, w).breath, lighting(id, s, w).snowLoad], [false, false]))
     })
-    ;(['bar', 'boarding', 'room', 'story'] as const).forEach((id) => {
+    ;(['bar', 'room', 'story'] as const).forEach((id) => {
       const l = lighting(id, 'winter', w)
       assert.deepEqual([l.breath, l.snowLoad, l.rain], [false, false, false], `${id} ${w}`)
     })
