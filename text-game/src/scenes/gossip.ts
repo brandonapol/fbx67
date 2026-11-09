@@ -65,5 +65,6 @@ ${outros[id]}`,
 
 export const askGossip = (id: GossipId): Choice => ({
   label: `Stop by the café first and hear what ${N.gossip.split(' ')[0]} has heard.`,
+  note: 'gossip',
   next: id,
 })

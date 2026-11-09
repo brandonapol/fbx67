@@ -7,16 +7,16 @@ import { addEvidence, eliTrust, has, heat, joan, lucyHeat, mom, pipe, set, texan
 const act = 'Act 3: Deep Winter' as const
 
 const survivalChoices = (_: State): readonly Choice[] => [
-  { label: 'Burn oil-soaked rags in a cowling panel for a smoke signal at first light.', next: 'a3_search' },
-  { label: 'Stamp a big X in the snow on the open slope.', next: 'a3_search' },
-  { label: 'Save everything for the fire and wait.', next: 'a3_search' },
+  { label: 'Burn oil-soaked rags in a cowling panel for a smoke signal at first light.', note: 'smoke', next: 'a3_search' },
+  { label: 'Stamp a big X in the snow on the open slope.', note: 'stampX', next: 'a3_search' },
+  { label: 'Save everything for the fire and wait.', note: 'saveFire', next: 'a3_search' },
 ]
 
 const rashChoices = (_: State): readonly Choice[] => [
-  { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
-  { label: 'Burn down his hunting cabin.', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
-  { label: 'Find him and put a gun in his face until he talks.', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
-  { label: 'Don\'t go after Tolliver. Not like this.', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
+  { label: 'Blow the safe in Tolliver\'s office and take the stolen allotment file.', note: 'safe', apply: set({ rashPlan: 'safe' }), next: 'a3_rash_safe' },
+  { label: 'Burn down his hunting cabin.', note: 'burn', apply: set({ rashPlan: 'burn' }), next: 'a3_rash_burn' },
+  { label: 'Find him and put a gun in his face until he talks.', note: 'gunpoint', apply: set({ rashPlan: 'gunpoint' }), next: 'a3_rash_gun' },
+  { label: 'Don\'t go after Tolliver. Not like this.', note: 'none', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
 ]
 
 const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
@@ -32,9 +32,9 @@ You are ${N.lucy}. December 12th, thirty-eight below. Jake sets the plane down o
 
 The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. ${N.owenShort}'s second letter told you where to look.`,
     choices: () => [
-      { label: 'Under the floorboards behind the cook-tent stove.', next: dig('stove') },
-      { label: 'The old meat cache up on stilts.', next: dig('cache') },
-      { label: 'Under the survey marker.', next: dig('marker') },
+      { label: 'Under the floorboards behind the cook-tent stove.', note: 'stove', next: dig('stove') },
+      { label: 'The old meat cache up on stilts.', note: 'cache', next: dig('cache') },
+      { label: 'Under the survey marker.', note: 'marker', next: dig('marker') },
     ],
   },
   {
@@ -43,7 +43,7 @@ The camp has been torn apart: tent slashed, crates emptied, stove kicked over. W
     title: 'Lucy: Not Here',
     text: () => `
 Nothing. Your fingers are going white. You reread the second letter with your mitts off and find the line, buried halfway down a page about the weather, and it costs you twenty minutes you didn't have.`,
-    choices: () => [{ label: 'Dig in the right place.', next: 'a3_found' }],
+    choices: () => [{ label: 'Dig in the right place.', note: 'dig', next: 'a3_found' }],
   },
   {
     id: 'a3_found',
@@ -53,7 +53,7 @@ Nothing. Your fingers are going white. You reread the second letter with your mi
 An oilcloth bundle: field notebooks, a folder of claim maps, and four reels of tape labeled in Owen's tidy hand. You stuff them inside your parka.
 
 Jake has the engine warm. You take off into the last of the light.`,
-    choices: () => [{ label: 'Head home.', apply: pipe(addEvidence('tapes'), set({ owenCache: undefined })), next: 'a3_crash' }],
+    choices: () => [{ label: 'Head home.', note: 'home', apply: pipe(addEvidence('tapes'), set({ owenCache: undefined })), next: 'a3_crash' }],
   },
   {
     id: 'a3_crash',
@@ -66,8 +66,8 @@ The engine quits. He puts the plane into a stand of black spruce on a hillside, 
 
 When you come to, Jake is pinned and bleeding, the cabin is on its side, and it's getting dark for the next eighteen hours.`,
     choices: () => [
-      { label: 'Build a fire first.', next: 'a3_survive_fire' },
-      { label: 'Get Jake free and stop the bleeding first.', next: 'a3_survive_jake' },
+      { label: 'Build a fire first.', note: 'fire', next: 'a3_survive_fire' },
+      { label: 'Get Jake free and stop the bleeding first.', note: 'jake', next: 'a3_survive_jake' },
     ],
   },
   {
@@ -97,8 +97,8 @@ They hand you cross-country skis. You grew up water skiing. How hard can it be?
 
 Near the last known heading, the team splits up to cover more ground. You're on your own.`,
     choices: () => [
-      { label: 'Take the long downhill run along the ridge. Balance is balance.', next: 'a3_ski_down' },
-      { label: 'Climb straight up the creek drainage.', next: 'a3_ski_up' },
+      { label: 'Take the long downhill run along the ridge. Balance is balance.', note: 'downhill', next: 'a3_ski_down' },
+      { label: 'Climb straight up the creek drainage.', note: 'climb', next: 'a3_ski_up' },
     ],
   },
   {
@@ -109,7 +109,7 @@ Near the last known heading, the team splits up to cover more ground. You're on 
 The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
 
 Then you smell smoke.`,
-    choices: () => [{ label: 'Follow it.', next: 'a3_arm' }],
+    choices: () => [{ label: 'Follow it.', note: 'follow', next: 'a3_arm' }],
   },
   {
     id: 'a3_ski_up',
@@ -119,7 +119,7 @@ Then you smell smoke.`,
 Climbing on skis is nothing like water skiing. You sweat through your layers, and then the sweat starts to freeze. Your toes go numb and stay that way.
 
 Then you smell smoke.`,
-    choices: () => [{ label: 'Follow it.', next: 'a3_arm' }],
+    choices: () => [{ label: 'Follow it.', note: 'follow', next: 'a3_arm' }],
   },
   {
     id: 'a3_arm',
@@ -131,7 +131,7 @@ The plane is on its side in a stand of black spruce, one wing folded under it. A
 You don't listen. You plant your skis and reach down into the cabin to haul her up by the arm, and the snow under your skis gives way. You go down hard against the fuselage with your right arm under you.
 
 You hear it before you feel it: a crack like green wood. Then you feel it.`,
-    choices: () => [{ label: 'Yell. Then let Lucy deal with it.', next: 'a3_wreck' }],
+    choices: () => [{ label: 'Yell. Then let Lucy deal with it.', note: 'yell', next: 'a3_wreck' }],
   },
   {
     id: 'a3_wreck',
@@ -144,8 +144,8 @@ Jake drifts in and out by the fire, muttering that he drained those sumps, he sw
 
 You wander over to the engine to get away from her look. You know hardware. The fuel cap gasket has been cut, and the sump bowl is solid ice. And the sump drain is jammed with a sliver of wood, wired so it looks clean: when Jake drained it on preflight, nothing could come out but the little gas above the plug. Somebody poured water in this tank and made sure Jake couldn't find it.`,
     choices: () => [
-      { label: 'Wake Jake and show him. It wasn\'t his fault. And if Jake knew, he might make his uncle Ray listen.', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
-      { label: 'Keep it to yourself until you know who.', apply: addEvidence('wreckProof'), next: 'a3_home' },
+      { label: 'Wake Jake and show him. It wasn\'t his fault. And if Jake knew, he might make his uncle Ray listen.', note: 'wakeJake', apply: pipe(addEvidence('wreckProof'), set({ sharedWreck: true })), next: 'a3_home' },
+      { label: 'Keep it to yourself until you know who.', note: 'keepIt', apply: addEvidence('wreckProof'), next: 'a3_home' },
     ],
   },
   {
@@ -167,12 +167,13 @@ Eli meets you at the hospital. He's been asking around the strip.
     choices: (s) => [
       {
         label: s.leakedFlightDate ? 'Tell Eli the truth: you put the date in a letter to your mother.' : 'Tell Eli you\'ll back whatever he wants to do.',
+        note: 'tellEli',
         apply: s.leakedFlightDate ? pipe(addEvidence('staffCar'), eliTrust(-1)) : eliTrust(1),
         next: 'a3_curly',
       },
       ...(s.leakedFlightDate
-        ? [{ label: 'Lie. "I never told a soul."', apply: pipe(addEvidence('staffCar'), eliTrust(-2)), next: 'a3_curly' } satisfies Choice]
-        : [{ label: 'Tell Eli to leave it to the police.', next: 'a3_curly' } satisfies Choice]),
+        ? [{ label: 'Lie. "I never told a soul."', note: 'lie', apply: pipe(addEvidence('staffCar'), eliTrust(-2)), next: 'a3_curly' } satisfies Choice]
+        : [{ label: 'Tell Eli to leave it to the police.', note: 'police', next: 'a3_curly' } satisfies Choice]),
     ],
   },
   {
@@ -187,7 +188,7 @@ ${s.curlyPlan === 'ignore' ? 'Beside him is a brand-new hunting bow, stolen, sti
 ${s.curlyPlan === 'ignore' ? 'Whatever Curly knew, he took it into the ground at Birch Hill.' : 'Curly is in a cell now, behind a door only the officer has the key to. Curly knows exactly what that means, and for the first time since August he sleeps.'}
 
 A letter from Mama is waiting at the hospital desk. ${mamaReply(1)(s)}`,
-    choices: () => [{ label: 'Continue.', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],
   },
   {
     id: 'a3_eli',
@@ -202,9 +203,9 @@ Eli finds you in the hospital parking lot, smoking one-handed in the cold. ${s.e
 
 He's telling you something that could put him in jail.`,
     choices: () => [
-      { label: 'Keep it between you. "Nobody hears this from me."', apply: pipe(set({ eliTrespass: 'quiet' }), eliTrust(2)), next: 'a3_rash' },
-      { label: 'Tell Barnette. A witness is a witness.', apply: pipe(set({ eliTrespass: 'report' }), eliTrust(-3)), next: 'a3_rash' },
-      { label: 'Hold onto it. If it comes to it, it\'s a card you can play.', apply: pipe(set({ eliTrespass: 'leverage' }), eliTrust(-1)), next: 'a3_rash' },
+      { label: 'Keep it between you. "Nobody hears this from me."', note: 'quiet', apply: pipe(set({ eliTrespass: 'quiet' }), eliTrust(2)), next: 'a3_rash' },
+      { label: 'Tell Barnette. A witness is a witness.', note: 'report', apply: pipe(set({ eliTrespass: 'report' }), eliTrust(-3)), next: 'a3_rash' },
+      { label: 'Hold onto it. If it comes to it, it\'s a card you can play.', note: 'leverage', apply: pipe(set({ eliTrespass: 'leverage' }), eliTrust(-1)), next: 'a3_rash' },
     ],
   },
   {
@@ -226,7 +227,7 @@ You tell Lucy you're going to do something about it. She lets you talk.`,
     title: 'One-Handed',
     text: () => `
 You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
-    choices: () => [{ label: 'Go.', apply: heat(1), next: 'a3_confession' }],
+    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
   },
   {
     id: 'a3_rash_burn',
@@ -234,7 +235,7 @@ You lift a demolition kit from the munitions bunker on a night shift, one-handed
     title: 'Kerosene',
     text: () => `
 You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and drive out the road to Tolliver's hunting cabin at two in the morning.`,
-    choices: () => [{ label: 'Go.', apply: heat(1), next: 'a3_confession' }],
+    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
   },
   {
     id: 'a3_rash_gun',
@@ -242,7 +243,7 @@ You borrow a truck, buy two cans of kerosene at a gas station where nobody knows
     title: 'Borrowed Rifle',
     text: () => `
 You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.`,
-    choices: () => [{ label: 'Go.', apply: heat(1), next: 'a3_confession' }],
+    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
   },
   {
     id: 'a3_rash_none',
@@ -250,7 +251,7 @@ You borrow a rifle from a guy in the barracks who doesn't ask questions, and you
     title: 'Barracks',
     text: () => `
 You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight somebody knocks on the window. It's Lucy, and she's been running.`,
-    choices: () => [{ label: 'Let her in.', next: 'a3_confession' }],
+    choices: () => [{ label: 'Let her in.', note: 'letHerIn', next: 'a3_confession' }],
   },
   {
     id: 'a3_confession',
@@ -271,9 +272,9 @@ Her voice breaks on the next part, and she makes it keep going.
 
 "Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."`,
     choices: () => [
-      { label: 'Stay. "Then we finish this. Together."', apply: set({ afterConfession: 'stay' }), next: 'a3_joan' },
-      { label: 'Walk away. You\'re done being anybody\'s tool.', apply: set({ afterConfession: 'walk' }), next: 'a3_walk' },
-      { label: 'Turn on her. If she used you, you can use her.', apply: set({ afterConfession: 'turn' }), next: 'a3_turn' },
+      { label: 'Stay. "Then we finish this. Together."', note: 'stay', apply: set({ afterConfession: 'stay' }), next: 'a3_joan' },
+      { label: 'Walk away. You\'re done being anybody\'s tool.', note: 'walk', apply: set({ afterConfession: 'walk' }), next: 'a3_walk' },
+      { label: 'Turn on her. If she used you, you can use her.', note: 'turn', apply: set({ afterConfession: 'turn' }), next: 'a3_turn' },
     ],
   },
   {
@@ -282,7 +283,7 @@ Her voice breaks on the next part, and she makes it keep going.
     title: 'Done',
     text: () => `
 You hand her the folder back and walk out into the dark. She doesn't call after you. For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
-    choices: () => [{ label: 'Continue.', next: 'a3_joan' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {
     id: 'a3_turn',
@@ -292,7 +293,7 @@ You hand her the folder back and walk out into the dark. She doesn't call after 
 The next morning you go to ${N.barnette}. You tell him who the Native woman on the base was, and that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were her idea of a frame.
 
 Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are in an evidence locker.`,
-    choices: () => [{ label: 'Continue.', apply: lucyHeat(2), next: 'a3_joan' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', apply: lucyHeat(2), next: 'a3_joan' }],
   },
   {
     id: 'a3_joan',
@@ -307,9 +308,9 @@ ${mamaReply(0)(s)}
 
 Joan uncaps her pen. "Dear Mama," she says. "Go on."`,
     choices: () => [
-      { label: 'Tell Mama the truth: the crash, the arm, the danger.', apply: pipe(mom('honest'), joan(1)), next: 'a4_news' },
-      { label: 'Tell her you slipped on the ice and broke your arm.', apply: pipe(mom('soft'), joan(1)), next: 'a4_news' },
-      { label: 'Ask Joan to leave the arm out of it entirely.', apply: mom('lie'), next: 'a4_news' },
+      { label: 'Tell Mama the truth: the crash, the arm, the danger.', note: 'honest', apply: pipe(mom('honest'), joan(1)), next: 'a4_news' },
+      { label: 'Tell her you slipped on the ice and broke your arm.', note: 'soft', apply: pipe(mom('soft'), joan(1)), next: 'a4_news' },
+      { label: 'Ask Joan to leave the arm out of it entirely.', note: 'lie', apply: mom('lie'), next: 'a4_news' },
     ],
   },
 ]
