@@ -160,6 +160,8 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
 - `cityJail`: the Fairbanks PD cell and front desk (Aug 20). Off the map: no jail is placed downtown, and the scene
   never walks to or from it.
 - `eielsonBarracks`: see the Eielson entry above.
+- `surveyCamp`: Owen's camp on a gravel bar up the river, reached by Curly's plane. Its own space, not downtown.
+- `helpTent`: off the map south along Cushman beyond Fifth; its spot is a gap for the place-id ticket (#89).
 
 ### Ours
 
@@ -215,16 +217,39 @@ Facing is a unit vector (x, z); (0, −1) faces north. y is grade or floor from 
 
 | Id | Position (x, y, z) | Facing | Notes |
 |---|---|---|---|
-| `silverPan` | (33, 0.67, 46.9) | (0, −1) | inside the door; the same spot as `bar.spawn` (0, 3.9) |
+| `silverPan` | (33, 0.67, 46) | (0, −1) | inside the door; the same spot as `bar.spawn` (0, 3.0) |
 | `secondAve` | (33, 0.40, 50.5) | (1, 0) | Second's north walk outside the Silver Pan; the night walk starts here |
 | `boardingHouse` | (134, 0.87, 98.5) | (0, −1) | Third's north walk, facing the door; the morning walk starts here |
-| `owensRoom` | (134, 4.16, 87) | (0, −1) | the same spot as `room.spawn` (0, 2) |
+| `owensRoom` | (134, 4.16, 86.2) | (0, −1) | the same spot as `room.spawn` (0, 1.2) |
 | `floatDock` | (118.5, −0.30, 1) | (0, −1) | top of the gangway, looking down at the float and the plane |
 | `floodedStreet` | (135.4, 0.87, 97.5) | (0, −1) | the `flood` space's spawn, (0, 6.4) turned 180°; at Owen's door, water 0.33 m deep (see the note under the flood tables) |
 | `postBox` | (−6, 0.63, 66) | (1, 0) | Cushman's west walk, facing the box at the curb, (−4.5, 66) |
 | `landOffice` | (107, 0.57, 62) | (0, 1) | Second's south walk at Lucy's door |
 | `nlCafe` | (12, 0.57, 62) | (0, 1) | Second's south walk at Dottie's door |
 | `bridgeSouth` | (0, −0.18, −2) | (0, 1) | on the deck at the south end, looking into town |
+
+## In the engine: pass 1, gray box
+
+`game/src/downtown.ts` builds the `downtown` space from the tables above, in the same meters: a coordinate read off
+this map is a coordinate in the scene, and `game/src/downtown.test.ts` checks the spawn table against it row by row.
+It is procedural boxes only, no art assets (issue #41, pass 1).
+
+- **Built:** the streets, walks, the Blanchfield lane and the alley; the boardwalks on Noble; one low mass per block
+  with the named buildings standing out of it at their rectangles and heights; door slabs at every front door; the
+  water, the bank, the skiff landing, the float, the gangway, the plane; the bridge deck and rails; the post box;
+  the church, the hospital, the Northward and the N.C.'s stacks as backdrop.
+- **Collision:** every building and block is solid, the water is solid except the bridge deck and the float, and the
+  play area's edge stops Owen. South of Third only Cushman's lots are play space.
+- **Flat for now:** Owen walks at y 0. The grade, the bank's slope, the gangway's drop and the bridge's crown are drawn
+  flat; the y values in the spawn table are kept for the pass that adds them.
+- **The prologue walks it.** The Silver Pan's door opens onto Second at `secondAve`, and Owen walks the night leg to
+  the boarding house door, which leads up to his room. After the letter he comes out at `boardingHouse` and walks the
+  morning leg to the float, where the dock's menu opens. The waypoints are the route table's, moved off the walls by
+  Owen's width.
+- **Doors:** a door opens when the story is at the place behind it (the Silver Pan, Owen's room, the float). The land
+  office is locked through the prologue and says so; its two floors are not built in this pass.
+- **Not yet:** the navmesh for NPCs, natural out-of-bounds edges (today the play area's edge is a plain stop), the
+  Silver Pan's side door, preloading interiors near their doors, LODs, the skyline shell, and the flood variant.
 
 ## The flood (August 1967)
 

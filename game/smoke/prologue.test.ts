@@ -12,6 +12,7 @@ import { MB, breaches, parseBudgets, perfMarkdown, summarize } from './budget.ts
 import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
 import { starts } from './starts.ts'
+import { legs } from '../src/downtown.ts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright') as typeof import('playwright')
@@ -259,6 +260,12 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
 
   await walk(page, [[0, 4.2]], true)
   await page.keyboard.press('e')
+  assert.equal((await game(page)).space, 'downtown')
+  await capture(page, 'downtown')
+  await tour(page, [33, 50.5], [40, 50.5])
+  await walk(page, legs[0]!.route, true)
+  await aim(page, Math.PI, 0)
+  await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'room')
   await snap(page, '05-room', 10)
   await tour(page, [0, 2], [1.6, -0.8])
@@ -267,6 +274,11 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await capture(page, 'letter')
   await page.keyboard.press('1')
   assert.equal((await game(page)).story.scene, 'p_dock')
+  assert.equal((await game(page)).space, 'downtown')
+  await walk(page, legs[1]!.route, true)
+  await aim(page, Math.PI, 0)
+  await page.keyboard.press('e')
+  assert.equal((await game(page)).panel?.title, 'Owen: The Float Dock')
   await snap(page, '07-dock')
   await page.keyboard.press('1')
   assert.equal((await game(page)).space, 'camp')
