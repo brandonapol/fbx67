@@ -290,7 +290,7 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'boarding')
   await snap(page, '05-hall', 10)
-  await capture(page, 'hall')
+  await capture(page, 'parlor')
   await tour(page, [0, 6.2], [0, 1.5])
   await walk(page, HALL)
   await aim(page, Math.PI, 0)
