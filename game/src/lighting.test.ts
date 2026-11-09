@@ -74,9 +74,10 @@ test('the sky warms toward the sun and holds the fog color below the horizon', (
 })
 
 // A brightness of 0 is a black frame: PlayCanvas grades in HDR with brightness as a multiplier.
-test('every grade keeps the frame: brightness, contrast and saturation are multipliers near 1', () => {
+test('every grade keeps the frame: brightness and contrast near 1, saturation pulled down but not gray', () => {
   Object.entries(grades).forEach(([name, g]) => {
-    ;[g.brightness, g.contrast, g.saturation].forEach((v) => assert.ok(v >= 0.6 && v <= 1.4, `${name}: ${v}`))
+    ;[g.brightness, g.contrast].forEach((v) => assert.ok(v >= 0.6 && v <= 1.4, `${name}: ${v}`))
+    assert.ok(g.saturation >= 0.4 && g.saturation <= 1, `${name} saturation ${g.saturation}`)
     assert.ok(g.vignette >= 0 && g.vignette <= 0.6, `${name} vignette ${g.vignette}`)
   })
 })

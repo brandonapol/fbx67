@@ -42,16 +42,16 @@ export const grades: Readonly<Record<Lighting['grade'], Grade>> = {
   // Clean: rose-gold, lifted and soft.
   alpenglow: { brightness: 1.05, contrast: 0.98, saturation: 0.95, tint: '#fff0ea', vignette: 0.2 },
   // Strained: cold and flattened.
-  blueHour: { brightness: 0.92, contrast: 1.06, saturation: 0.72, tint: '#dde6ff', vignette: 0.35 },
+  blueHour: { brightness: 1, contrast: 1, saturation: 0.72, tint: '#dde6ff', vignette: 0.35 },
   // Danger: sodium amber, crushed and close.
-  sodium: { brightness: 0.85, contrast: 1.14, saturation: 0.62, tint: '#ffe2bf', vignette: 0.5 },
+  sodium: { brightness: 0.7, contrast: 1, saturation: 0.55, tint: '#ffe8cc', vignette: 0.4 },
 }
 
 // The Prologue, July at 11 pm: the sun north-northwest, its disc just up (the stated cheat in docs/art/README.md).
 const summer: Lighting = {
   grade: 'summer',
   sky: { zenith: '#8592b4', horizon: '#7d8fb8', sunward: '#f3b98a' },
-  ambient: '#5f5a66',
+  ambient: '#a09cae',
   sun: '#ffc48a',
   sunIntensity: 2.4,
   sunAzimuth: 340,
@@ -82,7 +82,7 @@ const flood: Readonly<Record<Band, Lighting>> = {
   blueHour: {
     grade: 'blueHour',
     sky: { zenith: '#2f3d6b', horizon: '#6d7fae', sunward: '#6d7fae' },
-    ambient: '#4a5680',
+    ambient: '#9aa6d0',
     sun: '#8b9ac4',
     sunIntensity: 0.35,
     sunAzimuth: 200,
@@ -96,7 +96,7 @@ const flood: Readonly<Record<Band, Lighting>> = {
   sodium: {
     grade: 'sodium',
     sky: { zenith: '#1a1a20', horizon: '#3a3026', sunward: '#3a3026' },
-    ambient: '#2a2622',
+    ambient: '#a8947a',
     sun: '#8a6f50',
     sunIntensity: 0.15,
     sunAzimuth: 200,
@@ -135,10 +135,14 @@ const outdoors = (space: SpaceId, season: Season, weather: Weather): Lighting =>
   return key && at ? { ...base, lamp: { color: key, intensity: band === 'sodium' ? 2.6 : 1.8, range: 16, at } } : base
 }
 
+// The story backdrop belongs to no place: a slate floor fading into slate, lit only enough to read as a room.
+const STORY = { fog: '#2a2e38', fogStart: 0, fogEnd: 16 } as const
+
 export const lighting = (space: SpaceId, season: Season, weather: Weather): Lighting => {
   const base = outdoors(space, season, weather)
   const lamp = indoorLamp[space]
-  return lamp ? { ...base, ...INDOOR, lamp } : base
+  if (!lamp) return base
+  return { ...base, ...INDOOR, ...(space === 'story' ? STORY : {}), lamp }
 }
 
 // The unit vector toward the sun in world space (x east, y up, z south).
