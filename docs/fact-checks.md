@@ -751,6 +751,10 @@ Ordered by impact.
 - When the Chena Hot Springs Road was open to winter traffic and when Birch Hill cemetery opened its present layout
   (item 57): Fairbanks North Star Borough and state highway histories.
 - Exact Dec 12 1967 sunrise, sunset and temperature (item 54): Fairbanks Daily News-Miner weather table.
+- How a Nenana family in town for the hospital should appear, and what they would say to a white surveyor (item 59):
+  consultants.
+- Whether 1967 gravel on state land north of town was leased or sold as material sites (item 62): Alaska Division of
+  Lands records.
 
 ## Engine look checks (issue #32)
 
@@ -1071,3 +1075,71 @@ sling.
 
 **Recommended change.** None required. **Proposal:** add one line of ice fog and a row of cords running to idling
 or parked cars. Name St. Joseph's as item 16 recommends.
+
+## The prologue's town (issue #45)
+
+Ambient lines in `text-game/src/ambient/prologueTown.ts`, 14 and 15 July 1967. None of these was researched for this
+pass; each is general knowledge, unchecked, and rated against the accuracy bar in `design.md`.
+
+### 59. A Lower Tanana family from Nenana at St. Joseph's
+
+**For consultant review.**
+
+**Claim.** A mother, father and daughter from Nenana stand at the foot of the Cushman Street bridge in the morning,
+on their way across to St. Joseph's to see the mother's mother, who hurt her hip at fish camp. They came up on the
+train. The father needs a shear pin and a spark plug for his outboard ("kicker") from the N.C. because it threw a
+pin in the slough. Asked about the survey, the mother says surveyors drove a pipe in the ground by their smokehouse
+two summers back and nobody asked. Asked about the land office, she says her uncle filed for his allotment before
+the war and was told twice it was lost. The sisters at the hospital want her mother in bed.
+
+**Verdict.** Plausible. The details are ours.
+
+**Evidence.** Item 36 covers village families in town in July on errands and at the hospital, and asks that they
+not be bar color; they appear only on the morning street. Nenana is a Lower Tanana community on the Alaska Railroad
+and the Tanana (design.md); the train to Fairbanks in 1967 is general knowledge, unchecked. St. Joseph's was run
+by Catholic sisters (item 16; the order is unchecked). "Kicker" for an outboard and fish wheels on the Tanana in
+July are general knowledge, unchecked. Lost and stalled allotment applications are the design's historical backbone
+(item 2). The family is from Nenana, not Minto, on purpose: they are not Eli and Lucy's relatives and say nothing
+about the lower Chatanika.
+
+**Recommended change.** None until consultants review. Ask: whether a Nenana family would come by train or by
+river; whether the smokehouse survey pipe and the twice-lost allotment are right to put in a stranger's mouth on a
+street corner, or too much to tell a white surveyor; how the daughter's wish to see the Centennial should read; and
+whether the family should be from Minto, Nenana or unnamed.
+
+### 60. Munitions storage "igloos" and a count that comes back initialed
+
+**Claim.** An Eielson airman says he counted "the igloo" three times and came up short, and the sheet came back
+initialed as if it were right (thread `shortCount`).
+
+**Verdict.** Plausible. Earth-covered munitions bunkers are called igloos on Air Force bases (general knowledge,
+unchecked for Eielson in 1967). Items 5 and 49 cover who held demolition stores and the sign-out practice.
+
+**Recommended change.** None. If item 5's EOD wording is adopted, the airman can count "the EOD igloo".
+
+### 61. Period texture in the Silver Pan and on the street
+
+**Claim.** Rainier, Olympia and Lucky Lager behind the bar; a Fairbanks Daily News-Miner for a dime from a street
+kid; a cab at twelve dollars to Eielson and four to College; reindeer sausage at the Northern Lights; a retired
+couple from Dayton up the Alcan in July for the Centennial, which the town calls the Centennial (item 31); a
+bartender whose uncle's bar went down with Anchorage's Fourth Avenue in the 1964 earthquake; an old placer miner
+from Cleary Creek; a man fishing for grayling off the bank by the float dock.
+
+**Verdict.** Plausible. The Fourth Avenue collapse in 1964 is well known. Beer brands, the paper's price, cab fares,
+reindeer sausage on a 1967 menu, the Alcan's gravel and grayling in the Chena downtown are general knowledge,
+unchecked. Placer mining on Cleary Creek north of town is general knowledge, unchecked for 1967.
+
+**Recommended change.** None. Check the News-Miner's 1967 price and a 1967 cab fare to Eielson if a local objects.
+
+### 62. Gravel leases north of town, and rain in July
+
+**Claim.** A bush pilot says a man at the Phillips Field counter is paying new cash for gravel leases "up
+north" and paid to be flown over the land twice without landing (thread `gravelCash`). Several people say July is
+wet; a railroad brakeman says the track was soft by Nenana after three days of rain; a dock hand says the river is up
+four inches since Sunday.
+
+**Verdict.** Plausible. Whether 1967 gravel on state land was leased, sold as material sites or staked is unchecked;
+a pilot would not know the difference. The summer of 1967 was wet before the August flood (item 34 and the flood
+record, general knowledge); daily July figures are unchecked.
+
+**Recommended change.** None. The pilots must not connect the gravel to a road or to the North Slope (the oil rule).
