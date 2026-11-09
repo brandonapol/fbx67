@@ -19,7 +19,18 @@ export type Grade = Readonly<{ brightness: number; contrast: number; saturation:
 
 export type Sky = Readonly<{ zenith: string; horizon: string; sunward: string }>
 
-export type Lamp = Readonly<{ color: string; intensity: number; range: number; at: readonly [number, number, number] }>
+// halo: the diameter in meters of the glow a lamp throws into haze, when the air holds enough to show one.
+export type Lamp = Readonly<{
+  color: string
+  intensity: number
+  range: number
+  at: readonly [number, number, number]
+  halo?: number
+}>
+
+// The seasons the engine has light for: the spaces' own (levels.ts) and deep winter, which only the story's clock
+// reaches (Act 3, December to February).
+export type LitSeason = Season | 'winter'
 
 export type Lighting = Readonly<{
   grade: Band | 'summer'
@@ -38,6 +49,9 @@ export type Lighting = Readonly<{
   fogEnd: number
   lamp?: Lamp
   rain: boolean
+  // Deep winter outdoors: breath shows as fog at every exhale, and snow lies on roofs and spruce boughs.
+  breath: boolean
+  snowLoad: boolean
 }>
 
 export const grades: Readonly<Record<Lighting['grade'], Grade>> = {
@@ -66,6 +80,8 @@ const summer: Lighting = {
   fogStart: 30,
   fogEnd: 220,
   rain: false,
+  breath: false,
+  snowLoad: false,
 }
 
 // Act 1, the flood (August 1967, overcast): each band's key and palette from the band table, sun none.
@@ -83,6 +99,8 @@ const flood: Readonly<Record<Band, Lighting>> = {
     fogStart: 10,
     fogEnd: 120,
     rain: true,
+    breath: false,
+    snowLoad: false,
   },
   blueHour: {
     grade: 'blueHour',
@@ -97,6 +115,8 @@ const flood: Readonly<Record<Band, Lighting>> = {
     fogStart: 8,
     fogEnd: 80,
     rain: true,
+    breath: false,
+    snowLoad: false,
   },
   sodium: {
     grade: 'sodium',
@@ -111,6 +131,8 @@ const flood: Readonly<Record<Band, Lighting>> = {
     fogStart: 4,
     fogEnd: 40,
     rain: true,
+    breath: false,
+    snowLoad: false,
   },
 }
 
@@ -137,11 +159,31 @@ const INDOOR = {
   ambient: '#a49482',
   sunIntensity: summer.sunIntensity * 0.5,
   rain: false,
+  breath: false,
+  snowLoad: false,
 } as const
 
 // The midnight-sun cheat (docs/art/README.md, Light): the Prologue text keeps the sun up at eleven, so while the real
 // sun is below this elevation the disc is held here, in the north-northwest arc the rule gives for 11 pm.
 export const MIDNIGHT_SUN = { elevation: 3, azimuth: [330, 350] } as const
+
+// Act 3, deep winter (docs/art/README.md, "Band by season"): the same band palettes, dry and snowbound. Clean is
+// alpenglow under a sun that barely clears the hills; strained is blue hour with the sun down; danger is sodium in ice
+// fog at forty below, which closes the world to one block.
+const WINTER_FOG: Readonly<Record<Band, readonly [number, number]>> = {
+  alpenglow: [60, 240],
+  blueHour: [30, 160],
+  sodium: [6, 70],
+}
+
+// The clean band's sun: 0 to +12 degrees, azimuth 160-220. Without a clock it sits a little east of south, a few
+// degrees up, as it does near noon in late December.
+export const WINTER_SUN = { elevation: [0, 12], azimuth: [160, 220] } as const
+const WINTER_NOON = { sunAzimuth: 185, sunElevation: 2 } as const
+const WINTER_SUN_INTENSITY = 1.4
+
+// In ice fog each sodium lamp reads as a halo about 4 m across.
+export const ICE_FOG_HALO = 4
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
 
@@ -155,28 +197,46 @@ export const summerSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevatio
   return { sunAzimuth: clamp(signed, lo - 360, hi - 360) + 360, sunElevation: MIDNIGHT_SUN.elevation }
 }
 
-const outdoors = (space: SpaceId, season: Season, weather: Weather, when?: Clock): Lighting => {
+// The winter sun at a clock: the real sun held inside the band's arc, so the clean band always has its low disc.
+export const winterSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevation'> => {
+  const real = sunAt(at)
+  return {
+    sunAzimuth: clamp(real.azimuth, ...WINTER_SUN.azimuth),
+    sunElevation: clamp(real.elevation, ...WINTER_SUN.elevation),
+  }
+}
+
+const winter = (band: Band, when?: Clock): Lighting => {
+  const [fogStart, fogEnd] = WINTER_FOG[band]
+  const base = { ...flood[band], fogStart, fogEnd, rain: false, breath: true, snowLoad: true }
+  if (band !== 'alpenglow') return base
+  return { ...base, sunUp: true, sunIntensity: WINTER_SUN_INTENSITY, ...(when === undefined ? WINTER_NOON : winterSun(when)) }
+}
+
+const outdoors = (space: SpaceId, season: LitSeason, weather: Weather, when?: Clock): Lighting => {
   if (season === 'summer') return when === undefined ? summer : { ...summer, ...summerSun(when) }
   const band = bandOf[weather]
-  const base = flood[band]
+  const base = season === 'winter' ? winter(band, when) : flood[band]
   const key = streetKey[band]
   const at = streetlight[space]
-  return key && at ? { ...base, lamp: { color: key, intensity: band === 'sodium' ? 2.6 : 1.8, range: 16, at } } : base
+  if (!key || !at) return base
+  const halo = season === 'winter' && band === 'sodium' ? { halo: ICE_FOG_HALO } : {}
+  return { ...base, lamp: { color: key, intensity: band === 'sodium' ? 2.6 : 1.8, range: 16, at, ...halo } }
 }
 
 // The story backdrop belongs to no place: a slate floor fading into slate, lit only enough to read as a room.
 const STORY = { fog: '#3a3f4c', fogStart: 0, fogEnd: 12, ambient: '#8a93a6' } as const
 
-export const lighting = (space: SpaceId, season: Season, weather: Weather, when?: Clock): Lighting => {
+export const lighting = (space: SpaceId, season: LitSeason, weather: Weather, when?: Clock): Lighting => {
   const base = outdoors(space, season, weather, when)
   const lamp = indoorLamp[space]
   if (!lamp) return base
   return { ...base, ...INDOOR, ...(space === 'story' ? STORY : {}), lamp }
 }
 
-const isLit = (x: StorySeason | undefined): x is Season => x === 'summer' || x === 'flood'
+const isLit = (x: StorySeason | undefined): x is LitSeason => x === 'summer' || x === 'flood' || x === 'winter'
 
-export type Time = Readonly<{ season: Season; clock?: Clock }>
+export type Time = Readonly<{ season: LitSeason; clock?: Clock }>
 
 // The scene whose hour a space shows: the current one when it is set here (or the space spans places, as downtown
 // does); once the story has moved on to another place, the last scene on the path that was set here. Hiding at the
@@ -187,7 +247,7 @@ const sceneHere = (space: Space, s: State, path: readonly number[]): State | und
     : replay(path).findLast((x) => place(x) === space.place)
 
 // When a space is lit: the story's clock, and the season from it (docs/story-api.md, "Where, when and what next").
-// A scene with no clock, or a season the engine has no light for yet (freeze-up, winter, breakup), keeps the space's
+// A scene with no clock, or a season the engine has no light for yet (freeze-up, breakup), keeps the space's
 // own. The story backdrop belongs to no place and no hour, so it keeps its own too.
 export const timeOf = (space: Space, s: State, path: readonly number[] = []): Time => {
   const here = space.id === 'story' ? undefined : sceneHere(space, s, path)

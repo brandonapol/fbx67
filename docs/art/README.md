@@ -131,8 +131,9 @@ owner's alpenglow photo is not in the repo. They are to be resampled from the ph
 
 At danger, sight lines collapse to one block: nothing past **70 m** is visible, and each sodium lamp reads as a halo
 about **4 m** across. The palettes above are written for winter (Acts 2-3); the flood and breakup rows below reuse
-them for their keys until #54 resamples them. `game/src/lighting.ts` carries the summer rules and the Act 1 flood
-row today, and `game/src/lighting.test.ts` holds it to these tables; the other rows land with their spaces.
+them for their keys until #54 resamples them. `game/src/lighting.ts` carries the summer rules, the Act 1 flood row
+and the Act 3 winter row today (with breath fog, snow load and the 4 m ice-fog halo as flags render.ts reads), and
+`game/src/lighting.test.ts` holds it to these tables; the other rows land with their spaces.
 
 **Band by season.** Each cell is the key light, the sun's elevation and azimuth (or "none"), and the fog range. When
 the prose elsewhere and this table disagree, this table wins. The Prologue (July) is not banded; it uses the summer
