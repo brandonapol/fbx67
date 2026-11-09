@@ -97,6 +97,29 @@ The lines live in `text-game/src/queries.ts` as a `Record<Evidence, ...>`, so ad
 line fails the typecheck, and a unit test (`text-game/src/queries.test.ts`) checks the lines against the oil rule. The
 in-game journal (#51) reads this query as its source.
 
+### Ambient talk
+
+The people Owen passes, and what they say, are story data in `text-game/src/ambient/`: `format.ts` is the shape,
+`select.ts` the queries, `lint.ts` the rules. Each `Ambient` (a person or a thing, like the jukebox) has a name from
+`names.ts` or a role name ("the airman at the jukebox"), the `Window`s of place and story clock it is around for, and
+its lines keyed by trigger: `greet`, `talk`, `bark`, `use`, `askAbout:<topic>` (the survey, Curly, the weather, the land
+office) and `react:<event>` (bump, run, stare). A `Bit` is one exchange of one to three lines, with an optional reply
+Owen can give, and may read story state through `when` (for example `boughtRound(state)`). A `Thread` is an overheard
+exchange between ambient people, played in order.
+
+| Query | Returns |
+|---|---|
+| `present(state, cast)` | who is at the story's place and hour |
+| `pool(state, ambient, trigger)` | their lines for a trigger whose `when` holds |
+| `topics(state, ambient)` | the topics they have an `askAbout` line for |
+| `say(state, ambient, trigger, spent)` | the next line not yet said, and the new `spent`; a pool starts over once every line in it has been said |
+
+Ambient talk never changes `State`: none of these returns one, and a unit test checks it. An interaction that must
+matter is a menu note, with its field in `state.ts`. `lintAmbient(cast, threads, source)` fails on a placeholder name in
+the source, a speaker name that is neither in `names.ts` nor a role name, the oil rule before Act 4, an unfilled token
+(`undefined`, `${`, `TODO`), an empty line or one over 120 characters, and a line that is never heard at any place and
+time the story reaches. It runs in `make check/text/lint`.
+
 The game never changes story facts directly. It only sends notes (Rule 1) and asks questions (Rule 5).
 
 ## What this means for the text build

@@ -79,3 +79,6 @@ export const notebook = (s: State): readonly NotebookEntry[] => {
   const who = pov(s)
   return s.evidence.map((id) => ({ id, line: who === 'lucy' ? (lines[id].lucy ?? lines[id].wade) : lines[id].wade }))
 }
+
+// Owen bought the table a round. State doesn't record it; the scene it leads to does, so this holds only there.
+export const boughtRound = (s: State): boolean => s.scene === 'p_talk_round'

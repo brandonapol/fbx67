@@ -1,5 +1,5 @@
 // The story rules a machine can check. One word list, shared by the scene lint (storyLint.test.ts) and the
-// ambient-line lint planned in #42.
+// ambient-line lint (ambient/lint.ts).
 
 // The oil rule: no oil rush until Prudhoe in Act 4. "oil" on its own ("oil-soaked rags") is fine.
 export const OIL_PHRASES: readonly RegExp[] = [/\boil (rush|boom|strike|money)\b/i, /\bPrudhoe\b/i]
