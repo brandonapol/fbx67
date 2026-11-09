@@ -1,5 +1,6 @@
 import { argv, exit } from 'node:process'
-import { allSceneIds, choicesOf, choose, render } from './engine.ts'
+import { allSceneIds, choicesOf, choose, render, sceneOf } from './engine.ts'
+import { backwardClock } from './clock.ts'
 import { initialState } from './state.ts'
 import { ending, type Ending } from './logic.ts'
 import { canonical } from './liveness.ts'
@@ -93,6 +94,8 @@ const visit = (g: Graph, id: number, s: State): void => {
   choices.forEach((_, i) => {
     try {
       const next = canonical(choose(s, i + 1))
+      const backward = backwardClock(sceneOf(s), sceneOf(next))
+      if (backward) g.errors.push(`${backward} (path ${[...trailOf(g, id), i + 1].join(',')})`)
       const [child, fresh] = intern(g, packedKey(next), id, i + 1)
       g.edges[id].push(child)
       if (fresh) visit(g, child, next)
@@ -189,7 +192,7 @@ console.log(
 )
 
 const failures = [
-  ...(g.errors.length ? ['choice or text errors'] : []),
+  ...(g.errors.length ? ['choice, text or clock errors'] : []),
   ...(unreachable.length ? ['unreachable scenes'] : []),
   ...tallies.filter((t) => t.mergedStates === 0).map((t) => `ending ${t.e} unreachable`),
 ]
