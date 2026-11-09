@@ -33,8 +33,20 @@ export type Layer =
   | Readonly<{ kind: 'idle'; bus: Bus; gain: number; at: Vec; rpm: number }>
   | Readonly<{ kind: 'hum'; bus: Bus; gain: number; at?: Vec; buzz: number }>
   | Readonly<{ kind: 'guitar'; bus: Bus; gain: number }>
+  | Readonly<{ kind: 'outboard'; bus: Bus; gain: number; at: Vec; rpm: number }>
 
 export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'glug' | 'door' | 'raven' | 'perk'
+  | 'sandbag'
+  | 'shout'
+  | 'drip'
+  | 'shove'
+  | 'stove'
+  | 'bottle'
+  | 'antlers'
+  | 'roar'
+  | 'knock'
+  | 'keys'
+  | 'boots'
 
 export type Condition = 'writing' | 'refueling'
 
@@ -170,6 +182,81 @@ const hall: Soundscape = {
 }
 
 export const act2Soundscapes: Readonly<Record<Act2Space, Soundscape>> = { town, base, hotel, hall }
+
+export type Act1Space = 'line' | 'hospital' | 'barfight' | 'cell'
+
+export const RIVER_Z = -7
+export const BOATS_AT: readonly Vec[] = [vec(-7, RIVER_Z - 2), vec(6, RIVER_Z - 4)]
+export const LINE_AT = vec(0, -3)
+export const DRIPS_AT: readonly Vec[] = [vec(-2.5, -4), vec(1.8, 2.5), vec(0.4, 7)]
+export const RACK_AT = vec(-6.5, 2.4)
+export const RADIATOR_AT = vec(-1.8, -1.6)
+export const CORRIDOR_AT = vec(0, 4)
+
+const rain = (gain: number): readonly Layer[] => [
+  { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain, wobble: { rate: 0.09, depth: 0.6, on: 'gain' } },
+  { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 4200, q: 0.5, gain: gain * 0.35, wobble: { rate: 0.23, depth: 0.6, on: 'gain' } },
+]
+
+const line: Soundscape = {
+  ground: {
+    surface: 'mud',
+    regions: [{ box: { x: 0, z: RIVER_Z, w: 40, d: 6 }, surface: 'water' }],
+  },
+  layers: [
+    ...rain(0.5),
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 480, gain: 0.3, at: vec(0, RIVER_Z), alongX: true, wobble: { rate: 0.17, depth: 0.4, on: 'freq' } },
+    ...BOATS_AT.map((at, i): Layer => ({ kind: 'outboard', bus: 'ambience', gain: 0.12, at, rpm: 4200 + 700 * i })),
+  ],
+  events: [
+    { spot: 'sandbag', bus: 'sfx', every: [0.9, 3], at: LINE_AT, spread: 6 },
+    { spot: 'shout', bus: 'voice', every: [3, 9], at: vec(0, RIVER_Z), spread: 9 },
+  ],
+}
+
+const hospital: Soundscape = {
+  ground: { surface: 'concrete', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 100, gain: 0.28 },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 1200, gain: 0.03, wobble: { rate: 0.08, depth: 0.7, on: 'gain' } },
+    { kind: 'hum', bus: 'ambience', gain: 0.04, buzz: 0.2 },
+  ],
+  events: [
+    ...DRIPS_AT.map((at): Event => ({ spot: 'drip', bus: 'ambience', every: [0.7, 2.6], at, spread: 0.05 })),
+    { spot: 'door', bus: 'ambience', every: [25, 60], at: vec(0, -12), spread: 2 },
+  ],
+}
+
+const barfight: Soundscape = {
+  ground: { surface: 'mud', regions: [] },
+  layers: [
+    { kind: 'walla', bus: 'voice', gain: 1.8, voices: 6 },
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 90, gain: 0.2, at: STOVE_AT, wobble: { rate: 0.3, depth: 0.2, on: 'gain' } },
+  ],
+  events: [
+    { spot: 'roar', bus: 'voice', every: [5, 14], spread: 4 },
+    { spot: 'shove', bus: 'sfx', every: [1.5, 5], spread: 2.5 },
+    { spot: 'stove', bus: 'sfx', every: [9, 22], at: STOVE_AT, spread: 0.3 },
+    { spot: 'bottle', bus: 'sfx', every: [4, 12], at: vec(-1.5, -3.6), spread: 3 },
+    { spot: 'antlers', bus: 'sfx', every: [10, 26], at: RACK_AT, spread: 0.2 },
+    { spot: 'crackle', bus: 'ambience', every: [0.05, 0.6], at: STOVE_AT, spread: 0.2 },
+  ],
+}
+
+const cell: Soundscape = {
+  ground: { surface: 'concrete', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 120, gain: 0.3 },
+    { kind: 'noise', bus: 'ambience', color: 'white', filter: 'highpass', freq: 6000, gain: 0.015, at: RADIATOR_AT, wobble: { rate: 0.05, depth: 0.8, on: 'gain' } },
+  ],
+  events: [
+    { spot: 'knock', bus: 'ambience', every: [4, 15], at: RADIATOR_AT, spread: 0.1 },
+    { spot: 'keys', bus: 'sfx', every: [18, 45], at: CORRIDOR_AT, spread: 3 },
+    { spot: 'boots', bus: 'sfx', every: [20, 50], at: CORRIDOR_AT, spread: 4 },
+  ],
+}
+
+export const act1Soundscapes: Readonly<Record<Act1Space, Soundscape>> = { line, hospital, barfight, cell }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 

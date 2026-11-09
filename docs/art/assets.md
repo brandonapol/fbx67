@@ -69,3 +69,8 @@ character by `game/tools/characters.ts`.
 | `drink` | Stand_and_Drink (library #342) | `fa54a431-1e37-4c87-936c-286319bf1ff2` |
 | `talk` | Talk_with_Right_Hand_Open (library #314) | `26dc774f-7904-4612-a6ed-df62f387b243` |
 | `wave` | Big_Wave_Hello (library #28) | `ee5f7e1a-ec2a-4baf-9459-7569a475e626` |
+
+## Sound
+
+Every sound is procedural (ours, no third-party recordings) and ships 0 bytes of audio files. The per-sound log, with
+where each plays and its license, is [`docs/audio/sources.md`](../audio/sources.md).

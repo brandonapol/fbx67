@@ -8,6 +8,7 @@ import { FREEZEUP_F, act2Soundscapes } from './soundscape.ts'
 import { footstep, layerVoice, makeBuffers, mulberry, spot, strumAt } from './synth.ts'
 import { createAudio } from './audio.ts'
 import { vec } from './world.ts'
+import { fakeContext } from './fake-audio.ts'
 
 const full: Volumes = { ambience: 1, sfx: 1, voice: 1, music: 1 }
 
@@ -88,49 +89,6 @@ test("Wade's guitar alternates bass and strum and loops its changes", () => {
   assert.notEqual(strumAt(0).bass, strumAt(2).bass)
   assert.deepEqual(strumAt(16), strumAt(0))
 })
-
-type Scheduled = { t: number[] }
-
-const fakeContext = (): { ctx: BaseAudioContext; times: Scheduled } => {
-  const times: Scheduled = { t: [] }
-  const param = (): AudioParam => {
-    const p = {
-      value: 0,
-      setValueAtTime: (v: number, t: number) => (times.t.push(v, t), p),
-      linearRampToValueAtTime: (v: number, t: number) => (times.t.push(v, t), p),
-      exponentialRampToValueAtTime: (v: number, t: number) => (times.t.push(v, t), p),
-      setTargetAtTime: (v: number, t: number) => (times.t.push(v, t), p),
-      cancelScheduledValues: () => p,
-    }
-    return p as unknown as AudioParam
-  }
-  const node = (): AudioNode => {
-    const n: Record<string, unknown> = {
-      connect: (d: AudioNode) => d,
-      disconnect: () => undefined,
-      start: (t = 0, o = 0) => void times.t.push(t, o),
-      stop: (t = 0) => void times.t.push(t),
-      gain: param(),
-      frequency: param(),
-      Q: param(),
-      offset: param(),
-      type: '',
-      buffer: null,
-      loop: false,
-    }
-    return n as unknown as AudioNode
-  }
-  const ctx = {
-    currentTime: 1,
-    sampleRate: 8000,
-    createGain: node,
-    createOscillator: node,
-    createBiquadFilter: node,
-    createBufferSource: node,
-    createBuffer: () => ({ copyToChannel: () => undefined }),
-  }
-  return { ctx: ctx as unknown as BaseAudioContext, times }
-}
 
 test('every Act 2 layer, spot and the snow step build and schedule finite times', () => {
   const { ctx, times } = fakeContext()
