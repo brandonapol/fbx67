@@ -6,7 +6,7 @@ import { replay } from '../../text-game/src/engine.ts'
 import { place } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, interact, press, start } from './prologue.ts'
-import { leaveBar, talk, walk, walkLeg } from './drive.ts'
+import { leaveBar, talk, toBed, upstairs, walk, walkLeg, writeLetter } from './drive.ts'
 import { BRIDGE, PLAY, buildings, doors, gaps, legs, pieces, placements, spawnAt, spawns, toWorld, yawOf } from './downtown.ts'
 import { spaces, solids } from './levels.ts'
 import { blocked, distance, hits, vec } from './world.ts'
@@ -146,19 +146,19 @@ test('the bar door opens onto Second Avenue at the night walk spawn, facing east
   assert.equal(g.panel, undefined)
 })
 
-test('the night walk runs the town map route through the collision to the boarding house door, which leads up to the room', () => {
+test('the night walk runs the town map route through the collision to the boarding house door, which opens on the hall', () => {
   const g = night()
   const door = walk(g, legs[0]!.route)
   assert.equal(focus(door)?.id, 'boardingHouse')
   const room = interact(door)
-  assert.equal(room.space, 'room')
+  assert.equal(room.space, 'boarding')
   assert.equal(room.story.scene, 'p_letter')
   assert.deepEqual(room.path, g.path)
 })
 
 test('the morning walk runs from the boarding house past the post box and over First to the float, where the dock menu opens', () => {
-  const room = walkLeg(night())
-  const morning = press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep')
+  const room = upstairs(walkLeg(night()))
+  const morning = toBed(writeLetter(room))
   const s = spawnAt('boardingHouse')
   assert.deepEqual(morning.pos, vec(s.x, s.z))
   assert.equal(morning.space, 'downtown')

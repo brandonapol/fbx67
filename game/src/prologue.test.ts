@@ -6,7 +6,7 @@ import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
 import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, inWorld, playerBody, playerMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
-import { DT, back, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toRoom, walk, walkLeg } from './drive.ts'
+import { DT, back, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toBed, toRoom, walk, walkLeg, writeLetter } from './drive.ts'
 import { angleBetween, length, vec } from './world.ts'
 import { bodies, clipFor } from './cast.ts'
 import { spaces } from './levels.ts'
@@ -32,7 +32,7 @@ talks.forEach((who, ti) =>
 const atCamp = () => {
   const bar = talk(start(), 'texas')
   const room = toRoom(bar)
-  return press(walkLeg(press(interact(walk(room, [[1.6, -0.8]])), 'note:sleep')), 'note:fly')
+  return press(walkLeg(toBed(writeLetter(room))), 'note:fly')
 }
 
 test('the door only opens after a conversation, and Hank only sells the round before one', () => {
@@ -44,11 +44,12 @@ test('the door only opens after a conversation, and Hank only sells the round be
 
 test('the letter is read in the room, the walk to the dock follows, and no hiding note is sent before the camp', () => {
   const room = toRoom(talk(start(), 'munitions'))
-  const desk = interact(walk(room, [[1.6, -0.8]]))
+  const desk = interact(walk(room, [[0.6, -1.0]]))
   assert.equal(desk.panel?.title, 'Owen: A Letter to Lucy')
-  assert.deepEqual(desk.panel?.buttons, [{ id: 'note:sleep', label: menu(desk.story).options[0].label }])
   assert.equal(desk.story.owenCache, undefined)
-  const morning = press(desk, 'note:sleep')
+  const folded = writeLetter(room)
+  assert.equal(label(folded, focus(walk(folded, [[-0.6, 0.6]]))!), menu(desk.story).options[0].label)
+  const morning = toBed(folded)
   assert.equal(morning.space, 'downtown')
   assert.equal(morning.panel, undefined)
   const dock = walkLeg(morning)
@@ -283,7 +284,7 @@ test('Continue as Wade on the end card puts Wade on the sandbag line, with no me
 })
 
 test('the float dock, a prologue scene with no space, is the end of the morning walk: its menu opens on the float', () => {
-  const morning = press(interact(walk(toRoom(talk(start(), 'texas')), [[1.6, -0.8]])), 'note:sleep')
+  const morning = toBed(writeLetter(toRoom(talk(start(), 'texas'))))
   assert.equal(morning.story.scene, 'p_dock')
   assert.equal(morning.space, 'downtown')
   assert.equal(morning.panel, undefined)

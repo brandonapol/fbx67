@@ -1,10 +1,12 @@
 import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu, place, pov, send } from '../../text-game/src/story.ts'
+import { prologueThreads, prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
+import { say, within } from '../../text-game/src/ambient/select.ts'
 import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
-import type { SpaceId } from './levels.ts'
+import type { Letter, SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 
@@ -24,7 +26,7 @@ export const TURN_GO = 0.5
 
 export type Button = Readonly<{ id: string; label: string }>
 
-export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end' | 'error' | 'locked'; title: string; text: string; buttons: readonly Button[] }>
+export type Panel = Readonly<{ kind: 'story' | 'talk' | 'letter' | 'busted' | 'end' | 'error' | 'locked'; title: string; text: string; buttons: readonly Button[] }>
 
 export type Holding = Readonly<{ id: string; note?: string; progress: number; time: number }>
 
@@ -42,6 +44,9 @@ export type Game = Readonly<{
   hidden?: CacheSpot
   busts: number
   handoff?: true
+  // The letter at the desk: characters typed so far while its panel is open, and folded once it is by the door.
+  typed?: number
+  letter?: 'folded'
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -86,6 +91,8 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   t: 0,
   panel: undefined,
   holding: undefined,
+  typed: undefined,
+  letter: undefined,
 })
 
 export const start = (): Game => ({
@@ -133,6 +140,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'flood') return g.story.scene === 'p_end'
     if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
     if (g.space === 'line') return offers(g, 'findEli')
+    if (g.space === 'room') return i.id === 'bed' ? g.letter === 'folded' : g.letter === undefined
     return true
   })
 
@@ -188,6 +196,54 @@ const endCard: Panel = {
   buttons: [{ id: 'continue', label: 'Continue as Wade' }],
 }
 
+// The landlady, from the prologue town's ambient data: her greeting for this hour, and on the night a man came asking
+// which room was Owen's, that exchange with the boarder, word for word.
+const townsperson = (id: string) => {
+  const p = prologueTown.find((a) => a.id === id)
+  if (!p) throw new Error(`no townsperson ${id}`)
+  return p
+}
+
+const capital = (t: string): string => t.charAt(0).toUpperCase() + t.slice(1)
+
+export const landladyPanel = (story: State): Panel => {
+  const her = townsperson('landlady')
+  const greet = say(story, her, 'greet', {})?.bit.lines.map((l) => l.text).join(' ') ?? ''
+  const thread = prologueThreads.filter((t) => t.id === 'whichRoom' && within(story)(t.at))
+  const overheard = thread.flatMap((t) => t.lines.map((l) => `${capital(townsperson(l.who).name)}: ${l.text}`))
+  return { kind: 'talk', title: capital(her.name), text: [greet, ...overheard].filter(Boolean).join('\n\n'), buttons: [close('Go on up.')] }
+}
+
+// The letter to Lucy is the room scene's text, typed out at TYPE_RATE characters a second.
+export const TYPE_RATE = 60
+
+const letterLength = (g: Game): number => menu(g.story).text.length
+
+export const typing = (g: Game): boolean => g.panel?.kind === 'letter' && (g.typed ?? 0) < letterLength(g)
+
+const letterPanel = (story: State, done: boolean): Panel => {
+  const m = menu(story)
+  return {
+    kind: 'letter',
+    title: m.title,
+    text: m.text,
+    buttons: [done ? { id: 'fold', label: 'Fold it and leave it by the door' } : { id: 'finish', label: 'Finish the letter' }],
+  }
+}
+
+const typed = (g: Game, n: number): Game => {
+  const all = letterLength(g)
+  const at = Math.min(all, n)
+  return at < all ? { ...g, typed: at } : { ...g, typed: at, panel: letterPanel(g.story, true) }
+}
+
+// The panel's text as shown: the letter as far as it is typed, any other panel whole.
+export const panelText = (g: Game): string =>
+  g.panel?.kind === 'letter' ? g.panel.text.slice(0, Math.floor(g.typed ?? 0)) : (g.panel?.text ?? '')
+
+// Whether a prop that shows the letter's state is drawn.
+export const shows = (g: Game, w: Letter | undefined): boolean => w === undefined || (w === 'folded') === (g.letter === 'folded')
+
 export const interact = (g: Game): Game => {
   const target = focus(g)
   if (!target) return g
@@ -198,11 +254,18 @@ export const interact = (g: Game): Game => {
     if (id === 'curly') return { ...g, panel: storyPanel(g.story, [], [close('Back to the table.')]) }
     if (id === 'door' && target.note) return arrive(sendNote(g, target.note))
   }
-  if (g.space === 'room' && id === 'desk') return { ...g, panel: storyPanel(g.story, ['sleep']) }
+  if (g.space === 'boarding') {
+    if (id === 'landlady') return { ...g, panel: landladyPanel(g.story) }
+    if (id === 'stair') return arrive(g)
+  }
+  if (g.space === 'room') {
+    if (id === 'desk') return { ...g, panel: letterPanel(g.story, false), typed: 0 }
+    if (id === 'bed' && target.note) return arrive(sendNote(g, target.note))
+  }
   if (g.space === 'camp' && id === 'plane') return arrive(g)
   if (g.space === 'downtown') {
     const door = doors.find((d) => d.id === id)
-    if (door && doorOpen(g, id)) return arrive(g)
+    if (door && doorOpen(g, id)) return door.via ? enter(g, door.via, spaces[door.via].spawn) : arrive(g)
     if (door?.locked) return { ...g, panel: locked(door.title) }
   }
   if (g.space === 'line' && id === 'woman') return { ...g, panel: storyPanel(g.story, ['findEli', 'stayOnLine'], [close('Keep passing bags.')]) }
@@ -215,6 +278,8 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'retry') return enter(g, g.space)
   if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
+  if (button === 'finish') return typed(g, letterLength(g))
+  if (button === 'fold') return { ...g, panel: undefined, typed: undefined, letter: 'folded' }
   if (button.startsWith('note:')) {
     const next = sendNote(g, button.slice(5))
     return leftPrologue(g.story, next.story) ? { ...next, panel: endCard } : arrive(next)
@@ -273,6 +338,7 @@ const walk = (g: Game, input: Input, dt: number): Game => {
 
 export const tick = (g: Game, input: Input, dt: number): Game => {
   const t = g.t + dt
+  if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   const walked = walk({ ...g, t }, input, dt)
   return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)

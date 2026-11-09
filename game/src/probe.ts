@@ -11,7 +11,8 @@ export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: numbe
 export const poses: Readonly<Record<string, Pose>> = {
   bar: { space: 'bar', pos: vec(0, 3.9), facing: Math.PI, t: 0, shot: { eye: [0, 9.5, 9.5], at: [0, 0.9, 0] } },
   round: { space: 'bar', pos: vec(-1.5, -2.2), facing: Math.PI, t: 0, shot: { eye: [3.5, 5.5, 4.5], at: [-1.5, 1, -2.6] } },
-  letter: { space: 'room', pos: vec(1.6, -0.8), facing: Math.PI, t: 0, shot: { eye: [-1.5, 6.5, 6], at: [0.6, 0.9, -0.6] } },
+  hall: { space: 'boarding', pos: vec(0, 4.5), facing: Math.PI, t: 0, shot: { eye: [0.4, 2.2, 6.4], at: [-3.5, 1.0, 2.6] } },
+  letter: { space: 'room', pos: vec(0.6, -1.0), facing: Math.PI, t: 0, shot: { eye: [-1.8, 2.4, 2.4], at: [0.8, 1.0, -2.4] } },
   hidden: { space: 'camp', pos: vec(1.8, -7.5), facing: Math.PI, t: 1, shot: { eye: [-2, 4.6, -4.4], at: [1.8, 0.6, -8.4] } },
   skiff: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] } },
   // The skiff shot at blue hour and at danger (heat at and past HEAT_LIMIT); 'skiff' itself is alpenglow.
