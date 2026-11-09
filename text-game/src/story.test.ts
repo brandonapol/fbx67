@@ -131,3 +131,35 @@ test('Wade\'s goal on the search names Eli', () => {
   const track = replay([...toFlood, 1]).at(-1)!
   assert.match(goal(track) ?? '', /Find Eli/)
 })
+
+// #205: the barfight move carries state. Shove and rack used to land the same; now Hank remembers each move.
+const barfightAt = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1]
+
+const toSteak = (move: number): State => {
+  const go = (s: State): State =>
+    s.scene === 'a2_steak' ? s : go(s.scene === 'a2_curly' ? send(s, 'steak') : choose(s, 1))
+  return go(choose(replay(barfightAt).at(-1) as State, move))
+}
+
+test('the barfight move is remembered, and Hank says something different at the steak for each', () => {
+  const at = replay(barfightAt).at(-1) as State
+  assert.equal(at.scene, 'a1_barfight')
+  const ends = [1, 2, 3, 4].map(toSteak)
+  assert.deepEqual(
+    ends.map((s) => s.barfightMove),
+    ['shove', 'mooseRack', 'bottle', undefined],
+  )
+  const lines = ends.map((s) => menu(s).text)
+  assert.equal(new Set(lines).size, 4)
+  assert.match(lines[0], /stove/)
+  assert.match(lines[1], /moose rack/)
+  assert.match(lines[2], /rye/)
+  assert.match(lines[3], /stool/)
+})
+
+test('the barfight move colors and locks nobody out: only the bottle adds heat', () => {
+  const [shove, rack, bottle] = [1, 2, 3].map(toSteak)
+  assert.deepEqual({ ...rack, barfightMove: 'shove' }, shove)
+  assert.equal(bottle.heat, shove.heat + 1)
+  assert.equal(canonicalKey(choose(shove, 1)), canonicalKey(choose(rack, 1)))
+})

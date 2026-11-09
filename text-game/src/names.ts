@@ -1,6 +1,7 @@
 const ray = 'Ray'
 const tolliver = `${ray} Tolliver` as const
 const dottie = 'Dottie'
+const hank = 'Hank'
 
 export const N = {
   wade: 'Wade',
@@ -22,5 +23,6 @@ export const N = {
   bar: 'the Silver Pan',
   gossip: `${dottie} Vinson`,
   gossipShort: dottie,
-  bartender: 'Hank Lyle',
+  bartender: `${hank} Lyle`,
+  bartenderShort: hank,
 } as const

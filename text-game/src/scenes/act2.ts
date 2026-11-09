@@ -1,9 +1,20 @@
 import { N } from '../names.ts'
+import { type BarfightMemory, hankRemembers } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, set } from '../state.ts'
 import type { Choice, Scene, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 
 const act = 'Act 2: Freeze-up' as const
+
+const hank = N.bartenderShort
+
+// The bartender brings the steaks himself, and he remembers what Wade did in his bar in August.
+const hankAtTable: Readonly<Record<BarfightMemory, string>> = {
+  shove: `There's a new sheet of tin nailed up behind the stove. "Fella you put into that stove bought himself a new coat," he says, with his back to ${N.curlyShort}. "Said to tell you it was a good one."`,
+  mooseRack: `The moose rack is back over the door, one tine wired on. "Took two of us to hang it again," he says. "You held three men off with it and never swung it once." He sets an extra beer by your plate and doesn't charge for it.`,
+  bottle: `He sets yours down a little hard. "That was the good rye you broke," he says. "Officer asked me who broke the bottle. I told him." He goes back behind the bar.`,
+  seat: `He sets ${N.curlyShort}'s down first, then yours, and stands there a second. "You're the airman who stayed on his stool," he says, and goes back behind the bar.`,
+}
 
 const coChoices = (_: State): readonly Choice[] => [
   { label: 'Search the Major\'s cabinet tonight.', note: 'search', next: 'a2_co_heist' },
@@ -181,10 +192,12 @@ He ties it off without looking, with yellow braided line off a coil on his workb
     id: 'a2_steak',
     act,
     title: 'Steak at the Pan',
-    text: () => `
+    text: (s) => `
 Saturday, Curly pays for two T-bones out of a roll of twenties thick enough to choke a dog. He talks about Texas, about a boat he's going to buy, about getting out before the next winter.
 
-He only mentions Owen once. "Good man. Shame what the water did." He says it the way you'd say it about weather, and changes the subject.`,
+${hank} brings the plates himself. ${hankAtTable[hankRemembers(s)]}
+
+${N.curlyShort} only mentions Owen once. "Good man. Shame what the water did." He says it the way you'd say it about weather, and changes the subject.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_jake' }],
   },
   {
