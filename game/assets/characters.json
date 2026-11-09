@@ -59,6 +59,13 @@
       "job": "f0111535-f8e5-4a85-a58a-a53fd2923a35",
       "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261108_004845_f0111535-f8e5-4a85-a58a-a53fd2923a35.glb"
     },
+    "jog": {
+      "action": 14,
+      "name": "Run_02",
+      "rootMotion": true,
+      "job": "63144d3b-b6ff-4134-804f-8cc073d2fb53",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3JyApdPqTkmzK3IxQU07hA7IP4v/hf_20261109_022554_63144d3b-b6ff-4134-804f-8cc073d2fb53.glb"
+    },
     "sneak": {
       "action": 671,
       "name": "Sneaky_Walk_inplace",
