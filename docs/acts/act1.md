@@ -3,7 +3,7 @@
 What each Act 1 scene in [`text-game/src/scenes/act1.ts`](../../text-game/src/scenes/act1.ts) needs from the engine
 build, beyond what its fields already say. Place and clock live in the scene file; this sheet does not copy them.
 Where this sheet and [`design.md`](../../design.md) disagree, the design wins. Issue #93; the mission specs (verbs,
-checkpoints, retry, each note's details) are #94's, in `docs/missions.md`.
+checkpoints, retry, each note's details) are #94's, in [`act1-missions.md`](act1-missions.md).
 
 **Status: draft.** The owner approves the forms in review.
 
