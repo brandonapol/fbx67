@@ -28,13 +28,15 @@ Every mission comes with a short list of the endings it accepts. The game must r
 | Hotel bar | listened / skipped |
 | Major's cabinet | code or forced, seen or not; or refused (Lucy goes herself) |
 | Ski search | reached the wreck (always), route taken |
-| Search for Eli (Act 1) | ran the errand / skipped it |
+| Search for Eli (Act 1) | errand: ran it / skipped it |
 | The body (Act 1) | pointed out the knot / cut it silently |
 | Barfight (Act 1) | opened (got up / stayed seated), move (shove / rack / bottle), stood with Eli (yes / no), caught (clean / red-handed) |
 | The wire (Act 4) | got a full confession / got part of it / got caught wearing it |
 | Ice jam (Act 4) | stopped it / caught the Major / it blew |
 
 How Act 1's three missions play, and what each note applies, is in [`acts/act1-missions.md`](acts/act1-missions.md).
+
+A mission's menu is data in `text-game/src/missions.ts`: its start and end scene and, for each ending, the choice notes it applies in order (single-option beats between them are followed on the way). The game reads it with `mission(state)`, which returns the mission starting at the current scene or `undefined`, and reports with `sendMission(state, note)`, which lands on the mission's end scene. Where a mission starts, the game sends the mission's note and not the scene menu's options; the text build still plays the scenes one choice at a time; a unit test (`text-game/src/missions.test.ts`) checks that every way through a mission's scenes matches exactly one of its notes, so the sweep over the scenes covers the menu.
 
 Because the menus are written down, the robot tester reads them and tries every option. A new mission is tested the moment its menu exists.
 
