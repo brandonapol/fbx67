@@ -52,13 +52,16 @@ check/text/lint: ## Story lint over scene sources and ambient lines: the oil rul
 check/web: ## Typecheck web
 	cd $(WEB) && npm run -s typecheck
 
-check/game: check/game/typecheck test/game/unit build/game ## Typecheck, unit-test and build the engine build
+check/game: check/game/typecheck check/game/main test/game/unit build/game ## Typecheck, unit-test and build the engine build
 
-.PHONY: check/game/typecheck test/game/unit test/game/smoke
+.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke
+check/game/main: ## Fetch origin/main if missing (a shallow CI checkout): the notes ratchet's allowlist only shrinks against it
+	@git rev-parse -q --verify origin/main >/dev/null || git fetch -q --depth=1 origin +main:refs/remotes/origin/main
+
 check/game/typecheck: ## tsc on game
 	cd $(GAME) && npm run -s typecheck
 
-test/game/unit: ## Mission logic and story parity tests
+test/game/unit: ## Mission logic and story parity tests, and the notes ratchet (game/notes-allowlist.txt)
 	cd $(GAME) && npm run -s test
 
 test/game/smoke: build/game ## Play the prologue in headless Chromium; compare frames, check docs/perf.md budgets
