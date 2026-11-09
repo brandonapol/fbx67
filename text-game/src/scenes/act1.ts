@@ -29,8 +29,8 @@ A woman in a man's rain slicker comes down the line looking at faces until she s
 
 The sergeant is looking the other way. For now.`,
     choices: () => [
-      { label: 'Go find Eli. You can take a chewing-out.', next: 'a1_track' },
-      { label: 'Stay on the line. Orders are orders. Send her to someone who can go.', next: 'a1_body' },
+      { label: 'Go find Eli. You can take a chewing-out.', note: 'findEli', next: 'a1_track' },
+      { label: 'Stay on the line. Orders are orders. Send her to someone who can go.', note: 'stayOnLine', next: 'a1_body' },
     ],
   },
   {
@@ -48,7 +48,7 @@ A man in hip waders is carrying a mattress out of a rooming house over his head.
 "Went by twenty minutes ago with a load of kids," he says, without putting the mattress down. "Toward Lacey. Hold this end, would you?"
 
 You hold the end until he gets it onto a porch roof.`,
-    choices: () => [{ label: 'Head for Lacey Street.', next: 'a1_track_2' }],
+    choices: () => [{ label: 'Head for Lacey Street.', note: 'lacey', next: 'a1_track_2' }],
   },
   {
     id: 'a1_track_2',
@@ -61,7 +61,7 @@ You hold the end until he gets it onto a porch roof.`,
 On Second Avenue a woman leans out of an upstairs window with a coffee pot and a stack of paper cups, lowering them on a string to anybody who looks cold.
 
 "Eli, with the riverboat? He dropped the kids at the school and went back out. Up Cushman, toward Third." She lowers you a cup. "Drink it before it floats away."`,
-    choices: () => [{ label: 'Drink it and keep going.', next: 'a1_couple' }],
+    choices: () => [{ label: 'Drink it and keep going.', note: 'drink', next: 'a1_couple' }],
   },
   {
     id: 'a1_couple',
@@ -77,8 +77,8 @@ An old couple sits on the top step of a porch just short of Third, their feet an
 
 His wife holds out the slip. It's a prescription, his heart pills, the bottle went under with the kitchen. "They've got a help tent up on the high ground past Fifth. The nurses from St. Joseph's. We can't get there." She doesn't ask. She just keeps holding it out.`,
     choices: () => [
-      { label: 'Take the slip to the help tent. Eli can wait an hour.', next: 'a1_errand' },
-      { label: '"I\'ll send somebody." Go to Third while Eli\'s still there.', next: 'a1_eli' },
+      { label: 'Take the slip to the help tent. Eli can wait an hour.', note: 'helpTent', next: 'a1_errand' },
+      { label: '"I\'ll send somebody." Go to Third while Eli\'s still there.', note: 'sendSomebody', next: 'a1_eli' },
     ],
   },
   {
@@ -92,7 +92,7 @@ His wife holds out the slip. It's a prescription, his heart pills, the bottle we
 The riverboat is idling at the corner of Third, a long flat-bottomed freighter with a kicker on the back, low in the water with somebody's furniture. The man at the tiller is about your age. He's shoving a dresser off the bow to make room.
 
 You wade up and catch the gunwale.`,
-    choices: () => [{ label: 'Tell him.', apply: eliTrust(1), next: 'a1_delivered' }],
+    choices: () => [{ label: 'Tell him.', note: 'tellEli', apply: eliTrust(1), next: 'a1_delivered' }],
   },
   {
     id: 'a1_errand',
@@ -107,7 +107,7 @@ The help tent is three army tents and a line of cots on the high ground south of
 A nurse with her sleeves rolled to the elbow reads the slip, reads it again, and goes into a crate of bottles that came out of the hospital pharmacy in a rowboat. She's ${N.joan}. She counts out pills into an envelope and writes the dose on it in block letters an old man could read.
 
 "You walked up here for somebody else's prescription," she says. "In that water." She looks you over, your soaked fatigues. "Tell him one in the morning, with food. And tell him the nurse said to stay off that porch."`,
-    choices: () => [{ label: 'Take the envelope back down the hill.', apply: joan(1), next: 'a1_trail' }],
+    choices: () => [{ label: 'Take the envelope back down the hill.', note: 'envelope', apply: joan(1), next: 'a1_trail' }],
   },
   {
     id: 'a1_trail',
@@ -122,7 +122,7 @@ The old man takes the envelope in both hands. His wife reads Joan's block letter
 On Third the riverboat is gone. A boy bailing a skiff with a coffee can points with it. "Eli? Went a block or two south. Somebody was waving a sheet off a roof."
 
 You find the sheet on Fifth, and under it a family on a roof, and below them the riverboat, and the man at the tiller handing a baby down into it.`,
-    choices: () => [{ label: 'Wait for the baby, then tell him.', apply: eliTrust(1), next: 'a1_delivered' }],
+    choices: () => [{ label: 'Wait for the baby, then tell him.', note: 'waitBaby', apply: eliTrust(1), next: 'a1_delivered' }],
   },
   {
     id: 'a1_delivered',
@@ -135,7 +135,7 @@ You find the sheet on Fifth, and under it a family on a roof, and below them the
 ${message}
 
 ${delivered}`,
-    choices: () => [{ label: 'Wade back to Cushman Street.', next: 'a1_line' }],
+    choices: () => [{ label: 'Wade back to Cushman Street.', note: 'wadeBack', next: 'a1_line' }],
   },
   {
     id: 'a1_line',
@@ -148,7 +148,7 @@ ${delivered}`,
 Your sergeant sees you coming a block off. By the time you reach the line he has his speech ready, and it's a long one: where you were, who you think you are, what the Air Force does to airmen who wander off, and what he'll do first.
 
 The woman from Minto is gone from the line. Nobody else there knows where you went, and he doesn't write anything down. He just puts you on the heaviest end of the line for the rest of the afternoon.`,
-    choices: () => [{ label: 'Pass the bags.', next: 'a1_body' }],
+    choices: () => [{ label: 'Pass the bags.', note: 'passBags', next: 'a1_body' }],
   },
   {
     id: 'a1_body',
@@ -164,8 +164,8 @@ It's a man, held under by a yellow braided line tied to a drowned sawhorse. It's
 
 The line is tied off in a bowline, but backward, the tail sitting outside the loop. You learned your knots tying up your cousins' boat on the reservoir, and every bowline you ever saw there had the tail inside. Somebody tied this one, and tied it his own way.`,
     choices: () => [
-      { label: 'Point out the knot to Eli. Nobody tangles into a bowline.', apply: pipe(addEvidence('knot'), eliTrust(1)), next: 'a1_knot' },
-      { label: 'Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the help tent.', apply: addEvidence('knot'), next: 'a1_ruling' },
+      { label: 'Point out the knot to Eli. Nobody tangles into a bowline.', note: 'pointOutKnot', apply: pipe(addEvidence('knot'), eliTrust(1)), next: 'a1_knot' },
+      { label: 'Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the help tent.', note: 'cutKnot', apply: addEvidence('knot'), next: 'a1_ruling' },
     ],
   },
   {
@@ -181,7 +181,7 @@ Eli looks at the knot for a long time.
 "Nobody ties himself to a sawhorse," he says quietly. "Don't untie that, Texas."
 
 You cut the line a hand's width above the knot and a hand's width below, so it stays tied, and put it in your jacket pocket.`,
-    choices: () => [{ label: 'Help Eli lift Owen\'s body into the boat.', next: 'a1_ruling' }],
+    choices: () => [{ label: 'Help Eli lift Owen\'s body into the boat.', note: 'liftBody', next: 'a1_ruling' }],
   },
   {
     id: 'a1_ruling',
@@ -199,8 +199,8 @@ ${N.barnette} of the State Troopers has six drownings and a town underwater. He'
 
 ${s.joan > 0 ? `${N.joan}, the nurse who counted out the old man's pills this morning, is still at the tarp after he's gone. She looks up and knows you. "You again," she says, and doesn't sound sorry about it.` : `A nurse named ${N.joan} is still at the tarp after he's gone, sleeves rolled to the elbow, looking at the dead man's neck longer than she needs to.`}`,
     choices: () => [
-      { label: 'Ask Joan if anything about the body looked wrong.', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_joan_ask' },
-      { label: 'Make her laugh. She looks like she needs it.', apply: pipe(addEvidence('bruising'), joan(2)), next: 'a1_joan_laugh' },
+      { label: 'Ask Joan if anything about the body looked wrong.', note: 'askJoan', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_joan_ask' },
+      { label: 'Make her laugh. She looks like she needs it.', note: 'makeLaugh', apply: pipe(addEvidence('bruising'), joan(2)), next: 'a1_joan_laugh' },
     ],
   },
   {
@@ -212,7 +212,7 @@ ${s.joan > 0 ? `${N.joan}, the nurse who counted out the old man's pills this mo
     goal: 'Listen to Joan.',
     text: () => `
 Joan lowers her voice. Bruises on his left shoulder and the side of his neck, she says, like a hand held him down. A left hand, from behind. "Nobody asked me," she says. "So I didn't say."`,
-    choices: () => [{ label: 'Continue.', next: 'a1_lucy' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a1_lucy' }],
   },
   {
     id: 'a1_joan_laugh',
@@ -225,7 +225,7 @@ Joan lowers her voice. Bruises on his left shoulder and the side of his neck, sh
 She laughs despite herself. As you're leaving she catches your sleeve.
 
 "Your friend from the cabin. He had bruises on his left shoulder and neck, like somebody's left hand held him down. Nobody asked me. I thought somebody should know."`,
-    choices: () => [{ label: 'Continue.', next: 'a1_lucy' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a1_lucy' }],
   },
   {
     id: 'a1_lucy',
@@ -243,8 +243,8 @@ She doesn't believe the accident ruling for a second. ${N.owenShort} was coming 
 
 She looks at you a beat too long.`,
     choices: () => [
-      { label: '"I can get you Owen\'s aerial photos."', apply: eliTrust(1), next: 'a1_barfight' },
-      { label: '"I don\'t know. I could get in a lot of trouble."', next: 'a1_barfight' },
+      { label: '"I can get you Owen\'s aerial photos."', note: 'offerPhotos', apply: eliTrust(1), next: 'a1_barfight' },
+      { label: '"I don\'t know. I could get in a lot of trouble."', note: 'noIdea', next: 'a1_barfight' },
     ],
   },
   {
@@ -267,10 +267,10 @@ A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
 
 The floor is slick with mud. There's a hot stove, a moose rack on the wall, and a lot of bottles.`,
     choices: () => [
-      { label: 'Shove the drunk into the stove.', next: 'a1_tank' },
-      { label: 'Grab the moose rack off the wall.', next: 'a1_tank' },
-      { label: 'Break a bottle and hope that ends it.', apply: heat(1), next: 'a1_tank' },
-      { label: 'Stay in your seat. Not your fight.', apply: eliTrust(-1), next: 'a1_tank_sat' },
+      { label: 'Shove the drunk into the stove.', note: 'shove', next: 'a1_tank' },
+      { label: 'Grab the moose rack off the wall.', note: 'mooseRack', next: 'a1_tank' },
+      { label: 'Break a bottle and hope that ends it.', note: 'bottle', apply: heat(1), next: 'a1_tank' },
+      { label: 'Stay in your seat. Not your fight.', note: 'stayInSeat', apply: eliTrust(-1), next: 'a1_tank_sat' },
     ],
   },
   {
@@ -282,7 +282,7 @@ The floor is slick with mud. There's a hot stove, a moose rack on the wall, and 
     goal: 'Get out of the fight in one piece.',
     text: () => `
 You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.`,
-    choices: () => [{ label: 'Continue.', next: 'a1_tank' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a1_tank' }],
   },
   {
     id: 'a1_tank',
@@ -298,9 +298,9 @@ In the morning ${N.barnette} comes to the cell. He wants to know who started it,
 
 "Give me a name and you walk."`,
     choices: () => [
-      { label: 'Cover for Eli. "I started it." Barnette won\'t forget your name.', apply: pipe(set({ barfight: 'coverEli' }), eliTrust(2), heat(1)), next: 'a1_ashby' },
-      { label: 'Blame Eli. "He threw the first punch."', apply: pipe(set({ barfight: 'blameEli' }), eliTrust(-3)), next: 'a1_ashby' },
-      { label: 'Side with Curly. "Ask Curly. He saw it."', apply: pipe(set({ barfight: 'sideCurly' }), heat(1)), next: 'a1_ashby' },
+      { label: 'Cover for Eli. "I started it." Barnette won\'t forget your name.', note: 'coverEli', apply: pipe(set({ barfight: 'coverEli' }), eliTrust(2), heat(1)), next: 'a1_ashby' },
+      { label: 'Blame Eli. "He threw the first punch."', note: 'blameEli', apply: pipe(set({ barfight: 'blameEli' }), eliTrust(-3)), next: 'a1_ashby' },
+      { label: 'Side with Curly. "Ask Curly. He saw it."', note: 'sideCurly', apply: pipe(set({ barfight: 'sideCurly' }), heat(1)), next: 'a1_ashby' },
     ],
   },
   {
@@ -316,7 +316,7 @@ ${s.barfight === 'blameEli' ? 'Eli stays in the cell when they let you out. He d
 A man in a good coat is at the desk, talking Barnette down in a calm voice until Barnette tears up the charge sheet. ${N.ashby}, attorney. He paid your fine, and there's no record.
 
 "Owen spoke well of you," he says. You met Owen exactly once. "He spoke well of everybody. I'm finishing what he started for the Native families. With these claims, timing is everything." He gives you his card. "If you ever need anything, you come see me."`,
-    choices: () => [{ label: 'Thank him.', next: 'a1_letter' }],
+    choices: () => [{ label: 'Thank him.', note: 'thankHim', next: 'a1_letter' }],
   },
   {
     id: 'a1_letter',
@@ -330,9 +330,9 @@ You sit on your bunk with a pen. Mama will want to know about the flood. You are
 
 You write: "Dear Mama,"`,
     choices: () => [
-      { label: 'Tell her all of it. The body, the fight, the jail.', apply: mom('honest'), next: 'a2_major' },
-      { label: 'Tell her about the flood and that you made some friends.', apply: mom('soft'), next: 'a2_major' },
-      { label: 'Tell her it\'s boring up here and you\'re fine.', apply: mom('lie'), next: 'a2_major' },
+      { label: 'Tell her all of it. The body, the fight, the jail.', note: 'honest', apply: mom('honest'), next: 'a2_major' },
+      { label: 'Tell her about the flood and that you made some friends.', note: 'soft', apply: mom('soft'), next: 'a2_major' },
+      { label: 'Tell her it\'s boring up here and you\'re fine.', note: 'lie', apply: mom('lie'), next: 'a2_major' },
     ],
   },
 ]

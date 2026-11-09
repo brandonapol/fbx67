@@ -1,7 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
-import { replay } from './engine.ts'
+import { choicesOf, choose, replay } from './engine.ts'
+import { canonicalKey } from './liveness.ts'
 import { clock, goal, menu, offers, place, send, weather } from './story.ts'
 import { scenes } from './scenes/index.ts'
 import type { State } from './types.ts'
@@ -31,9 +32,23 @@ test('send agrees with choose on every prologue route', () => {
   )
 })
 
-test('every option in the prologue has a named note', () => {
-  const states = replay([1, 1, 1, 1, 1])
-  states.forEach((s) => menu(s).options.forEach((o) => assert.doesNotMatch(o.note, /^option\d+$/)))
+test('every option in the prologue through Act 3 has a named, unique note', () => {
+  const early = new Set(scenes.filter((sc) => sc.act !== 'Act 4: Breakup' && sc.act !== 'Epilogue').map((sc) => sc.id))
+  const seen = new Set<string>()
+  const visited = new Set<string>()
+  const queue: State[] = [initialState]
+  while (queue.length > 0) {
+    const s = queue.pop()!
+    const key = canonicalKey(s)
+    if (seen.has(key) || !early.has(s.scene)) continue
+    seen.add(key)
+    visited.add(s.scene)
+    const notes = menu(s).options.map((o) => o.note)
+    notes.forEach((note) => assert.doesNotMatch(note, /^option\d+$/, `${s.scene} has an unnamed option`))
+    assert.equal(new Set(notes).size, notes.length, `${s.scene} repeats a note: ${notes.join(', ')}`)
+    choicesOf(s).forEach((_, i) => queue.push(choose(s, i + 1)))
+  }
+  early.forEach((id) => assert.ok(visited.has(id), `${id} was never reached`))
 })
 
 test('send refuses a note the menu does not offer', () => {
