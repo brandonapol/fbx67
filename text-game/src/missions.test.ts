@@ -294,3 +294,44 @@ test('Lucy repeats the quiet man\'s words only when Wade heard most of it', () =
   assert.match(render(toOffice('heardMost')), /Before is what counts/)
   assert.doesNotMatch(render(toOffice('heardPieces')), /Before is what counts/)
 })
+
+// Every state that reaches the Major's office, across the photo lab, the hotel bar and the Chiefs.
+const atOffice = allAt('a2_co_ask')
+const cabinetNotes = ['code.seen', 'code.unseen', 'forced.seen', 'forced.unseen', 'refused']
+
+test('the Major\'s cabinet offers got in, seen, or refused at a2_co_ask', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1]).at(-1) as State
+  assert.equal(s.scene, 'a2_co_ask')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The Major\'s cabinet. Got in: code / forced. Seen: yes / no; or refused (Lucy goes herself)')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    cabinetNotes,
+  )
+})
+
+test('each cabinet note agrees with playing its scenes one note at a time', () => {
+  const s = atOffice[0]
+  assert.deepEqual(sendMission(s, 'code.unseen'), ['search', 'combo', 'getOut'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'forced.seen'), ['search', 'forced', 'goNow', 'continue'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'refused'), ['refuse', 'continue'].reduce(send, s))
+})
+
+test('the cabinet: code +1 heat, forced +2, seen +1 more; refused puts the heat on Lucy instead', () => {
+  const s = { ...atOffice[0], heat: 0, lucyHeat: 0 }
+  const out = cabinetNotes.map((n) => sendMission(s, n))
+  assert.deepEqual(out.map((o) => o.heat), [2, 1, 3, 2, 0])
+  assert.deepEqual(out.map((o) => o.lucyHeat), [0, 0, 0, 0, 2])
+  assert.deepEqual(out.map((o) => o.coJob), ['wade', 'wade', 'wade', 'wade', 'lucy'])
+  out.forEach((o) => assert.ok(o.evidence.includes('coFiles')))
+  // The way in and the getaway carry only heat, so the code and seen land where forcing it unseen does.
+  assert.deepEqual(out[0], out[3])
+  assert.equal(new Set(out.map((o) => JSON.stringify(o))).size, cabinetNotes.length - 1)
+})
+
+test('seen plays the duty desk: the duty log, never Wade\'s face', () => {
+  const s = ['search', 'combo', 'goNow'].reduce(send, atOffice[0])
+  assert.equal(s.scene, 'a2_co_seen')
+  assert.match(render(s), /never saw your face/)
+})

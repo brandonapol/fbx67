@@ -26,7 +26,7 @@ Every mission comes with a short list of the endings it accepts. The game must r
 |---|---|
 | Photo lab | way in: lunch / key; drawers: cross-checked / pulled all; or refused |
 | Hotel bar | heard: most / pieces; or skipped |
-| Major's cabinet | code or forced, seen or not; or refused (Lucy goes herself) |
+| Major's cabinet | got in: code / forced; seen: yes / no; or refused (Lucy goes herself) |
 | Ski search | reached the wreck (always), route taken |
 | Search for Eli (Act 1) | errand: ran it / skipped it |
 | The body (Act 1) | knot: pointed it out / cut it silently |

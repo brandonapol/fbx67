@@ -43,6 +43,7 @@ export const sceneIds = [
   'a2_co_gossip',
   'a2_co_heist',
   'a2_co_found',
+  'a2_co_seen',
   'a2_co_lucy',
   'a2_curly',
   'a2_steak',

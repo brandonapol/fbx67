@@ -182,7 +182,20 @@ The squadron building is dark except for the duty desk. The Major's cabinet has 
 The cabinet opens. Munitions sign-out sheets, flight schedules, typed pages that look like copies of letters, carbon copies of nothing in particular. There's too much to read by flashlight. You photograph all of it with Lucy's camera and put everything back.
 
 You can't tell what any of it means. Lucy will have to read it.`,
-    choices: () => [{ label: 'Get out.', note: 'getOut', next: 'a2_curly' }],
+    choices: () => [
+      { label: 'Wait in the dark for the duty airman to finish his rounds, then get out.', note: 'getOut', next: 'a2_curly' },
+      { label: 'Don\'t wait. Go now, while he\'s still on his rounds.', note: 'goNow', apply: heat(1), next: 'a2_co_seen' },
+    ],
+  },
+  {
+    id: 'a2_co_seen',
+    act,
+    title: 'The Duty Desk',
+    text: () => `
+The duty airman looks up from his comic book as a shape crosses the end of the hall. "Hey!" By the time he's around the desk you're out the side door and into the dark between the buildings.
+
+He never saw your face. He'll write it in the duty log all the same: somebody in the squadron building after hours, headed for the side door.`,
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_curly' }],
   },
   {
     id: 'a2_co_lucy',

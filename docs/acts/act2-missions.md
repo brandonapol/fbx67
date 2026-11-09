@@ -82,3 +82,41 @@ From the decision at `a2_hotel` until Wade packs up his guitar, at `a2_chiefs`. 
   `hotelTalk` evidence is read later: Lucy repeats the quiet man's words before the Major's cabinet, Wade remembers
   Tolliver in Act 3, and he knows the voice at Ashby's lunch in Act 4.
 - **New state.** None.
+
+## 3. The Major's cabinet
+
+From Lucy's ask at `a2_co_ask` until the files are photographed and back in the drawer, at `a2_curly`. Night, the
+squadron building on base.
+
+- **Way in.** The prompt at `a2_co_ask` is *Search the cabinet tonight* or *Refuse* (`search`, `refuse`). A visit to
+  the café first (`gossip`) is Dottie's read on the heat, not part of the note.
+- **Objective.** Open the Major's locked cabinet, photograph what is in it with Lucy's camera, put everything back.
+- **Verbs.** *Look*: the desk (the boat photo, the Florida brochure, the calendar with a date two years out circled
+  in red and marked RETIRE). *Dial*: the combination lock, three numbers. *Pry*: a screwdriver in the cabinet's
+  drawer seam, loud, and it leaves marks. *Photograph*: a page at a time under the flashlight. *Listen*: the duty
+  airman's rounds, a door and footsteps on a loop.
+- **Got in.** *Code* is dialing the circled date (month, day, year). The calendar is the only hint; a wrong
+  combination costs time, not a fail. *Forced* is prying it, any time the player gives up on the dial.
+- **Seen and busted.** Busted is the duty airman's flashlight on Wade in the office: retry from the hall. *Seen* is the
+  getaway: leaving while the airman is still on his rounds means crossing the end of his hall, and he sees a shape go
+  by but never a face. Waiting in the dark for the rounds to finish is unseen.
+- **Checkpoints.** The hall outside the office; the cabinet open, before the first page.
+- **The note.**
+
+  > The Major's cabinet. Got in: code / forced. Seen: yes / no; or refused (Lucy goes herself)
+
+  Each pair is a note, `code.seen` and so on, applying `search`, `combo` or `forced`, then `goNow` (and the duty desk
+  beat, `a2_co_seen`) or `getOut`. All four set `coJob` to `wade` and give the `coFiles` evidence. *Refused* applies
+  `refuse` and the beat after it (`a2_co_lucy`): Lucy goes in herself on her cousin's janitorial crew, gets the files
+  and is seen (`coJob` `lucy`, `coFiles`, +2 `lucyHeat`, which #101 gates). The menu is `theMajorsCabinet`; every note
+  lands on `a2_curly`. `code.seen` and `forced.unseen` land on the same state: both are +2 heat.
+- **What shades heat or trust.**
+
+  | Detail | Effect |
+  | --- | --- |
+  | Got in: code | +1 heat |
+  | Got in: forced | +2 heat |
+  | Seen: yes | +1 heat |
+  | Refused | +2 Lucy's heat, none on Wade |
+
+- **New state.** None.

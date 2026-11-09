@@ -136,4 +136,22 @@ const theHotelBar: Mission = {
   ],
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar]
+const gotIn: Detail = { name: 'Got in', picks: [{ note: 'code', label: 'code', choice: 'combo' }, { note: 'forced', label: 'forced', choice: 'forced' }] }
+const seen: Detail = { name: 'Seen', picks: [{ note: 'seen', label: 'yes', choice: 'goNow' }, { note: 'unseen', label: 'no', choice: 'getOut' }] }
+
+// docs/acts/act2-missions.md, section 3. Each way in and getaway applies search, the way in, then the getaway; seen
+// plays the duty desk's beat. Refused, Lucy goes in herself and is seen (lucyHeat).
+const theMajorsCabinet: Mission = {
+  id: 'theMajorsCabinet',
+  title: 'The Major\'s cabinet',
+  details: [gotIn, seen].map((d) => ({ name: d.name, labels: d.picks.map((p) => p.label) })),
+  or: 'refused (Lucy goes herself)',
+  start: 'a2_co_ask',
+  end: 'a2_curly',
+  endings: [
+    ...combos(gotIn, seen).map((e) => ({ ...e, applies: ['search', ...e.applies, ...(e.applies.includes('goNow') ? ['continue'] : [])] })),
+    { note: 'refused', label: 'refused', applies: ['refuse', 'continue'] },
+  ],
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet]
