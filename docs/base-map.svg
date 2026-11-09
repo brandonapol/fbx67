@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Eielson Air Force Base, fall and winter 1967: the walkable base map (issue #124).
+  Hand-written. The viewBox is in meters and matches docs/base-map.md exactly:
+  origin at the center of the gate shack, x east, z south (SVG y = z).
+  Edit this file and the tables in base-map.md together.
+  Layer order: ground, roads, fences, buildings, interiors, patrols, routes, labels, spawn points, legend.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-48 -150 530 300" width="1590" height="900" font-family="Helvetica, Arial, sans-serif">
+  <title>Eielson AFB, fall and winter 1967: walkable base map</title>
+  <style>
+    .snow { fill: #eef1f3; }
+    .spruce { fill: #c9d3c4; }
+    .street { fill: #d9d6cf; }
+    .gravel { fill: #d8ccad; }
+    .apron { fill: #cfd2d6; }
+    .lot { fill: #e2dfd8; stroke: #9a958a; stroke-width: 0.35; stroke-dasharray: 1.2 0.8; }
+    .ours { fill: #f0c75a; stroke: #8a6a12; stroke-width: 0.4; }
+    .gen { fill: #e4ddcd; stroke: #a99f88; stroke-width: 0.3; }
+    .igloo { fill: #dfe5da; stroke: #7f8a76; stroke-width: 0.35; }
+    .interior { fill: none; stroke: #2f2a24; stroke-width: 0.4; stroke-dasharray: 1 0.6; }
+    .fence { fill: none; stroke: #4a4a4a; stroke-width: 0.7; stroke-dasharray: 1.6 0.8; }
+    .offplay { fill: #ffffff; opacity: 0.5; }
+    .bound { fill: none; stroke: #c0392b; stroke-width: 0.8; stroke-dasharray: 3 1.5; }
+    .route { fill: none; stroke: #d35400; stroke-width: 1.2; stroke-linejoin: round; }
+    .night { fill: none; stroke: #5b3f8c; stroke-width: 1.2; stroke-dasharray: 2.4 1.2; stroke-linejoin: round; }
+    .patrol { fill: none; stroke: #1f6f99; stroke-width: 1.0; stroke-dasharray: 0.6 1.0; stroke-linecap: round; stroke-linejoin: round; }
+    .spawn { fill: #c0392b; stroke: #ffffff; stroke-width: 0.45; }
+    .halo { paint-order: stroke; stroke: #ffffff; stroke-width: 0.9px; stroke-linejoin: round; }
+    .t { fill: #2b2620; font-size: 4px; }
+    .tbld { fill: #2b2620; font-size: 4.2px; font-weight: bold; }
+    .tst { fill: #2b2620; font-size: 4.6px; font-weight: bold; letter-spacing: 0.4px; }
+    .tb { fill: #1f4f66; font-size: 3.8px; font-style: italic; }
+    .tsp { fill: #9b2418; font-size: 3.6px; font-weight: bold; }
+    .tg { fill: #6b6b6b; font-size: 3.8px; }
+    .th { fill: #2b2620; font-size: 6.4px; font-weight: bold; }
+    .tl { fill: #2b2620; font-size: 3.8px; }
+    .tlb { fill: #2b2620; font-size: 4.2px; font-weight: bold; }
+  </style>
+
+  <!-- Paper -->
+  <rect x="-48" y="-150" width="530" height="300" fill="#fbfaf6" />
+
+  <!-- Ground: snow inside the play area and to its edges; spruce flats west of the highway -->
+  <rect class="snow" x="-48" y="-150" width="398" height="300" />
+  <rect class="spruce" x="-48" y="-150" width="8" height="300" />
+
+  <!-- Roads -->
+  <rect class="street" x="-40" y="-150" width="16" height="300" />
+  <rect class="street" x="-24" y="-7" width="274" height="14" />
+  <rect class="street" x="104" y="-150" width="10" height="300" />
+  <rect class="street" x="240" y="-150" width="10" height="300" />
+  <rect class="gravel" x="250" y="96" width="40" height="8" />
+  <rect class="gravel" x="190" y="8" width="6" height="62" />
+  <!-- The apron and the runway edge (backdrop past x 340) -->
+  <rect class="apron" x="260" y="-95" width="90" height="135" />
+  <rect class="apron" x="302" y="-150" width="48" height="55" />
+
+  <!-- Gate apron and island -->
+  <rect class="street" x="-24" y="-10" width="30" height="20" />
+  <rect class="gen" x="-3" y="-1.5" width="6" height="3" />
+  <rect class="ours" x="-1.5" y="-1.2" width="3" height="2.4" />
+
+  <!-- Lots -->
+  <rect class="lot" x="30" y="-28" width="60" height="20" />
+  <rect class="lot" x="130" y="-38" width="60" height="30" />
+
+  <!-- Fences: the perimeter at x 6, the munitions area at x 290 and z 60 -->
+  <path class="fence" d="M 6 -150 V -7 M 6 7 V 150" />
+  <path class="fence" d="M 290 150 V 104 M 290 96 V 60 H 350" />
+  <path d="M 290 96 V 104" stroke="#4a4a4a" stroke-width="1.4" />
+
+  <!-- Buildings (all ours) -->
+  <rect class="gen" x="-18" y="12" width="12" height="10" />
+  <rect class="ours" x="30" y="-80" width="60" height="50" />
+  <rect class="gen" x="30" y="30" width="60" height="30" />
+  <rect class="ours" x="130" y="-80" width="60" height="40" />
+  <rect class="ours" x="130" y="30" width="60" height="40" />
+  <rect class="ours" x="262" y="-130" width="40" height="30" />
+  <!-- Backdrop dormitories and shops -->
+  <rect class="gen" x="30" y="-140" width="60" height="45" />
+  <rect class="gen" x="30" y="80" width="60" height="45" />
+  <rect class="gen" x="130" y="-140" width="60" height="45" />
+  <rect class="gen" x="130" y="90" width="60" height="40" />
+  <!-- Igloos inside the munitions fence -->
+  <rect class="igloo" x="304" y="72" width="12" height="20" rx="5" />
+  <rect class="igloo" x="324" y="72" width="12" height="20" rx="5" />
+  <rect class="igloo" x="304" y="108" width="12" height="20" rx="5" />
+  <rect class="igloo" x="324" y="108" width="12" height="20" rx="5" />
+
+  <!-- Interiors -->
+  <rect class="interior" x="82" y="-54" width="8" height="8" />
+  <path class="interior" d="M 132 -60 H 188 M 132 -56 H 150 M 170 -56 H 188 M 150 -56 V -40 M 170 -56 V -40 M 174 -80 V -60 M 160 -80 V -60" />
+  <path class="interior" d="M 130 40 H 190 M 160 40 V 70 M 160 52 H 190" />
+  <!-- The cabinet and the Major's desk -->
+  <rect x="183" y="-79.4" width="6" height="1.4" fill="#2f2a24" />
+  <rect x="179" y="-71.5" width="6" height="3" fill="none" stroke="#2f2a24" stroke-width="0.35" />
+
+  <!-- Play area boundary and off-play wash -->
+  <rect class="offplay" x="-48" y="-150" width="28" height="300" />
+  <rect class="offplay" x="340" y="-150" width="10" height="300" />
+  <rect class="offplay" x="-20" y="-150" width="360" height="10" />
+  <rect class="offplay" x="-20" y="140" width="360" height="10" />
+  <rect class="bound" x="-20" y="-140" width="360" height="280" />
+
+  <!-- Patrol P1: the Air Police truck loop -->
+  <path class="patrol" d="M 10 4 H 109 V -130 V 4 H 245 V 104 V -130 V -4 H 10" />
+
+  <!-- Day routes -->
+  <polyline class="route" points="2,3 40,6 60,-7 60,-30" />
+  <polyline class="route" points="60,-30 60,-7 160,-7 160,-40" />
+  <polyline class="route" points="160,-40 160,-7 160,8 160,30" />
+  <polyline class="route" points="60,-7 245,0 245,-108 262,-108" />
+  <polyline class="route" points="245,0 245,100 286,100" />
+
+  <!-- Night routes -->
+  <polyline class="night" points="90,-62 109,-62 130,-58 182,-58 182,-60" />
+  <polyline class="night" points="60,-30 60,-7 186,-7 193,6 193,62 190,62" />
+
+  <!-- Street labels -->
+  <text class="tst halo" x="-32" y="-60" transform="rotate(-90 -32 -60)" text-anchor="middle">RICHARDSON HWY</text>
+  <text class="tst halo" x="210" y="1.6" text-anchor="middle">GATE ROAD</text>
+  <text class="tst halo" x="109" y="120" transform="rotate(-90 109 120)" text-anchor="middle">DORM STREET</text>
+  <text class="tst halo" x="245" y="-40" transform="rotate(-90 245 -40)" text-anchor="middle">FLIGHT LINE ROAD</text>
+  <text class="t halo" x="252" y="94">munitions road</text>
+  <text class="t halo" x="197" y="20" transform="rotate(90 197 20)">service lane</text>
+  <text class="tg" x="300" y="-60">apron</text>
+  <text class="tg" x="342" y="0" transform="rotate(90 342 0)">runway (backdrop)</text>
+  <text class="tg" x="-46" y="-120">spruce</text>
+  <text class="tg" x="8" y="-100" transform="rotate(90 8 -100)">perimeter fence</text>
+
+  <!-- Building labels -->
+  <text class="tbld halo" x="0" y="-4" text-anchor="middle">gate shack</text>
+  <text class="t halo" x="-12" y="26" text-anchor="middle">pass office</text>
+  <text class="tbld halo" x="60" y="-62" text-anchor="middle">Wade's dormitory</text>
+  <text class="t halo" x="60" y="-57" text-anchor="middle">3 floors</text>
+  <text class="t halo" x="74" y="-49" text-anchor="end">Wade's room</text>
+  <text class="t halo" x="60" y="-18" text-anchor="middle">dorm lot</text>
+  <text class="tbld halo" x="60" y="46" text-anchor="middle">dining hall</text>
+  <text class="tbld halo" x="160" y="-83" text-anchor="middle">squadron building</text>
+  <text class="t halo" x="160" y="-47" text-anchor="middle">duty desk</text>
+  <text class="t halo" x="182" y="-64" text-anchor="middle">Major</text>
+  <text class="t halo" x="160" y="-20" text-anchor="middle">squadron lot</text>
+  <text class="tbld halo" x="145" y="66" text-anchor="middle">photo lab</text>
+  <text class="t halo" x="145" y="56" text-anchor="middle">darkrooms</text>
+  <text class="t halo" x="175" y="63" text-anchor="middle">records</text>
+  <text class="tbld halo" x="282" y="-115" text-anchor="middle">hangar</text>
+  <text class="t halo" x="282" y="-110" text-anchor="middle">Jake's contract shop</text>
+  <text class="tbld halo" x="320" y="66" text-anchor="middle">munitions storage</text>
+  <text class="tg" x="320" y="102" text-anchor="middle">igloos</text>
+  <text class="tg" x="60" y="-118" text-anchor="middle">dormitories (backdrop)</text>
+  <text class="tg" x="160" y="-118" text-anchor="middle">shops (backdrop)</text>
+
+  <!-- Spawn points -->
+  <g>
+    <circle class="spawn" cx="8" cy="3" r="1.4" />
+    <circle class="spawn" cx="86" cy="-50" r="1.4" />
+    <circle class="spawn" cx="92" cy="-50" r="1.4" />
+    <circle class="spawn" cx="160" cy="-36" r="1.4" />
+    <circle class="spawn" cx="182" cy="-62" r="1.4" />
+    <circle class="spawn" cx="160" cy="36" r="1.4" />
+    <circle class="spawn" cx="170" cy="54" r="1.4" />
+    <circle class="spawn" cx="258" cy="-108" r="1.4" />
+    <circle class="spawn" cx="284" cy="100" r="1.4" />
+  </g>
+  <text class="tsp halo" x="10" y="12">eielsonGate</text>
+  <text class="tsp halo" x="94" y="-44">barracksWindow</text>
+  <text class="tsp halo" x="78" y="-42" text-anchor="end">eielsonBarracks</text>
+  <text class="tsp halo" x="164" y="-33">squadronBuilding</text>
+  <text class="tsp halo" x="192" y="-56">majorsOffice</text>
+  <text class="tsp halo" x="157" y="38" text-anchor="end">photoLab</text>
+  <text class="tsp halo" x="172" y="58">photoRecords</text>
+  <text class="tsp halo" x="256" y="-112" text-anchor="end">baseHangar</text>
+  <text class="tsp halo" x="270" y="110">munitionsFence</text>
+
+  <!-- Legend -->
+  <text class="th" x="356" y="-138">Eielson AFB, fall–winter 1967</text>
+  <text class="tl" x="356" y="-131">Meters; origin at the gate shack; x east,</text>
+  <text class="tl" x="356" y="-126.4">z south (north is up). 26 miles southeast</text>
+  <text class="tl" x="356" y="-121.8">of downtown; not on the town map's grid.</text>
+
+  <rect class="ours" x="356" y="-116" width="7" height="4.5" />
+  <text class="tl" x="366" y="-112.2">a place the story visits (ours)</text>
+  <rect class="gen" x="356" y="-109" width="7" height="4.5" />
+  <text class="tl" x="366" y="-105.2">generic building or backdrop</text>
+  <rect class="igloo" x="356" y="-102" width="7" height="4.5" rx="2" />
+  <text class="tl" x="366" y="-98.2">igloo (munitions bunker), seen only</text>
+  <path class="fence" d="M 356 -93 H 363" />
+  <text class="tl" x="366" y="-91.2">fence; the only way through is the gate</text>
+  <rect class="bound" x="356" y="-88" width="7" height="4.5" />
+  <text class="tl" x="366" y="-84.2">edge of the play area</text>
+  <path class="interior" d="M 356 -79 H 363" />
+  <text class="tl" x="366" y="-77.2">interior wall or room</text>
+
+  <text class="tlb" x="356" y="-68">Routes</text>
+  <path class="route" d="M 356 -64 H 363" />
+  <text class="tl" x="366" y="-62.6">by day: gate, Major, photo lab at lunch,</text>
+  <text class="tl" x="366" y="-58.2">hangar, munitions fence</text>
+  <path class="night" d="M 356 -54 H 363" />
+  <text class="tl" x="366" y="-52.6">by night: the Major's cabinet; the lab</text>
+  <text class="tl" x="366" y="-48.2">by the back door after lockup</text>
+  <path class="patrol" d="M 356 -44 H 363" />
+  <text class="tl" x="366" y="-42.6">P1, the Air Police truck, after dark</text>
+  <text class="tl" x="356" y="-36">Other patrols (duty runner, lab clerk, lockup,</text>
+  <text class="tl" x="356" y="-31.4">gate) are in base-map.md, "Patrol lines".</text>
+
+  <text class="tlb" x="356" y="-22">Spawn ids</text>
+  <text class="tl" x="356" y="-17">eielsonGate, eielsonBarracks, barracksWindow,</text>
+  <text class="tl" x="356" y="-12.6">squadronBuilding, majorsOffice, photoLab,</text>
+  <text class="tl" x="356" y="-8.2">photoRecords, baseHangar, munitionsFence.</text>
+  <text class="tl" x="356" y="-3.8">Only eielsonBarracks is in the Place type.</text>
+
+  <text class="tlb" x="356" y="6">Season</text>
+  <text class="tl" x="356" y="11">Frost in September, first snow in October,</text>
+  <text class="tl" x="356" y="15.4">1.5 m plow berms and ice fog by December.</text>
+  <text class="tl" x="356" y="19.8">Plug-in posts at the head of every lot.</text>
+
+  <text class="tlb" x="356" y="30">Compressed and invented</text>
+  <text class="tl" x="356" y="35">The layout is ours and carries no real</text>
+  <text class="tl" x="356" y="39.4">security detail. Every place is within five</text>
+  <text class="tl" x="356" y="43.8">minutes on foot. The real cantonment is</text>
+  <text class="tl" x="356" y="48.2">kilometers across.</text>
+
+  <text class="tlb" x="356" y="58">Sources</text>
+  <text class="tl" x="356" y="63">docs/fact-checks.md, items 63-70 (and 5, 6,</text>
+  <text class="tl" x="356" y="67.4">46-49, 60). Doors, floors and placements:</text>
+  <text class="tl" x="356" y="71.8">docs/base-map.md.</text>
+</svg>

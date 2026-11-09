@@ -64,6 +64,14 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 56 | USAF ground-search skis and gear, beyond item 10 | Act 3 | Partly | Low-medium. Wade on skis is fiction; issue skis were not recreational cross-country skis. |
 | 57 | Chena Hot Springs Road and Birch Hill cemetery | Act 3 | Plausible; both unverified for 1967 | Low. Both exist; dates unchecked. |
 | 58 | A hospital parking lot at forty below | Act 3 | Plausible | None. Plug-ins and ice fog are right; add them. |
+| 63 | Eielson's gate in 1967: Air Police, decals, visitor passes | Base map | Plausible | None. An AP at a shack and a pass office outside the fence; no procedure shown. |
+| 64 | The base's layout, dormitories and building types | Base map | Invented; types plausible | Low. The layout is ours; only the order (highway, gate, cantonment, flight line) should hold. |
+| 65 | Wade's squadron, and a major as its commander | Base map | Unknown | Medium. Which 1967 Eielson squadron had munitions airmen and a major in command is unchecked. |
+| 66 | Where the photo lab stood, and in which unit | Base map | Plausible | Low. A reconnaissance wing's photo lab near the flight line; see items 6 and 46. |
+| 67 | The munitions storage area: where, and what shows from outside | Base map | Plausible; position invented | Low. Igloos behind their own fence, far from the barracks in life; compressed here. |
+| 68 | A civilian bush mechanic in a base hangar | Base map | Plausible; aircraft unknown | Low-medium. An aero club or light-aircraft contract fits; a mechanic on jet aircraft would not. |
+| 69 | A 19-year-old airman's room in 1967 | Base map | Plausible | Low. Two- to four-man rooms in concrete dorms; open bays are the other answer. |
+| 70 | The duty desk at night in a squadron building | Base map | Plausible | None. A charge of quarters on a desk with a log and a phone. |
 
 ## High priority
 
@@ -755,6 +763,14 @@ Ordered by impact.
   consultants.
 - Whether 1967 gravel on state land north of town was leased or sold as material sites (item 62): Alaska Division of
   Lands records.
+- Eielson's 1967 layout: where the main gate, the dormitories, the photo lab, the flight line and the munitions
+  storage area stood relative to each other (items 64, 66, 67): a 1960s base map or the 5010th Combat Support Group
+  histories at the Air Force Historical Research Agency, and a veteran's read.
+- Which Eielson squadron in 1967 had munitions airmen, and the rank of its commander (item 65): the same unit
+  histories.
+- Whether civilian mechanics worked in a base hangar in 1967, and on what aircraft (item 68): base aero club history,
+  Pioneer Air Museum.
+- Dormitory rooms or open bays for junior airmen at Eielson in 1967 (item 69): veterans, base yearbooks.
 
 ## Engine look checks (issue #32)
 
@@ -1143,3 +1159,120 @@ a pilot would not know the difference. The summer of 1967 was wet before the Aug
 record, general knowledge); daily July figures are unchecked.
 
 **Recommended change.** None. The pilots must not connect the gravel to a road or to the North Slope (the oil rule).
+
+## Eielson base map (issue #124)
+
+Items 63 to 70 check [`base-map.md`](base-map.md). No web search was done for this pass. Statements from general
+knowledge say so; anything unchecked is listed under "Open items and what would settle them". The layout is
+deliberately invented and carries no real security detail: a veteran should find it familiar in kind, not accurate in
+plan. Every **Proposal** is a recommendation the owner can reject.
+
+### 63. Eielson's gate in 1967
+
+**Claim.** A gate shack on an island in the gate road, one Air Police airman at the shack and one on the apron, a
+pass office outside the fence, every vehicle stopped coming in (`base-map.md`, patrol P5).
+
+**Verdict.** Plausible.
+
+**Evidence.** Air Force security police were called Air Police until 1966 or 1967, when the name changed to Security
+Police (general knowledge, unchecked for the exact date). Base vehicle decals and visitor passes were ordinary
+(general knowledge, unchecked). The map shows no procedure beyond a stop.
+
+**Recommended change.** None. **Proposal:** if the scenes name them, say "the AP" in 1967 dialogue; a veteran of
+late 1967 might say "SP". Check the date of the change before any line depends on it.
+
+### 64. The base's layout, dormitories and building types
+
+**Claim.** One cantonment street between the gate and the flight line; three-storey concrete dormitories; one-storey
+block buildings; steel hangars; steam heat from a central plant, with buried utility runs that show as bare strips in
+the snow.
+
+**Verdict.** The layout is invented. The building types are plausible.
+
+**Evidence.** Eielson sits east of the Richardson Highway between North Pole and Salcha, with a long runway (general
+knowledge). Interior Alaska bases built multi-storey concrete dormitories in the 1950s and heated them from central
+plants, with utilidors (walk-through utility tunnels) at some bases (general knowledge, unchecked for Eielson in
+1967). Where the gate, the dormitories and the flight line actually stood relative to one another was not checked.
+
+**Recommended change.** None. **Proposal:** keep utilidors as dressing (steam plumes, bare strips), never as a
+route, so the map carries no real way around the base's security.
+
+### 65. Wade's squadron, and a major as its commander
+
+**Claim.** Wade's squadron has its own building with a duty desk, and its commander is a major (design, Major
+Dekker).
+
+**Verdict.** Unknown.
+
+**Evidence.** Item 5 lists the 1967 units: the 5010th Combat Support Group as host, a consolidated aircraft
+maintenance squadron, and the 6th Strategic Wing from March 1967. A reconnaissance wing carried no bombs, so a large
+munitions squadron is a question a veteran would ask; munitions airmen still had work (flares, small arms, the
+interceptor detachment's weapons, EOD; item 5). A squadron commanded by a major is ordinary (general knowledge).
+
+**Recommended change.** None required. **Proposal:** keep the squadron unnamed in scenes ("your squadron"); if a
+name is needed, check the 1967 unit histories first.
+
+### 66. Where the photo lab stood, and in which unit
+
+**Claim.** The base photo lab is a one-storey building on the cantonment street, with a counter, darkrooms and a
+windowless records room at the back filed by flight line and frame.
+
+**Verdict.** Plausible.
+
+**Evidence.** Items 6 and 46: Eielson was a reconnaissance base, prints rather than original negatives, and the
+scene's lunch hour and 1700 lockup are fine. A reconnaissance technical squadron's lab would sit near the flight
+line; a base photo lab for ID and public-affairs work might sit anywhere (general knowledge, unchecked).
+
+**Recommended change.** None. The compression puts both kinds of lab in one building.
+
+### 67. The munitions storage area
+
+**Claim.** Earth-covered igloos behind their own fence, seen from a gravel road at a closed gate, about 300 m from
+the barracks.
+
+**Verdict.** Plausible. Position invented.
+
+**Evidence.** Item 60: munitions bunkers on Air Force bases are called igloos. Storage areas sat well away from
+dormitories and the flight line, behind their own fence (general knowledge). 300 m is far too close for a real base;
+it is the map's compression.
+
+**Recommended change.** None. The map shows the fence and a moving truck's lights only (patrol P6), and says nothing
+about how the area was guarded.
+
+### 68. A civilian bush mechanic in a base hangar
+
+**Claim.** Jake, a civilian bush pilot and mechanic, does contract maintenance at Eielson and is found outside a
+hangar there (design; `a2_jake`).
+
+**Verdict.** Plausible. The aircraft are unknown.
+
+**Evidence.** Bases had aero clubs with light aircraft, and civilian contractors did maintenance on bases (general
+knowledge, unchecked for Eielson in 1967). A bush mechanic working on jet or reconnaissance aircraft would not fit.
+
+**Recommended change.** **Proposal:** the hangar holds light aircraft (the aero club's, or liaison planes), as the
+map's interior says. No scene text changes.
+
+### 69. A 19-year-old airman's room in 1967
+
+**Claim.** Wade has a two-man room on the ground floor of a concrete dormitory, with a window a person outside can
+knock on (`a1_letter`, `a3_rash_none`).
+
+**Verdict.** Plausible.
+
+**Evidence.** By the 1960s many bases had replaced open-bay barracks with rooms for two to four airmen; some junior
+airmen still lived in open bays (general knowledge, unchecked for Eielson).
+
+**Recommended change.** None. Design calls it "the barracks" and the scenes "his bunk", which fits both.
+
+### 70. The duty desk at night in a squadron building
+
+**Claim.** "The squadron building is dark except for the duty desk" (`a2_co_heist`); the map adds a duty runner who
+walks the hall every 20 minutes (patrol P2).
+
+**Verdict.** Plausible.
+
+**Evidence.** A charge of quarters (CQ) or duty NCO on a desk with a log and a phone after hours is ordinary
+(general knowledge, unchecked). Whether a squadron's office building, rather than its dormitory, had one is
+unchecked.
+
+**Recommended change.** None.
