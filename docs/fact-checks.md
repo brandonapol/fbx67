@@ -48,9 +48,9 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 36 | Native families in town in July | Map | Plausible; consultant review | Medium. Ordinary errands and work; avoid bar-room color and the period fire slur. |
 | 37 | Golden Days and the games on the riverbank | Map | Confirmed for 1961; plausible for 1967 | Low. Optional dressing. |
 | 42 | Owen's body to a help tent (issue #230) | Story | Plausible | Low. A field hospital or Red Cross station on high ground; no real site named. |
-| 43 | Fairbanks city jail and drunk tank, August 1967 | Act 1 | Plausible; location and procedure unknown | Low. Barnette (a Trooper) questioning a city prisoner, and an airman held without a call to base, are the soft spots. |
-| 44 | Airmen on flood duty downtown, beyond item 11 | Act 1 | Plausible | Low. Eielson airmen on a sandbag line in town is right; a hard-handed sergeant is fine. |
-| 45 | The land office during the flood | Act 1 | Plausible; resolved by owner decision | None. The land office is a two-story building with a staircase; the map says so. |
+| 43 | Fairbanks city jail and drunk tank, August 1967 | Act 1 | Plausible; jail in or near Old City Hall on Cushman | Low. Barnette (a Trooper) questioning a city prisoner, and an airman held without a call to base, are the soft spots. The drinking age was 21, so Wade (19) is served illegally. |
+| 44 | Airmen on flood duty downtown, beyond item 11 | Act 1 | Plausible | Low. Eielson's documented work was helicopter rescue; airmen on a sandbag line in town is plausible, not sourced. |
+| 45 | The land office during the flood | Act 1 | Confirmed (BLM Fairbanks district office existed); resolved by owner decision | None. The land office is a two-story building with a staircase; the map says so. |
 | 46 | Eielson photo lab and its records, beyond item 6 | Act 2 | Plausible | Low. Lunch-hour and 1700 lockup are fine; "court-martial" overstates the risk. |
 | 47 | Civilian janitorial crews on base | Act 2 | Plausible; access rules unknown | Medium. Lucy gets in on a cousin's crew; needs a pass and a reason. |
 | 48 | Squadron-commander office security | Act 2 | Plausible | Low. A forced file cabinet is right; sign-out sheets there are odd (item 5). |
@@ -717,6 +717,7 @@ Ordered by impact.
 7. **Act 1, Act 2 and Act 3 settings (items 43 to 58).** Proposals only; the owner can reject any of them.
    - Land office (item 45): **decided by the owner.** The land office is a two-story building with a staircase, and `town-map.md` now says so. The scene stays as written.
    - Drunk tank (item 43): *Proposal:* Barnette may question Wade there only because the Trooper investigator was already in the city for the flood and the drownings; add one line that the base was called.
+   - Drinking age (items 43, 51): Alaska's drinking age was 21 in 1967, not 19. *Proposal:* optional; one line in Hank's speech or the cell scene that Wade is underage and nobody on Second Avenue cares. No scene must change.
    - Janitorial access (item 47): *Proposal:* Lucy's cousin lends her a contract badge and a key; she is not simply "on the crew".
    - Sign-out sheets (items 48, 49): *Proposal:* the commander's cabinet holds copies of sign-outs for EOD issues, not the master accountability records.
    - Bush strip (item 50): *Proposal:* the "truck pass" line becomes "a truck" or "a ride to the strip" unless the strip is on or beside Eielson; name it Phillips Field only if the owner wants that.
@@ -745,8 +746,9 @@ Ordered by impact.
 - Whether Alaska observed daylight saving time in summer 1967 (item 38): Fairbanks Daily News-Miner sun tables, July 1967.
 - Whether downtown 2nd Avenue was paved by 1967 (item 39): dated photographs in the UAF archives.
 - Which way 2nd Avenue runs in 1967 (item 41): a period USGS or city street map.
-- Whether the city jail was in City Hall in August 1967, and whether a prisoner was released to base Air Police
-  (item 43): Fairbanks Daily News-Miner, August 1967; Fairbanks Police Department history.
+- Whether the city jail was still in Old City Hall or in the new 1960s police station in August 1967, and whether a
+  prisoner was released to base Air Police (item 43): the Old City Hall National Register nomination; Fairbanks
+  Daily News-Miner, August 1967; Fairbanks Police Department history.
 - Whether the BLM Fairbanks land office was in the Federal Building or a storefront in August 1967, and how many floors
   it had (items 30 and 45; the invented office is two-story by owner decision): BLM Alaska history, city directories.
 - Eielson contract custodial staffing and base access passes in 1967 (item 47): 5010th Air Base Wing histories at the
@@ -826,9 +828,10 @@ Questions raised by the art direction in [`art/README.md`](art/README.md#engine-
 
 ## Act 1 to 3 settings (issues #156, #157, #158)
 
-Items 43 to 58 check the places and procedures the first three acts use. No web search was done for this pass, and
-no new sources are cited: where a statement comes from general knowledge it says so, and anything not checked is
-marked unknown and listed under "Open items and what would settle them". Every **Proposal** below is a recommendation
+Items 43 to 58 check the places and procedures the first three acts use. The first pass (PR #246) did no web search;
+a second pass added a light web search and cites what it used under **Sources (second pass)** in each item. Where a
+statement still comes from general knowledge it says so, and anything not checked is marked unknown and listed under
+"Open items and what would settle them". Every **Proposal** below is a recommendation
 the owner can reject; none of it is applied to a scene. Sources already cited in items 1 to 42 are referred to by item
 number.
 
@@ -849,8 +852,26 @@ if the flood and six drownings had Troopers working in town. An airman picked up
 released or turned over to base Air Police, and his unit told (general knowledge, unchecked). A fine paid by a lawyer
 on the morning after is plausible for a minor charge.
 
+**Sources (second pass).** Old City Hall, the 1935 Art Deco building by Henry Bittman on Cushman, was built to hold the
+city offices and the police and fire stations, and a museum listing says it held the town jail for many years
+(https://en.wikipedia.org/wiki/Old_City_Hall_(Fairbanks,_Alaska);
+https://livingnewdeal.org/sites/old-city-hall-fairbanks-ak/; https://alaska.org/detail/fairbanks-community-museum). A
+new police and fire station was built in the 1960s (https://www.sketchesofalaska.com/?p=1387); the year was not found,
+so the lockup in August 1967 was either in City Hall or in that new station. Either way it is on or near Cushman, and
+item 34 puts only about 0.15 m of water at City Hall (800 Cushman), so the cells stayed in use during the flood.
+
+Alaska's drinking age was 21 in 1967; it was lowered to 19 in 1970 and raised back to 21 in 1984
+(https://en.wikipedia.org/wiki/History_of_alcohol_minimum_purchase_age_by_U.S._jurisdiction). A 1967-68 House bill
+proposed lowering it to 19
+(https://www.akleg.gov/pdf/billfiles/All%20Versions%20of%20Bills/(1967-1968)%2005/HB0354A.pdf), which shows the age was
+still 21 then; the change came in 1970. Wade is 19 and is served beer in the Silver Pan. That holds as practice (Second
+Avenue bars serving young airmen in uniform is the kind of thing a local would believe), but it is against the law, and
+it gives the city police a second charge to hang over Hank and a reason to send an underage airman back to base.
+
 **Recommended change.** None required. **Proposal:** one line that the base was called, so Wade's sergeant already
-knows when he gets back; this fits the heat the barfight is meant to raise.
+knows when he gets back; this fits the heat the barfight is meant to raise. **Proposal:** Hank's speech or the cell
+scene can own the drinking age in one line ("You're nineteen. Nobody on Second Avenue is nineteen."); no scene
+needs to change for accuracy, since the law was widely ignored.
 
 ### 44. Airmen on flood duty downtown, beyond item 11
 
@@ -864,7 +885,16 @@ crest was Aug 15. Airmen from a base 26 miles away working a downtown line in fa
 the shape military flood help took (general knowledge). A sergeant who gives a speech and a punishment duty instead
 of a charge is ordinary.
 
-**Recommended change.** None. If a line is added, a convoy of base trucks at the edge of downtown is cheap texture.
+**Sources (second pass).** Eielson's best-documented flood work was by air: H-21 helicopters lifted people off roofs to
+a pad on the University of Alaska campus
+(https://www.alaska.edu/uajourney/history-and-trivia/public-service-an-added-d/part-1/;
+https://en.wikipedia.org/wiki/1967_Fairbanks_flood). The sandbagging the same sources describe was mostly by volunteers,
+around the hospital and the campus heating plant. No source found puts an Eielson sandbag crew on a downtown street, and
+none rules it out; item 11's decorated 5010th Combat Support Group stays the best support.
+
+**Recommended change.** None. If a line is added, a convoy of base trucks at the edge of downtown is cheap texture,
+or an H-21 overhead, which is documented. Act 1's "the Air Force has trucked half of Eielson into town" is Wade's
+exaggeration and can stay.
 
 ### 45. The land office during the flood
 
@@ -875,13 +905,18 @@ of a charge is ordinary.
 
 **Evidence.** Item 30 found no source on where the BLM's Fairbanks office was in 1967 and left Lucy's office as an
 invented building on Second (`town-map.md`, `landOffice`). The map first gave it one floor; the scene's staircase
-implies at least two. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved ledgers
-are plausible. Federal land records were BLM's by the 1960s (general knowledge, unchecked), which makes a Native
+implies at least two. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved
+ledgers are plausible. Federal land records were BLM's by the 1960s (general knowledge, unchecked), which makes a Native
 clerk handling allotment papers there plausible but worth a consultant's read.
 
 **Decision (owner).** The land office is a two-story building with a staircase. The Act 1 scene's "up a staircase"
 stays, and `town-map.md` lists `landOffice` as 2 floors. No scene change. The question of whether the real BLM office
 was in the Federal Building stays open (item 30); the invented office does not depend on it.
+
+**Sources (second pass).** The BLM had a Fairbanks district office in 1967: the Alaska Legislature's 1967 resolution
+thanking the Bureau of Land Management for its aid to flood victims names Robert Krum, Fairbanks district director
+(https://www.akleg.gov/pdf/05/Bills/Final/SCR%202%20FSSLA%201967.pdf). So a federal land office in Fairbanks that
+was itself hit by the flood, and was helping in the cleanup, is right. Its street address was not found.
 
 **Recommended change.** None.
 
@@ -1031,8 +1066,9 @@ reflects a late landing and a short working window.
 
 ### 55. A bush plane's winter survival kit
 
-**Claim.** After the crash, Lucy and Jake survive by lighting a fire and a signal; the scene offers oil-soaked rags in
-a cowling for a smoke signal, a big X in the snow, or saving everything for the fire (`a3_survive_fire`, `a3_survive_jake`).
+**Claim.** After the crash, Lucy and Jake survive by lighting a fire and a signal; the scene offers oil-soaked rags in a
+cowling for a smoke signal, a big X in the snow, or saving everything for the fire (`a3_survive_fire`,
+`a3_survive_jake`).
 
 **Verdict.** Plausible.
 
