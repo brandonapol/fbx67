@@ -69,7 +69,7 @@ src/levels.ts     the four spaces as data, and Curly's look schedule
 src/router.ts     which space a scene plays in, from the story's place; pure
 src/start.ts      reads a #path= or ?from= link and replays it through the story; pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
-src/lighting.ts   season and moral-weather presets
+src/lighting.ts   sun, sky, fog and grade per space, season and moral-weather band; pure
 src/render.ts     PlayCanvas: draws the game state, owns nothing
 src/settings.ts   the controls panel
 src/mixer.ts      buses, slider gain, ducking and saved volumes; pure
