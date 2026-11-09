@@ -5,9 +5,10 @@ import { readFileSync } from 'node:fs'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
-import { JOG, ROUND_TIME, TURN_GO, WALK, available, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
+import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, owenMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
 import { DT, back, hold, holdWhenSafe, holdWhenWatched, playPrologue, routes, talk, walk } from './drive.ts'
 import { angleBetween, length, vec } from './world.ts'
+import { clipFor } from './cast.ts'
 import { spaces } from './levels.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
@@ -177,15 +178,36 @@ test('the camera, not only the facing, decides the target', () => {
   assert.equal(focus(back)?.id, 'wade')
 })
 
-test('Owen walks by default everywhere and jogs with run', () => {
+test('Owen walks by default everywhere, jogs with run outdoors and walks briskly indoors', () => {
   const bar = press(start(), 'close')
   const north: Input = { dir: vec(0, -1), hold: false }
   assert.ok(length(tick(bar, north, DT).vel) < WALK)
   assert.ok(Math.abs(length(run(bar, north, 30).vel) - WALK) < 1e-6)
-  assert.ok(Math.abs(length(run(bar, { ...north, run: true }, 40).vel) - JOG) < 1e-6)
+  assert.ok(Math.abs(length(run(bar, { ...north, run: true }, 40).vel) - INDOOR_PACE) < 1e-6)
   const camp = { ...atCamp(), pos: vec(-2, -1.5) }
   assert.ok(Math.abs(length(run(camp, north, 30).vel) - WALK) < 1e-6)
   assert.ok(Math.abs(length(run(camp, { ...north, run: true }, 40).vel) - JOG) < 1e-6)
+})
+
+test('indoors, run held never plays the run clip and Owen stays at or under the indoor pace', () => {
+  const bar = press(start(), 'close')
+  const north: Input = { dir: vec(0, -1), hold: false, run: true }
+  const steps = Array.from({ length: 90 }).reduce<readonly Game[]>((acc) => [...acc, tick(acc[acc.length - 1], north, DT)], [bar])
+  steps.forEach((g, i) => {
+    assert.ok(length(g.vel) <= INDOOR_PACE + 1e-9, `over the indoor pace at step ${i}`)
+    assert.notEqual(clipFor(owenMotion(g)), 'run', `run clip at step ${i}`)
+  })
+  assert.ok(Math.abs(length(steps[steps.length - 1].vel) - INDOOR_PACE) < 1e-6)
+  const walking: Input = { ...north, run: false }
+  const camp = { ...atCamp(), pos: vec(-2, -1.5) }
+  assert.ok(length(run(bar, walking, 4).vel) < length(run(camp, walking, 4).vel), 'indoors Owen starts gentler than outdoors')
+})
+
+test('the clip follows the simulated velocity, not the frame displacement', () => {
+  const bar = press(start(), 'close')
+  assert.equal(clipFor(owenMotion({ ...bar, vel: vec(0, -WALK) })), 'walk')
+  assert.equal(clipFor(owenMotion({ ...bar, vel: vec(0, 0) })), 'idle')
+  assert.equal(clipFor(owenMotion({ ...atCamp(), vel: vec(0, -JOG) })), 'run')
 })
 
 test('Owen eases to a stop, and against a wall his velocity is zero', () => {

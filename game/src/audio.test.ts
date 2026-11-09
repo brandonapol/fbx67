@@ -5,7 +5,7 @@ import { DEFAULT_VOLUMES, DUCK, busGain, busGains, parseVolumes, serializeVolume
 import type { Gait } from './footsteps.ts'
 import { pace, standing, strideFor, surfaceAt } from './footsteps.ts'
 import { CURLY_PERIOD, WORK, spaces } from './levels.ts'
-import { JOG, WALK, interact, press, start, still, tick } from './prologue.ts'
+import { INDOOR_PACE, JOG, WALK, interact, press, start, still, tick } from './prologue.ts'
 import { DT, talk, walk } from './drive.ts'
 import { arrivals, ducked, holds, refueling, soundscapes, sourceAt, walked } from './soundscape.ts'
 import { beatAt, midiHz, noiseSamples } from './synth.ts'
@@ -96,8 +96,8 @@ test('walking a real route counts steps from the distance the game moved', () =>
   )
   const dist = frames.slice(1).reduce((d, g, i) => d + walked(frames[i], g), 0)
   const gait = frames.slice(1).reduce((s, g, i) => pace(s, walked(frames[i], g), DT).gait, standing)
-  assert.ok(dist > 2)
-  assert.equal(gait.steps, Math.floor(standing.phase + dist / strideFor(JOG)))
+  assert.ok(dist > 1)
+  assert.equal(gait.steps, Math.floor(standing.phase + dist / strideFor(INDOOR_PACE)))
 })
 
 test('changing space is not walking, and the room door closes on arrival', () => {

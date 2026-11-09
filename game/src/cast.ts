@@ -12,6 +12,8 @@ export type Motion = Readonly<{ speed: number; sneaking: boolean; activity: Acti
 
 export const WALK_SPEED = 1.4
 export const RUN_SPEED = 3.5
+// Indoors nobody runs: run held is a brisk walk, kept under RUNNING so the walk clip plays at a rate that matches it.
+export const INDOOR_PACE = 1.8
 const MOVING = 0.15
 const RUNNING = (WALK_SPEED + RUN_SPEED) / 2
 
