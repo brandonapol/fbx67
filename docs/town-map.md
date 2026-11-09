@@ -148,7 +148,7 @@ Off the map:
 - **Phillips Field**, the bush strip on the north side of the river beyond the railroad yards, where most small
   operators were based. Curly's hangar belongs there.
 - **Eielson Air Force Base**, about 26 miles southeast. `eielsonBarracks` is Wade's bunk there (the Act 1 letter
-  home); there is no interior to walk, so it has no coordinates.
+  home). The base is its own space, with its own coordinates: see [`base-map.md`](base-map.md).
 
 Place ids used by the scenes that are not on the walkable map (the `Place` type in `text-game/src/types.ts`):
 
@@ -157,7 +157,7 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
   a gap to fill.
 - `cityJail`: the Fairbanks PD cell and front desk (Aug 20). Off the map: no jail is placed downtown, and the scene
   never walks to or from it.
-- `eielsonBarracks`: see the Eielson entry above.
+- `eielsonBarracks`: Wade's room on the base map ([`base-map.md`](base-map.md)).
 - `surveyCamp`: Owen's camp on a gravel bar up the river, reached by Curly's plane. Its own space, not downtown.
 - `helpTent`: off the map south along Cushman beyond Fifth; its spot is a gap for the place-id ticket (#89).
 
