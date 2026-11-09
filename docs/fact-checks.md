@@ -59,11 +59,11 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 51 | A 1967 hotel bar, a councilman and men from Outside | Act 2 | Plausible; bar must be fictional | Low. Alaska's drinking age was 21 in 1967, not 19 (item 43); the Pioneer is gone (item 23). |
 | 52 | A community hall for the Chiefs meeting | Act 2 | Plausible; hall unnamed | Low-medium. Lodge halls were used (FNA potlatch, Eagles Hall, 1965); consultants should read the scene. |
 | 53 | Trooper traffic stops on the Richardson, beyond item 14 | Act 2 | Plausible; jurisdiction fits | Low. A Trooper stop outside the city is right; "no reason" needs a pretext. |
-| 54 | Daylight and temperature on 12 December | Act 3 | Confirmed | None. About four hours of sun; "three hours of grey light" is conservative. |
-| 55 | A bush plane's winter survival kit | Act 3 | Plausible | Low. The scene's tools match practice; add what a pilot would have carried. |
-| 56 | USAF ground-search skis and gear, beyond item 10 | Act 3 | Partly | Low-medium. Wade on skis is fiction; issue skis were not recreational cross-country skis. |
-| 57 | Chena Hot Springs Road and Birch Hill cemetery | Act 3 | Plausible; both unverified for 1967 | Low. Both exist; dates unchecked. |
-| 58 | A hospital parking lot at forty below | Act 3 | Plausible | None. Plug-ins and ice fog are right; add them. |
+| 54 | Daylight and temperature on 12 December | Act 3 | Confirmed | None. About four hours of sun; "three hours of grey light" is conservative; -38 F is ordinary. |
+| 55 | A bush plane's winter survival kit | Act 3 | Confirmed (state law) | Low. Alaska law required food, an axe and, in winter, a sleeping bag; name them. |
+| 56 | USAF ground-search skis and gear, beyond item 10 | Act 3 | Partly | Low-medium. Wade on skis is fiction; issue skis were not recreational cross-country skis. Eielson ran the Arctic survival school. |
+| 57 | Chena Hot Springs Road and Birch Hill cemetery | Act 3 | Confirmed (Birch Hill); plausible (road) | Low. Birch Hill was the city's from 1957; Act 4's "county" should be "city". |
+| 58 | A hospital parking lot at forty below | Act 3 | Confirmed | None. Ice fog below about -30 F and headbolt heaters since about 1948; add them. |
 | 63 | Eielson's gate in 1967: Air Police, decals, visitor passes | Base map | Plausible | None. An AP at a shack and a pass office outside the fence; no procedure shown. |
 | 64 | The base's layout, dormitories and building types | Base map | Invented; types plausible | Low. The layout is ours; only the order (highway, gate, cantonment, flight line) should hold. |
 | 65 | Wade's squadron, and a major as its commander | Base map | Unknown | Medium. Which 1967 Eielson squadron had munitions airmen and a major in command is unchecked. |
@@ -725,6 +725,7 @@ Ordered by impact.
    - Richardson stop (item 53): *Proposal:* give Barnette a pretext (a taillight, a speed check) so the search is plausible.
    - Search skis (item 56): *Proposal:* the team issues Wade army-surplus mountain skis or snowshoes; the joke about water skiing stays.
    - Survival kit and cold (items 55, 58): *Proposal:* mention a sleeping bag, an axe and a tin of matches in the crash scene, and a plugged-in car and ice fog in the parking lot. Additions, not rewrites.
+   - Curly's burial (item 57): *Proposal:* in Act 4, "a plot the county paid for" becomes "a plot the city paid for"; Alaska has no counties.
 
 ## Open items and what would settle them
 
@@ -759,9 +760,11 @@ Ordered by impact.
   UAF archives.
 - Which Fairbanks hall hosted Tanana Chiefs meetings in 1967, if any (item 52): Tanana Chiefs Conference history, and a
   Lower Tanana consultant on how the scene should look.
-- When the Chena Hot Springs Road was open to winter traffic and when Birch Hill cemetery opened its present layout
-  (item 57): Fairbanks North Star Borough and state highway histories.
-- Exact Dec 12 1967 sunrise, sunset and temperature (item 54): Fairbanks Daily News-Miner weather table.
+- How far out the Chena Hot Springs Road was plowed in winter 1967-68, and whether Birch Hill buried in winter or held
+  bodies until spring (item 57): state highway histories; a Fairbanks funeral home or the city's cemetery records.
+- Exact Dec 12 1967 sunrise, sunset and temperature (item 54): Fairbanks Daily News-Miner weather table, or the
+  Alaska Climate Research Center's daily data.
+- Whether the 1967 Alaska emergency-equipment law already listed snowshoes (item 55): the Alaska statutes as of 1967.
 - How a Nenana family in town for the hospital should appear, and what they would say to a white surveyor (item 59):
   consultants.
 - Whether 1967 gravel on state land north of town was leased or sold as material sites (item 62): Alaska Division of
@@ -1083,6 +1086,12 @@ to 13:50 (about four hours, noon altitude about 2 degrees); civil twilight about
 twilight's end and its start is about 17 hours. Minus 38 F is within the cold snaps Fairbanks has in December
 (general knowledge, unchecked for 1967). These are calculated, not read from a 1967 table.
 
+**Sources (second pass).** No daily record for December 1967 was found. For scale: Fairbanks's worst cold snap on
+record, 21 to 29 December 1961, averaged about -54 F for the week, and a climatologist counts a week averaging -40 F or
+colder as a great cold snap
+(https://alaskapublic.org/2019/01/09/fairbanks-famously-severe-cold-snaps-are-getting-less-cold-and-more-rare/). In the
+1960s -38 F in mid-December is an ordinary cold day, not a record.
+
 **Recommended change.** None. **Proposal:** "three hours of grey light" is conservative; leave it, since it also
 reflects a late landing and a short working window.
 
@@ -1092,16 +1101,22 @@ reflects a late landing and a short working window.
 cowling for a smoke signal, a big X in the snow, or saving everything for the fire (`a3_survive_fire`,
 `a3_survive_jake`).
 
-**Verdict.** Plausible.
+**Verdict.** Confirmed: the kit was required by state law.
 
-**Evidence.** Alaska pilots carried winter gear: sleeping bag, axe, matches or a fire starter, a stove, emergency
-food and a signal such as flares or a mirror. Whether a 1967 regulation required this was not checked, and the
-kit is unknown in the scene (general knowledge, unchecked). Burning oil-soaked rags makes a dark, visible smoke
+**Evidence.** Alaska law (now AS 02.35.110, "Emergency rations and equipment") bars flying in the state without
+emergency gear aboard: food for each occupant for a week, an axe or hatchet, and a first-aid kit, plus, from 15 October
+to 1 April, a pair of snowshoes and a sleeping bag
+(https://law.justia.com/codes/alaska/2010/title02/chapter02-35/sec-02-35-110;
+https://www.alaskasnewssource.com/content/news/Heres-what-survival-gear-Alaska-pilots-are-required-to-carry-490314391.html).
+The rule dates from a 1949 session law that already required sleeping bags and blankets in winter
+(https://www.akleg.gov/pdf/billfiles/SLAs/SLA%201949/CH%20128%20SLA%201949.pdf), so Jake's plane on 12 December 1967 had
+to carry them. The exact 1967 list (whether snowshoes were in it yet) is unchecked. Matches, a stove and signals were
+common practice on top of the law (general knowledge, unchecked). Burning oil-soaked rags makes a dark, visible smoke
 and is what a survival text of the time would suggest.
 
-**Recommended change.** None required. **Proposal:** name two things from the kit in the crash scene so the choices
-don't read as improvising from nothing. Lucy is "at least as capable as any pilot" at winter survival, per `design.md`,
-so she should be the one who knows what to reach for.
+**Recommended change.** None required. **Proposal:** name two things from the kit in the crash scene (the sleeping bag
+and the axe are the legally required ones) so the choices don't read as improvising from nothing. Lucy is "at least as
+capable as any pilot" at winter survival, per `design.md`, so she should be the one who knows what to reach for.
 
 ### 56. USAF ground-search skis and gear in 1967, beyond item 10
 
@@ -1117,22 +1132,42 @@ knowledge, unchecked). The Air Force Arctic Survival School was at Eielson in th
 unchecked), which supports airmen at Eielson having winter field training. The gag that Wade has never skied is
 unaffected.
 
+**Sources (second pass).** The USAF Arctic Survival Training school was running at Eielson in 1964, with week-long
+classes for aircrew (Air Weather Association, *Observer*, March 1964: https://airweaassn.org/observer/1964/196403.pdf;
+https://www.globalsecurity.org/military/agency/usaf/336trg.htm). So in 1967 Eielson had instructors and issue
+cold-weather gear on hand, and a ground team could draw from them. Skis in particular were not found in a source.
+
 **Recommended change.** **Proposal:** "cross-country skis" becomes "a pair of army-surplus mountain skis" or "skis
-with cable bindings", and a Fort Wainwright soldier on the team (item 10) for company.
+with cable bindings", and a Fort Wainwright soldier on the team (item 10) for company. An instructor from the
+survival school is another good companion.
 
 ### 57. The Chena Hot Springs Road and Birch Hill cemetery in 1967
 
 **Claim.** Curly "breaks into a hunting cabin up the Chena Hot Springs Road"; if ignored, "he took it into the ground at
 Birch Hill" (`a3_curly`).
 
-**Verdict.** Plausible. Both exist; 1967 details unverified.
+**Verdict.** Confirmed for Birch Hill; plausible for the road. One text fix: Alaska has no counties.
 
 **Evidence.** The Chena Hot Springs Road leaves the Steese area northeast of Fairbanks and runs about 56 miles to the
 hot springs, with homesteads and cabins along it; Birch Hill is the cemetery on the north side of town near the old
 military reservation (general knowledge, unchecked). Neither was checked for 1967 opening dates, surface or winter
 plowing. A cabin along it is outside the city, so it would be Trooper jurisdiction (item 14).
 
-**Recommended change.** None. If a date is ever needed, check the road's winter status first.
+**Sources (second pass).** Birch Hill Cemetery was laid out in 1938 on land Tony Zimmerman developed and gave to the
+town, run by a cemetery association, and deeded to the City of Fairbanks in 1957
+(https://en.wikipedia.org/wiki/Birch_Hill_Cemetery; https://www.sketchesofalaska.com/?p=811). In 1967 it is a city
+cemetery. The Chena Hot Springs Road began as a 1913 winter trail; the road reached Pleasant Valley by the 1950s and
+the springs in the 1960s, and its North Fork Chena bridge dates from 1967 and the Little Chena bridge from 1965
+(https://www.alaska.org/detail/chena-hot-springs-road; https://bridgecondition.com/bridge/alaska/ak-0234;
+https://bridgecondition.com/bridge/alaska/ak-0270). A hunting cabin within the first twenty or thirty miles in
+December 1967 is right; the far end may not have been plowed.
+
+Act 4 says Curly is buried at Birch Hill "in a plot the county paid for". Alaska has boroughs, not counties (the
+Fairbanks North Star Borough dates from 1964), and Birch Hill was the city's in 1967. Whether a winter burial
+was possible in frozen ground, or the body was held until spring, is unchecked.
+
+**Recommended change.** **Proposal:** "a plot the county paid for" becomes "a plot the city paid for". If a date is
+ever needed, check the road's winter status first.
 
 ### 58. A hospital parking lot at forty below
 
@@ -1147,8 +1182,15 @@ St. Joseph's or at a temporary site. At about -40, engine block heaters and plug
 thickest around vehicles and buildings, with exhaust hanging over lots. Smoking outside one-handed matches Wade's
 sling.
 
+**Sources (second pass).** Carl Benson's 1965 study at the Geophysical Institute found Fairbanks ice fog becomes a
+nuisance below about -35 C (-31 F), with car exhaust a major source because tailpipes sit so close to the ground,
+and tied the growth in winter driving to the headbolt heater, which came into use around 1948
+(https://www.dermotcole.com/reportingfromalaska/2024/2/4/6pooluhb8s82c3bew1vkcik84nu84l;
+https://www.uaf.edu/news/archives/2024/ice-fog-not-often-a-part-of-northern-life.php). UAF puts the onset at -30 to
+-35 F. So at forty below in 1967 a parking lot with engines running sits in ice fog, and plugged-in cars are the norm.
+
 **Recommended change.** None required. **Proposal:** add one line of ice fog and a row of cords running to idling
-or parked cars. Name St. Joseph's as item 16 recommends.
+or parked cars ("headbolt heater" is the period word). Name St. Joseph's as item 16 recommends.
 
 ## The prologue's town (issue #45)
 
