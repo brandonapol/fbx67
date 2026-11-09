@@ -82,9 +82,12 @@ smoke/baselines/  the committed frame per capture pose
 
 Every sound is synthesized at run time; sources and the size budget are in
 [`docs/audio/sources.md`](../docs/audio/sources.md). Four buses (ambience, effects, voices, music) feed a limiter;
-a story panel ducks voices and music. Spot effects and some beds are positional through Web Audio panners with the
-listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m at a walk, 1.2 m at
-a jog), on the surface under Owen. Escape closes the sound panel.
+a story panel ducks voices and music. The hotel mission's eavesdrop drives the guitar cover with
+`audio.setCover(0..1)`: as Wade plays harder the voices bus (the conversation) ducks toward `COVER_FLOOR`; at 0 it
+is clear. The mission sets it back to 0 when the eavesdrop ends. Spot effects and some beds are positional through
+Web Audio panners with the listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m
+at a walk, 1.2 m at a jog), on the surface under Owen; snow goes from a soft crunch near freezing to a squeak in
+deep cold, from the space's temperature. Escape closes the sound panel.
 
 ## Tests
 

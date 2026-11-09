@@ -30,8 +30,11 @@ export type Layer =
   | Readonly<{ kind: 'walla'; bus: Bus; gain: number; voices: number }>
   | Readonly<{ kind: 'jukebox'; bus: Bus; gain: number; at: Vec }>
   | Readonly<{ kind: 'reel'; bus: Bus; gain: number; at: Vec }>
+  | Readonly<{ kind: 'idle'; bus: Bus; gain: number; at: Vec; rpm: number }>
+  | Readonly<{ kind: 'hum'; bus: Bus; gain: number; at?: Vec; buzz: number }>
+  | Readonly<{ kind: 'guitar'; bus: Bus; gain: number }>
 
-export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'glug' | 'door'
+export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'glug' | 'door' | 'raven' | 'perk'
 
 export type Condition = 'writing' | 'refueling'
 
@@ -116,6 +119,55 @@ const flood: Soundscape = {
 }
 
 export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood }
+
+export type Act2Space = 'town' | 'base' | 'hotel' | 'hall'
+
+export const FREEZEUP_F = 12
+
+export const PLUGGED_AT: readonly Vec[] = [vec(-6, 3.5), vec(4.5, 4)]
+export const URN_AT = vec(3.2, -2.6)
+
+const town: Soundscape = {
+  ground: { surface: 'snow', regions: [], tempF: FREEZEUP_F },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 260, gain: 0.3, wobble: { rate: 0.06, depth: 0.7, on: 'gain' } },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 2600, gain: 0.04, wobble: { rate: 0.13, depth: 0.8, on: 'gain' } },
+    ...PLUGGED_AT.map((at, i): Layer => ({ kind: 'idle', bus: 'ambience', gain: 0.22, at, rpm: 720 + 90 * i })),
+  ],
+  events: [{ spot: 'raven', bus: 'ambience', every: [6, 18], at: vec(0, -9), spread: 9 }],
+}
+
+const base: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [
+    { kind: 'hum', bus: 'ambience', gain: 0.12, buzz: 0.35 },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'lowpass', freq: 520, gain: 0.16 },
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 110, gain: 0.3 },
+  ],
+  events: [{ spot: 'door', bus: 'ambience', every: [18, 45], at: vec(0, -10), spread: 6 }],
+}
+
+const hotel: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [
+    { kind: 'walla', bus: 'voice', gain: 1.3, voices: 5 },
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 150, gain: 0.25 },
+    { kind: 'guitar', bus: 'music', gain: 0.9 },
+  ],
+  events: [{ spot: 'clink', bus: 'ambience', every: [1.2, 4.5], at: vec(-1.5, -3.6), spread: 3 }],
+}
+
+const hall: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 120, gain: 0.3 },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 2200, q: 1.2, gain: 0.03, at: URN_AT },
+    { kind: 'hum', bus: 'ambience', gain: 0.03, at: URN_AT, buzz: 0 },
+  ],
+  events: [{ spot: 'perk', bus: 'ambience', every: [0.4, 2.8], at: URN_AT, spread: 0.05 }],
+}
+
+export const act2Soundscapes: Readonly<Record<Act2Space, Soundscape>> = { town, base, hotel, hall }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 

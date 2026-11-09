@@ -1,10 +1,10 @@
 import type { Box, Vec } from './world.ts'
 
-export type Surface = 'wood' | 'gravel' | 'mud' | 'water'
+export type Surface = 'wood' | 'gravel' | 'mud' | 'water' | 'snow'
 
 export type Region = Readonly<{ box: Box; surface: Surface }>
 
-export type Ground = Readonly<{ surface: Surface; regions: readonly Region[] }>
+export type Ground = Readonly<{ surface: Surface; regions: readonly Region[]; tempF?: number }>
 
 export const strideFor = (speed: number): number => 0.42 + 0.22 * Math.max(0, speed)
 
@@ -27,3 +27,15 @@ const inside = (p: Vec, b: Box): boolean => Math.abs(p.x - b.x) <= b.w / 2 && Ma
 
 export const surfaceAt = (ground: Ground, p: Vec): Surface =>
   ground.regions.findLast((r) => inside(p, r.box))?.surface ?? ground.surface
+
+export const SOFT_SNOW_F = 25
+
+export const SQUEAK_SNOW_F = -10
+
+export type Snow = Readonly<{ squeak: number; freq: number; decay: number; grains: number }>
+
+export const snowAt = (tempF: number | undefined): Snow => {
+  const t = Number.isFinite(tempF) ? (tempF as number) : SOFT_SNOW_F
+  const squeak = Math.min(1, Math.max(0, (SOFT_SNOW_F - t) / (SOFT_SNOW_F - SQUEAK_SNOW_F)))
+  return { squeak, freq: 700 + 1500 * squeak, decay: 0.16 - 0.08 * squeak, grains: 3 + Math.round(4 * squeak) }
+}

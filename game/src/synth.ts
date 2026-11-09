@@ -1,4 +1,5 @@
 import type { Surface } from './footsteps.ts'
+import { snowAt } from './footsteps.ts'
 import type { Color, Layer, Noise, Spot } from './soundscape.ts'
 
 export type Rand = () => number
@@ -63,6 +64,22 @@ export const beatAt = (i: number): Beat => {
   const bar = TUNE[Math.floor(i / 4) % TUNE.length]
   const offbeat = i % 2 === 1
   return { bass: bar.root + (i % 4 === 2 ? 7 : 0), chord: offbeat ? bar.chord : undefined }
+}
+
+export const STRUM_TEMPO = 84
+
+export const CHANGES: readonly Readonly<{ root: number; fifth: number; chord: readonly number[] }>[] = [
+  { root: 40, fifth: 47, chord: [52, 56, 59, 64] },
+  { root: 45, fifth: 40, chord: [57, 61, 64, 69] },
+  { root: 40, fifth: 47, chord: [52, 56, 59, 64] },
+  { root: 47, fifth: 42, chord: [54, 57, 59, 63] },
+]
+
+export type Pluck = Readonly<{ bass?: number; strum?: readonly number[] }>
+
+export const strumAt = (i: number): Pluck => {
+  const bar = CHANGES[Math.floor(i / 4) % CHANGES.length]
+  return i % 2 === 0 ? { bass: i % 4 === 0 ? bar.root : bar.fifth } : { strum: bar.chord }
 }
 
 export type Buffers = Readonly<Record<Color, AudioBuffer>>
@@ -249,10 +266,69 @@ const reelVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Extract<Layer, { 
   return { out: g, stop: (at) => nodes.forEach((n) => n.stop(at)) }
 }
 
+const idleVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Extract<Layer, { kind: 'idle' }>, rand: Rand): Voice => {
+  const g = gainNode(ctx, l.gain)
+  const engine = ctx.createOscillator()
+  engine.type = 'sawtooth'
+  engine.frequency.value = (l.rpm / 60) * 2
+  const lumpy = lfo(ctx, between(rand, 0.4, 0.9), 1.5, engine.frequency)
+  engine.connect(filter(ctx, 'lowpass', 160, 1.2)).connect(gainNode(ctx, 0.5)).connect(g)
+  const exhaust = loop(ctx, buffers.brown)
+  exhaust.connect(filter(ctx, 'highpass', RUMBLE_CUT)).connect(filter(ctx, 'lowpass', 240)).connect(gainNode(ctx, 0.5)).connect(g)
+  exhaust.start(ctx.currentTime, between(rand, 0, BUFFER_SECONDS))
+  const nodes = [engine, lumpy, exhaust]
+  nodes.slice(0, 2).forEach((n) => n.start())
+  return { out: g, stop: (at) => nodes.forEach((n) => n.stop(at)) }
+}
+
+const humVoice = (ctx: BaseAudioContext, l: Extract<Layer, { kind: 'hum' }>): Voice => {
+  const g = gainNode(ctx, l.gain)
+  const mains = [60, 120, 180].map((f, i) => {
+    const o = ctx.createOscillator()
+    o.frequency.value = f
+    o.connect(gainNode(ctx, [0.6, 0.3, 0.12][i])).connect(g)
+    return o
+  })
+  const ballast = ctx.createOscillator()
+  ballast.type = 'square'
+  ballast.frequency.value = 120
+  ballast.connect(filter(ctx, 'bandpass', 1800, 2)).connect(gainNode(ctx, 0.05 * l.buzz)).connect(g)
+  const nodes = [...mains, ballast]
+  nodes.forEach((n) => n.start())
+  return { out: g, stop: (at) => nodes.forEach((n) => n.stop(at)) }
+}
+
+const STRING_GAP = 0.014
+
+const guitarVoice = (ctx: BaseAudioContext, l: Extract<Layer, { kind: 'guitar' }>, rand: Rand): Voice => {
+  const body = filter(ctx, 'lowpass', 2400, 0.8)
+  const g = gainNode(ctx, l.gain)
+  body.connect(g)
+  const beat = 60 / STRUM_TEMPO
+  const s = { i: 0, next: ctx.currentTime + 0.1, stopped: false }
+  const pluck = (m: number, at: number, peak: number, ring: number): number =>
+    Math.max(tone(ctx, body, 'sawtooth', midiHz(m), at, peak, 0.003, ring), tone(ctx, body, 'triangle', midiHz(m) * 2, at, peak * 0.3, 0.002, ring * 0.4))
+  const tick = (now: number): void => {
+    if (s.stopped) return
+    if (s.next < now) s.next = now + 0.05
+    while (s.next < now + 0.25) {
+      const p = strumAt(s.i)
+      if (p.bass) pluck(p.bass, s.next, 0.16, beat * 1.6)
+      p.strum?.forEach((m, k) => pluck(m, s.next + k * STRING_GAP + between(rand, 0, 0.004), 0.07, beat * 0.9))
+      s.i += 1
+      s.next += beat
+    }
+  }
+  return { out: g, tick, stop: () => (s.stopped = true) }
+}
+
 export const layerVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Layer, rand: Rand): Voice => {
   if (l.kind === 'noise') return noiseVoice(ctx, buffers, l, rand)
   if (l.kind === 'walla') return wallaVoice(ctx, buffers, l, rand)
   if (l.kind === 'jukebox') return jukeboxVoice(ctx, l)
+  if (l.kind === 'idle') return idleVoice(ctx, buffers, l, rand)
+  if (l.kind === 'hum') return humVoice(ctx, l)
+  if (l.kind === 'guitar') return guitarVoice(ctx, l, rand)
   return reelVoice(ctx, buffers, l, rand)
 }
 
@@ -297,14 +373,39 @@ export const spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest:
       tone(ctx, dest, 'triangle', 1900, at, 0.02, 0.002, 0.25),
     )
   }
+  if (which === 'raven') {
+    const throat = filter(ctx, 'bandpass', between(rand, 1000, 1400), 2.5)
+    throat.connect(dest)
+    const f = between(rand, 380, 520)
+    const calls = 1 + Math.floor(rand() * 3)
+    return Array.from({ length: calls }, (_, i) =>
+      tone(ctx, throat, 'sawtooth', f, at + i * between(rand, 0.32, 0.45), 0.35, 0.02, 0.24, f * 0.78),
+    ).reduce((a, b) => Math.max(a, b), at)
+  }
+  if (which === 'perk') {
+    const pops = 2 + Math.floor(rand() * 3)
+    return Array.from({ length: pops }, (_, i) => {
+      const f = between(rand, 500, 900)
+      return tone(ctx, dest, 'sine', f, at + i * between(rand, 0.03, 0.09), between(rand, 0.03, 0.08), 0.002, 0.04, f * 1.9)
+    }).reduce((a, b) => Math.max(a, b), at)
+  }
   const creak = tone(ctx, dest, 'sawtooth', between(rand, 90, 120), at, 0.05, 0.25, 0.45, between(rand, 130, 160))
   const thump = burst(ctx, buffers, dest, 'brown', 'lowpass', 220, 1, creak, 0.9, 0.005, 0.3, rand)
   return Math.max(thump, tone(ctx, dest, 'square', 1800, creak + 0.02, 0.03, 0.001, 0.02))
 }
 
-export const footstep = (ctx: BaseAudioContext, buffers: Buffers, surface: Surface, dest: AudioNode, rand: Rand): number => {
+export const footstep = (ctx: BaseAudioContext, buffers: Buffers, surface: Surface, dest: AudioNode, rand: Rand, tempF?: number): number => {
   const at = ctx.currentTime + 0.005
   const k = between(rand, 0.8, 1.2)
+  if (surface === 'snow') {
+    const snow = snowAt(tempF)
+    const crunch = Array.from({ length: snow.grains }, (_, i) =>
+      burst(ctx, buffers, dest, 'white', 'bandpass', snow.freq * between(rand, 0.8, 1.25), 1.5 + 2 * snow.squeak, at + i * between(rand, 0.012, 0.03), between(rand, 0.08, 0.18), 0.004, snow.decay / 2, rand),
+    ).reduce((a, b) => Math.max(a, b), at)
+    const pack = burst(ctx, buffers, dest, 'brown', 'lowpass', 380 * k, 1, at, 0.4 * (1 - snow.squeak * 0.6), 0.02, snow.decay, rand)
+    const squeak = snow.squeak > 0.3 ? tone(ctx, dest, 'triangle', between(rand, 1500, 2100), at + 0.03, 0.04 * snow.squeak, 0.01, 0.07) : at
+    return Math.max(crunch, pack, squeak)
+  }
   if (surface === 'wood')
     return Math.max(
       burst(ctx, buffers, dest, 'brown', 'bandpass', 200 * k, 2.5, at, 0.7, 0.003, 0.09, rand),
