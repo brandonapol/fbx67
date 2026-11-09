@@ -95,8 +95,8 @@ test('the body always grants the knot, moves Eli trust only when pointed out, an
   })
 })
 
-// Notes may land the same where a detail carries no state yet (the barfight's move, #205), so the check is on the states:
-// every way through matches a note, and every note is a way through.
+// Notes may land the same where a detail carries no state on that path (the barfight's move when seated), so the
+// check is on the states: every way through matches a note, and every note is a way through.
 test('every mission note ends at its end scene, and the notes cover every way through', () => {
   missions.forEach((m) => {
     const starts = allAt(m.start)
@@ -187,5 +187,18 @@ test('the seated path offers the same moves as getting up', () => {
   assert.deepEqual(
     menu(s).options.map((o) => o.note),
     ['shove', 'mooseRack', 'bottle', 'stayInSeat'],
+  )
+})
+
+test('getting up records the move for Hank; staying seated leaves him the stool', () => {
+  const s = atBarfight[0]
+  const moves = ['shove', 'rack', 'bottle'] as const
+  assert.deepEqual(
+    moves.map((m) => sendMission(s, note('gotUp', m, 'leftEli', 'clean')).barfightMove),
+    ['shove', 'mooseRack', 'bottle'],
+  )
+  assert.deepEqual(
+    moves.map((m) => sendMission(s, note('stayedSeated', m, 'leftEli', 'clean')).barfightMove),
+    [undefined, undefined, undefined],
   )
 })

@@ -12,9 +12,10 @@ const delivered = `${N.eli} doesn't ask your name. He knows whose mother it is b
 
 "Tell her I'm going," he says. Then, over the motor: "Get back to your line before they shoot you for it, Texas. I'll come find you tonight. I could use a strong back."`
 
-// The fight's moves, offered whether Wade got up or Curly dragged him in. Hank remembers the move only when Wade got
-// up; dragged in, he is the airman who stayed on his stool (hankRemembers). A room move he is still holding when the
-// law comes in can catch him red-handed; a broken bottle already carries its point of heat, so it skips that prompt.
+// The fight's moves, offered whether Wade got up or Curly dragged him in. The bartender remembers the move only when
+// Wade got up; dragged in, he is the airman who stayed on his stool (hankRemembers). A room move he is still holding
+// when the law comes in can catch him red-handed; a broken bottle already carries its point of heat, so it skips that
+// prompt.
 const fightMoves = (gotUp: boolean): readonly Choice[] => {
   const move = (m: BarfightMove) => (gotUp ? set({ barfightMove: m }) : (s: State) => s)
   return [

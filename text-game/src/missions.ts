@@ -64,8 +64,8 @@ const caught: Detail = { name: 'Caught', picks: [{ note: 'clean', label: 'clean'
 // docs/acts/act1-missions.md, section 3. Every combination of the four details is a note, opened.move.stood.caught,
 // and applies the scene choices in play order: stayInSeat if seated (Curly drags Wade in to the same moves), the move,
 // the caught prompt, then where Wade stood. A bottle already carries the fight's one point of heat, so it skips the
-// caught prompt and its clean and red-handed notes land the same; shove and rack land the same until the move carries
-// state (#205).
+// caught prompt and its clean and red-handed notes land the same. Got up, the move is recorded in barfightMove (#205);
+// stayed seated, the bartender remembers the stool instead, so a seated shove and a seated rack land the same.
 const barfightEndings: readonly MissionEnding[] = opened.picks.flatMap((o) =>
   move.picks.flatMap((m) =>
     stood.picks.flatMap((st) =>
