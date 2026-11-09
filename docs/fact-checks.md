@@ -48,6 +48,22 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 36 | Native families in town in July | Map | Plausible; consultant review | Medium. Ordinary errands and work; avoid bar-room color and the period fire slur. |
 | 37 | Golden Days and the games on the riverbank | Map | Confirmed for 1961; plausible for 1967 | Low. Optional dressing. |
 | 42 | Owen's body to a help tent (issue #230) | Story | Plausible | Low. A field hospital or Red Cross station on high ground; no real site named. |
+| 43 | Fairbanks city jail and drunk tank, August 1967 | Act 1 | Plausible; location and procedure unknown | Low. Barnette (a Trooper) questioning a city prisoner, and an airman held without a call to base, are the soft spots. |
+| 44 | Airmen on flood duty downtown, beyond item 11 | Act 1 | Plausible | Low. Eielson airmen on a sandbag line in town is right; a hard-handed sergeant is fine. |
+| 45 | The land office during the flood | Act 1 | Plausible; building conflicts with the map | Medium. The scene has a staircase; the map has a one-floor storefront. |
+| 46 | Eielson photo lab and its records, beyond item 6 | Act 2 | Plausible | Low. Lunch-hour and 1700 lockup are fine; "court-martial" overstates the risk. |
+| 47 | Civilian janitorial crews on base | Act 2 | Plausible; access rules unknown | Medium. Lucy gets in on a cousin's crew; needs a pass and a reason. |
+| 48 | Squadron-commander office security | Act 2 | Plausible | Low. A forced file cabinet is right; sign-out sheets there are odd (item 5). |
+| 49 | Munitions sign-out practice, beyond item 5 | Act 2 | Partly | Low. The forged sheets are fiction; where they live is the question. |
+| 50 | The bush strip in November | Act 2 | Plausible; name and "truck pass" open | Low. Phillips Field fits; a pass at a bush strip does not. |
+| 51 | A 1967 hotel bar, a councilman and men from Outside | Act 2 | Plausible; bar must be fictional | Low. Alaska's drinking age was 19; the Pioneer is gone (item 23). |
+| 52 | A community hall for the Chiefs meeting | Act 2 | Plausible; hall unnamed | Low-medium. Keep it unnamed; consultants should read the scene. |
+| 53 | Trooper traffic stops on the Richardson, beyond item 14 | Act 2 | Plausible; jurisdiction fits | Low. A Trooper stop outside the city is right; "no reason" needs a pretext. |
+| 54 | Daylight and temperature on 12 December | Act 3 | Confirmed | None. About four hours of sun; "three hours of grey light" is conservative. |
+| 55 | A bush plane's winter survival kit | Act 3 | Plausible | Low. The scene's tools match practice; add what a pilot would have carried. |
+| 56 | USAF ground-search skis and gear, beyond item 10 | Act 3 | Partly | Low-medium. Wade on skis is fiction; issue skis were not recreational cross-country skis. |
+| 57 | Chena Hot Springs Road and Birch Hill cemetery | Act 3 | Plausible; both unverified for 1967 | Low. Both exist; dates unchecked. |
+| 58 | A hospital parking lot at forty below | Act 3 | Plausible | None. Plug-ins and ice fog are right; add them. |
 
 ## High priority
 
@@ -690,6 +706,15 @@ Ordered by impact.
 4. **Reword the allotment stakes in Act 4 and the good ending.** Destroying the camp hurts the claim in front of a BLM field examiner flying over in summer, but it does not erase years of past use. Say that, and make the good ending "the claim is reopened" or "won years later" rather than "restored".
 5. **Use the 1960 Chena ice-jam blasting.** An Air Force ordnance group blew a Chena jam at Fairbanks in 1960. It gives the CO's act a precedent and a cover story, and tells you who held demolition charges (EOD or ordnance, not line munitions).
 6. **Small text fixes.** "Prints" not "originals" for the aerial photographs; "grandfather" for Barnette, and "a jury let him off" for the bank; name St. Joseph's and note it closes in June 1968; soften "nobody is flying anywhere" at freeze-up; route the search through the Rescue Coordination Center; "Investigator" instead of "Inspector" until confirmed; add a preheated hangar to the fuel sabotage.
+7. **Act 1, Act 2 and Act 3 settings (items 43 to 58).** Proposals only; the owner can reject any of them.
+   - Land office (item 45): the scene's staircase needs a second floor, but `town-map.md` has a one-floor storefront. *Proposal:* have Lucy hauling the ledgers up onto high shelves and a loft, or move the office into the Federal Building (item 30).
+   - Drunk tank (item 43): *Proposal:* Barnette may question Wade there only because the Trooper investigator was already in the city for the flood and the drownings; add one line that the base was called.
+   - Janitorial access (item 47): *Proposal:* Lucy's cousin lends her a contract badge and a key; she is not simply "on the crew".
+   - Sign-out sheets (items 48, 49): *Proposal:* the commander's cabinet holds copies of sign-outs for EOD issues, not the master accountability records.
+   - Bush strip (item 50): *Proposal:* the "truck pass" line becomes "a truck" or "a ride to the strip" unless the strip is on or beside Eielson; name it Phillips Field only if the owner wants that.
+   - Richardson stop (item 53): *Proposal:* give Barnette a pretext (a taillight, a speed check) so the search is plausible.
+   - Search skis (item 56): *Proposal:* the team issues Wade army-surplus mountain skis or snowshoes; the joke about water skiing stays.
+   - Survival kit and cold (items 55, 58): *Proposal:* mention a sleeping bag, an axe and a tin of matches in the crash scene, and a plugged-in car and ice fog in the parking lot. Additions, not rewrites.
 
 ## Open items and what would settle them
 
@@ -712,6 +737,20 @@ Ordered by impact.
 - Whether Alaska observed daylight saving time in summer 1967 (item 38): Fairbanks Daily News-Miner sun tables, July 1967.
 - Whether downtown 2nd Avenue was paved by 1967 (item 39): dated photographs in the UAF archives.
 - Which way 2nd Avenue runs in 1967 (item 41): a period USGS or city street map.
+- Whether the city jail was in City Hall in August 1967, and whether a prisoner was released to base Air Police
+  (item 43): Fairbanks Daily News-Miner, August 1967; Fairbanks Police Department history.
+- Whether the BLM Fairbanks land office was in the Federal Building or a storefront in August 1967, and how many floors
+  it had (items 30 and 45): BLM Alaska history, city directories.
+- Eielson contract custodial staffing and base access passes in 1967 (item 47): 5010th Air Base Wing histories at the
+  Air Force Historical Research Agency.
+- Where demolition and sign-out records were kept at Eielson in 1967 (items 5, 48, 49): the same unit histories.
+- Whether a bush strip near Fairbanks in 1967 had a gate or required a vehicle pass (item 50): Pioneer Air Museum,
+  UAF archives.
+- Which Fairbanks hall hosted Tanana Chiefs meetings in 1967, if any (item 52): Tanana Chiefs Conference history, and a
+  Lower Tanana consultant on how the scene should look.
+- When the Chena Hot Springs Road was open to winter traffic and when Birch Hill cemetery opened its present layout
+  (item 57): Fairbanks North Star Borough and state highway histories.
+- Exact Dec 12 1967 sunrise, sunset and temperature (item 54): Fairbanks Daily News-Miner weather table.
 
 ## Engine look checks (issue #32)
 
@@ -764,3 +803,269 @@ Questions raised by the art direction in [`art/README.md`](art/README.md#engine-
 **Evidence.** St. Joseph's was flooded and evacuated in August 1967 (items 16 and 27), and about 12,000 people were evacuated (item 34). A field hospital or Red Cross station on high ground is plausible for a flood of that size. Not checked against a named 1967 site.
 
 **Recommended change.** Keep it as "the help tent" with no real site named. Settle the real location with the Fairbanks Daily News-Miner's August 1967 coverage if it ever matters.
+
+## Act 1 to 3 settings (issues #156, #157, #158)
+
+Items 43 to 58 check the places and procedures the first three acts use. No web search was done for this pass, and
+no new sources are cited: where a statement comes from general knowledge it says so, and anything not checked is
+marked unknown and listed under "Open items and what would settle them". Every **Proposal** below is a recommendation
+the owner can reject; none of it is applied to a scene. Sources already cited in items 1 to 42 are referred to by item
+number.
+
+### Act 1 (flood)
+
+### 43. The Fairbanks city jail and drunk tank, August 1967
+
+**Claim.** After the Silver Pan fight, Fairbanks PD takes Wade, Eli and Curly to a cell. On Aug 20 Barnette
+comes to the cell, offers "Give me a name and you walk", and then Ashby pays Wade's fine (`a1_tank`, `a1_ashby`;
+place `cityJail`).
+
+**Verdict.** Plausible. Location and procedure unknown.
+
+**Evidence.** A city of Fairbanks's size had a city police lockup, and a drunk tank for overnight drunk-and-disorderly
+arrests is ordinary. The town map places no jail downtown (`town-map.md`). Item 14 says Troopers cover areas outside
+the city and Fairbanks PD covers the city, so a Trooper investigator in a city cell is a crossover; it is explained
+if the flood and six drownings had Troopers working in town. An airman picked up by city police would normally be
+released or turned over to base Air Police, and his unit told (general knowledge, unchecked). A fine paid by a lawyer
+on the morning after is plausible for a minor charge.
+
+**Recommended change.** None required. **Proposal:** one line that the base was called, so Wade's sergeant already
+knows when he gets back; this fits the heat the barfight is meant to raise.
+
+### 44. Airmen on flood duty downtown, beyond item 11
+
+**Claim.** Wade is put on a sandbag line downtown on Aug 15, and his sergeant gives him the heaviest end after he
+wandered off (`a1_line`, place `floodedStreet`).
+
+**Verdict.** Plausible.
+
+**Evidence.** Item 11 confirms Eielson's 5010th Combat Support Group worked the flood Aug 12 to 21 and that the
+crest was Aug 15. Airmen from a base 26 miles away working a downtown line in fatigues, under their own sergeant, is
+the shape military flood help took (general knowledge). A sergeant who gives a speech and a punishment duty instead
+of a charge is ordinary.
+
+**Recommended change.** None. If a line is added, a convoy of base trucks at the edge of downtown is cheap texture.
+
+### 45. The land office during the flood
+
+**Claim.** On Aug 16 Eli takes Wade to the land office, where Lucy is "hauling wet ledgers up a staircase"
+(`a1_lucy`, place `landOffice`, Aug 16). She is a clerk there; Ashby has "taken over" the family's claim.
+
+**Verdict.** Plausible, with a conflict. The staircase does not fit the map.
+
+**Evidence.** Item 30 found no source on where the BLM's Fairbanks office was in 1967 and left Lucy's office as an
+invented one-floor storefront on Second (`town-map.md`, `landOffice`, "1 floor"). The scene's staircase implies at
+least two floors. Item 34 puts water on Second Avenue on Aug 15; one day later the mud, wet records and moved ledgers
+are plausible. Federal land records were BLM's by the 1960s (general knowledge, unchecked), which makes a Native
+clerk handling allotment papers there plausible but worth a consultant's read.
+
+**Recommended change.** **Proposal:** keep the storefront and change "up a staircase" to "up onto the high shelves and
+into the loft", or follow item 30's alternative and move the office into the Federal Building, which has stairs.
+Either keeps the land thread; the first changes only a phrase.
+
+### Act 2 (winter)
+
+### 46. The Eielson photo lab and its records, beyond item 6
+
+**Claim.** The prints are in a records room behind the base photo lab. The clerk takes a long lunch; the duty sergeant
+locks up at 1700. Refusing is "not worth a court-martial for some old pictures" (`a2_photos`, `a2_photos_files`).
+
+**Verdict.** Plausible.
+
+**Evidence.** Item 6 covers the photography and why the room can hold prints. A base photo lab with a records room,
+a clerk and an end-of-day lockup is ordinary. Unauthorized entry to a restricted area is an offense, but for old
+unclassified mapping prints the likely consequence is an administrative or non-judicial punishment, not a
+court-martial (general knowledge, unchecked). Recon film from current missions would be controlled; old mapping
+prints would not be.
+
+**Recommended change.** None required. **Proposal:** "isn't worth a court-martial" becomes "isn't worth my stripes".
+
+### 47. Civilian janitorial crews on base
+
+**Claim.** "Lucy gets onto the base on her cousin's janitorial crew" at night, gets the files, and is seen leaving a
+squadron building (`a2_co_lucy`).
+
+**Verdict.** Plausible. Access rules unknown.
+
+**Evidence.** Bases of the era used civilian custodial workers, often on contract, and Alaska Native workers were
+among them (general knowledge, unchecked). Entry would need a base pass or badge, a gate check, and likely an
+escort or a named crew list. Cleaning crews do have keys and after-hours access, which is exactly why this works. No
+source on Eielson's 1967 contract custodial staffing or its pass system was found.
+
+**Recommended change.** **Proposal:** Lucy borrows the cousin's pass and cleaning key for one night, which makes the
+risk personal to the cousin and fits "she gets spotted on the way out". Keep Lucy capable and in charge of her own
+plan, per the Eli and Lucy rule; the crew gets her in, she does the work.
+
+### 48. Squadron-commander office security
+
+**Claim.** Wade forces a cabinet in the CO's office with a screwdriver, or opens it another way, and photographs
+munitions sign-outs, flight schedules and letter copies (`a2_co_found`).
+
+**Verdict.** Plausible.
+
+**Evidence.** A squadron commander's office would be locked after duty hours. Unclassified files sat in lockable
+cabinets or lock-bar cabinets; classified material belonged in an approved safe with a combination (general
+knowledge, unchecked). So forcing a cabinet and leaving marks is right for unclassified files, and a combination safe
+would be a different scene. Master munitions accountability lived in the munitions section, not the commander's
+files (item 5), so what the cabinet holds is copies.
+
+**Recommended change.** None required. **Proposal:** "munitions sign-out sheets" becomes "copies of sign-outs", as in
+item 49.
+
+### 49. The munitions sign-out practice, beyond item 5
+
+**Claim.** The CO forges Wade's signature on demolition sign-outs; Wade later lifts a demolition kit from the
+bunker (`a3_rash_safe`).
+
+**Verdict.** Partly. The fiction holds; the paperwork path is unverified.
+
+**Evidence.** Item 5 covers the job title, demolition stores held by EOD or ordnance, and its recommended wording.
+Item 5 also notes that the 1960 Chena jam was blasted by an Air Force ordnance group. A one-armed airman taking a kit
+from a bunker "on a night shift" assumes unguarded bunker access; real storage areas were fenced, with entry
+control and two-person rules for many items, though not for everything (general knowledge, unchecked).
+
+**Recommended change.** None required. **Proposal:** in `a3_rash_safe`, say Wade uses the forged sign-out sheets or a
+shift he already works, so the access is explained by the plot and not by lax security.
+
+### 50. The bush strip in November
+
+**Claim.** In November Curly lashes a tarp over a wing at "the bush strip"; planes are coming off floats onto skis;
+Eli says Wade is "the only one with a truck pass for the strip" (`a2_curly`).
+
+**Verdict.** Plausible. The strip's name and the "truck pass" are open.
+
+**Evidence.** Item 35 found that Phillips Field, north of the Chena beyond the railroad yards, was the small-plane
+base for air taxis and guides until the late 1970s, which fits a bush strip in town. Item 9 covers the float-to-ski
+changeover and the gap before skis. A "truck pass" implies a controlled gate, which suits Eielson (where Jake works)
+and not a general aviation field; no source says Phillips Field had one.
+
+**Recommended change.** **Proposal:** keep "the bush strip" unnamed; or name it Phillips Field because item 35
+sources it. Change "truck pass for the strip" to "a truck and a base sticker", or place the pass at Eielson's gate.
+
+### 51. A 1967 hotel bar where a councilman drinks with men from Outside
+
+**Claim.** In October Lucy wants ears in the hotel bar downtown where Councilman Tolliver drinks with men from
+Outside. A uniform with a guitar can sit in the corner; a Native woman asking questions cannot (`a2_hotel`).
+
+**Verdict.** Plausible. The bar must be fictional.
+
+**Evidence.** Item 22 confirms the Nordale Hotel on Second; item 23 says the Pioneer had burned in 1952, so it cannot
+be used; item 21 says bar names are invented. Alaska's drinking age was 19 in the 1960s, so a 19-year-old airman
+playing in a bar is legal (from general knowledge; not verified here). A live guitar in the corner of a hotel bar is
+ordinary. The Alaska Equal Rights Act of 1945 barred discrimination in public places, but in practice Native patrons
+were turned away or watched in many Interior bars (general knowledge, unchecked); the scene's "cannot" is about that
+practice, not the law.
+
+**Recommended change.** None required. **Proposal:** name no real hotel; call it "the hotel bar", as now. If a name
+is needed, invent one (item 21).
+
+### 52. A community hall for the Chiefs meeting
+
+**Claim.** Lucy takes Wade to a Tanana Chiefs meeting "in a community hall on the edge of town": folding chairs, a
+coffee urn, a map with pins; delegates from the Tanana and the Yukon (`a2_chiefs`).
+
+**Verdict.** Plausible. The hall is unnamed.
+
+**Evidence.** Item 17 confirms the Tanana Chiefs organized in 1962, met in Fairbanks in 1915, and that the group
+pressed land claims in 1966 to 1968. Meetings in halls, churches and schools were normal for the period (general
+knowledge). No source names a Fairbanks hall used in October 1967. An airman, even invited by Lucy, being allowed in
+and asked to stand in the back is a story choice; the Eli and Lucy rule applies, so the meeting must be about their
+aims, not Wade's.
+
+**Recommended change.** None required. **Proposal:** leave the hall unnamed and ask a Lower Tanana or Tanana Chiefs
+consultant to read the scene (see items 36 and 40) before it ships.
+
+### 53. Trooper traffic stops on the Richardson, beyond item 14
+
+**Claim.** If Wade's heat is 3 or more, Barnette pulls him over on the Richardson Highway in a borrowed truck "for no
+reason at all", searches it, and warns him (`a2_heat`).
+
+**Verdict.** Plausible. Jurisdiction fits.
+
+**Evidence.** Item 14 says Troopers cover areas outside city limits and that Barnette's rank is unconfirmed. The
+Richardson between Fairbanks and Eielson (about 26 miles, through North Pole) is a state highway outside the city, so
+a Trooper stop is in his jurisdiction. A vehicle search needs probable cause or consent; "no reason at all" is how
+Wade sees it, not how a stop would be written up (general knowledge, unchecked).
+
+**Recommended change.** **Proposal:** give Barnette a pretext, a broken taillight or an unregistered borrowed truck,
+and keep Wade's feeling that it was for no reason.
+
+### Act 3 (Lucy)
+
+### 54. Daylight and temperature on 12 December
+
+**Claim.** "December 12th, thirty-eight below ... three hours of grey light"; the plane crashes and "it's getting dark
+for the next eighteen hours". Act 2 says "the sun is barely up for four hours" in December (`a3_camp`, `a2_heat`).
+
+**Verdict.** Confirmed for daylight; the temperature is plausible.
+
+**Evidence.** Computed for 64.84 N, 147.72 W on Dec 12 on UTC-10 clocks (item 38): sun above the horizon about 09:40
+to 13:50 (about four hours, noon altitude about 2 degrees); civil twilight about 08:20 to 15:10. Dark between
+twilight's end and its start is about 17 hours. Minus 38 F is within the cold snaps Fairbanks has in December
+(general knowledge, unchecked for 1967). These are calculated, not read from a 1967 table.
+
+**Recommended change.** None. **Proposal:** "three hours of grey light" is conservative; leave it, since it also
+reflects a late landing and a short working window.
+
+### 55. A bush plane's winter survival kit
+
+**Claim.** After the crash, Lucy and Jake survive by lighting a fire and a signal; the scene offers oil-soaked rags in
+a cowling for a smoke signal, a big X in the snow, or saving everything for the fire (`a3_survive_fire`, `a3_survive_jake`).
+
+**Verdict.** Plausible.
+
+**Evidence.** Alaska pilots carried winter gear: sleeping bag, axe, matches or a fire starter, a stove, emergency
+food and a signal such as flares or a mirror. Whether a 1967 regulation required this was not checked, and the
+kit is unknown in the scene (general knowledge, unchecked). Burning oil-soaked rags makes a dark, visible smoke
+and is what a survival text of the time would suggest.
+
+**Recommended change.** None required. **Proposal:** name two things from the kit in the crash scene so the choices
+don't read as improvising from nothing. Lucy is "at least as capable as any pilot" at winter survival, per `design.md`,
+so she should be the one who knows what to reach for.
+
+### 56. USAF ground-search skis and gear in 1967, beyond item 10
+
+**Claim.** Rescue Coordination Center asks Eielson for a ground team; Wade is a munitions man for flares and signal
+charges; "they hand you cross-country skis" (`a3_search`).
+
+**Verdict.** Partly.
+
+**Evidence.** Item 10 already rates the RCC call as right, the munitions-man reason as fiction, and says Army troops
+from Fort Wainwright were more likely. Military winter gear of the period (mountain skis with cable bindings,
+snowshoes, mukluks, parkas, Arctic sleeping bags) is a different thing from recreational cross-country skis (general
+knowledge, unchecked). The Air Force Arctic Survival School was at Eielson in the period (general knowledge,
+unchecked), which supports airmen at Eielson having winter field training. The gag that Wade has never skied is
+unaffected.
+
+**Recommended change.** **Proposal:** "cross-country skis" becomes "a pair of army-surplus mountain skis" or "skis
+with cable bindings", and a Fort Wainwright soldier on the team (item 10) for company.
+
+### 57. The Chena Hot Springs Road and Birch Hill cemetery in 1967
+
+**Claim.** Curly "breaks into a hunting cabin up the Chena Hot Springs Road"; if ignored, "he took it into the ground at
+Birch Hill" (`a3_curly`).
+
+**Verdict.** Plausible. Both exist; 1967 details unverified.
+
+**Evidence.** The Chena Hot Springs Road leaves the Steese area northeast of Fairbanks and runs about 56 miles to the
+hot springs, with homesteads and cabins along it; Birch Hill is the cemetery on the north side of town near the old
+military reservation (general knowledge, unchecked). Neither was checked for 1967 opening dates, surface or winter
+plowing. A cabin along it is outside the city, so it would be Trooper jurisdiction (item 14).
+
+**Recommended change.** None. If a date is ever needed, check the road's winter status first.
+
+### 58. A hospital parking lot at forty below
+
+**Claim.** Eli finds Wade "in the hospital parking lot, smoking one-handed in the cold", on the way to a
+confession (`a3_*`, `a3_eli`).
+
+**Verdict.** Plausible, with texture to add.
+
+**Evidence.** Item 16 says St. Joseph's was failing and closed in June 1968; this December scene either happens at
+St. Joseph's or at a temporary site. At about -40, engine block heaters and plug-ins were standard in Fairbanks
+(general knowledge, unchecked for 1967 outlet availability at a hospital), and ice fog forms near -30 F and lower,
+thickest around vehicles and buildings, with exhaust hanging over lots. Smoking outside one-handed matches Wade's
+sling.
+
+**Recommended change.** None required. **Proposal:** add one line of ice fog and a row of cords running to idling
+or parked cars. Name St. Joseph's as item 16 recommends.
