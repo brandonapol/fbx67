@@ -60,7 +60,7 @@ Each scene can carry three fields, `place`, `clock` and `goal`, written in its s
 
 | Query | Returns | Example |
 |---|---|---|
-| `place(state)` | one of a fixed set of place ids (`Place` in `text-game/src/types.ts`): `silverPan`, `owensRoom`, `floatDock`, `surveyCamp`, `boardingHouse` | `floatDock` |
+| `place(state)` | one of a fixed set of place ids (`Place` in `text-game/src/types.ts`): `silverPan`, `owensRoom`, `floatDock`, `surveyCamp`, `boardingHouse`, `floodedStreet`, `floodCabin`, `helpTent`, `landOffice`, `cityJail`, `eielsonBarracks` | `floatDock` |
 | `clock(state)` | local date and time, `YYYY-MM-DDTHH:MM` (`Clock` in `types.ts`), for sun angle and season; weather such as the flood comes from the date, not the place | `1967-07-15T07:30` |
 | `season(state)` | `summer`, `flood`, `freezeup`, `winter` or `breakup`, from `clock(state)`; `undefined` when the scene has no clock | `flood` |
 | `goal(state)` | a short objective line: where the story wants the player next | `Fly north with Curly to the survey camp.` |
