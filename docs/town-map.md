@@ -133,7 +133,7 @@ boat up.
 | Co-op Drug | B1, south side of Second next to the Nordale (535 Second Avenue), facing the Blanchfield lane's mouth | x 39..57, z 64..78 | (48, 64), north onto Second | 0.90 | 2 floors, 8 m |
 | Cushman Street bridge | over the river | x −6..6, z −60..2 | | | see [Bridge](#bridge) |
 | Immaculate Conception church | north bank, by the bridge's north end | x −40..−22, z −88..−66 | backdrop | | steeple about 15 m |
-| St. Joseph's Hospital (`stJosephs`) | north bank, a little downstream (west) of the church | x −130..−80, z −118..−82 | backdrop | | 4 floors (a guess) |
+| St. Joseph's Hospital | north bank, a little downstream (west) of the church | x −130..−80, z −118..−82 | backdrop | | 4 floors (a guess) |
 | Northward Building | south of Third between Lacey and Noble | x 88..154, z 112..160 | backdrop | | 8 floors, about 26 m |
 | Gravel lot (Pioneer Hotel site) | First Avenue across Barnette, a full block west of the N.C., off the map | x −112..−92, z 16..32 | backdrop | | none |
 
@@ -155,8 +155,6 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
 - `floodCabin`: the half-sunk cabin on the edge of town where Eli's pole finds Owen (Aug 15). Off the map: the
   scene needs no spot downtown, and the flood tables already cover the water. A spot, if the engine wants one, is
   a gap to fill.
-- `stJosephs`: the hospital's flooded first floor, a hallway of cots (Aug 15). The building is the backdrop above;
-  the scene is an interior we do not build.
 - `cityJail`: the Fairbanks PD cell and front desk (Aug 20). Off the map: no jail is placed downtown, and the scene
   never walks to or from it.
 - `eielsonBarracks`: see the Eielson entry above.
@@ -189,13 +187,18 @@ a staircase between the floors (item 45), which the Act 1 scene uses when Lucy h
 **Generic buildings** (pale on the map) are unnamed frame storefronts, rooming houses, cabins and sheds. See
 [Building types](#building-types).
 
-### Interiors in `game/src/levels.ts`
+### Spaces in `game/src/levels.ts`
+
+Two spaces are not placed: `line`, the Act 1 sandbag line across Cushman, is a piece of flooded street with no
+position on this map yet, and `story` is the backdrop for a scene that has no space.
 
 | Space | Placement: center (x, z), yaw | Floor (y) | Check |
 |---|---|---|---|
 | `bar` (12 × 10) | (33, 43), 0° | 0.67 | the door spot at local (0, 4.4) lands at (33, 47.4), on the Silver Pan's front wall; local x ±6 spans x 27..39, so the bar's east wall is the building's east wall on the lane |
+| `boarding` (16 × 14) | (134, 89), 0° | 1.16 | spans x 126..142, z 82..96, the whole house; the front door at local (0, 7) lands at (134, 96), Owen's door on Third, and the spawn (0, 6.2) at (134, 95.2) just inside it. The ground floor: the hall with the pay phone, the landlady's parlor west of it, the shared bathroom at the back east of the hall, and the stair rising south from local z −0.5 (z 88.5) to the landing over the door. The stair spot (0.4, −0.6) lands at (134.4, 88.4), at the foot of the stair and just south of Owen's room, which is above at the back |
 | `room` (6 × 6) | (134, 85), 0° | 4.16 | spans x 131..137, z 82..88, inside the house; its window wall (local z −2.9) is the house's north wall at z 82, over the alley; the desk faces it |
 | `camp` | off the map | | |
+| `downtown` (250 × 200) | (70, 40), 0° | 0 for now (see below) | the play area itself, x −55..195, z −60..140, in world coordinates: a local coordinate is a map coordinate. Built by `game/src/downtown.ts`; see [In the engine](#in-the-engine-pass-1-gray-box) |
 | `flood` (20 × 16) | (135.4, 103.9), 180° | street grade 0.87; water 1.2 | spans x 125.4..145.4, z 95.9..111.9. The house wall (local z 7.3..7.9) lands at z 96.0..96.6, back face flush with the boarding house's front at z 96. The door glow (local x 1.4) lands at x 134, Owen's door. The skiff (local (0.2, 3.4)) lands at (135.2, 100.5) |
 
 ## The prologue route
