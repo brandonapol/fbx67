@@ -2,6 +2,9 @@ import './style.css'
 import type { Game, Input } from './prologue.ts'
 import { focus, handedOff, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { startFrom } from './start.ts'
+import type { Letter } from './letters.ts'
+import { sheet } from './letters.ts'
+import { renderLetter } from './letterView.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
 import { mountSoundPanel } from './sound-panel.ts'
@@ -157,8 +160,17 @@ const renderText = (g: Game): void => {
   textEl.replaceChildren(...text.split(/\n\s*\n/).map((para) => Object.assign(document.createElement('p'), { textContent: para.trim() })))
 }
 
+// A letter home: the letter view in the panel's text, redrawn as the pen moves.
+const renderHome = (l: Letter): void => {
+  const s = sheet(l)
+  const key = JSON.stringify(s)
+  if (live.shownText === key) return
+  live.shownText = key
+  renderLetter(textEl, s, (note) => choose(`note:${note}`))
+}
+
 const renderPanel = (g: Game): void => {
-  if (g.panel) renderText(g)
+  if (g.panel) (g.home ? renderHome(g.home) : renderText(g))
   if (live.shown === g.panel) return
   live.shown = g.panel
   panelEl.hidden = !g.panel
@@ -229,7 +241,7 @@ const readPad = (): Pad | undefined => {
 }
 
 const panelFocus = (step: number): void => {
-  const buttons = Array.from(buttonsEl.querySelectorAll('button'))
+  const buttons = Array.from(panelEl.querySelectorAll('button'))
   if (!buttons.length) return
   const i = buttons.indexOf(document.activeElement as HTMLButtonElement)
   buttons[(i + step + buttons.length) % buttons.length].focus({ preventScroll: true })
@@ -237,7 +249,9 @@ const panelFocus = (step: number): void => {
 
 const confirmPanel = (): void => {
   const el = document.activeElement
-  const b = el instanceof HTMLButtonElement && buttonsEl.contains(el) ? el : buttonsEl.querySelector('button')
+  // A letter's lines are picked, never defaulted: confirm clicks only the one in focus, and finishes a line being written.
+  if (live.g.home?.writing) return choose('finish')
+  const b = el instanceof HTMLButtonElement && panelEl.contains(el) ? el : live.g.home ? undefined : buttonsEl.querySelector('button')
   b?.click()
 }
 
@@ -294,6 +308,15 @@ window.addEventListener('keydown', (e) => {
   if (e.repeat) return
   live.keys.add(e.code)
   const g = live.g
+  if (g.home) {
+    const n = Number(e.key)
+    const b = Number.isInteger(n) && n > 0 ? sheet(g.home).buttons[n - 1] : undefined
+    if (b || (g.home.writing && e.code === 'Enter')) {
+      e.preventDefault()
+      choose(b ? `note:${b.note}` : 'finish')
+    }
+    return
+  }
   if (g.panel) {
     const n = Number(e.key)
     const b = Number.isInteger(n) && n > 0 ? g.panel.buttons[n - 1] : e.code === 'Enter' ? g.panel.buttons[0] : undefined
