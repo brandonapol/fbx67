@@ -42,8 +42,8 @@ check/text: check/text/typecheck check/text/lint test/text/unit test/text/verify
 check/text/typecheck: ## tsc --noEmit on text-game
 	cd $(TEXT) && npm run -s typecheck
 
-check/text/lint: ## Story lint over scene sources: the oil rule and placeholder names
-	cd $(TEXT) && node --test --test-reporter=dot src/storyLint.test.ts
+check/text/lint: ## Story lint over scene sources and ambient lines: the oil rule, names, reachability
+	cd $(TEXT) && node --test --test-reporter=dot src/storyLint.test.ts src/ambient/*.test.ts
 
 check/web: ## Typecheck web
 	cd $(WEB) && npm run -s typecheck
@@ -82,7 +82,7 @@ check/markdown: ## markdownlint on docs (needs npx)
 test: test/text/unit ## Unit tests and golden replay
 
 test/text/unit: ## node --test on text-game
-	cd $(TEXT) && node --test --test-reporter=dot src/*.test.ts
+	cd $(TEXT) && node --test --test-reporter=dot src/*.test.ts src/ambient/*.test.ts
 
 test/text/verify: ## Randomized check that liveness pruning is safe
 	cd $(TEXT) && node src/verify.ts --trials $(VERIFY_TRIALS) --seed $(VERIFY_SEED)
