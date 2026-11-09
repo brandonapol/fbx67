@@ -213,7 +213,7 @@ The core cast and the first nine clips cost about 215 credits.
 - Textures are WebP, which shrinks the download but not GPU memory. KTX2/Basis is decided above, not yet built.
 - No mesh LODs yet (#40). No props in hands yet: drinking clips need a glass on the hand bone.
 - Clips are generic library motion. Character-specific gestures (Curly's bowline, Wade's guitar) need new clips.
-- The run clip is a sprint; a jog clip is wanted for town.
+- The run clip is a sprint; the `jog` clip (Run_02) is the town pace, not yet wired into game code.
 
 ## Follow-ups
 

@@ -62,6 +62,7 @@ character by `game/tools/characters.ts`.
 | `idle` | Idle (library #0) | `2500c02c-311b-4505-8cf7-38fdfe9cb8f6` |
 | `walk` | Casual_Walk_inplace (library #613) | `c5826c9f-bbcf-424f-8874-27d92b5af4c6` |
 | `run` | RunFast (library #16) | `f0111535-f8e5-4a85-a58a-a53fd2923a35` |
+| `jog` | Run_02 (library #14) | `63144d3b-b6ff-4134-804f-8cc073d2fb53` |
 | `sneak` | Sneaky_Walk_inplace (library #671) | `0e4e12e6-9a04-4984-af6a-78b47ac679d1` |
 | `sit` | Chair_Sit_Idle_M (library #33) | `139e958c-90ae-4c9b-8038-0f94dc6b2fd2` |
 | `sitDrink` | Sit_and_Drink (library #343) | `638cbd6a-abb2-4004-af84-5c5d2d4f4e20` |
