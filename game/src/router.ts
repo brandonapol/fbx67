@@ -12,5 +12,6 @@ export const route = (s: State, from: SpaceId): Route => {
   const act = menu(s).act
   const space = spaceFor(act, place(s))
   if (space) return { to: 'space', space }
-  return act === spaces[from].act ? { to: 'menu' } : { to: 'text' }
+  const here = spaces[from].act
+  return here === undefined || here === act ? { to: 'menu' } : { to: 'text' }
 }

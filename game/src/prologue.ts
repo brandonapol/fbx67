@@ -23,7 +23,7 @@ export const TURN_GO = 0.5
 
 export type Button = Readonly<{ id: string; label: string }>
 
-export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end'; title: string; text: string; buttons: readonly Button[] }>
+export type Panel = Readonly<{ kind: 'story' | 'busted' | 'end' | 'error'; title: string; text: string; buttons: readonly Button[] }>
 
 export type Holding = Readonly<{ id: string; note?: string; progress: number; time: number }>
 
@@ -67,6 +67,8 @@ const storyPanel = (story: State, notes: readonly string[], extra: readonly Butt
 
 const close = (label: string): Button => ({ id: 'close', label })
 
+const restart: Button = { id: 'restart', label: 'Start from the beginning' }
+
 export const sendNote = (g: Game, note: string): Game => {
   const option = menu(g.story).options.find((o) => o.note === note)
   if (!option) throw new Error(`${g.story.scene} does not accept ${note}`)
@@ -98,6 +100,23 @@ export const start = (): Game => ({
   panel: storyPanel(initialState, [], [close('Walk over to the table.')]),
 })
 
+const backdrop = (story: State, path: readonly number[]): Game => ({
+  story,
+  path,
+  space: 'story',
+  pos: spaces.story.spawn,
+  facing: Math.PI,
+  view: Math.PI,
+  vel: zero,
+  t: 0,
+  busts: 0,
+})
+
+export const failed = (text: string): Game => ({
+  ...backdrop(initialState, []),
+  panel: { kind: 'error', title: "Can't start there", text, buttons: [restart] },
+})
+
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
@@ -122,10 +141,15 @@ const leftPrologue = (from: State, to: State): boolean => menu(from).act === 'Pr
 const arrive = (g: Game): Game => {
   const r = route(g.story, g.space)
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
-  if (r.to === 'menu') return { ...g, panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note)) }
+  if (r.to === 'menu') {
+    const notes = menu(g.story).options.map((o) => o.note)
+    return { ...g, panel: storyPanel(g.story, notes, notes.length ? [] : [restart]) }
+  }
   if (r.space !== g.space) return enter(g, r.space)
   return { ...g, panel: storyPanel(g.story, [], [close(spaces[r.space].back ?? 'Back.')]) }
 }
+
+export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
 
 const busted = (g: Game): Game => ({
   ...g,
@@ -160,6 +184,7 @@ export const interact = (g: Game): Game => {
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
   if (button === 'retry') return enter(g, g.space)
+  if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
   if (button.startsWith('note:')) {
     const next = sendNote(g, button.slice(5))

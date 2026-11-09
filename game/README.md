@@ -14,6 +14,15 @@ panel over the current space, each option a note button. A scene with no space i
 prologue today) hands off to the text build at the path, so Act 1 never plays as panels over Owen's flood. A new space
 declares its `act` and `place` in `src/levels.ts` and takes over its scenes.
 
+### Start at any scene
+
+Open the engine at a text-build path to start where it leads: `/play/#path=1,1,1,1,1,1,2,2,1,1,1,1,2,1,1` (the
+format the end card and the text build write) or `/play/?from=1,1,…`. `src/start.ts` replays the path through the
+story's menus, one note per step, and starts there through the router: a scene whose place has a space puts the player
+in it; one with no space shows its menu over `story`, a blank backdrop that belongs to no act, and the notes go on as
+panels there until a scene's place has a space. A path the story refuses (a step that is not a number, a choice the menu
+does not have, a step past an ending) shows an error panel naming the step, with a button to start from the beginning.
+
 Live at <https://brandonapol.github.io/fbx67/play/>.
 
 ## Run it
@@ -58,6 +67,7 @@ src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, inter
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
 src/levels.ts     the four spaces as data, and Curly's look schedule
 src/router.ts     which space a scene plays in, from the story's place; pure
+src/start.ts      reads a #path= or ?from= link and replays it through the story; pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   season and moral-weather presets
 src/render.ts     PlayCanvas: draws the game state, owns nothing
@@ -101,7 +111,10 @@ deep cold, from the space's temperature. Escape closes the sound panel.
     fixed shot (`poses` in `src/probe.ts`, `View.pose` in `src/render.ts`), hides the HUD and compares the frame with
     `smoke/baselines/` (pixelmatch; a frame fails past 0.2% changed pixels);
   - walks back and forth in each space for 10 s, recording draw calls, triangles, texture memory and CPU frame time,
-    and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md).
+    and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md);
+  - opens one start per act from a path (`smoke/starts.ts`: `a1_flood`, `a2_major`, `a3_camp`, `a4_news`), checks
+    the scene and its menu panel, records its perf samples and captures frame `<scene>.png` from the start's pose. A
+    later act ticket adds its start as one entry there, with a pose in `src/probe.ts` for the space it starts in.
 
   It refuses a port that serves another build, so parallel worktrees need their own `SMOKE_PORT`. Everything lands
   in `smoke-report/` (`SMOKE_REPORT=<dir>` moves it): `frames/`, `diff/` for changed frames,

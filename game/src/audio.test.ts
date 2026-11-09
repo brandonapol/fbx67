@@ -69,8 +69,8 @@ test('the first step comes soon after starting, and stopping resets the stride',
   assert.equal(pace(standing, 1, 0).falls, 0)
 })
 
-test('every prologue space has an ambience bed and a surface under every walkable point', () => {
-  Object.values(spaces).forEach((s) => {
+test('every space in an act has an ambience bed and a surface under every walkable point', () => {
+  Object.values(spaces).filter((s) => s.act).forEach((s) => {
     const scape = soundscapes[s.id]
     assert.ok(scape.layers.some((l) => l.bus === 'ambience'), `${s.id} has no ambience bed`)
     const grid = Array.from({ length: 21 }, (_, i) => i / 20 - 0.5)
