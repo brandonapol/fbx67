@@ -1,4 +1,4 @@
-import type { State } from './types.ts'
+import type { BarfightMove, State } from './types.ts'
 import { honesty } from './state.ts'
 
 export type Ending = 'best' | 'good' | 'middle' | 'bad'
@@ -8,6 +8,11 @@ export type CurlyFate = 'testifies' | 'convicted' | 'buried' | 'killed'
 export type IceJam = 'stopped' | 'blown'
 
 export const HEAT_LIMIT = 3
+
+// What Hank Lyle remembers of Wade's barfight: the move he made, or that he stayed on his stool.
+export type BarfightMemory = BarfightMove | 'seat'
+
+export const hankRemembers = (s: State): BarfightMemory => s.barfightMove ?? 'seat'
 
 export const leakIsWadesFault = (s: State): boolean => s.leakedFlightDate
 

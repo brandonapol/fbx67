@@ -18,6 +18,7 @@ const dropEvidence = (...es: readonly Evidence[]) => (s: State): State => ({
 
 export const rules: readonly Rule[] = [
   { after: 'a1_ashby', apply: drop('barfight') },
+  { after: 'a2_steak', apply: drop('barfightMove') },
   { after: 'a2_hotel', apply: dropEvidence('aerialPhotos') },
   { after: 'a2_flight', apply: drop('coJob') },
   { after: 'a3_curly', apply: dropEvidence('knot', 'bruising', 'curlyKnot', 'curlyLefty', 'staffCar', 'wreckProof') },

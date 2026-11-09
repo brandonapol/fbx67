@@ -7,6 +7,7 @@ import {
   doubleAgentWorks,
   eliJailed,
   ending,
+  hankRemembers,
   iceJam,
   middleFlavor,
   missingForBest,
@@ -150,4 +151,11 @@ test('every best gate missing at once is reported in order', () => {
   const worst = w({ curlyPlan: 'ignore', eliTrespass: 'report', afterConfession: 'turn', offer: 'take', testified: false, sharedWreck: false, heat: 6, leakedFlightDate: true })
   assert.equal(missingForBest(worst).length, 9)
   assert.equal(missingForBest(worst)[0], 'ending is bad')
+})
+
+test('Hank remembers the barfight move, or that Wade stayed on his stool', () => {
+  assert.equal(hankRemembers(initialState), 'seat')
+  assert.equal(hankRemembers({ ...initialState, barfightMove: 'shove' }), 'shove')
+  assert.equal(hankRemembers({ ...initialState, barfightMove: 'mooseRack' }), 'mooseRack')
+  assert.equal(hankRemembers({ ...initialState, barfightMove: 'bottle' }), 'bottle')
 })

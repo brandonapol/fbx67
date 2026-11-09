@@ -14,6 +14,7 @@ const KEYED = {
   scene: true,
   owenCache: true,
   barfight: true,
+  barfightMove: true,
   momHonesty: true,
   leakedFlightDate: true,
   coJob: true,

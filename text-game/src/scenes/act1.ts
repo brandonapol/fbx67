@@ -267,9 +267,9 @@ A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
 
 The floor is slick with mud. There's a hot stove, a moose rack on the wall, and a lot of bottles.`,
     choices: () => [
-      { label: 'Shove the drunk into the stove.', note: 'shove', next: 'a1_tank' },
-      { label: 'Grab the moose rack off the wall.', note: 'mooseRack', next: 'a1_tank' },
-      { label: 'Break a bottle and hope that ends it.', note: 'bottle', apply: heat(1), next: 'a1_tank' },
+      { label: 'Shove the drunk into the stove.', note: 'shove', apply: set({ barfightMove: 'shove' }), next: 'a1_tank' },
+      { label: 'Grab the moose rack off the wall.', note: 'mooseRack', apply: set({ barfightMove: 'mooseRack' }), next: 'a1_tank' },
+      { label: 'Break a bottle and hope that ends it.', note: 'bottle', apply: pipe(set({ barfightMove: 'bottle' }), heat(1)), next: 'a1_tank' },
       { label: 'Stay in your seat. Not your fight.', note: 'stayInSeat', apply: eliTrust(-1), next: 'a1_tank_sat' },
     ],
   },

@@ -9,7 +9,7 @@ import { N } from '../names.ts'
 
 export type Townsperson = Ambient & Readonly<{ role: string; want: string; habit: string }>
 
-const hank = N.bartender.split(' ')[0]
+const hank = N.bartenderShort
 const mister = `Mr. ${N.owen.split(' ')[1]}`
 const curly = N.curlyShort
 const wade = N.wade

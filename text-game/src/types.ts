@@ -18,6 +18,8 @@ export type Evidence =
   | 'curlyNamesAshby'
   | 'councilmanFlips'
 
+export type BarfightMove = 'shove' | 'mooseRack' | 'bottle'
+
 export type MomLine = 'honest' | 'soft' | 'lie'
 
 export type CacheSpot = 'stove' | 'cache' | 'marker'
@@ -41,6 +43,7 @@ export type State = Readonly<{
   scene: SceneId
   owenCache?: CacheSpot
   barfight?: 'coverEli' | 'blameEli' | 'sideCurly'
+  barfightMove?: BarfightMove
   momHonesty: number
   leakedFlightDate: boolean
   coJob?: 'wade' | 'lucy'
