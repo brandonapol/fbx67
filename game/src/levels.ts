@@ -2,9 +2,10 @@ import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 import type { Activity } from './cast.ts'
 import type { Act, Place } from '../../text-game/src/types.ts'
-import { CENTER, SIZE, doorSpots, pieces, spawnAt } from './downtown.ts'
+import { N } from '../../text-game/src/names.ts'
+import { CENTER, SIZE, doorSpots, gaps, pieces, spawnAt } from './downtown.ts'
 
-export type SpaceId = 'bar' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'story'
+export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'story'
 
 export type Season = 'summer' | 'flood'
 
@@ -18,7 +19,11 @@ export type Prop = Readonly<{
   glow?: boolean
   flat?: boolean
   shape?: 'box' | 'cylinder' | 'cone'
+  // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door.
+  while?: Letter
 }>
+
+export type Letter = 'unfolded' | 'folded'
 
 export type Figure = Readonly<{
   id: string
@@ -115,6 +120,99 @@ export const bar: Space = {
   ],
 }
 
+// A wall along x at z, from x0 to x1, with the door gaps cut out (thickness 0.2).
+const wallX = (z: number, x0: number, x1: number, color: string, doors: readonly (readonly [number, number])[] = []): readonly Prop[] =>
+  gaps(x0, x1, doors).map(([a, b]) => wall((a + b) / 2, z, b - a, 0.2, color))
+
+// A wall along z at x, from z0 to z1, with the door gaps cut out.
+const wallZ = (x: number, z0: number, z1: number, color: string, doors: readonly (readonly [number, number])[] = []): readonly Prop[] =>
+  gaps(z0, z1, doors).map(([a, b]) => wall(x, (a + b) / 2, 0.2, b - a, color))
+
+// A closed door: a dark slab on a wall, at x or z.
+const shutX = (x: number, z: number, color = '#3a2a1e'): Prop => ({ box: { x, z, w: 0.9, d: 0.24 }, h: 2.1, color })
+const shutZ = (x: number, z: number, color = '#3a2a1e'): Prop => ({ box: { x, z, w: 0.24, d: 0.9 }, h: 2.1, color })
+
+const plaster = '#9a8a70'
+const papered = '#8f7b66'
+
+// The stair rises south from its foot at the back of the hall (local z -1) to the landing over the front door.
+const STEPS = 8
+const stair: readonly Prop[] = Array.from({ length: STEPS }, (_, i): Prop => {
+  const d = 7 / STEPS
+  return { box: { x: 2.2, z: -0.5 + d * (i + 0.5), w: 1.8, d }, h: 0.35 * (i + 1), color: '#5e4430', solid: true, occludes: i > 3 }
+})
+
+// The ground floor of Owen's boarding house on Third (x 126..142, z 82..96 on the town map), as a gray box: the front
+// door on Third, the hall with the pay phone, the landlady's parlor with the radio on, the shared bathroom at the
+// back, and the stair up to Owen's room. Local x east, z south; the front door is at local (0, 7).
+export const boarding: Space = {
+  id: 'boarding',
+  act: 'Prologue',
+  name: 'The boarding house',
+  interior: true,
+  season: 'summer',
+  size: { w: 16, d: 14 },
+  ground: '#6b5641',
+  spawn: vec(0, 6.2),
+  props: [
+    ...wallX(-7, -8, 8, plaster),
+    ...wallX(7, -8, 8, plaster),
+    ...wallZ(-8, -7, 7, plaster),
+    ...wallZ(8, -7, 7, plaster),
+    { box: { x: 0, z: 6.85, w: 1.0, d: 0.12 }, h: 2.1, color: '#2c2622' },
+    // The parlor, west of the hall, open to it between z 2.5 and 4.5.
+    ...wallZ(-1.2, -1, 7, papered, [[2.5, 4.5]]),
+    ...wallX(-1, -8, -1.2, papered),
+    // The kitchen behind it, shut.
+    shutX(-4.6, -0.86),
+    // The stair's east wall and the brakeman's room beyond it, shut.
+    ...wallZ(3.2, -2, 7, papered),
+    shutZ(3.34, 2.4),
+    // The shared bathroom at the back, east of the hall, its door off the hall at z -4.5.
+    ...wallX(-2, 1.2, 8, plaster),
+    ...wallZ(1.2, -7, -2, plaster, [[-5, -4]]),
+    { box: { x: 6.6, z: -5.9, w: 1.7, d: 0.8 }, h: 0.55, color: '#d8d4c8', solid: true },
+    { box: { x: 4.0, z: -6.65, w: 0.55, d: 0.45 }, h: 0.85, color: '#d8d4c8', solid: true },
+    { box: { x: 4.0, z: -6.9, w: 0.5, d: 0.04 }, h: 0.6, y: 1.2, color: '#b9c4c8' },
+    { box: { x: 7.5, z: -3.0, w: 0.5, d: 0.65 }, h: 0.45, color: '#d8d4c8', solid: true },
+    { box: { x: 5.2, z: -4.5, w: 0.15, d: 0.15 }, h: 0.1, y: 2.5, color: '#ffb877', glow: true },
+    ...stair,
+    // The hall: a runner, the mail table by the door, coat hooks, the pay phone on the parlor wall, the bulb.
+    { box: { x: 0, z: 2.5, w: 1.0, d: 8.5 }, h: 0.01, color: '#6e2f2a', flat: true },
+    { box: { x: -0.85, z: 5.4, w: 0.5, d: 0.9 }, h: 0.8, color: '#4a3020', solid: true },
+    { box: { x: 0.95, z: 6.5, w: 0.2, d: 0.6 }, h: 0.8, y: 1.0, color: '#3e3226' },
+    { box: { x: -1.04, z: 6.1, w: 0.12, d: 0.24 }, h: 0.42, y: 1.25, color: '#1e1e1e' },
+    { box: { x: -1.0, z: 6.1, w: 0.16, d: 0.34 }, h: 0.04, y: 1.05, color: '#3e3226' },
+    { box: { x: 0, z: 1.5, w: 0.15, d: 0.15 }, h: 0.1, y: 2.6, color: '#ffb877', glow: true },
+    // The parlor: the radio on its table with the dial lit, her armchair, the sofa, a lamp, a rug.
+    { box: { x: -7.4, z: 3.4, w: 0.7, d: 0.5 }, h: 0.7, color: '#4a3020', solid: true },
+    { box: { x: -7.4, z: 3.4, w: 0.55, d: 0.32 }, h: 0.32, y: 0.7, color: '#7a4e2c' },
+    { box: { x: -7.12, z: 3.4, w: 0.04, d: 0.2 }, h: 0.08, y: 0.85, color: '#ffc27a', glow: true },
+    { box: { x: -5.2, z: 3.4, w: 0.8, d: 0.8 }, h: 0.9, color: '#6a4a5a', solid: true },
+    { box: { x: -4.6, z: 6.4, w: 2.4, d: 0.8 }, h: 0.8, color: '#5a5048', solid: true },
+    { box: { x: -7.4, z: 6.4, w: 0.4, d: 0.4 }, h: 1.4, color: '#3e3226' },
+    { box: { x: -7.4, z: 6.4, w: 0.5, d: 0.5 }, h: 0.35, y: 1.4, color: '#ffc27a', glow: true },
+    { box: { x: -4.4, z: 3.6, w: 3.2, d: 2.4 }, h: 0.01, color: '#7a5a3a', flat: true },
+    { box: { x: -7.9, z: 1.6, w: 0.08, d: 1.2 }, h: 1.0, y: 1.0, color: '#ffd9a0', glow: true },
+  ],
+  figures: [
+    { id: 'landlady', at: vec(-4.5, 3.4), facing: Math.PI / 2, coat: '#7b5e78', skin: '#e2b994', hair: '#b8b2a8', height: 1.6 },
+    { id: 'boarder', at: vec(-3.0, 1.1), facing: -Math.PI / 2, coat: '#3e4a5a', skin: '#d8a880', hair: '#3a2c20', height: 1.78 },
+  ],
+  spots: [
+    { id: 'landlady', x: -4.5, z: 3.4, r: 2.4, prompt: 'Say good evening' },
+    { id: 'stair', x: 0.4, z: -0.6, r: 1.1, prompt: 'Go up to your room' },
+  ],
+}
+
+// Owen's room, upstairs at the back of the house (x 131..137, z 82..88): the bed, the desk under the north window
+// with the survey maps pinned either side of it, the typewriter, the reel-to-reel on the trunk, the theodolite case
+// and the sample bags. The midnight sun comes through a thin curtain. The stair comes up at the door, local (0, 3).
+export const DESK_AT = vec(0.6, -1.4)
+export const BED_AT = vec(-1.1, 0.4)
+export const TYPEWRITER_AT = vec(0.4, -2.45)
+export const REEL_AT = vec(2.3, -2.3)
+
 export const room: Space = {
   id: 'room',
   act: 'Prologue',
@@ -127,14 +225,46 @@ export const room: Space = {
   spawn: vec(0, 1.2),
   props: [
     ...walls(6, 6, '#8c7a62'),
-    { box: { x: -1.8, z: -1.6, w: 1.6, d: 2.4 }, h: 0.6, color: '#5d6f7f', solid: true },
-    { box: { x: 1.9, z: -2.2, w: 1.6, d: 0.9 }, h: 0.8, color: '#5b3e28', solid: true },
-    { box: { x: 1.6, z: -2.25, w: 0.5, d: 0.35 }, h: 0.22, y: 0.8, color: '#30302e' },
-    { box: { x: 2.25, z: -2.15, w: 0.5, d: 0.4 }, h: 0.04, y: 0.8, color: '#efe6cf' },
-    { box: { x: 0.4, z: -2.9, w: 1.4, d: 0.1 }, h: 1.2, y: 1.0, color: '#ffc27a', glow: true },
+    { box: { x: 0, z: 2.9, w: 0.9, d: 0.12 }, h: 2.1, color: '#3a2a1e' },
+    // The bed and its pillow.
+    { box: { x: -2.1, z: 0.4, w: 1.0, d: 2.0 }, h: 0.55, color: '#5d6f7f', solid: true },
+    { box: { x: -2.1, z: -0.4, w: 0.7, d: 0.35 }, h: 0.12, y: 0.55, color: '#e6e0d0' },
+    // The desk under the window, the chair, the typewriter and the sheet in it.
+    { box: { x: 0.6, z: -2.45, w: 1.4, d: 0.7 }, h: 0.76, color: '#5b3e28', solid: true },
+    { box: { x: 0.6, z: -1.75, w: 0.45, d: 0.45 }, h: 0.46, color: '#4a3020' },
+    { box: { x: TYPEWRITER_AT.x, z: TYPEWRITER_AT.z, w: 0.45, d: 0.35 }, h: 0.16, y: 0.76, color: '#30302e' },
+    { box: { x: TYPEWRITER_AT.x, z: TYPEWRITER_AT.z - 0.12, w: 0.3, d: 0.02 }, h: 0.22, y: 0.9, color: '#efe6cf', while: 'unfolded' },
+    { box: { x: 1.0, z: -2.4, w: 0.3, d: 0.4 }, h: 0.06, y: 0.76, color: '#d9cfa8' },
+    // The window behind a thin curtain, and the survey maps pinned either side: the route north, the Chatanika parcel.
+    { box: { x: 0.6, z: -2.85, w: 1.0, d: 0.1 }, h: 1.1, y: 1.0, color: '#ffd9a0', glow: true },
+    { box: { x: 0.0, z: -2.8, w: 0.15, d: 0.06 }, h: 1.3, y: 0.9, color: '#d8cdb0' },
+    { box: { x: 1.2, z: -2.8, w: 0.15, d: 0.06 }, h: 1.3, y: 0.9, color: '#d8cdb0' },
+    { box: { x: -0.65, z: -2.83, w: 0.8, d: 0.03 }, h: 0.6, y: 1.25, color: '#d9cfa8' },
+    { box: { x: -0.65, z: -2.81, w: 0.04, d: 0.02 }, h: 0.5, y: 1.3, color: '#9a3b2b' },
+    { box: { x: 1.85, z: -2.83, w: 0.7, d: 0.03 }, h: 0.55, y: 1.3, color: '#d9cfa8' },
+    { box: { x: 1.95, z: -2.81, w: 0.12, d: 0.02 }, h: 0.1, y: 1.5, color: '#9a3b2b' },
+    // The reel-to-reel on the trunk.
+    { box: { x: REEL_AT.x, z: REEL_AT.z, w: 0.9, d: 0.6 }, h: 0.45, color: '#4a3b2a', solid: true },
+    { box: { x: REEL_AT.x, z: REEL_AT.z, w: 0.5, d: 0.38 }, h: 0.14, y: 0.45, color: '#3a3a38' },
+    { box: { x: REEL_AT.x - 0.12, z: REEL_AT.z, w: 0.2, d: 0.2 }, h: 0.03, y: 0.59, color: '#8a8a86', shape: 'cylinder' },
+    { box: { x: REEL_AT.x + 0.12, z: REEL_AT.z, w: 0.2, d: 0.2 }, h: 0.03, y: 0.59, color: '#8a8a86', shape: 'cylinder' },
+    // The theodolite case and the sample bags of gravel.
+    { box: { x: 2.6, z: 0.3, w: 0.35, d: 0.3 }, h: 0.65, color: '#6b5a3a', solid: true },
+    ...[
+      [2.45, 1.45],
+      [2.7, 1.85],
+      [2.2, 1.95],
+    ].map(([x, z]): Prop => ({ box: { x, z, w: 0.25, d: 0.2 }, h: 0.28, color: '#b9a77f' })),
+    // The chair by the door, and the letter on it once it is folded.
+    { box: { x: -1.2, z: 2.5, w: 0.45, d: 0.45 }, h: 0.46, color: '#5a3f2a', solid: true },
+    { box: { x: -1.2, z: 2.5, w: 0.24, d: 0.11 }, h: 0.03, y: 0.46, color: '#efe6cf', while: 'folded' },
+    { box: { x: 0, z: 0, w: 0.15, d: 0.15 }, h: 0.1, y: 2.6, color: '#ffb877', glow: true },
   ],
   figures: [],
-  spots: [{ id: 'desk', x: 1.9, z: -1.4, r: 1.2, prompt: 'Sit down with the survey notes' }],
+  spots: [
+    { id: 'desk', x: DESK_AT.x, z: DESK_AT.z, r: 1.2, prompt: `Write to ${N.lucy}` },
+    { id: 'bed', x: BED_AT.x, z: BED_AT.z, r: 1.3, note: 'sleep' },
+  ],
 }
 
 export const CURLY_AT = vec(-6.4, 5.4)
@@ -304,7 +434,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood, line, downtown, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, story }
 
 export const centerOf = (s: Space): Vec => s.center ?? vec(0, 0)
 

@@ -113,6 +113,7 @@ const sample = (s: Space, step: number): readonly Vec[] =>
 
 const sweeps = [
   [spaces.bar, 0.5],
+  [spaces.boarding, 0.5],
   [spaces.room, 0.5],
   [spaces.camp, 1],
   [spaces.flood, 0.5],

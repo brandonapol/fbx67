@@ -72,21 +72,42 @@ export const walkLeg = (g: Game): Game => {
 
 export const leaveBar = (bar: Game): Game => interact(walk(bar, [[0, 4.2]]))
 
-export const toRoom = (bar: Game): Game => walkLeg(leaveBar(bar))
+// In the boarding house: down the hall from the front door to the foot of the stair, and up.
+export const HALL: Points = [[0, 4.5], [0.3, -0.4]]
+
+export const upstairs = (hall: Game): Game => interact(walk(hall, HALL))
+
+export const toHall = (bar: Game): Game => walkLeg(leaveBar(bar))
+
+export const toRoom = (bar: Game): Game => upstairs(toHall(bar))
+
+// At the desk: write the letter, let it type out, fold it and leave it by the door; then to bed.
+export const typeOut = (g: Game, n = 0): Game => {
+  if (g.panel?.kind !== 'letter') throw new Error(`no letter open in ${g.space}`)
+  if (g.panel.buttons[0]?.id === 'fold') return g
+  if (n > MAX_TICKS) throw new Error('the letter never finished typing')
+  return typeOut(tick(g, still, DT), n + 1)
+}
+
+export const writeLetter = (room: Game): Game => press(typeOut(interact(walk(room, [[0.6, -1.0]]))), 'fold')
+
+export const toBed = (room: Game): Game => interact(walk(room, [[-0.6, 0.6]]))
 
 export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): readonly Game[] => {
   const bar = talk(start(), who)
   const night = leaveBar(bar)
-  const room = walkLeg(night)
-  const desk = interact(walk(room, [[1.6, -0.8]]))
-  const morning = press(desk, 'note:sleep')
+  const hall = walkLeg(night)
+  const room = upstairs(hall)
+  const desk = interact(walk(room, [[0.6, -1.0]]))
+  const folded = writeLetter(room)
+  const morning = toBed(folded)
   const dock = walkLeg(morning)
   const camp = press(dock, 'note:fly')
   const hidden = holdWhenSafe(walk(camp, routes[spot]))
   const home = interact(walk(hidden, back(spot)))
   const skiff = interact(walk(home, [[0.2, 5.4]]))
   const end = press(skiff, 'note:continue')
-  return [bar, night, room, desk, morning, dock, camp, hidden, home, skiff, end]
+  return [bar, night, hall, room, desk, folded, morning, dock, camp, hidden, home, skiff, end]
 }
 
 export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => prologueSteps(who, spot).at(-1)!

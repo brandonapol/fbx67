@@ -11,7 +11,7 @@ import type { CastId } from './cast.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
-import { inWorld, playerBody, playerMotion, seen, watcher } from './prologue.ts'
+import { inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
 
 const FAR_CLIP = 200
 
@@ -73,10 +73,10 @@ const primitive = (
   return e
 }
 
-const addProp = (root: pc.Entity, p: Prop): void => {
-  if (p.h < 0.02) return
+const addProp = (root: pc.Entity, p: Prop): pc.Entity | undefined => {
+  if (p.h < 0.02) return undefined
   const y = (p.y ?? 0) + p.h / 2
-  primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow && !p.flat })
+  return primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow && !p.flat })
 }
 
 const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
@@ -230,6 +230,7 @@ type Built = Readonly<{
   rain: readonly pc.Entity[]
   weather: string
   time: Time
+  toggles: readonly (readonly [pc.Entity, Prop['while']])[]
 }>
 
 export const createView = async (canvas: HTMLCanvasElement, base: string): Promise<View> => {
@@ -293,7 +294,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const root = new pc.Entity(space.id)
     const c = centerOf(space)
     primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
-    space.props.forEach((p) => addProp(root, p))
+    const toggles = space.props.flatMap((p) => {
+      const e = addProp(root, p)
+      return e && p.while ? [[e, p.while] as const] : []
+    })
     const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f, cast)] as const))
     const cone = space.id === 'camp' ? new pc.Entity('sight') : undefined
     const coneMats = cone
@@ -317,7 +321,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story), time: t }
+    return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story), time: t, toggles }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -372,6 +376,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       if (mi) mi.material = seen(g) ? b.coneMats[1] : b.coneMats[0]
       b.figures.get('curly')?.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
     }
+    b.toggles.forEach(([e, w]) => {
+      e.enabled = shows(g, w)
+    })
     b.rain.forEach((r) => {
       const p = r.getLocalPosition()
       const y = p.y - dt * 11

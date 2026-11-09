@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, handedOff, interact, label, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { focus, handedOff, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
@@ -76,6 +76,7 @@ const live: {
   target?: Vec
   touchHold: boolean
   shown?: unknown
+  shownText?: string
   promptKey?: string
   pad: readonly boolean[]
   run: boolean
@@ -149,7 +150,15 @@ const setDevice = (d: Device): void => {
   renderHelp()
 }
 
+const renderText = (g: Game): void => {
+  const text = panelText(g)
+  if (live.shownText === text) return
+  live.shownText = text
+  textEl.replaceChildren(...text.split(/\n\s*\n/).map((para) => Object.assign(document.createElement('p'), { textContent: para.trim() })))
+}
+
 const renderPanel = (g: Game): void => {
+  if (g.panel) renderText(g)
   if (live.shown === g.panel) return
   live.shown = g.panel
   panelEl.hidden = !g.panel
@@ -158,9 +167,6 @@ const renderPanel = (g: Game): void => {
   if (document.pointerLockElement) document.exitPointerLock()
   panelEl.dataset.kind = g.panel.kind
   titleEl.textContent = g.panel.title
-  textEl.replaceChildren(
-    ...g.panel.text.split(/\n\s*\n/).map((para) => Object.assign(document.createElement('p'), { textContent: para.trim() })),
-  )
   buttonsEl.replaceChildren(
     ...g.panel.buttons.map((b, i) => {
       const el = document.createElement('button')

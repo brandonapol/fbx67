@@ -123,6 +123,7 @@ const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [6.
 // Interiors are lit by their practicals: bulbs at about 2700 K (#ffb877) and the window, with warm bounce in the shade.
 const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   bar: { color: '#ffb877', intensity: 2.2, range: 14, at: [0, 2.6, 0] },
+  boarding: { color: '#ffb877', intensity: 2.0, range: 12, at: [-2.5, 2.6, 2.5] },
   room: { color: '#ffd29a', intensity: 1.8, range: 8, at: [1.2, 2.2, -1.2] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }

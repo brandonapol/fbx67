@@ -297,6 +297,7 @@ export type Placement = Readonly<{ space: string; at: Vec; yaw: 0 | 180 }>
 
 export const placements: readonly Placement[] = [
   { space: 'bar', at: vec(33, 43), yaw: 0 },
+  { space: 'boarding', at: vec(134, 89), yaw: 0 },
   { space: 'room', at: vec(134, 85), yaw: 0 },
   { space: 'flood', at: vec(135.4, 103.9), yaw: 180 },
 ]
@@ -306,7 +307,9 @@ export const toWorld = (p: Placement, local: Vec): Vec =>
 
 // The doors and the dock: what Owen can walk up to. A door opens when the story is at its place; the land office is
 // locked through the prologue (its interior is a later pass), and says so.
-export type Door = Readonly<{ id: string; place: Place; at: Vec; r: number; prompt: string; title: string; locked?: true }>
+// `via` is the space the door opens into when that is not the place's own: the boarding house door opens on its ground
+// floor, and the stair goes on up to the room.
+export type Door = Readonly<{ id: string; place: Place; at: Vec; r: number; prompt: string; title: string; locked?: true; via?: 'boarding' }>
 
 const outside = (b: Building, by = 0.6): Vec => {
   const d = b.door ?? vec(0, 0)
@@ -322,7 +325,7 @@ const building = (id: string): Building => {
 
 export const doors: readonly Door[] = [
   { id: 'silverPan', place: 'silverPan', at: outside(building('silverPan')), r: 1.4, prompt: 'Go into the Silver Pan', title: 'The Silver Pan' },
-  { id: 'boardingHouse', place: 'owensRoom', at: outside(building('boardingHouse')), r: 1.4, prompt: 'Go up to your room', title: "Owen's boarding house" },
+  { id: 'boardingHouse', place: 'owensRoom', at: outside(building('boardingHouse')), r: 1.4, prompt: 'Go in', title: "Owen's boarding house", via: 'boarding' },
   { id: 'landOffice', place: 'landOffice', at: outside(building('landOffice')), r: 1.4, prompt: 'Try the door', title: 'The land office', locked: true },
   { id: 'floatDock', place: 'floatDock', at: vec(118.5, -16), r: 2.5, prompt: 'Walk out to the plane', title: 'The float dock' },
 ]
