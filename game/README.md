@@ -97,7 +97,9 @@ a story panel ducks voices and music. The hotel mission's eavesdrop drives the g
 is clear. The mission sets it back to 0 when the eavesdrop ends. Spot effects and some beds are positional through
 Web Audio panners with the listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m
 at a walk, 1.2 m at a jog), on the surface under Owen; snow goes from a soft crunch near freezing to a squeak in
-deep cold, from the space's temperature. Escape closes the sound panel.
+deep cold, from the space's temperature; the hospital hallway and the cell are concrete. The Act 1 beds (the sandbag
+line, the hospital, the barfight and the cell) wait in `act1Soundscapes` and the Act 2 beds in `act2Soundscapes`
+until those spaces land in `levels.ts`. Escape closes the sound panel.
 
 ## Tests
 
