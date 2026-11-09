@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { focus, handedOff, interact, label, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
 import { mountSoundPanel } from './sound-panel.ts'
@@ -119,6 +119,7 @@ const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.
 const act = (f: (g: Game) => Game): void => {
   live.g = f(live.g)
   live.target = undefined
+  if (handedOff(live.g)) window.location.href = textBuild(live.g)
 }
 
 const choose = (id: string): void => act((g) => press(g, id))

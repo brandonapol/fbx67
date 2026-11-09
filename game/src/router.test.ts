@@ -17,24 +17,27 @@ test('each space answers to the act and place the story names for it', () => {
   Object.values(spaces).forEach((s) => assert.equal(spaceFor(s.act, s.place), s.id))
 })
 
-test('a place the engine has no space for, or no place at all, routes to the menu', () => {
+test('a place the engine has no space for, or no place at all, has no space; a prologue one shows its menu', () => {
   assert.equal(spaceFor('Prologue', 'floatDock'), undefined)
   assert.equal(spaceFor('Prologue', undefined), undefined)
   const dock = replay([1, 1, 1]).at(-1)!
   assert.equal(place(dock), 'floatDock')
-  assert.deepEqual(route(dock), { to: 'menu' })
+  assert.deepEqual(route(dock, 'room'), { to: 'menu' })
+})
+
+test('a scene with no space in an act the current space is not part of leaves for the text build', () => {
   const flood = replay([1, 1, 1, 1, 1, 1]).at(-1)!
   assert.equal(flood.scene, 'a1_flood')
-  assert.deepEqual(route(flood), { to: 'menu' })
+  assert.deepEqual(route(flood, 'flood'), { to: 'text' })
 })
 
 test('a place with a space routes into it', () => {
-  assert.deepEqual(route(replay([1, 1, 1, 1]).at(-1)!), { to: 'space', space: 'camp' })
-  assert.deepEqual(route(replay([1, 1, 1, 1, 1]).at(-1)!), { to: 'space', space: 'flood' })
+  assert.deepEqual(route(replay([1, 1, 1, 1]).at(-1)!, 'room'), { to: 'space', space: 'camp' })
+  assert.deepEqual(route(replay([1, 1, 1, 1, 1]).at(-1)!, 'camp'), { to: 'space', space: 'flood' })
 })
 
-test('a later act at a prologue place shows its menu, not the prologue space', () => {
+test('a later act at a prologue place leaves for the text build, not the prologue space', () => {
   const later = replay(best).filter((s) => menu(s).act !== 'Prologue' && Object.values(spaces).some((sp) => sp.place === place(s)))
   assert.ok(later.length > 0, 'the best route revisits a prologue place')
-  later.forEach((s) => assert.deepEqual(route(s), { to: 'menu' }, s.scene))
+  later.forEach((s) => assert.deepEqual(route(s, 'bar'), { to: 'text' }, s.scene))
 })

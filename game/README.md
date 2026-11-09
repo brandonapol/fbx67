@@ -5,11 +5,14 @@ copies its text or re-implements its gates: each mission ends by sending the sto
 offers (see [`docs/story-api.md`](../docs/story-api.md)).
 
 Today it plays the prologue as Owen: the Silver Pan, the letter to Lucy, hiding the notes at the survey camp while
-Curly refuels, and the skiff in the flood. "Continue as Wade" on the end card goes on into Act 1.
+Curly refuels, and the skiff in the flood. "Continue as Wade" on the end card goes on into Act 1 in the
+text build, at the path played so far.
 
-`src/router.ts` decides where each scene plays from the story's `place(state)`: a place with a space puts the player
-in it, and a place without one (or no place, as in every scene after the prologue today) shows the scene's menu as a
-panel, each option a note button. A new space declares its `place` in `src/levels.ts` and takes over its scenes.
+`src/router.ts` decides where each scene plays from the story's `place(state)` and the act it belongs to: a place with
+a space puts the player in it. A scene with no space in the act the player is in (the float dock) shows its menu as a
+panel over the current space, each option a note button. A scene with no space in another act (every scene after the
+prologue today) hands off to the text build at the path, so Act 1 never plays as panels over Owen's flood. A new space
+declares its `act` and `place` in `src/levels.ts` and takes over its scenes.
 
 Live at <https://brandonapol.github.io/fbx67/play/>.
 

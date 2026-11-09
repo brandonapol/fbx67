@@ -61,13 +61,17 @@ export const talk = (g: Game, who: 'texas' | 'munitions' | 'round'): Game => {
   return press(opened, 'close')
 }
 
-export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => {
+export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): readonly Game[] => {
   const bar = talk(start(), who)
   const room = interact(walk(bar, [[0, 4.2]]))
   const desk = interact(walk(room, [[1.6, -0.8]]))
-  const camp = press(press(desk, 'note:sleep'), 'note:fly')
+  const dock = press(desk, 'note:sleep')
+  const camp = press(dock, 'note:fly')
   const hidden = holdWhenSafe(walk(camp, routes[spot]))
   const home = interact(walk(hidden, back(spot)))
   const skiff = interact(walk(home, [[0.2, 5.4]]))
-  return press(skiff, 'note:continue')
+  const end = press(skiff, 'note:continue')
+  return [bar, room, desk, dock, camp, hidden, home, skiff, end]
 }
+
+export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => prologueSteps(who, spot).at(-1)!
