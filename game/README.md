@@ -21,7 +21,7 @@ declares its `act` and `place` in `src/levels.ts` and takes over its scenes.
 
 ### Start at any scene
 
-Open the engine at a text-build path to start where it leads: `/play/#path=1,1,1,1,1,1,2,2,1,1,1,1,2,1,1` (the
+Open the engine at a text-build path to start where it leads: `/play/#path=1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1` (the
 format the end card and the text build write) or `/play/?from=1,1,…`. `src/start.ts` replays the path through the
 story's menus, one note per step, and starts there through the router: a scene whose place has a space puts the player
 in it; one with no space shows its menu over `story`, a blank backdrop that belongs to no act, and the notes go on as

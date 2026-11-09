@@ -6,6 +6,7 @@ import { ending, missingForBest } from './logic.ts'
 import { mulberry, pickIndex } from './random.ts'
 import { choicePath, flag, int, orExit, value } from './args.ts'
 import { mission } from './story.ts'
+import { missionMenu } from './missions.ts'
 import type { State } from './types.ts'
 
 const summary = (s: State) => ({
@@ -22,7 +23,7 @@ const footer = (path: readonly number[], s: State): string =>
 // The engine build sends one of these notes for the whole mission; the text build plays its scenes one by one.
 const missionLine = (s: State): string => {
   const m = mission(s)
-  return m ? `\n\nMISSION: ${m.title}. ${m.detail}: ${m.endings.map((e) => `${e.label} (${e.note})`).join(' / ')}` : ''
+  return m ? `\n\nMISSION: ${missionMenu(m)}\nNOTES: ${m.endings.map((e) => e.note).join(' / ')}` : ''
 }
 
 const randomPath = (seed: number): readonly number[] => {

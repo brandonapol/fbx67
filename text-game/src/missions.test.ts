@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
 import { choicesOf, choose, replay } from './engine.ts'
 import { menu, mission, send, sendMission } from './story.ts'
-import { missions } from './missions.ts'
+import { missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
 import type { SceneId, State } from './types.ts'
 
@@ -34,7 +34,7 @@ test('the search for Eli offers ran it / skipped it at a1_track', () => {
   assert.equal(atTrack.scene, 'a1_track')
   const m = mission(atTrack)
   assert.ok(m)
-  assert.equal(`${m.title}. ${m.detail}: ${m.endings.map((e) => e.label).join(' / ')}`, 'Search for Eli. Errand: ran it / skipped it')
+  assert.equal(missionMenu(m), 'Search for Eli. Errand: ran it / skipped it')
   assert.deepEqual(
     m.endings.map((e) => e.note),
     ['ranIt', 'skippedIt'],
@@ -66,7 +66,7 @@ test('the body offers knot: pointed it out / cut it silently at a1_body on both 
     assert.equal(s.scene, 'a1_body')
     const m = mission(s)
     assert.ok(m)
-    assert.equal(`${m.title}. ${m.detail}: ${m.endings.map((e) => e.label).join(' / ')}`, 'The body. Knot: pointed it out / cut it silently')
+    assert.equal(missionMenu(m), 'The body. Knot: pointed it out / cut it silently')
     assert.deepEqual(
       m.endings.map((e) => e.note),
       ['pointedItOut', 'cutItSilently'],
@@ -95,18 +95,30 @@ test('the body always grants the knot, moves Eli trust only when pointed out, an
   })
 })
 
+// Notes may land the same where a detail carries no state on that path (the barfight's move when seated), so the
+// check is on the states: every way through matches a note, and every note is a way through.
 test('every mission note ends at its end scene, and the notes cover every way through', () => {
   missions.forEach((m) => {
     const starts = allAt(m.start)
     assert.ok(starts.length > 0, `${m.id}: nothing reaches ${m.start}`)
     starts.forEach((start) => {
-      const byNote = m.endings.map((e) => sendMission(start, e.note))
-      const played = playedThrough(start, m.end)
-      played.forEach((p) => assert.equal(byNote.filter((s) => JSON.stringify(s) === JSON.stringify(p)).length, 1, `${m.id}: a path to ${m.end} matches no single note`))
-      assert.equal(new Set(byNote.map((s) => JSON.stringify(s))).size, m.endings.length, `${m.id}: two notes give the same state`)
-      assert.equal(played.length, m.endings.length, `${m.id}: ${played.length} paths through, ${m.endings.length} notes`)
+      const byNote = new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note))))
+      const played = new Set(playedThrough(start, m.end).map((p) => JSON.stringify(p)))
+      assert.deepEqual([...played].filter((p) => !byNote.has(p)), [], `${m.id}: a path to ${m.end} matches no note`)
+      assert.deepEqual([...byNote].filter((n) => !played.has(n)), [], `${m.id}: a note lands where no path does`)
     })
   })
+})
+
+test('the single-detail missions give every note its own state', () => {
+  missions
+    .filter((m) => m.details.length === 1)
+    .forEach((m) =>
+      allAt(m.start).forEach((start) => {
+        assert.equal(new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note)))).size, m.endings.length, `${m.id}: two notes give the same state`)
+        assert.equal(playedThrough(start, m.end).length, m.endings.length, `${m.id}: paths through and notes differ`)
+      }),
+    )
 })
 
 test('no mission outside its start scene, and unknown notes are refused', () => {
@@ -116,5 +128,77 @@ test('no mission outside its start scene, and unknown notes are refused', () => 
   assert.deepEqual(
     menu(atTrack).options.map((o) => o.note),
     ['lacey'],
+  )
+})
+
+// Every state that reaches the barfight, from both search paths and both answers to Lucy.
+const atBarfight = allAt('a1_barfight')
+const delta = (from: State, to: State) => [to.eliTrust - from.eliTrust, to.heat - from.heat]
+const note = (opened: string, move: string, stood: string, caught: string) => [opened, move, stood, caught].join('.')
+
+test('the barfight offers opened, move, stood with Eli and caught at a1_barfight', () => {
+  assert.ok(atBarfight.length > 0)
+  atBarfight.forEach((s) => {
+    const m = mission(s)
+    assert.ok(m)
+    assert.equal(missionMenu(m), 'The barfight. Opened: got up / stayed seated. Move: shove / rack / bottle. Stood with Eli: yes / no. Caught: clean / red-handed')
+    assert.equal(m.endings.length, 24)
+    m.endings.forEach((e) => assert.equal(sendMission(s, e.note).scene, 'a1_tank'))
+  })
+})
+
+test('standing with Eli is +1 Eli trust, and staying seated is -1', () => {
+  const s = atBarfight[0]
+  assert.deepEqual(delta(s, sendMission(s, note('gotUp', 'shove', 'stoodWithEli', 'clean'))), [1, 0])
+  assert.deepEqual(delta(s, sendMission(s, note('gotUp', 'shove', 'leftEli', 'clean'))), [0, 0])
+  assert.deepEqual(delta(s, sendMission(s, note('stayedSeated', 'rack', 'leftEli', 'clean'))), [-1, 0])
+  assert.deepEqual(delta(s, sendMission(s, note('stayedSeated', 'rack', 'stoodWithEli', 'clean'))), [0, 0])
+})
+
+test('red-handed is +1 heat, shared with the bottle: both together are still +1', () => {
+  const s = atBarfight[0]
+  ;['gotUp', 'stayedSeated'].forEach((o) => {
+    assert.equal(sendMission(s, note(o, 'shove', 'leftEli', 'redHanded')).heat - s.heat, 1)
+    assert.equal(sendMission(s, note(o, 'rack', 'leftEli', 'redHanded')).heat - s.heat, 1)
+    assert.equal(sendMission(s, note(o, 'rack', 'leftEli', 'clean')).heat - s.heat, 0)
+    assert.equal(sendMission(s, note(o, 'bottle', 'leftEli', 'clean')).heat - s.heat, 1)
+    assert.equal(sendMission(s, note(o, 'bottle', 'leftEli', 'redHanded')).heat - s.heat, 1)
+  })
+})
+
+test('the fight adds at most 1 heat and moves Eli trust between -1 and +1', () => {
+  atBarfight.forEach((s) =>
+    (mission(s) as Mission).endings.forEach((e) => {
+      const [trust, heat] = delta(s, sendMission(s, e.note))
+      assert.ok(heat >= 0 && heat <= 1, `${e.note}: heat ${heat}`)
+      assert.ok(trust >= -1 && trust <= 1, `${e.note}: trust ${trust}`)
+    }),
+  )
+})
+
+test('the seated path offers the same moves as getting up', () => {
+  const s = atBarfight[0]
+  const seated = send(s, 'stayInSeat')
+  assert.equal(seated.scene, 'a1_tank_sat')
+  assert.deepEqual(
+    menu(seated).options.map((o) => o.note),
+    ['shove', 'mooseRack', 'bottle'],
+  )
+  assert.deepEqual(
+    menu(s).options.map((o) => o.note),
+    ['shove', 'mooseRack', 'bottle', 'stayInSeat'],
+  )
+})
+
+test('getting up records the move for Hank; staying seated leaves him the stool', () => {
+  const s = atBarfight[0]
+  const moves = ['shove', 'rack', 'bottle'] as const
+  assert.deepEqual(
+    moves.map((m) => sendMission(s, note('gotUp', m, 'leftEli', 'clean')).barfightMove),
+    ['shove', 'mooseRack', 'bottle'],
+  )
+  assert.deepEqual(
+    moves.map((m) => sendMission(s, note('stayedSeated', m, 'leftEli', 'clean')).barfightMove),
+    [undefined, undefined, undefined],
   )
 })

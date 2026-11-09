@@ -24,6 +24,8 @@ export const sceneIds = [
   'a1_lucy',
   'a1_barfight',
   'a1_tank_sat',
+  'a1_headlights',
+  'a1_whistle',
   'a1_tank',
   'a1_ashby',
   'a1_letter',
