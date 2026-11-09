@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import type { Weather } from '../../text-game/src/story.ts'
+import { season, weather } from '../../text-game/src/story.ts'
 import { initialState } from '../../text-game/src/state.ts'
 import { replay } from '../../text-game/src/engine.ts'
 import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { spaces } from './levels.ts'
-import type { Lighting } from './lighting.ts'
-import { MIDNIGHT_SUN, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
+import type { Band, BandedSeason, Cell, Lighting } from './lighting.ts'
+import { MIDNIGHT_SUN, bandBySeason, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
 import { sunAt } from './sun.ts'
 
 const weathers: readonly Weather[] = ['clear', 'dusk', 'night']
@@ -205,5 +207,72 @@ test('breath fog and snow load are outdoors in winter only', () => {
       const l = lighting(id, 'winter', w)
       assert.deepEqual([l.breath, l.snowLoad, l.rain], [false, false, false], `${id} ${w}`)
     })
+  })
+})
+
+// docs/art/README.md, "Band by season", read from the README itself so the code's one copy of the table cannot drift.
+// A cell is "<key>; sun none; fog **a-b m**" or "<key>; sun **lo to +hi degrees**, azimuth **lo-hi**; fog **a-b m**".
+const readme = readFileSync(new URL('../../docs/art/README.md', import.meta.url), 'utf8')
+const rowTitle: Readonly<Record<BandedSeason, string>> = { flood: 'Act 1, flood', winter: 'Act 3, winter' }
+const columns: readonly Band[] = ['alpenglow', 'blueHour', 'sodium']
+
+const parseCell = (cell: string): Cell => {
+  const fog = /fog \*\*(\d+)-(\d+) m\*\*/.exec(cell)
+  assert.ok(fog, `no fog range in "${cell}"`)
+  const range = [Number(fog[1]), Number(fog[2])] as const
+  if (/sun none/.test(cell)) return { fog: range }
+  const sun = /sun \*\*(-?\d+) to \+(\d+) degrees\*\*, azimuth \*\*(\d+)-(\d+)\*\*/.exec(cell)
+  assert.ok(sun, `no sun in "${cell}"`)
+  const [lo, hi, west, east] = sun.slice(1).map(Number) as [number, number, number, number]
+  return { sun: { elevation: [lo, hi], azimuth: [west, east] }, fog: range }
+}
+
+const readmeRow = (s: BandedSeason): Readonly<Record<Band, Cell>> => {
+  const line = readme.split('\n').find((l) => l.startsWith(`| **${rowTitle[s]}**`))
+  assert.ok(line, `no ${rowTitle[s]} row in the README's band table`)
+  const cells = line.split('|').slice(2, 5).map((c) => c.trim())
+  return Object.fromEntries(columns.map((b, i) => [b, parseCell(cells[i]!)])) as Record<Band, Cell>
+}
+
+test('the band table in code is the README\'s "Band by season" table, row for row', () => {
+  ;(Object.keys(bandBySeason) as BandedSeason[]).forEach((s) => assert.deepEqual(bandBySeason[s], readmeRow(s), s))
+})
+
+// Every outdoor space, at every band, takes its fog from the table and has a sun exactly where the cell names one.
+test('each banded season lights every outdoor space from its table cell', () => {
+  ;(Object.keys(bandBySeason) as BandedSeason[]).forEach((s) =>
+    outside.forEach((id) =>
+      weathers.forEach((w) => {
+        const cell = bandBySeason[s][bandOf[w]]
+        const l = lighting(id, s, w, DEEP_WINTER[0])
+        assert.deepEqual([l.fogStart, l.fogEnd], cell.fog, `${s} ${id} ${w}`)
+        assert.equal(l.sunUp, cell.sun !== undefined, `${s} ${id} ${w}`)
+      }),
+    ),
+  )
+})
+
+// The headless check of Act 1 against the text build: each path below is a --choices path (node src/cli.ts --choices
+// <path> --last) that reaches the flood in one band. The engine reads season(state) and weather(state) from the
+// story and lights the flooded street with that band; it never works the weather out for itself.
+const act1: Readonly<Record<Weather, readonly number[]>> = {
+  clear: [1, 1, 1, 1, 1, 1],
+  dusk: [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 4],
+  night: [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 3, 2, 2],
+}
+
+test('each Act 1 band is reached on a story path and lights the flooded street from the flood row', () => {
+  weathers.forEach((w) => {
+    const path = act1[w]
+    const s = replay(path).at(-1)!
+    assert.equal(season(s), 'flood', `${path}: the story is in the flood`)
+    assert.equal(weather(s), w, `${path}: the story's weather`)
+    const l = lightingFor(spaces.flood, s, path)
+    assert.equal(timeOf(spaces.flood, s, path).season, 'flood')
+    assert.equal(l.grade, bandOf[w])
+    assert.deepEqual([l.fogStart, l.fogEnd], bandBySeason.flood[bandOf[w]].fog)
+    assert.equal(l.rain, true)
+    // Owen's room ('room') is lit by its practical whatever the weather outside.
+    assert.equal(lightingFor(spaces.room, s, path).lamp?.color, '#ffd29a')
   })
 })

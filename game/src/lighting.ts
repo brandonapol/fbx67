@@ -84,60 +84,69 @@ const summer: Lighting = {
   snowLoad: false,
 }
 
-// Act 1, the flood (August 1967, overcast): each band's key and palette from the band table, sun none.
-const flood: Readonly<Record<Band, Lighting>> = {
+// docs/art/README.md, "Band by season": each cell's sun (absent where the cell says "sun none") and fog range in
+// meters. This is the table's one copy in code; lighting.test.ts reads the README and holds these rows to it. The
+// Act 2 fall and Act 4 breakup rows come with their season layers.
+export type Arc = Readonly<{ elevation: readonly [number, number]; azimuth: readonly [number, number] }>
+export type Cell = Readonly<{ sun?: Arc; fog: readonly [number, number] }>
+export type BandedSeason = Exclude<LitSeason, 'summer'>
+
+export const bandBySeason: Readonly<Record<BandedSeason, Readonly<Record<Band, Cell>>>> = {
+  // Act 1, flood (Aug 1967, overcast): overcast daylight, overcast dusk with streetlights, night in rain.
+  flood: { alpenglow: { fog: [10, 120] }, blueHour: { fog: [8, 80] }, sodium: { fog: [4, 40] } },
+  // Act 3, winter (Dec-Feb): alpenglow under a sun that barely clears the hills, blue hour, sodium in ice fog.
+  winter: {
+    alpenglow: { sun: { elevation: [0, 12], azimuth: [160, 220] }, fog: [60, 240] },
+    blueHour: { fog: [30, 160] },
+    sodium: { fog: [6, 70] },
+  },
+}
+
+// Each band's palette, the same in every banded season: sky, ambient, the key's color and strength, and the haze.
+// Where the cell has no sun the directional light is a soft overhead sky fill, so its place is fixed.
+type Palette = Omit<Lighting, 'grade' | 'sunUp' | 'fogStart' | 'fogEnd' | 'lamp' | 'rain' | 'breath' | 'snowLoad'>
+const SKY_FILL = { sunAzimuth: 200, sunElevation: 55 } as const
+
+const palette: Readonly<Record<Band, Palette>> = {
   alpenglow: {
-    grade: 'alpenglow',
     sky: { zenith: '#7f8fb5', horizon: '#f2b8a8', sunward: '#f2b8a8' },
     ambient: '#9aa5c4',
     sun: '#ffc7a6',
     sunIntensity: 0.7,
-    sunAzimuth: 200,
-    sunElevation: 55,
-    sunUp: false,
+    ...SKY_FILL,
     fog: '#e7c4c0',
-    fogStart: 10,
-    fogEnd: 120,
-    rain: true,
-    breath: false,
-    snowLoad: false,
   },
   blueHour: {
-    grade: 'blueHour',
     sky: { zenith: '#2f3d6b', horizon: '#6d7fae', sunward: '#6d7fae' },
     ambient: '#9aa6d0',
     sun: '#8b9ac4',
     sunIntensity: 0.35,
-    sunAzimuth: 200,
-    sunElevation: 55,
-    sunUp: false,
+    ...SKY_FILL,
     fog: '#4f5f8a',
-    fogStart: 8,
-    fogEnd: 80,
-    rain: true,
-    breath: false,
-    snowLoad: false,
   },
   sodium: {
-    grade: 'sodium',
     sky: { zenith: '#1a1a20', horizon: '#3a3026', sunward: '#3a3026' },
     ambient: '#a8947a',
     sun: '#8a6f50',
     sunIntensity: 0.15,
-    sunAzimuth: 200,
-    sunElevation: 55,
-    sunUp: false,
+    ...SKY_FILL,
     fog: '#6b5a44',
-    fogStart: 4,
-    fogEnd: 40,
-    rain: true,
-    breath: false,
-    snowLoad: false,
   },
 }
 
+// What the air does in each banded season: rain in the flood; breath and snow load in deep winter.
+const AIR: Readonly<Record<BandedSeason, Pick<Lighting, 'rain' | 'breath' | 'snowLoad'>>> = {
+  flood: { rain: true, breath: false, snowLoad: false },
+  winter: { rain: false, breath: true, snowLoad: true },
+}
+
 // The band's key where it is not the sun: streetlights at blue hour, sodium lamps at danger.
-const streetKey: Readonly<Record<Band, string | undefined>> = { alpenglow: undefined, blueHour: '#ffd9a0', sodium: '#ff9a3c' }
+const streetKey: Readonly<Record<Band, Pick<Lamp, 'color' | 'intensity'> | undefined>> = {
+  alpenglow: undefined,
+  blueHour: { color: '#ffd9a0', intensity: 1.8 },
+  sodium: { color: '#ff9a3c', intensity: 2.6 },
+}
+const STREETLIGHT_RANGE = 16
 
 // The one streetlight each flooded space has today, at its lamp head.
 const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [6.5, 3.85, -4.5], line: [-6.6, 3.85, 2.5] }
@@ -168,18 +177,9 @@ const INDOOR = {
 // sun is below this elevation the disc is held here, in the north-northwest arc the rule gives for 11 pm.
 export const MIDNIGHT_SUN = { elevation: 3, azimuth: [330, 350] } as const
 
-// Act 3, deep winter (docs/art/README.md, "Band by season"): the same band palettes, dry and snowbound. Clean is
-// alpenglow under a sun that barely clears the hills; strained is blue hour with the sun down; danger is sodium in ice
-// fog at forty below, which closes the world to one block.
-const WINTER_FOG: Readonly<Record<Band, readonly [number, number]>> = {
-  alpenglow: [60, 240],
-  blueHour: [30, 160],
-  sodium: [6, 70],
-}
-
-// The clean band's sun: 0 to +12 degrees, azimuth 160-220. Without a clock it sits a little east of south, a few
-// degrees up, as it does near noon in late December.
-export const WINTER_SUN = { elevation: [0, 12], azimuth: [160, 220] } as const
+// The winter clean band's sun (the Act 3 row). Without a clock it sits a little east of south, a few degrees up, as
+// it does near noon in late December.
+export const WINTER_SUN: Arc = bandBySeason.winter.alpenglow.sun!
 const WINTER_NOON = { sunAzimuth: 185, sunElevation: 2 } as const
 const WINTER_SUN_INTENSITY = 1.4
 
@@ -198,31 +198,34 @@ export const summerSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevatio
   return { sunAzimuth: clamp(signed, lo - 360, hi - 360) + 360, sunElevation: MIDNIGHT_SUN.elevation }
 }
 
-// The winter sun at a clock: the real sun held inside the band's arc, so the clean band always has its low disc.
-export const winterSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevation'> => {
+// The sun at a clock held inside a cell's arc.
+const heldSun = (arc: Arc, at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevation'> => {
   const real = sunAt(at)
-  return {
-    sunAzimuth: clamp(real.azimuth, ...WINTER_SUN.azimuth),
-    sunElevation: clamp(real.elevation, ...WINTER_SUN.elevation),
-  }
+  return { sunAzimuth: clamp(real.azimuth, ...arc.azimuth), sunElevation: clamp(real.elevation, ...arc.elevation) }
 }
 
-const winter = (band: Band, when?: Clock): Lighting => {
-  const [fogStart, fogEnd] = WINTER_FOG[band]
-  const base = { ...flood[band], fogStart, fogEnd, rain: false, breath: true, snowLoad: true }
-  if (band !== 'alpenglow') return base
-  return { ...base, sunUp: true, sunIntensity: WINTER_SUN_INTENSITY, ...(when === undefined ? WINTER_NOON : winterSun(when)) }
+export const winterSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevation'> => heldSun(WINTER_SUN, at)
+
+// A banded season's light: the band's palette, the table's cell, and the season's air. A cell with a sun holds the
+// real one inside its arc (the clean band always has its low disc); without a clock the disc sits at winter noon.
+const banded = (season: BandedSeason, band: Band, when?: Clock): Lighting => {
+  const cell = bandBySeason[season][band]
+  const [fogStart, fogEnd] = cell.fog
+  const base: Lighting = { ...palette[band], grade: band, sunUp: false, fogStart, fogEnd, ...AIR[season] }
+  if (!cell.sun) return base
+  const at = when === undefined ? WINTER_NOON : heldSun(cell.sun, when)
+  return { ...base, sunUp: true, sunIntensity: WINTER_SUN_INTENSITY, ...at }
 }
 
 const outdoors = (space: SpaceId, season: LitSeason, weather: Weather, when?: Clock): Lighting => {
   if (season === 'summer') return when === undefined ? summer : { ...summer, ...summerSun(when) }
   const band = bandOf[weather]
-  const base = season === 'winter' ? winter(band, when) : flood[band]
+  const base = banded(season, band, when)
   const key = streetKey[band]
   const at = streetlight[space]
   if (!key || !at) return base
   const halo = season === 'winter' && band === 'sodium' ? { halo: ICE_FOG_HALO } : {}
-  return { ...base, lamp: { color: key, intensity: band === 'sodium' ? 2.6 : 1.8, range: 16, at, ...halo } }
+  return { ...base, lamp: { ...key, range: STREETLIGHT_RANGE, at, ...halo } }
 }
 
 // The story backdrop belongs to no place: a slate floor fading into slate, lit only enough to read as a room.
