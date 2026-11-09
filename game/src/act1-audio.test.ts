@@ -5,6 +5,8 @@ import type { Soundscape, Spot } from './soundscape.ts'
 import { BOATS_AT, LINE_AT, RADIATOR_AT, RACK_AT, RIVER_Z, STOVE_AT, act1Soundscapes, soundscapes } from './soundscape.ts'
 import { BOOTS, ROAR_SECONDS, bootGain, footstep, layerVoice, makeBuffers, mulberry, spot } from './synth.ts'
 import { vec } from './world.ts'
+import type { Tread } from './cast.ts'
+import { bodies } from './cast.ts'
 import { fakeContext } from './fake-audio.ts'
 
 const spots = (s: Soundscape): readonly Spot[] => s.events.map((e) => e.spot)
@@ -109,4 +111,27 @@ test('every Act 1 layer, spot and the concrete step build and schedule finite ti
   assert.ok(footstep(ctx, buffers, 'concrete', dest, rand) > 1)
   assert.ok(times.t.length > 0)
   assert.ok(times.t.every(Number.isFinite))
+})
+
+test("Wade's footsteps in the flood sound his own: higher and lighter than Owen's, from the same rolls", () => {
+  const step = (tread: Tread) => {
+    const { ctx } = fakeContext()
+    const made: AudioNode[] = []
+    const keep = <K extends 'createGain' | 'createBiquadFilter'>(k: K): void => {
+      const make = ctx[k].bind(ctx)
+      Object.assign(ctx, { [k]: () => made[made.push(make()) - 1] })
+    }
+    keep('createGain')
+    keep('createBiquadFilter')
+    footstep(ctx, makeBuffers(ctx), 'water', ctx.createGain(), mulberry(5), undefined, tread)
+    const freqs = made.flatMap((n) => ('frequency' in n ? [(n as BiquadFilterNode).frequency.value] : [])).filter((f) => f > 0)
+    const gains = made.map((n) => (n as GainNode).gain.value)
+    return { freqs, gains }
+  }
+  const owen = step(bodies.owen.tread)
+  const wade = step(bodies.wade.tread)
+  assert.ok(owen.freqs.length > 0)
+  owen.freqs.forEach((f, i) => assert.ok(Math.abs(wade.freqs[i] - f * bodies.wade.tread.pitch) < 1e-6, `band ${i}`))
+  assert.ok(wade.gains.includes(bodies.wade.tread.weight))
+  assert.ok(owen.gains.includes(bodies.owen.tread.weight))
 })

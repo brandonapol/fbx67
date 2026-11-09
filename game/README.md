@@ -5,13 +5,18 @@ copies its text or re-implements its gates: each mission ends by sending the sto
 offers (see [`docs/story-api.md`](../docs/story-api.md)).
 
 Today it plays the prologue as Owen: the Silver Pan, the letter to Lucy, hiding the notes at the survey camp while
-Curly refuels, and the skiff in the flood. "Continue as Wade" on the end card goes on into Act 1 in the
-text build, at the path played so far.
+Curly refuels, and the skiff in the flood. "Continue as Wade" on the end card puts the player on the sandbag line on
+Cushman as Wade, where Act 1 opens; its later scenes play as menus there until their spaces exist, and Act 2 goes on
+in the text build at the path played so far.
+
+The player is whoever the story's `pov(state)` says, never a scene id: `bodies` in `src/cast.ts` gives each point of
+view its model and clip set, the camera's eye height (Wade's is 1.8 m, Owen's 1.7 m) and its footstep voice. Owen's
+figure leaves the world with the prologue.
 
 `src/router.ts` decides where each scene plays from the story's `place(state)` and the act it belongs to: a place with
 a space puts the player in it. A scene with no space in the act the player is in (the float dock) shows its menu as a
-panel over the current space, each option a note button. A scene with no space in another act (every scene after the
-prologue today) hands off to the text build at the path, so Act 1 never plays as panels over Owen's flood. A new space
+panel over the current space, each option a note button. A scene with no space in another act (every scene after
+Act 1 today) hands off to the text build at the path, so a later act never plays as panels over an earlier act's space. A new space
 declares its `act` and `place` in `src/levels.ts` and takes over its scenes.
 
 ### Start at any scene
@@ -37,12 +42,12 @@ make serve/game
 
 ## Controls
 
-A third-person camera over Owen's right shoulder, following the Camera rules in
-[`docs/art/README.md`](../docs/art/README.md): eye height 1.7 m, 0.5 m to the right, a 2.6 m boom outdoors and 1.8 m
-indoors, 36 degree vertical field of view. Against a wall, a prop or a person the boom pulls in at once and lets out
-over 0.35 s. Pitch runs from 20 degrees down to 15 up and settles back to level half a second after you let go; after
-1.5 s without looking, the camera swings back behind Owen. Owen walks (1.4 m/s); run makes him jog (3.5 m/s). People
-are solid.
+A third-person camera over the player's right shoulder, following the Camera rules in
+[`docs/art/README.md`](../docs/art/README.md): eye height 1.7 m (1.8 m as Wade, within the rule's 0.2 m), 0.5 m to
+the right, a 2.6 m boom outdoors and 1.8 m indoors, 36 degree vertical field of view. Against a wall, a prop or a person
+the boom pulls in at once and lets out over 0.35 s. Pitch runs from 20 degrees down to 15 up and settles back to level
+half a second after you let go; after 1.5 s without looking, the camera swings back behind the player. The player walks
+(1.4 m/s); run makes him jog (3.5 m/s) outdoors and walk briskly indoors. People are solid.
 
 - **Keyboard and mouse:** WASD or arrows to move, Shift to run, IJKL to look. Click the scene to look with the mouse;
   Esc lets go. E or Space to interact. Prompts that say "Hold" (buying the round, hiding the notes) fill a ring while
@@ -65,7 +70,7 @@ are solid.
 src/world.ts      vectors, collision, line of sight, the watcher cone, target picking; pure
 src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, interior and exterior arms; pure
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
-src/levels.ts     the four spaces as data, and Curly's look schedule
+src/levels.ts     the spaces as data (the prologue's, Act 1's sandbag line, the story backdrop), and Curly's look schedule
 src/router.ts     which space a scene plays in, from the story's place; pure
 src/start.ts      reads a #path= or ?from= link and replays it through the story; pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure

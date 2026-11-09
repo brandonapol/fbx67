@@ -1,5 +1,6 @@
 import type { Surface } from './footsteps.ts'
 import { snowAt } from './footsteps.ts'
+import type { Tread } from './cast.ts'
 import type { Color, Layer, Noise, Spot } from './soundscape.ts'
 
 export type Rand = () => number
@@ -350,8 +351,8 @@ export const layerVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Layer, ra
 
 const latest = (ends: readonly number[], at: number): number => ends.reduce((a, b) => Math.max(a, b), at)
 
-const concreteStep = (ctx: BaseAudioContext, buffers: Buffers, dest: AudioNode, rand: Rand, at: number, scale: number): number => {
-  const k = between(rand, 0.85, 1.15)
+const concreteStep = (ctx: BaseAudioContext, buffers: Buffers, dest: AudioNode, rand: Rand, at: number, scale: number, pitch = 1): number => {
+  const k = between(rand, 0.85, 1.15) * pitch
   return Math.max(
     burst(ctx, buffers, dest, 'white', 'bandpass', 2600 * k, 1.8, at, 0.22 * scale, 0.001, 0.035, rand),
     burst(ctx, buffers, dest, 'brown', 'lowpass', 260 * k, 1, at, 0.5 * scale, 0.003, 0.07, rand),
@@ -519,19 +520,32 @@ export const spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest:
   return Math.max(thump, tone(ctx, dest, 'square', 1800, creak + 0.02, 0.03, 0.001, 0.02))
 }
 
-export const footstep = (ctx: BaseAudioContext, buffers: Buffers, surface: Surface, dest: AudioNode, rand: Rand, tempF?: number): number => {
+// tread is the walker's voice: pitch scales every band, weight the level (a lighter body, a lighter step).
+export const footstep = (
+  ctx: BaseAudioContext,
+  buffers: Buffers,
+  surface: Surface,
+  out: AudioNode,
+  rand: Rand,
+  tempF?: number,
+  tread: Tread = { pitch: 1, weight: 1 },
+): number => {
   const at = ctx.currentTime + 0.005
-  const k = between(rand, 0.8, 1.2)
+  const p = tread.pitch
+  const k = between(rand, 0.8, 1.2) * p
+  const dest = ctx.createGain()
+  dest.gain.value = tread.weight
+  dest.connect(out)
   if (surface === 'snow') {
     const snow = snowAt(tempF)
     const crunch = Array.from({ length: snow.grains }, (_, i) =>
-      burst(ctx, buffers, dest, 'white', 'bandpass', snow.freq * between(rand, 0.8, 1.25), 1.5 + 2 * snow.squeak, at + i * between(rand, 0.012, 0.03), between(rand, 0.08, 0.18), 0.004, snow.decay / 2, rand),
+      burst(ctx, buffers, dest, 'white', 'bandpass', snow.freq * p * between(rand, 0.8, 1.25), 1.5 + 2 * snow.squeak, at + i * between(rand, 0.012, 0.03), between(rand, 0.08, 0.18), 0.004, snow.decay / 2, rand),
     ).reduce((a, b) => Math.max(a, b), at)
     const pack = burst(ctx, buffers, dest, 'brown', 'lowpass', 380 * k, 1, at, 0.4 * (1 - snow.squeak * 0.6), 0.02, snow.decay, rand)
-    const squeak = snow.squeak > 0.3 ? tone(ctx, dest, 'triangle', between(rand, 1500, 2100), at + 0.03, 0.04 * snow.squeak, 0.01, 0.07) : at
+    const squeak = snow.squeak > 0.3 ? tone(ctx, dest, 'triangle', between(rand, 1500, 2100) * p, at + 0.03, 0.04 * snow.squeak, 0.01, 0.07) : at
     return Math.max(crunch, pack, squeak)
   }
-  if (surface === 'concrete') return concreteStep(ctx, buffers, dest, rand, at, 1)
+  if (surface === 'concrete') return concreteStep(ctx, buffers, dest, rand, at, 1, p)
   if (surface === 'wood')
     return Math.max(
       burst(ctx, buffers, dest, 'brown', 'bandpass', 200 * k, 2.5, at, 0.7, 0.003, 0.09, rand),
@@ -539,7 +553,7 @@ export const footstep = (ctx: BaseAudioContext, buffers: Buffers, surface: Surfa
     )
   if (surface === 'gravel')
     return Array.from({ length: 7 }, (_, i) =>
-      burst(ctx, buffers, dest, 'white', 'bandpass', between(rand, 2200, 5200), 1.2, at + i * between(rand, 0.008, 0.018), between(rand, 0.06, 0.2), 0.001, 0.02, rand),
+      burst(ctx, buffers, dest, 'white', 'bandpass', between(rand, 2200, 5200) * p, 1.2, at + i * between(rand, 0.008, 0.018), between(rand, 0.06, 0.2), 0.001, 0.02, rand),
     ).reduce((a, b) => Math.max(a, b), at)
   if (surface === 'mud')
     return Math.max(
@@ -548,6 +562,6 @@ export const footstep = (ctx: BaseAudioContext, buffers: Buffers, surface: Surfa
     )
   return Math.max(
     burst(ctx, buffers, dest, 'pink', 'bandpass', 1600 * k, 3, at, 0.35, 0.01, 0.22, rand, 380),
-    burst(ctx, buffers, dest, 'brown', 'lowpass', 420, 1, at, 0.4, 0.02, 0.25, rand),
+    burst(ctx, buffers, dest, 'brown', 'lowpass', 420 * p, 1, at, 0.4, 0.02, 0.25, rand),
   )
 }

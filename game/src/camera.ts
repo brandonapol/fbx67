@@ -80,7 +80,7 @@ export const gaze = (rig: Rig): V3 => [
   Math.cos(rig.yaw) * Math.cos(rig.pitch),
 ]
 
-export const pivot = (pos: Vec, bob = 0): V3 => [pos.x, EYE + bob, pos.z]
+export const pivot = (pos: Vec, bob = 0, eye = EYE): V3 => [pos.x, eye + bob, pos.z]
 
 export const wanted = (rig: Rig, from: V3): V3 => {
   const d = gaze(rig)
@@ -120,11 +120,12 @@ export const reach = (from: V3, to: V3, s: Space, bs: readonly Block[] = blocks(
 
 export type Frame = Readonly<{ rig: Rig; pose: Pose }>
 
-export const follow = (rig: Rig, s: Space, pos: Vec, facing: number, look: Look, dt: number, bob = 0): Frame => {
+// eye is the player's eye height: the pivot the arm hangs from (bodies in cast.ts).
+export const follow = (rig: Rig, s: Space, pos: Vec, facing: number, look: Look, dt: number, bob = 0, height = EYE): Frame => {
   const turned = settle(rig, facing, look, dt)
   const step = ((ARM.exterior - ARM.interior) / BLEND_TIME) * dt
   const base = turned.base + clamp(armFor(s) - turned.base, -step, step)
-  const from = pivot(pos, bob)
+  const from = pivot(pos, bob, height)
   const aim = wanted({ ...turned, base }, from)
   const free = reach(from, aim, s)
   const eased = turned.reach + (1 - turned.reach) * ease(dt, RELEASE_TIME)

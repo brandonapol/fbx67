@@ -20,6 +20,7 @@ import {
   toWorld,
 } from './camera.ts'
 import { solids, spaces } from './levels.ts'
+import { bodies } from './cast.ts'
 import type { Space } from './levels.ts'
 import { blocked, vec } from './world.ts'
 import type { Vec } from './world.ts'
@@ -155,4 +156,12 @@ test('backed into the corner of the bar, the arm pulls in at once and lets out s
   assert.ok(clearance(pulled.pose.eye, bar) >= MARGIN - 1e-2)
   const freed = follow(pulled.rig, bar, vec(0, 0), (-3 * Math.PI) / 4, still, DT)
   assert.ok(freed.rig.reach > pulled.rig.reach && freed.rig.reach < 1)
+})
+
+test("the arm hangs from the player's eye: Wade's camera rides higher than Owen's by the difference in eye height", () => {
+  assert.equal(bodies.owen.eye, EYE)
+  assert.ok(bodies.wade.eye > bodies.owen.eye)
+  const s = spaces.line
+  const at = (eye: number): number => follow(rigFor(Math.PI, ARM.exterior), s, s.spawn, Math.PI, still, DT, 0, eye).pose.eye[1]
+  assert.ok(near(at(bodies.wade.eye) - at(bodies.owen.eye), bodies.wade.eye - bodies.owen.eye, 1e-6))
 })

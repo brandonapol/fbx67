@@ -4,7 +4,7 @@ import type { Activity } from './cast.ts'
 import type { Act, Place } from '../../text-game/src/types.ts'
 import { CENTER, SIZE, doorSpots, pieces, spawnAt } from './downtown.ts'
 
-export type SpaceId = 'bar' | 'room' | 'camp' | 'flood' | 'downtown' | 'story'
+export type SpaceId = 'bar' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'story'
 
 export type Season = 'summer' | 'flood'
 
@@ -232,6 +232,44 @@ export const flood: Space = {
   spots: [{ id: 'skiff', x: 0.2, z: 4.6, r: 1.4, prompt: 'Get in the skiff' }],
 }
 
+// Act 1 opens here as Wade: the sandbag line across Cushman, a piece of the flooded street like `flood`, laid out on
+// the Act 1 audio bed (soundscape.ts): the bags along LINE_AT, the river's deep water past them to the north. The bags
+// run east-west with a gap at the east curb, where he can step off the end of the line. The woman from Minto has
+// stopped at him; the sergeant, behind the line, is looking the other way. Every floodedStreet scene of Act 1 plays
+// here until the search for Eli builds the rest of the flooded downtown.
+const airman = { coat: '#56603f', skin: '#d8ad88', hair: '#4a3626', height: 1.78 } as const
+
+export const line: Space = {
+  id: 'line',
+  act: 'Act 1: Flood',
+  place: 'floodedStreet',
+  name: 'The sandbag line on Cushman',
+  interior: false,
+  season: 'flood',
+  size: { w: 20, d: 16 },
+  ground: '#4e4636',
+  spawn: vec(0.7, -1.2),
+  props: [
+    ...edges(20, 16),
+    wall(-8.5, 0, 3, 16, '#7d6a52', 5),
+    wall(8.5, 0, 3, 16, '#6e6a5e', 4),
+    { box: { x: -1.5, z: -3, w: 11, d: 0.7 }, h: 0.6, color: '#8a7a5a', solid: true },
+    { box: { x: -1.5, z: -3, w: 10.6, d: 0.5 }, h: 0.25, y: 0.6, color: '#9a8a68', solid: true },
+    { box: { x: 0, z: -7, w: 14, d: 6 }, h: 0.02, color: '#3e3a30', flat: true },
+    { box: { x: 3.5, z: -6.2, w: 2.0, d: 4.4 }, h: 1.1, color: '#4a5a3a', solid: true, occludes: true },
+    { box: { x: -6.6, z: 2.5, w: 0.3, d: 0.3 }, h: 4, color: '#3a3a3a' },
+    { box: { x: -6.6, z: 2.5, w: 0.5, d: 0.3 }, h: 0.3, y: 4, color: '#ffd28a', glow: true },
+  ],
+  figures: [
+    { id: 'woman', at: vec(1.9, -2.1), facing: -0.93, coat: '#3d4038', skin: '#a8754f', hair: '#1e1a17', height: 1.6 },
+    { id: 'sergeant', at: vec(-3.2, 1.8), facing: -Math.PI / 2, ...airman, coat: '#4a5236', height: 1.8 },
+    { id: 'airman1', at: vec(-0.8, -2.2), facing: Math.PI / 2, ...airman },
+    { id: 'airman2', at: vec(-2.3, -2.2), facing: Math.PI / 2, ...airman, hair: '#7a5a34' },
+    { id: 'airman3', at: vec(-3.8, -2.2), facing: Math.PI / 2, ...airman, skin: '#8a5d3d', hair: '#1c1a18' },
+  ],
+  spots: [{ id: 'woman', x: 1.9, z: -2.1, r: 1.9, prompt: 'Hear her out' }],
+}
+
 // Downtown in world coordinates off docs/town-map.md (see downtown.ts). No story place routes here: the prologue's
 // walks start here when the story moves to a place downtown reaches on foot, and end at its door.
 const secondAve = spawnAt('secondAve')
@@ -266,7 +304,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood, downtown, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, room, camp, flood, line, downtown, story }
 
 export const centerOf = (s: Space): Vec => s.center ?? vec(0, 0)
 

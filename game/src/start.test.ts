@@ -66,12 +66,15 @@ test('no path, or an empty one, starts the prologue as before', () => {
   assert.deepEqual(startFrom('#other', ''), start())
 })
 
-test('the path the prologue writes on its end card starts the engine at Act 1', () => {
+test('the path the prologue writes on its end card starts the engine at Act 1, as Wade on the sandbag line', () => {
   const end = playPrologue('round', 'marker')
   const g = startFrom(textBuildHash(end), '')
   assert.deepEqual(g.story, end.story)
   assert.equal(g.story.scene, 'a1_flood')
-  assert.equal(g.panel?.title, menu(g.story).title)
+  assert.equal(g.space, 'line')
+  assert.equal(g.panel, undefined)
+  const played = press(end, 'continue')
+  assert.deepEqual([g.space, g.pos, g.facing], [played.space, played.pos, played.facing])
 })
 
 const errorFor = (hash: string): string => {

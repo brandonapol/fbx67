@@ -141,7 +141,6 @@ const downtown: Soundscape = {
 
 const story: Soundscape = { ground: { surface: 'wood', regions: [] }, layers: [], events: [] }
 
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood, downtown, story }
 
 export type Act2Space = 'town' | 'base' | 'hotel' | 'hall'
 
@@ -266,6 +265,9 @@ const cell: Soundscape = {
 }
 
 export const act1Soundscapes: Readonly<Record<Act1Space, Soundscape>> = { line, hospital, barfight, cell }
+
+// The spaces built so far. An Act 1 or Act 2 bed joins here when its space is added to levels.ts.
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, room, camp, flood, line, downtown, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 
