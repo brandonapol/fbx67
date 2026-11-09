@@ -1,5 +1,5 @@
 import { N } from '../names.ts'
-import { type BarfightMemory, hankRemembers } from '../logic.ts'
+import { type BarfightMemory, hankRemembers, keyMissed } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, set } from '../state.ts'
 import type { Choice, Scene, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
@@ -48,8 +48,8 @@ Lucy needs the aerial photographs Owen worked from, and they are in a records ro
 
 You know the lab clerk takes a long lunch. You also know the duty sergeant locks up at 1700 sharp.`,
     choices: () => [
-      { label: 'Go in during the clerk\'s lunch.', note: 'lunch', next: 'a2_photos_files' },
-      { label: 'Go in after lockup with a borrowed key.', note: 'afterLockup', apply: heat(1), next: 'a2_photos_files' },
+      { label: 'Go in during the clerk\'s lunch.', note: 'lunch', apply: set({ photoLab: 'lunch' }), next: 'a2_photos_files' },
+      { label: 'Go in after lockup with a borrowed key.', note: 'afterLockup', apply: set({ photoLab: 'key' }), next: 'a2_photos_files' },
       { label: 'Refuse. It isn\'t worth a court-martial for some old pictures.', note: 'refuse', apply: eliTrust(-1), next: 'a2_hotel' },
     ],
   },
@@ -248,8 +248,11 @@ The skis are on. Jake will fly Lucy up to Owen's camp the first clear week: Dece
 
 ${s.eliTrust > 0 ? 'She tells three people: Eli, Jake, and you.' : 'She doesn\'t want to tell you. But Jake needs a hand loading the plane the night before, and Eli says you\'re the only one with a truck pass for the strip. So she tells three people: Eli, Jake, and you.'}
 
-${s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of it.' : ''}`,
-    choices: () => [{ label: 'Go home and write to Mama.', note: 'writeMama', next: 'a2_letter_work' }],
+${[
+  s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of it.' : '',
+  keyMissed(s) ? 'On base, the photo lab\'s duty sergeant has finally noticed his spare key went missing for a night in September. He\'s asking around the barracks who borrowed it, and somebody gave him your name.' : '',
+].filter(Boolean).join('\n\n')}`,
+    choices: () => [{ label: 'Go home and write to Mama.', note: 'writeMama', apply: (s) => (keyMissed(s) ? heat(1)(s) : s), next: 'a2_letter_work' }],
   },
   {
     id: 'a2_letter_work',

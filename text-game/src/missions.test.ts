@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
-import { choicesOf, choose, replay } from './engine.ts'
+import { choicesOf, choose, render, replay } from './engine.ts'
 import { menu, mission, send, sendMission } from './story.ts'
 import { missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
@@ -201,4 +201,54 @@ test('getting up records the move for Hank; staying seated leaves him the stool'
     moves.map((m) => sendMission(s, note('stayedSeated', m, 'leftEli', 'clean')).barfightMove),
     [undefined, undefined, undefined],
   )
+})
+
+// Act 2. Every state that reaches the photo lab, from every Act 1 path.
+const atPhotos = allAt('a2_photos')
+const photoNotes = ['lunch.crossChecked', 'lunch.pulledAll', 'key.crossChecked', 'key.pulledAll', 'refused']
+
+test('the photo lab offers way in, drawers, or refused at a2_photos', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1]).at(-1) as State
+  assert.equal(s.scene, 'a2_photos')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The photo lab. Way in: lunch / key. Drawers: cross-checked / pulled all; or refused')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    photoNotes,
+  )
+})
+
+test('each photo lab note agrees with playing its scenes one note at a time', () => {
+  const s = atPhotos[0]
+  assert.deepEqual(sendMission(s, 'lunch.crossChecked'), ['lunch', 'crossCheck'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'key.pulledAll'), ['afterLockup', 'pullAll'].reduce(send, s))
+  assert.deepEqual(sendMission(s, 'refused'), send(s, 'refuse'))
+})
+
+test('the photo lab gives every note its own state, and the photos on every way in', () => {
+  atPhotos.forEach((s) => {
+    const outs = photoNotes.map((n) => sendMission(s, n))
+    assert.equal(new Set(outs.map((o) => JSON.stringify(o))).size, photoNotes.length)
+    outs.forEach((o, i) => assert.equal(o.evidence.includes('aerialPhotos'), photoNotes[i] !== 'refused'))
+  })
+})
+
+test('the drawers carry the heat now; the borrowed key adds none until it is missed', () => {
+  const s = atPhotos[0]
+  const heatOf = (n: string) => sendMission(s, n).heat - s.heat
+  assert.deepEqual(photoNotes.map(heatOf), [1, 2, 1, 2, 0])
+  assert.deepEqual(
+    photoNotes.map((n) => sendMission(s, n).photoLab),
+    ['lunch', 'lunch', 'key', 'key', undefined],
+  )
+})
+
+test('the borrowed key is missed at a2_flight: one more heat, and the sergeant has Wade\'s name', () => {
+  const key: State = { ...initialState, scene: 'a2_flight', photoLab: 'key', heat: 2 }
+  const lunch: State = { ...key, photoLab: 'lunch' }
+  assert.match(render(key), /spare key went missing/)
+  assert.doesNotMatch(render(lunch), /spare key/)
+  assert.equal(send(key, 'writeMama').heat - key.heat, 1)
+  assert.equal(send(lunch, 'writeMama').heat, lunch.heat)
 })

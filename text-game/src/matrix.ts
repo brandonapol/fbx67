@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path'
 import { choicesOf, choose, isEnd, render, replay } from './engine.ts'
 import { initialState } from './state.ts'
 import { canonical } from './liveness.ts'
-import { HEAT_LIMIT, ending, missingForBest } from './logic.ts'
+import { HEAT_LIMIT, ending, keyMissed, missingForBest } from './logic.ts'
 import { flag, int, orExit, value } from './args.ts'
 import type { State } from './types.ts'
 
@@ -47,7 +47,8 @@ const run = (frontier: ReadonlyMap<string, Node>, found: Map<string, Node>): Map
       const raw = choose(node.state, i + 1)
       const sig = sigOf(node.sig, raw)
       const s = canonical(raw)
-      const k = `${sigKey(sig)}#${s.scene}#${s.heat}`
+      // Heat still to come is part of the key, or a path owing it merges with one that doesn't (the borrowed key).
+      const k = `${sigKey(sig)}#${s.scene}#${s.heat}#${keyMissed(s) ? 'owes' : ''}`
       if (!next.has(k)) next.set(k, { state: s, sig, sample: [...node.sample, i + 1] })
     })
   })

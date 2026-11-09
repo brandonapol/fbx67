@@ -12,13 +12,16 @@ export type Mission = Readonly<{
   id: string
   title: string
   details: readonly MissionDetail[]
+  // An ending outside the details' combinations (refused, skipped), as the menu reads after "or".
+  or?: string
   start: SceneId
   end: SceneId
   endings: readonly MissionEnding[]
 }>
 
-// The note's menu as docs/story-api.md writes it: "Title. Detail: a / b. Detail: c / d".
-export const missionMenu = (m: Mission): string => [m.title, ...m.details.map((d) => `${d.name}: ${d.labels.join(' / ')}`)].join('. ')
+// The note's menu as docs/story-api.md writes it: "Title. Detail: a / b. Detail: c / d; or e".
+export const missionMenu = (m: Mission): string =>
+  [m.title, ...m.details.map((d) => `${d.name}: ${d.labels.join(' / ')}`)].join('. ') + (m.or ? `; or ${m.or}` : '')
 
 // docs/acts/act1-missions.md, section 1.
 const searchForEli: Mission = {
@@ -87,4 +90,34 @@ const theBarfight: Mission = {
   endings: barfightEndings,
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight]
+// Every combination of two two-way details, as notes a.b with labels "a, b", applying each pick's choice in order.
+const combos = (first: Detail, second: Detail): readonly MissionEnding[] =>
+  first.picks.flatMap((a) =>
+    second.picks.map((b) => ({
+      note: `${a.note}.${b.note}`,
+      label: `${a.label}, ${b.label}`,
+      applies: [a, b].flatMap((p) => (p.choice ? [p.choice] : [])),
+    })),
+  )
+
+const wayIn: Detail = { name: 'Way in', picks: [{ note: 'lunch', label: 'lunch', choice: 'lunch' }, { note: 'key', label: 'key', choice: 'afterLockup' }] }
+const drawers: Detail = {
+  name: 'Drawers',
+  picks: [
+    { note: 'crossChecked', label: 'cross-checked', choice: 'crossCheck' },
+    { note: 'pulledAll', label: 'pulled all', choice: 'pullAll' },
+  ],
+}
+
+// docs/acts/act2-missions.md, section 1. The key's heat comes later, when it is missed (photoLab, keyMissed).
+const thePhotoLab: Mission = {
+  id: 'thePhotoLab',
+  title: 'The photo lab',
+  details: [wayIn, drawers].map((d) => ({ name: d.name, labels: d.picks.map((p) => p.label) })),
+  or: 'refused',
+  start: 'a2_photos',
+  end: 'a2_hotel',
+  endings: [...combos(wayIn, drawers), { note: 'refused', label: 'refused', applies: ['refuse'] }],
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab]

@@ -24,7 +24,7 @@ Every mission comes with a short list of the endings it accepts. The game must r
 
 | Mission | Allowed endings |
 |---|---|
-| Photo lab | in quietly / in messily / refused |
+| Photo lab | way in: lunch / key; drawers: cross-checked / pulled all; or refused |
 | Hotel bar | listened / skipped |
 | Major's cabinet | code or forced, seen or not; or refused (Lucy goes herself) |
 | Ski search | reached the wreck (always), route taken |
@@ -34,7 +34,7 @@ Every mission comes with a short list of the endings it accepts. The game must r
 | The wire (Act 4) | got a full confession / got part of it / got caught wearing it |
 | Ice jam (Act 4) | stopped it / caught the Major / it blew |
 
-How Act 1's three missions play, and what each note applies, is in [`acts/act1-missions.md`](acts/act1-missions.md).
+How Act 1's three missions play, and what each note applies, is in [`acts/act1-missions.md`](acts/act1-missions.md). Act 2's are in [`acts/act2-missions.md`](acts/act2-missions.md).
 
 A mission's menu is data in `text-game/src/missions.ts`: its start and end scene, the details its note carries and the labels each can take, and, for each ending, the choice notes it applies in order (single-option beats between them are followed on the way). A note with several details is one ending per combination, its notes joined by dots, `opened.move.stood.caught` for the barfight. The game reads it with `mission(state)`, which returns the mission starting at the current scene or `undefined`, and reports with `sendMission(state, note)`, which lands on the mission's end scene. Where a mission starts, the game sends the mission's note and not the scene menu's options; the text build still plays the scenes one choice at a time; a unit test (`text-game/src/missions.test.ts`) checks that every way through a mission's scenes lands where one of its notes does and every note lands where a way through does, so the sweep over the scenes covers the menu. Notes may share a state where a detail carries none on that path (the barfight's move when Wade stayed seated).
 

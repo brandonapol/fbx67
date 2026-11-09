@@ -14,6 +14,9 @@ export type BarfightMemory = BarfightMove | 'seat'
 
 export const hankRemembers = (s: State): BarfightMemory => s.barfightMove ?? 'seat'
 
+// The photo lab's spare key is missed in November if Wade borrowed it to go in after lockup (design: photo-lab method).
+export const keyMissed = (s: State): boolean => s.photoLab === 'key'
+
 export const leakIsWadesFault = (s: State): boolean => s.leakedFlightDate
 
 export const curlyTalks = (s: State): boolean => s.curlyPlan === 'warn'

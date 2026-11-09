@@ -9,6 +9,7 @@ import {
   ending,
   hankRemembers,
   iceJam,
+  keyMissed,
   middleFlavor,
   missingForBest,
   momVerdict,
@@ -158,4 +159,11 @@ test('Hank remembers the barfight move, or that Wade stayed on his stool', () =>
   assert.equal(hankRemembers({ ...initialState, barfightMove: 'shove' }), 'shove')
   assert.equal(hankRemembers({ ...initialState, barfightMove: 'mooseRack' }), 'mooseRack')
   assert.equal(hankRemembers({ ...initialState, barfightMove: 'bottle' }), 'bottle')
+})
+
+test('only the borrowed key is missed', () => {
+  assert.deepEqual(
+    [undefined, 'lunch', 'key'].map((photoLab) => keyMissed({ ...initialState, photoLab } as State)),
+    [false, false, true],
+  )
 })

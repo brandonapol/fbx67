@@ -17,6 +17,7 @@ const KEYED = {
   barfightMove: true,
   momHonesty: true,
   leakedFlightDate: true,
+  photoLab: true,
   coJob: true,
   curlyPlan: true,
   eliTrespass: true,

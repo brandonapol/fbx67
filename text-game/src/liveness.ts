@@ -21,6 +21,7 @@ export const rules: readonly Rule[] = [
   { after: 'a2_steak', apply: drop('barfightMove') },
   { after: 'a2_hotel', apply: dropEvidence('aerialPhotos') },
   { after: 'a2_flight', apply: drop('coJob') },
+  { after: 'a2_flight', apply: drop('photoLab') },
   { after: 'a3_curly', apply: dropEvidence('knot', 'bruising', 'curlyKnot', 'curlyLefty', 'staffCar', 'wreckProof') },
   { after: 'a4_offer', apply: dropEvidence('hotelTalk') },
   { after: 'a3_eli', apply: (s) => ({ ...s, eliTrust: s.eliTrust >= 3 ? 3 : 0 }) },
