@@ -299,7 +299,7 @@ You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes o
     clock: '1967-08-19T21:30',
     goal: 'Keep Eli out of trouble.',
     text: () => `
-Headlights sweep across the front window. Outside, a siren winds down to nothing. Nobody else in the Pan seems to have noticed. You still have hold of what you grabbed.`,
+Headlights sweep across the front window. Outside, a siren winds down to nothing. Nobody else in the Pan seems to have noticed. You're still in it, your hands full of a man's coat or the moose rack.`,
     choices: () => [
       { label: 'Let go and step back with your hands where they can be seen.', note: 'clean', next: 'a1_whistle' },
       { label: 'Hang on. He started it.', note: 'redHanded', apply: heat(1), next: 'a1_whistle' },
@@ -315,7 +315,7 @@ Headlights sweep across the front window. Outside, a siren winds down to nothing
     text: () => `
 The door bangs open and a whistle cuts through the noise. The fight stops the way a song stops when somebody pulls the jukebox plug.
 
-Eli is by the stove, his lip split, the drunk's friend sitting in the mud at his feet.`,
+${N.eli} is by the stove, his lip split, the drunk's friend sitting in the mud at his feet.`,
     choices: () => [
       { label: 'You are at his shoulder. Nobody got him two on one.', note: 'stoodWithEli', apply: eliTrust(1), next: 'a1_tank' },
       { label: 'You are across the room, where the fight took you.', note: 'leftEli', next: 'a1_tank' },
@@ -329,7 +329,7 @@ Eli is by the stove, his lip split, the drunk's friend sitting in the mud at his
     clock: '1967-08-20T08:00',
     goal: 'Get out of this cell.',
     text: () => `
-The whole bar picks sides. Curly jumps in on yours, roaring about Texas. ${N.cop} of Fairbanks PD hauls you, Eli, and Curly out to the car. He knows Curly by name. On the way, Curly presses a folded twenty into the officer's hand, friendly as anything. The officer tucks it back into Curly's shirt pocket without looking at it and shuts the door.
+${N.cop} of Fairbanks PD hauls you, Eli, and Curly out to the car. He knows Curly by name. On the way, Curly presses a folded twenty into the officer's hand, friendly as anything. The officer tucks it back into Curly's shirt pocket without looking at it and shuts the door.
 
 In the morning ${N.barnette} comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
 

@@ -119,7 +119,7 @@ on #94: 60 to 90 seconds, a few verbs, no combo system, no game-over.
   > The barfight. Opened: got up / stayed seated. Move: shove / rack / bottle. Stood with Eli: yes / no.
   > Caught: clean / red-handed
 
-  - **Opened.** *Got up* applies the move's choice. *Stayed seated* applies `stayInSeat` then `continue`.
+  - **Opened.** *Got up* applies the move's choice. *Stayed seated* applies `stayInSeat` then the move's choice.
   - **Move.** *Bottle* if Wade broke a bottle at any point; otherwise the first room move that landed (*shove* for the
     stove, *rack*); otherwise *shove*, since bare hands are shoving. It maps to `shove`, `mooseRack` and `bottle`.
     The field that makes it carry state is #205's (the bottle adds heat, or Hank remembers it later).
