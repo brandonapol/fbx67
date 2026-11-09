@@ -1,7 +1,7 @@
 import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
-import { CURLY_HALF_ANGLE, CURLY_RANGE, spaces } from './levels.ts'
+import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, spaces } from './levels.ts'
 import type { Pose } from './camera.ts'
 import { FOV, NEAR } from './camera.ts'
 import type { Lighting } from './lighting.ts'
@@ -11,6 +11,8 @@ import { castFor, clipFor, playbackRate } from './cast.ts'
 import { lighting } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { owenMotion, seen, watcher } from './prologue.ts'
+
+const FAR_CLIP = 200
 
 export type Shot = Readonly<{ eye: readonly [number, number, number]; at: readonly [number, number, number] }>
 
@@ -73,7 +75,7 @@ const primitive = (
 const addProp = (root: pc.Entity, p: Prop): void => {
   if (p.h < 0.02) return
   const y = (p.y ?? 0) + p.h / 2
-  primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow })
+  primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow && !p.flat })
 }
 
 const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
@@ -134,6 +136,9 @@ const applyLighting = (app: pc.Application, camera: pc.Entity, sun: pc.Entity, l
   }
 }
 
+// The fog end plus a 20% margin (docs/art/README.md, "Beyond the play area"), never nearer than the blockout's 200 m.
+export const farClipFor = (l: Lighting): number => Math.max(FAR_CLIP, l.fogEnd * 1.2)
+
 type Built = Readonly<{
   id: Space['id']
   root: pc.Entity
@@ -155,7 +160,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   window.addEventListener('resize', () => app.resizeCanvas())
 
   const camera = new pc.Entity('camera')
-  camera.addComponent('camera', { fov: FOV, nearClip: NEAR, farClip: 200 })
+  camera.addComponent('camera', { fov: FOV, nearClip: NEAR, farClip: FAR_CLIP })
   app.root.addChild(camera)
 
   const sun = new pc.Entity('sun')
@@ -180,7 +185,8 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   const build = (g: Game): Built => {
     const space = spaces[g.space]
     const root = new pc.Entity(space.id)
-    primitive(root, 'box', space.ground, [0, -0.05, 0], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
+    const c = centerOf(space)
+    primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
     space.props.forEach((p) => addProp(root, p))
     const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f, cast)] as const))
     const cone = space.id === 'camp' ? new pc.Entity('sight') : undefined
@@ -204,6 +210,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
         })
       : []
     applyLighting(app, camera, sun, lamp, l)
+    if (camera.camera) camera.camera.farClip = farClipFor(l)
     app.root.addChild(root)
     return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story) }
   }

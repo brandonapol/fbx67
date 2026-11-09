@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import type { AnimLayerLike } from './probe.ts'
 import { freezeAnims, posed, poses } from './probe.ts'
-import { spaces } from './levels.ts'
+import { centerOf, spaces } from './levels.ts'
 import { start } from './prologue.ts'
 
 type Log = string[]
@@ -58,7 +58,8 @@ test('freezeAnims cuts blends, rewinds every active layer to 0 and evaluates onc
 test('every capture pose stands inside its space', () => {
   Object.entries(poses).forEach(([name, p]) => {
     const s = spaces[p.space]
-    assert.ok(Math.abs(p.pos.x) < s.size.w / 2 && Math.abs(p.pos.z) < s.size.d / 2, `${name} is outside ${p.space}`)
+    const c = centerOf(s)
+    assert.ok(Math.abs(p.pos.x - c.x) < s.size.w / 2 && Math.abs(p.pos.z - c.z) < s.size.d / 2, `${name} is outside ${p.space}`)
   })
 })
 

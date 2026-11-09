@@ -12,6 +12,7 @@ import { MB, breaches, parseBudgets, perfMarkdown, summarize } from './budget.ts
 import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
 import { starts } from './starts.ts'
+import { legs } from '../src/downtown.ts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright') as typeof import('playwright')
@@ -75,6 +76,26 @@ const walk = async (p: Page, points: readonly Point[], run = false): Promise<voi
     )
   }
   if (run) await p.keyboard.up('Shift')
+}
+
+// A route downtown, cut into stretches of at most 20 m: software rendering can drop to a few frames a second, and each
+// stretch has to finish inside walk's wait.
+const STRETCH = 20
+
+const walkRoute = async (p: Page, points: readonly Point[]): Promise<void> => {
+  const at = (await game(p)).pos as { x: number; z: number }
+  const cut = points.reduce<{ from: Point; out: Point[] }>(
+    (acc, to) => {
+      const n = Math.max(1, Math.ceil(Math.hypot(to[0] - acc.from[0], to[1] - acc.from[1]) / STRETCH))
+      const parts = Array.from({ length: n }, (_, i): Point => [
+        acc.from[0] + ((to[0] - acc.from[0]) * (i + 1)) / n,
+        acc.from[1] + ((to[1] - acc.from[1]) * (i + 1)) / n,
+      ])
+      return { from: to, out: [...acc.out, ...parts] }
+    },
+    { from: [at.x, at.z], out: [] },
+  ).out
+  await walk(p, cut, true)
 }
 
 const tour = async (p: Page, home: Point, away: Point, ms = 10000): Promise<void> => {
@@ -259,6 +280,12 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
 
   await walk(page, [[0, 4.2]], true)
   await page.keyboard.press('e')
+  assert.equal((await game(page)).space, 'downtown')
+  await capture(page, 'downtown')
+  await tour(page, [33, 50.5], [40, 50.5])
+  await walkRoute(page, legs[0]!.route)
+  await aim(page, Math.PI, 0)
+  await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'room')
   await snap(page, '05-room', 10)
   await tour(page, [0, 2], [1.6, -0.8])
@@ -267,6 +294,11 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await capture(page, 'letter')
   await page.keyboard.press('1')
   assert.equal((await game(page)).story.scene, 'p_dock')
+  assert.equal((await game(page)).space, 'downtown')
+  await walkRoute(page, legs[1]!.route)
+  await aim(page, Math.PI, 0)
+  await page.keyboard.press('e')
+  assert.equal((await game(page)).panel?.title, 'Owen: The Float Dock')
   await snap(page, '07-dock')
   await page.keyboard.press('1')
   assert.equal((await game(page)).space, 'camp')
@@ -307,7 +339,7 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   assert.deepEqual(errors, [])
 }
 
-test('the prologue plays end to end with the keyboard', { timeout: 1500000 }, async () => {
+test('the prologue plays end to end with the keyboard', { timeout: 2700000 }, async () => {
   const opened = await open()
   try {
     await play(opened)

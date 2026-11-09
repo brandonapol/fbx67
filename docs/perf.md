@@ -32,6 +32,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `room`  |      1,500 | 1,500,000 |                 512 |
 | `camp`  |      1,500 | 1,500,000 |                 512 |
 | `flood` |      1,500 | 1,500,000 |                 512 |
+| `downtown` |   1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 
 | Download         | Limit (MB) |

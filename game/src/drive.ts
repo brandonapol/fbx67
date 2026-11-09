@@ -1,6 +1,8 @@
 import type { Game, Input } from './prologue.ts'
+import { place } from '../../text-game/src/story.ts'
 import { HIDE_TIME, interact, press, start, still, tick } from './prologue.ts'
 import { CURLY_PERIOD } from './levels.ts'
+import { legs } from './downtown.ts'
 import type { Vec } from './world.ts'
 import { distance, sub, vec } from './world.ts'
 
@@ -61,17 +63,30 @@ export const talk = (g: Game, who: 'texas' | 'munitions' | 'round'): Game => {
   return press(opened, 'close')
 }
 
+// Walks a prologue leg downtown along the town map's route and uses the door at its end.
+export const walkLeg = (g: Game): Game => {
+  const leg = legs.find((l) => g.space === 'downtown' && l.place === place(g.story))
+  if (!leg) throw new Error(`no walk downtown from ${g.space} at ${g.story.scene}`)
+  return interact(walk(g, leg.route))
+}
+
+export const leaveBar = (bar: Game): Game => interact(walk(bar, [[0, 4.2]]))
+
+export const toRoom = (bar: Game): Game => walkLeg(leaveBar(bar))
+
 export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): readonly Game[] => {
   const bar = talk(start(), who)
-  const room = interact(walk(bar, [[0, 4.2]]))
+  const night = leaveBar(bar)
+  const room = walkLeg(night)
   const desk = interact(walk(room, [[1.6, -0.8]]))
-  const dock = press(desk, 'note:sleep')
+  const morning = press(desk, 'note:sleep')
+  const dock = walkLeg(morning)
   const camp = press(dock, 'note:fly')
   const hidden = holdWhenSafe(walk(camp, routes[spot]))
   const home = interact(walk(hidden, back(spot)))
   const skiff = interact(walk(home, [[0.2, 5.4]]))
   const end = press(skiff, 'note:continue')
-  return [bar, room, desk, dock, camp, hidden, home, skiff, end]
+  return [bar, night, room, desk, morning, dock, camp, hidden, home, skiff, end]
 }
 
 export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => prologueSteps(who, spot).at(-1)!
