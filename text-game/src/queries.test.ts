@@ -1,11 +1,13 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { initialState } from './state.ts'
 import { sceneIds, sceneIndex } from './sceneIds.ts'
 import { scenes } from './scenes/index.ts'
 import { boughtRound, evidenceIds, notebook, oneHanded, pov, season, seasonOn } from './queries.ts'
 import { replay } from './engine.ts'
 import * as story from './story.ts'
+import { lintText } from './storyLint.ts'
 import type { Clock, Evidence, SceneId, State } from './types.ts'
 
 const at = (scene: SceneId, patch: Partial<State> = {}): State => ({ ...initialState, scene, ...patch })
@@ -105,4 +107,17 @@ test('boughtRound holds only in the scene the round leads to', () => {
     ['p_letter', false],
   ])
   assert.equal(boughtRound(replay([1]).at(-1)!), false)
+})
+
+// Like the scene lint, the name rule reads the source: rendered lines contain names.ts's placeholders by design.
+test('the notebook source passes the story lint, oil rule on, since the notebook opens before Act 4', () => {
+  const src = readFileSync(new URL('./queries.ts', import.meta.url), 'utf8')
+  assert.deepEqual(lintText(src, true).map((v) => `queries.ts:${v.line} ${v.rule}: ${v.match}`), [])
+})
+
+test('every rendered notebook line, in either voice, passes the oil rule', () => {
+  for (const scene of ['a2_curly', 'a3_found'] as const) {
+    notebook(at(scene, { evidence: everyEvidence })).forEach(({ id, line }) =>
+      assert.deepEqual(lintText(line, true).filter((v) => v.rule === 'oil'), [], id))
+  }
 })
