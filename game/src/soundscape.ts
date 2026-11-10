@@ -2,7 +2,9 @@ import type { Bus } from './mixer.ts'
 import type { Ground } from './footsteps.ts'
 import { SEASON_F } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
-import { CURLY_PERIOD, REEL_AT, TYPEWRITER_AT, WORK } from './levels.ts'
+import { REEL_AT, TYPEWRITER_AT } from './levels.ts'
+import { beatOf, clockOf, cueBetween } from './curly.ts'
+import { DRUM } from './camp.ts'
 import type { Game } from './prologue.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
@@ -79,7 +81,7 @@ export const JUKEBOX_AT = vec(-5.4, -1.6)
 export const STOVE_AT = vec(5.1, -3.8)
 export { REEL_AT }
 export const RADIO_AT = vec(-7.4, 3.4)
-export const DRUM_AT = vec(-6.8, 6.6)
+export const DRUM_AT = DRUM
 export const CREEK_Z = 9.2
 
 const bar: Soundscape = {
@@ -392,13 +394,20 @@ const cabin: Soundscape = {
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
 export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, story }
 
-export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
+// Curly's routine clock at the camp (curly.ts): refueling is its first beat.
+export const refueling = (t: number): boolean => beatOf(t) === 'refuel'
+
+const curlyClock = (g: Game): number => clockOf(g.watch ?? { lost: 0, aware: 0 }, g.t)
 
 export const holds = (when: Condition | undefined, g: Game): boolean => {
   if (when === 'writing') return g.panel?.kind === 'letter' && (g.typed ?? 0) < g.panel.text.length
-  if (when === 'refueling') return g.space === 'camp' && !g.panel && refueling(g.t)
+  if (when === 'refueling') return g.space === 'camp' && !g.panel && refueling(curlyClock(g))
   return true
 }
+
+// Curly's lighter as he finishes a task, just before he looks over the camp: the stealth cue (curly.ts).
+export const cues = (prev: Game | undefined, next: Game): readonly Spot[] =>
+  prev && prev.space === 'camp' && next.space === 'camp' && !next.panel && cueBetween(curlyClock(prev), curlyClock(next)) ? ['snap'] : []
 
 export const ducked = (g: Game): boolean => g.panel !== undefined
 

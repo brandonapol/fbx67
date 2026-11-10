@@ -4,7 +4,8 @@ import type { Volumes } from './mixer.ts'
 import { DEFAULT_VOLUMES, DUCK, busGain, busGains, parseVolumes, serializeVolumes, sliderGain, withVolume } from './mixer.ts'
 import type { Gait } from './footsteps.ts'
 import { pace, standing, strideFor, surfaceAt } from './footsteps.ts'
-import { CURLY_PERIOD, WORK, spaces } from './levels.ts'
+import { spaces } from './levels.ts'
+import { BEATS, CURLY_PERIOD } from './curly.ts'
 import { INDOOR_PACE, JOG, WALK, interact, press, start, still, tick } from './prologue.ts'
 import { DT, talk, toRoom, walk } from './drive.ts'
 import { legs } from './downtown.ts'
@@ -125,9 +126,12 @@ test('the typewriter runs while the letter is open, and the jerry can while Curl
   assert.equal(desk.story.scene, 'p_letter')
   assert.ok(!holds('writing', press(desk, 'finish')))
   const camp = { ...press(start(), 'close'), space: 'camp' as const, pos: spaces.camp.spawn }
+  const WORK = BEATS[0].time
+  assert.equal(BEATS[0].id, 'refuel')
   assert.ok(refueling(0) && refueling(WORK - 0.01) && !refueling(WORK + 0.01) && refueling(CURLY_PERIOD))
   assert.equal(holds('refueling', { ...camp, t: 1 }), true)
   assert.equal(holds('refueling', { ...camp, t: WORK + 1 }), false)
+  assert.equal(holds('refueling', { ...camp, t: WORK + 1, watch: { lost: WORK, aware: 0 } }), true, 'his clock stops while he looks toward a noise')
   assert.equal(holds('refueling', room), false)
   assert.equal(holds(undefined, room), true)
 })

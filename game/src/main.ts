@@ -43,6 +43,7 @@ import {
   touchStick,
 } from './input.ts'
 import { mountPrefs, mountSettings } from './settings.ts'
+import { mountStealth } from './stealthView.ts'
 import type { Log, Objective, Prefs, Screen } from './frontEnd.ts'
 import {
   JOURNAL_KEY,
@@ -185,7 +186,9 @@ const live: {
 
 const applyPrefs = (): void => {
   document.body.dataset.text = live.prefs.text
+  view.cone(live.prefs.cone)
 }
+const syncStealth = mountStealth()
 applyPrefs()
 mountPrefs(
   () => live.prefs,
@@ -738,6 +741,7 @@ view.app.on('update', (dtRaw: number) => {
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)
   renderHud(g)
+  syncStealth(g)
   syncSigns(g, view.screenAt)
   const seen = seenAt(live.log.seen, g)
   if (seen !== live.log.seen) live.log = { ...live.log, seen }
