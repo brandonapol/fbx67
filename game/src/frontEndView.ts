@@ -1,5 +1,7 @@
 import './frontEnd.css'
 import type { Journal, Screen } from './frontEnd.ts'
+import type { PocketMap } from './frontEndMap.ts'
+import { drawMap } from './frontEndMapView.ts'
 
 // The front end's DOM (issue #51): the loading bar, the title, the pause menu, the journal and the objective line.
 // It owns no state: main.ts says which screen is up and passes what to show; the buttons call back by id.
@@ -8,7 +10,7 @@ export type FrontEndAction = 'continue' | 'new' | 'settings' | 'resume' | 'journ
 
 export type FrontEndView = Readonly<{
   loading: (share: number | undefined) => void
-  show: (screen: Screen, data: Readonly<{ canContinue: boolean; goal?: string; journal?: Journal }>) => void
+  show: (screen: Screen, data: Readonly<{ canContinue: boolean; goal?: string; journal?: Journal; map?: PocketMap }>) => void
   objective: (text: string | undefined) => void
   buttons: () => readonly HTMLButtonElement[]
 }>
@@ -66,13 +68,16 @@ export const mountFrontEnd = (on: (a: FrontEndAction) => void, parent: HTMLEleme
   const pages = el('div', { className: 'pages' })
   const journal = el('section', { id: 'journal', hidden: true }, el('h2', { textContent: 'Notebook' }), pages, el('nav', {}, button('back', 'Close')))
 
+  const sheet = el('div', { className: 'sheet' })
+  const map = el('section', { id: 'map', hidden: true }, el('h2', { textContent: 'Street map' }), sheet, el('nav', {}, button('back', 'Close')))
+
   const objective = el('div', { id: 'objective', hidden: true })
   objective.setAttribute('aria-live', 'polite')
   const menuButton = el('button', { id: 'pause-open', type: 'button', textContent: 'Menu' })
   menuButton.addEventListener('click', () => on('pause'))
-  parent.append(objective, menuButton, title, pause, journal, loading)
+  parent.append(objective, menuButton, title, pause, journal, map, loading)
 
-  const screens: Readonly<Record<string, HTMLElement>> = { title, pause, journal }
+  const screens: Readonly<Record<string, HTMLElement>> = { title, pause, journal, map }
   const shown = { screen: '' as string, objective: '' as string | undefined }
 
   return {
@@ -84,6 +89,7 @@ export const mountFrontEnd = (on: (a: FrontEndAction) => void, parent: HTMLEleme
       cont.hidden = !data.canContinue
       goal.textContent = data.goal ?? ''
       if (screen === 'journal' && data.journal) pages.replaceChildren(...journalBody(data.journal))
+      if (screen === 'map' && data.map) drawMap(sheet, data.map)
       document.body.dataset.screen = screen
       if (shown.screen === screen) return
       shown.screen = screen

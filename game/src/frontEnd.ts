@@ -53,9 +53,10 @@ export const objectiveShown = (o: Objective | undefined, now: number): string | 
 
 export type Heard = Readonly<{ who: string; text: string }>
 
-export type Log = Readonly<{ met: readonly string[]; heard: readonly Heard[] }>
+// `seen` is the pocket map's (frontEndMap.ts): the buildings downtown the player has walked past.
+export type Log = Readonly<{ met: readonly string[]; heard: readonly Heard[]; seen: readonly string[] }>
 
-export const emptyLog: Log = { met: [], heard: [] }
+export const emptyLog: Log = { met: [], heard: [], seen: [] }
 
 const capital = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1)
 
@@ -138,9 +139,10 @@ const isHeard = (h: unknown): h is Heard =>
 
 export const parseLog = (raw: string | null, path: string): Log => {
   try {
-    const l = JSON.parse(raw ?? 'null') as { path?: unknown; met?: unknown; heard?: unknown } | null
+    const l = JSON.parse(raw ?? 'null') as { path?: unknown; met?: unknown; heard?: unknown; seen?: unknown } | null
     if (!l || l.path !== path || !Array.isArray(l.met) || !Array.isArray(l.heard)) return emptyLog
-    return { met: l.met.filter((m): m is string => typeof m === 'string'), heard: l.heard.filter(isHeard) }
+    const strings = (a: readonly unknown[]): readonly string[] => a.filter((m): m is string => typeof m === 'string')
+    return { met: strings(l.met), heard: l.heard.filter(isHeard), seen: Array.isArray(l.seen) ? strings(l.seen) : [] }
   } catch {
     return emptyLog
   }

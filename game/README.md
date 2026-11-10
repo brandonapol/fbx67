@@ -69,6 +69,11 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
   ticks while paused, so the story clock holds. The journal is Owen's notebook: the titles of the scenes played,
   the scene now and its `goal(state)`, `notebook(state)`, the people interacted with and the lines heard in talk
   panels. Nothing is in it the player did not do or hear.
+- **Pocket map** (`src/frontEndMap.ts`, M or the pause menu's Map; pauses like the menu): Wade's folded street map of
+  downtown from `src/downtown.ts` (`docs/town-map.md`). It names only the buildings whose story place the path has
+  been through (`place(state)`), the places the current menu leads to (marked as where to go, under the objective
+  line), and the buildings the player has walked within 14 m of; where the player stands is a pointer downtown, or
+  the building of the space they are in. Places off the walkable map are listed in the margin.
 - **Objective:** a line from `goal(state)` at the top, shown for six seconds when the goal changes, and again on O
   (or Back on a pad). No arrow, no minimap.
 - **Saving:** the path played so far, in the text build's format, is saved per scene (`second-rush.path`), with the
@@ -92,6 +97,7 @@ src/render.ts     PlayCanvas: draws the game state, owns nothing
 src/settings.ts   the settings panel: text size, reduced motion, controls
 src/frontEnd.ts   the front end: screens, the objective line, the journal, the save, load progress; pure
 src/frontEndView.ts  the title, pause menu, journal, loading bar and objective line in the DOM
+src/frontEndMap.ts   the pocket map: which places are known, where the player is, where to go; pure
 src/mixer.ts      buses, slider gain, ducking and saved volumes; pure
 src/footsteps.ts  stride cadence from distance walked and surface lookup; pure
 src/soundscape.ts ambience beds, spot effects and surfaces per space as data, and their conditions

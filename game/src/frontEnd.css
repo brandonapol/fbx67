@@ -66,7 +66,8 @@
 
 #title nav button,
 #pause nav button,
-#journal nav button {
+#journal nav button,
+#map nav button {
   min-width: 200px;
   padding: 10px 16px;
   text-align: left;
@@ -86,7 +87,8 @@
 }
 
 #pause,
-#journal {
+#journal,
+#map {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -105,7 +107,8 @@
 }
 
 #pause h2,
-#journal h2 {
+#journal h2,
+#map h2 {
   margin: 0 0 8px;
   font-size: 22px;
   font-variant: small-caps;
@@ -120,7 +123,9 @@
 #pause nav button:hover,
 #pause nav button:focus-visible,
 #journal nav button:hover,
-#journal nav button:focus-visible {
+#journal nav button:focus-visible,
+#map nav button:hover,
+#map nav button:focus-visible {
   background: var(--ink);
   color: var(--paper);
   outline: none;
@@ -228,4 +233,162 @@ body[data-text='large'] #panel-buttons button {
     top: 56px;
     max-width: calc(100% - 32px);
   }
+}
+
+/* The pocket map: a folded street map, full page like the journal. */
+#map {
+  box-shadow: 0 0 0 100vmax #1a1612;
+  width: min(900px, calc(100% - 32px));
+  height: calc(100% - 32px);
+  display: flex;
+  flex-direction: column;
+}
+
+#map .sheet {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 220px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0 16px;
+}
+
+#map .sheet .goal {
+  grid-column: 1 / -1;
+}
+
+#map .aside {
+  overflow-y: auto;
+}
+
+#map .goal {
+  margin: 0 0 6px;
+  font-style: italic;
+}
+
+#map svg {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+#map .land {
+  fill: #ece0c6;
+}
+
+#map .water {
+  fill: #9fb4bb;
+}
+
+#map .river {
+  fill: #4d6670;
+  font-size: 6px;
+  font-style: italic;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+#map .street {
+  fill: #fbf6ea;
+  stroke: #c9b994;
+  stroke-width: 0.4;
+}
+
+#map .street-name {
+  fill: #6e624c;
+  font-variant: small-caps;
+  font-size: 5.5px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  letter-spacing: 0.05em;
+}
+
+#map .spot {
+  fill: none;
+  stroke: #c9b994;
+  stroke-width: 0.4;
+  stroke-dasharray: 1.2 1;
+}
+
+#map .spot.known {
+  fill: #d6c7a6;
+  stroke: var(--ink);
+  stroke-dasharray: none;
+}
+
+#map .spot.next {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+
+#map .spot.here {
+  fill: var(--accent);
+}
+
+#map .spot-name {
+  fill: var(--ink);
+  font-size: 5.5px;
+  paint-order: stroke;
+  stroke: #ece0c6;
+  stroke-width: 1.4px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+#map .you {
+  fill: var(--accent);
+  stroke: var(--ink);
+  stroke-width: 0.5;
+}
+
+#map h3 {
+  margin: 8px 0 2px;
+  font-size: 15px;
+  font-variant: small-caps;
+}
+
+#map .margin {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+#map .margin .next {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+#map .margin .here::after {
+  content: ' (you are here)';
+  font-style: italic;
+}
+
+#map .legend {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#map .k {
+  display: inline-block;
+  width: 12px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 2px solid var(--accent);
+}
+
+#map .k.here {
+  background: var(--accent);
+}
+
+@media (max-width: 600px) {
+  #map .sheet {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(200px, 1fr) auto;
+  }
+}
+
+#map nav {
+  padding-top: 10px;
 }

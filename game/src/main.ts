@@ -70,6 +70,7 @@ import {
 } from './frontEnd.ts'
 import type { FrontEndAction } from './frontEndView.ts'
 import { mountFrontEnd } from './frontEndView.ts'
+import { pocketMap, seenAt } from './frontEndMap.ts'
 import type { Vec } from './world.ts'
 import { distance, length, sub, vec } from './world.ts'
 
@@ -198,7 +199,12 @@ const localStore = (): Storage | undefined => {
 }
 
 const audio = createAudio(localStore())
-mountSoundPanel(audio)
+const soundPanel = mountSoundPanel(audio).querySelector<HTMLElement>('#sound-panel')
+// An Esc that closes the sound panel is spent on it: note before the panel's own handler runs that it was open.
+const escClosing = { panel: false }
+window.addEventListener('keydown', (e) => {
+  escClosing.panel = e.code === 'Escape' && soundPanel?.hidden === false
+}, { capture: true })
 ;['pointerdown', 'touchend', 'keydown'].forEach((type) => window.addEventListener(type, audio.unlock, { capture: true }))
 
 const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.location.href).toString()
@@ -418,11 +424,12 @@ window.addEventListener('keydown', (e) => {
     return
   }
   const free = actionFor(live.controls.bindings, e.code) === undefined
-  if (free && (e.code === 'Escape' || e.code === 'KeyP')) {
+  if (free && ((e.code === 'Escape' && !escClosing.panel) || e.code === 'KeyP')) {
     e.preventDefault()
     return go('pause')
   }
   if (free && e.code === 'KeyO') return showObjective()
+  if (free && e.code === 'KeyM') return go('map')
   live.keys.add(e.code)
   const g = live.g
   if (g.home) {
@@ -564,6 +571,7 @@ const drawFront = (): void =>
     canContinue: savedAt() !== undefined,
     goal: objectiveShown(live.objective ? recall(live.objective, live.now) : undefined, live.now),
     journal: live.screen === 'journal' ? journal(live.g, live.log) : undefined,
+    map: live.screen === 'map' ? pocketMap(live.g, live.log.seen) : undefined,
   })
 
 const begin = (g: Game, log: Log): void => {
@@ -605,6 +613,7 @@ const go = (a: FrontEndAction): void => {
   }
   if (a === 'settings') return settings.show(true)
   if (a === 'pause') return show(runs(live.screen) ? 'pause' : live.screen)
+  if (a === 'map' && live.screen === 'title') return
   if (a === 'resume') return show('play')
   if (a === 'back') return show(back(live.screen))
   return show(a)
@@ -671,6 +680,8 @@ view.app.on('update', (dtRaw: number) => {
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)
   renderHud(g)
+  const seen = seenAt(live.log.seen, g)
+  if (seen !== live.log.seen) live.log = { ...live.log, seen }
   live.objective = objectiveFor(live.objective, g.story, live.now)
   front.objective(g.panel ? undefined : objectiveShown(live.objective, live.now))
   save(g)
