@@ -491,6 +491,24 @@ starts.forEach((s) =>
   }),
 )
 
+// No scene routes to the base yet: the probe puts Wade there to sample the blockout and capture its frame.
+test('the Eielson blockout renders inside its budget', { timeout: 300000 }, async () => {
+  const opened = await open()
+  const { page, errors } = opened
+  try {
+    await page.evaluate(() => (window as any).__prologue.visit('base'))
+    assert.equal((await game(page)).space, 'eielson')
+    await page.evaluate(() => (window as any).__prologue.record(true))
+    await frames(page, START_FRAMES)
+    await page.evaluate(() => (window as any).__prologue.record(false))
+    await capture(page, 'base')
+    assert.deepEqual(errors, [])
+  } finally {
+    await collect(page)
+    await opened.close()
+  }
+})
+
 const setPad = (p: Page, axes: readonly number[], buttons: readonly number[]) =>
   p.evaluate(
     ([axes, buttons]) => {

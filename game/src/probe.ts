@@ -33,6 +33,8 @@ export const poses: Readonly<Record<string, Pose>> = {
   // The same street from the same data on a flood day and late in freeze-up (snow down, cars plugged in, smoke up).
   downtown_flood: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-08-15T12:00' } },
   downtown_freezeup: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-10-28T12:30' } },
+  // The base blockout: Wade on the gate road at the squadron lot, the squadron building and his dorm beyond.
+  base: { space: 'eielson', pos: vec(160, -7), facing: Math.PI, t: 0, shot: { eye: [175, 22, 12], at: [130, 0, -45] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
@@ -150,6 +152,15 @@ export const installProbe = (view: View, live: Live): void => {
     return frames(1)
   }
 
+  // Puts the player at a pose in its space, live, for a space no scene routes to yet (the base blockout), so the smoke
+  // test can sample it and capture its frame.
+  const visit = (at: string): Promise<void> => {
+    const pose = poses[at]
+    if (!pose) throw new Error(`no pose named ${at}`)
+    live.set({ ...live.get(), space: pose.space, pos: pose.pos, facing: pose.facing, view: pose.facing, panel: undefined, holding: undefined })
+    return frames(1)
+  }
+
   const record = (on: boolean): void => {
     rec.on = on
     rec.age = 0
@@ -158,5 +169,5 @@ export const installProbe = (view: View, live: Live): void => {
   }
 
   const w = window as unknown as { __prologue: object }
-  w.__prologue = { ...w.__prologue, capture, release, record, samples: () => rec.samples, poses: () => Object.keys(poses) }
+  w.__prologue = { ...w.__prologue, capture, release, visit, record, samples: () => rec.samples, poses: () => Object.keys(poses) }
 }
