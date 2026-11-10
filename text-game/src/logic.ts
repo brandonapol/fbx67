@@ -1,4 +1,4 @@
-import type { BarfightMove, State } from './types.ts'
+import type { BarfightMove, NightSignal, State } from './types.ts'
 import { honesty } from './state.ts'
 
 export type Ending = 'best' | 'good' | 'middle' | 'bad'
@@ -16,6 +16,23 @@ export const hankRemembers = (s: State): BarfightMemory => s.barfightMove ?? 'se
 
 // The photo lab's spare key is missed in November if Wade borrowed it to go in after lockup (design: photo-lab method).
 export const keyMissed = (s: State): boolean => s.photoLab === 'key'
+
+// Fire first leaves Jake pinned in the cold while Lucy builds it: his foot freezes, and he loses toes (design:
+// survival-night order). Jake first costs Lucy her fingertips for a week and Jake nothing he keeps.
+export const jakeFrostbitten = (s: State): boolean => s.nightOrder === 'fire'
+
+// Lucy's signal, set at a3_survive_*. Scenes rendered from a bare state (the ambient lint, the engine's previews) read
+// no signal as the saved fire: nothing sent up.
+export const nightSignal = (s: State): NightSignal => s.nightSignal ?? 'saveFire'
+
+// Hours from the ground team setting out (a3_search, 10:00 on 13 December) until the rest of it reaches the wreck, by
+// Lucy's signal (design: survival-night signal). Lucy keeps the smoke fed all morning, so it draws them by early
+// afternoon; the X waits for a spotter plane to circle it and radio a bearing, at dusk; a fire saved for warmth is only
+// a smell, so they come in the dark to Wade's flares. Wade, alone on skis, gets there first on every path at 11:30, and
+// his radio breaks in the fall, so his arrival does not shorten theirs.
+export const SEARCH_HOURS: Readonly<Record<NightSignal, number>> = { smoke: 3, stampX: 5, saveFire: 7 }
+
+export const searchHours = (s: State): number => SEARCH_HOURS[nightSignal(s)]
 
 // Heat a choice already made will still add later. Any new deferred heat goes here, so the matrix keys on it.
 export const pendingHeat = (s: State): number => (keyMissed(s) ? 1 : 0)

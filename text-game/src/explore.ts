@@ -19,6 +19,8 @@ const KEYED = {
   leakedFlightDate: true,
   photoLab: true,
   coJob: true,
+  nightOrder: true,
+  nightSignal: true,
   curlyPlan: true,
   eliTrespass: true,
   rashPlan: true,

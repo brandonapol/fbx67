@@ -9,6 +9,9 @@ import {
   ending,
   hankRemembers,
   iceJam,
+  jakeFrostbitten,
+  nightSignal,
+  searchHours,
   keyMissed,
   pendingHeat,
   middleFlavor,
@@ -168,4 +171,21 @@ test('only the borrowed key is missed', () => {
     [false, false, true],
   )
   assert.deepEqual([pendingHeat({ ...initialState, photoLab: 'lunch' }), pendingHeat({ ...initialState, photoLab: 'key' })], [0, 1])
+})
+
+test('only fire first leaves Jake frostbitten', () => {
+  assert.deepEqual(
+    [undefined, 'fire', 'jake'].map((nightOrder) => jakeFrostbitten({ ...initialState, nightOrder } as State)),
+    [false, true, false],
+  )
+})
+
+test('the signal sets how long the ground team takes: smoke soonest, a saved fire latest', () => {
+  const hours = (['smoke', 'stampX', 'saveFire'] as const).map((nightSignal) => searchHours({ ...initialState, nightSignal }))
+  assert.deepEqual(hours, [3, 5, 7])
+})
+
+test('no signal yet reads as the saved fire, in one place', () => {
+  assert.equal(nightSignal(initialState), 'saveFire')
+  assert.equal(searchHours(initialState), searchHours({ ...initialState, nightSignal: 'saveFire' }))
 })

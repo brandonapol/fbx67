@@ -1,5 +1,5 @@
 {
-  "why": "Set at about 2x the sweep measured on 2026-11-08, before the Acts 1-3 growth. The heap limit stays under the 1.5 GB old-space cap so a blow-up fails here, with a message, rather than as an out-of-memory crash.",
-  "baseline": { "mergedStates": 1265056, "peakHeapMB": 574, "measured": "2026-11-08" },
-  "limit": { "mergedStates": 2500000, "peakHeapMB": 1150 }
+  "why": "Raised for #208: Jake's frostbite (nightOrder) has to live from the crash through every Act 3 branch to a4_news, which nearly doubles the Act 3 tail. Limits sit about 20% over the new baseline for states and under the 1.5 GB old-space cap for heap, so a blow-up still fails here with a message rather than as an out-of-memory crash. The next field that spans Act 3 needs liveness work, not another raise.",
+  "baseline": { "mergedStates": 2782291, "peakHeapMB": 1243, "measured": "2026-11-10" },
+  "limit": { "mergedStates": 3300000, "peakHeapMB": 1400 }
 }

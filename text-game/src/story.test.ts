@@ -168,3 +168,35 @@ test('the barfight move colors and locks nobody out: only the bottle adds heat',
   assert.equal(bottle.heat, shove.heat + 1)
   assert.equal(canonicalKey(choose(shove, 1)), canonicalKey(choose(rack, 1)))
 })
+
+// #208: the survival night's order and signal carry state. The best route, with the night's two choices swapped in.
+const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+const atCrash = best.slice(0, 31)
+const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(33)])
+const reach = (order: number, signal: number, id: State['scene']): State =>
+  nightRun(order, signal).find((s) => s.scene === id) as State
+
+test('the night keeps its order and signal from the crash', () => {
+  assert.equal((replay(atCrash).at(-1) as State).scene, 'a3_crash')
+  const s = reach(1, 2, 'a3_search')
+  assert.deepEqual([s.nightOrder, s.nightSignal], ['fire', 'stampX'])
+  assert.deepEqual([reach(2, 1, 'a3_search').nightOrder, reach(2, 3, 'a3_search').nightSignal], ['jake', 'saveFire'])
+})
+
+test('fire first leaves Jake frostbitten at the wreck and three toes short in Act 4', () => {
+  const [fireWreck, jakeWreck] = [1, 2].map((o) => menu(reach(o, 1, 'a3_wreck')).text)
+  assert.match(fireWreck, /candle wax/)
+  assert.match(jakeWreck, /both boots on/)
+  const [fire, jake] = [1, 2].map((o) => menu(reach(o, 1, 'a4_news')).text)
+  assert.match(fire, /three toes off/)
+  assert.match(jake, /both feet whole/)
+})
+
+test('the signal changes how long the search takes, and the night locks nobody out', () => {
+  const homes = [1, 2, 3].map((sig) => menu(reach(1, sig, 'a3_home')).text)
+  assert.match(homes[0], /three hours after it set out/)
+  assert.match(homes[1], /five hours after it set out/)
+  assert.match(homes[2], /seven hours after it set out/)
+  const ends = [1, 2].flatMap((o) => [1, 2, 3].map((sig) => nightRun(o, sig).at(-1) as State))
+  assert.equal(new Set(ends.map(canonicalKey)).size, 1)
+})
