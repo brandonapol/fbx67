@@ -153,8 +153,9 @@ Off the map:
 Place ids used by the scenes that are not on the walkable map (the `Place` type in `text-game/src/types.ts`):
 
 - `floodCabin`: the half-sunk cabin on the edge of town where Eli's pole finds Owen (Aug 15). Off the map: the
-  scene needs no spot downtown, and the flood tables already cover the water. A spot, if the engine wants one, is
-  a gap to fill.
+  scene needs no spot downtown, and the flood tables already cover the water. The engine plays it as its own space
+  in its own coordinates (`game/src/cabinRide.ts`): Eli's riverboat up a flooded slough to the cabin, its spawn the
+  boat's first seat.
 - `cityJail`: the Fairbanks PD cell and front desk (Aug 20). Off the map: no jail is placed downtown, and the scene
   never walks to or from it.
 - `eielsonBarracks`: Wade's room on the base map ([`base-map.md`](base-map.md)).

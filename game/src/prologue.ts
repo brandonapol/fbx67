@@ -247,11 +247,12 @@ const arrive = (g: Game): Game => {
 
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
 
-// Smoking is a held action anywhere Wade is in the world: hold interact with nothing in front of him to light one.
+// Smoking is a held action anywhere Wade is on his feet in the world: hold interact with nothing in front of him to
+// light one. Not in a boat, where the ride ticks before any hold.
 export const CIGARETTE = 'cigarette'
 export const LIGHT_TIME = 1.5
 
-export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
+export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit && !riding(g.ride) && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
 
 // Lucy takes a lit cigarette out of Wade's mouth as soon as he is near her, and drops it in the water.
 const douse = (g: Game): Game => (g.space === 'office' && g.lit && takesIt(g.pos) ? { ...g, lit: undefined, doused: true } : g)
