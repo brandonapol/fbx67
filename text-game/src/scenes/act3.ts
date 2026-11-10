@@ -51,6 +51,9 @@ const teamArrives = (s: State): string =>
     saveFire: 'in the dark, toward the flares you fire one-handed off the hill',
   })}. A helicopter out of Fort Wainwright comes in after them, and by nine that night the three of you are in Fairbanks.`
 
+// Wade's toes before the wreck, on both ski routes; a3_wreck has Lucy find them numb but not frozen.
+const numbToes = 'Your toes go numb and stay that way.'
+
 // Jake's frostbite (design: survival-night order), first seen at the wreck and carried into Act 4 by jakeFrostbitten.
 const jakeAtFire = (s: State): string =>
   jakeFrostbitten(s)
@@ -216,7 +219,7 @@ ${searchSign(s)}`,
     clock: '1967-12-13T11:00',
     goal: smokeGoal,
     text: (s) => `
-The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
+The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards. Snow packs into your boots. ${numbToes}
 
 ${smokeAhead(s)}`,
     choices: () => [{ label: 'Follow it.', note: 'follow', next: 'a3_arm' }],
@@ -229,7 +232,7 @@ ${smokeAhead(s)}`,
     clock: '1967-12-13T11:00',
     goal: smokeGoal,
     text: (s) => `
-Climbing on skis is nothing like water skiing. You sweat through your layers, and then the sweat starts to freeze. Your toes go numb and stay that way.
+Climbing on skis is nothing like water skiing. You sweat through your layers, and then the sweat starts to freeze. ${numbToes}
 
 ${smokeAhead(s)}`,
     choices: () => [{ label: 'Follow it.', note: 'follow', next: 'a3_arm' }],
@@ -257,7 +260,7 @@ You hear it before you feel it: a crack like green wood. Then you feel it.`,
     clock: '1967-12-13T12:30',
     goal: `Decide whether to show ${jakeFirst} the sump.`,
     text: (s) => `
-Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
+Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut and pulls off your boots. Your toes are numb but not frozen; she warms them against her stomach under her parka until they ache and you swear at her. Then she makes you eat and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
 
 ${jakeAtFire(s)} He drifts in and out, muttering that he drained those sumps, he swears he did. "Uncle ${N.tolliverFirst}'ll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 

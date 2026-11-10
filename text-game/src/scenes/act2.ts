@@ -408,7 +408,7 @@ On the way out you pass the green steel drawers at the back of the room, where t
     clock: '1967-11-17T11:00',
     goal: `Hear ${N.jake.split(' ')[0]} out.`,
     text: () => `
-${N.jake} catches you outside the hangar where he does contract maintenance for the base. He's six foot seven and has to duck under the door. Bush pilot, mechanic, straight arrow. His uncle is ${N.tolliver}, the councilman, and he'll tell you himself that they don't talk.
+${N.jake} catches you outside the hangar where he does contract maintenance for the base. He's six foot seven and has to duck under the door. Bush pilot, mechanic. His uncle is ${N.tolliver}, the councilman, and he'll tell you himself that they don't talk.
 
 "Curly got drunk with me Thursday," he says. "Said he's got money coming, enough to get out of Alaska for good. Said some people in this town are going to be real sorry they know his name. I don't like it."
 
