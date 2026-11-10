@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { N } from '../../text-game/src/names.ts'
+import { prologueThings } from '../../text-game/src/ambient/prologueThings.ts'
 import type { Visit } from './talk.ts'
 import { LINGER, LOG_SIZE, READ_BASE, attending, near, perform, readTime, reply, said, showing, speaking, step, targets, verbs, visit } from './talk.ts'
 import { press, start, still } from './prologue.ts'
@@ -58,11 +59,10 @@ test('a verb out of reach, not taken, or on a topic they have nothing on does no
 })
 
 test('a line is not repeated until its pool is spent', () => {
-  const uses = Array.from({ length: 4 }).reduce<Visit>((v) => perform(v, 'jukebox', 'use'), atJukebox)
-  assert.deepEqual(
-    uses.talk.log.map((l) => l.text.split(' ').slice(0, 3).join(' ')),
-    ['You feed it', 'Your dime buys', 'It eats the', 'You feed it'],
-  )
+  const first = (text: string) => text.split(' ').slice(0, 3).join(' ')
+  const pool = prologueThings.find((t) => t.id === 'jukebox')!.lines.use!.map((b) => first(b.lines[0].text))
+  const uses = Array.from({ length: pool.length + 1 }).reduce<Visit>((v) => perform(v, 'jukebox', 'use'), atJukebox)
+  assert.deepEqual(uses.talk.log.map((l) => first(l.text)), [...pool, pool[0]])
 })
 
 test('subtitles play one after another above the speaker, then stay in the log', () => {

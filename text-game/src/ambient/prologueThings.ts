@@ -17,6 +17,9 @@ export const prologueThings: readonly Ambient[] = [
       use: [
         aside('dime', 'You feed it a dime and punch B7. Steel guitar, a little warped from the cold last winter.'),
         aside('polka', 'Your dime buys the polka somebody else picked. The airman at the jukebox groans.'),
+        aside('fiddle', "A1. A fiddle reel, 'Tanana Breakdown' by the Birch Creek Boys. Somebody's boot keeps time."),
+        aside('ballad', "D5. 'Lonesome Road to Nenana,' sung slow by Marlene Voss. The bar gets quieter around it."),
+        aside('rockabilly', "E2. 'Hot Rod Heartache' by Lonnie Vale and the Rattlers. The airman finds his feet."),
         aside('coinReturn', 'It eats the dime. You thump the coin return. A nickel comes out that was never yours.'),
       ],
     },
