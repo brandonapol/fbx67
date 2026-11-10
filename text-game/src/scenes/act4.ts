@@ -2,7 +2,7 @@ import { mamaReply } from './mama.ts'
 import type { Scene, State } from '../types.ts'
 import { N } from '../names.ts'
 import { addEvidence, has, set } from '../state.ts'
-import { HEAT_LIMIT, councilmanFlips, curlyTalks, doubleAgentWorks, iceJam, jakeFrostbitten } from '../logic.ts'
+import { HEAT_LIMIT, councilmanFlips, lucyLetGo, curlyTalks, doubleAgentWorks, iceJam, jakeFrostbitten } from '../logic.ts'
 
 const act = 'Act 4: Breakup' as const
 
@@ -24,7 +24,7 @@ March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on
 
 Everybody in Fairbanks suddenly knows why a road north matters, and a pipeline after it, and why the gravel and the river crossings on the way matter. The best of both on the lower Chatanika are on Eli and Lucy's fish camp.
 
-${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to the last of Owen\'s tapes.' : s.afterConfession === 'turn' ? `Lucy is suspended and won't speak to you. You hear about Owen's tapes from ${N.gossipShort} at the café, secondhand.` : 'Lucy listens to the last of Owen\'s tapes without you. Eli tells you about it later, flatly.'} ${jakeSplices(s)} On the reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
+${s.afterConfession === 'stay' ? 'You sit with Lucy at her kitchen table and listen to the last of Owen\'s tapes.' : s.afterConfession === 'turn' ? `Lucy ${lucyLetGo(s) ? '' : 'is suspended and '}won't speak to you. You hear about Owen's tapes from ${N.gossipShort} at the café, secondhand.` : 'Lucy listens to the last of Owen\'s tapes without you. Eli tells you about it later, flatly.'} ${jakeSplices(s)} On the reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
 Lucy plays it three times. She doesn't say who she thinks "he" is.
 

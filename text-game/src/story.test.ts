@@ -171,10 +171,11 @@ test('the barfight move colors and locks nobody out: only the bottle adds heat',
   assert.equal(canonicalKey(choose(shove, 1)), canonicalKey(choose(rack, 1)))
 })
 
-// #208: the survival night's order and signal carry state. The best route, with the night's two choices swapped in.
-const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-const atCrash = best.slice(0, 32)
-const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(34)])
+// #208: the survival night's order and signal carry state. The best route (Lucy goes in herself and is let go), with
+// the night's two choices swapped in.
+const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+const atCrash = best.slice(0, 33)
+const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(35)])
 const reach = (order: number, signal: number, id: State['scene']): State =>
   nightRun(order, signal).find((s) => s.scene === id) as State
 
@@ -278,7 +279,7 @@ test('Lucy searches the land office after hours while she has the job, and finds
 
 test('at Lucy heat 2 or more the records thread is closed: no search, and the logbook flag stays 0', () => {
   for (const h of [2, 3, 4]) {
-    const out = send(atMinto(h), 'leave')
+    const out = send(send(atMinto(h), 'leave'), 'carryHome')
     assert.deepEqual([out.scene, out.recordsLog], ['a2_jake', 0])
   }
 })

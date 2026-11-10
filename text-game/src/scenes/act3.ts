@@ -2,7 +2,7 @@ import { mamaReply } from './mama.ts'
 import type { CacheSpot, Choice, Clock, NightSignal, Place, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
-import { jakeFrostbitten, nightSignal, searchHours } from '../logic.ts'
+import { jakeFrostbitten, lucyLetGo, nightSignal, searchHours } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, joan, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
@@ -420,7 +420,7 @@ It's Lucy, on the pay phone outside the main gate. "I can't get onto your base, 
     text: (s) => `
 You hand her the folder back and walk out into the dark. She doesn't call after you. ${walkBack(s)}
 
-For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
+For the rest of the winter you work your shifts, keep your head down, and stay away from ${lucyLetGo(s) ? `${N.lucy}'s street` : 'the land office'}.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {
@@ -433,7 +433,7 @@ For the rest of the winter you work your shifts, keep your head down, and stay a
     text: (s) => `
 The next morning you go to ${N.barnette}. ${turnedIn(s)} You tell him she's been running a private investigation with stolen Air Force files, and that the forged sign-outs were her idea of a frame.
 
-Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are in an evidence locker.`,
+Barnette writes it all down. He doesn't thank you. ${lucyLetGo(s) ? 'He calls the land office while you sit there. Whoever answers says she doesn\'t work there anymore, and he writes that down too. By noon' : 'By noon Lucy is suspended from the land office and'} her files are in an evidence locker.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {

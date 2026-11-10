@@ -1,5 +1,5 @@
 import { N } from '../names.ts'
-import { type BarfightMemory, hankRemembers, keyMissed, recordsOpen } from '../logic.ts'
+import { type BarfightMemory, hankRemembers, keyMissed, lucyLetGo, recordsOpen } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, recordsLog, set } from '../state.ts'
 import type { Choice, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
@@ -23,8 +23,9 @@ const lucyNext = `See what ${N.lucy} needs next.`
 const letterGoal = 'Write home to Mama.'
 const recordsGoal = `Find what happened to your grandfather's allotment application.`
 
-// Lucy's after-hours search runs only while she still has the land-office job (design: Systems > Lucy).
-const afterMinto = (s: State): SceneId => (recordsOpen(s) ? 'a2_records' : 'a2_jake')
+// Lucy's after-hours search runs only while she still has the land-office job (design: Systems > Lucy). At high Lucy
+// heat she is let go instead, the same day the search would have run (design: Systems > Heat).
+const afterMinto = (s: State): SceneId => (recordsOpen(s) ? 'a2_records' : 'a2_let_go')
 
 const heardAt = { place: 'hotelBar', clock: '1967-10-07T22:30', goal: `Pack up and tell ${N.lucy} what you heard.` } as const
 
@@ -380,6 +381,26 @@ Nothing on the page says who wanted the file, or why. It says the office had it,
     ],
   },
   {
+    // Her own cost, in her own story (design: Systems > Heat, #211). Shown in what she does; nobody explains it.
+    id: 'a2_let_go',
+    act,
+    title: 'Lucy: The Key',
+    place: 'landOffice',
+    clock: '1967-11-14T17:00',
+    goal: 'Clear out your desk.',
+    text: () => `
+You are ${N.lucy}. At five the supervisor locks the front door himself and doesn't put on his coat. There is a card on his blotter: ${N.barnette}, Alaska State Troopers. He turns it face down when he sees you looking.
+
+He says it isn't his decision. He says it twice.
+
+You empty your desk into the box the typewriter ribbons came in: the cardigan off the back of your chair, your own pencils, the jar of hard candy you keep for the old men who come in about their allotments, the photograph of fish camp from under the blotter glass. Nothing else in the desk was ever yours.
+
+The back-door key is on your ring between your house key and the one for the smokehouse padlock. You work it off with your thumbnail and lay it on the blotter, beside the card.
+
+On the way out you pass the green steel drawers at the back of the room, where the folder with your grandfather's number on the tab is still empty. You don't slow down.`,
+    choices: () => [{ label: 'Carry the box home through the snow.', note: 'carryHome', next: 'a2_jake' }],
+  },
+  {
     id: 'a2_jake',
     act,
     title: 'Jake',
@@ -485,7 +506,7 @@ Then your friends. Mama always asks if you're eating and who you eat with.`,
     clock: '1967-11-30T13:00',
     goal: heatGoal,
     text: (s) => `
-${s.heat >= 3 ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and that land office girl," he says. "I'm watching all three of you."${s.heat > 3 ? ' He leans in the window. "Next time you tell me something, Pruett, I won\'t believe a word of it."' : ''}\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
+${s.heat >= 3 ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and ${lucyLetGo(s) ? `${N.eli}'s sister` : 'that land office girl'}," he says. "I'm watching all three of you."${s.heat > 3 ? ' He leans in the window. "Next time you tell me something, Pruett, I won\'t believe a word of it."' : ''}\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
     choices: (s) => [...heatChoices(s), askGossip('a2_heat_gossip')],
   },
   { ...gossip('a2_heat_gossip', act, (s) => heatChoices(s)), place: 'nlCafe', clock: '1967-11-30T14:00', goal: heatGoal },
