@@ -92,7 +92,7 @@ const officerSaw = (s: State): string =>
 const officerReads: Readonly<Record<OfficerTier, (s: State) => string>> = {
   curious: () => `"Nobody's made a complaint on you," he says. "Not the Troopers, not the base. That's what I can't figure. An airman with a clean sheet, and every place that geologist's business turns up, there you are, off duty, just passing." He waits, in case you want to explain it. You don't. "I'm curious, is all. Curious isn't a charge."`,
   counting: (s) => `He counts it off without hurry, the way a man reads back an order. "${officerSaw(s)} And Barnette has your name in his notebook. He showed me." He lets that sit. "None of it's against the law. I'm only telling you somebody can count."`,
-  hanging: () => `"You're making yourself easy to hang, Pruett," he says. "Barnette has a page on you now, not a line. One more thing and he'll take whatever's handed to him about you, true or not, and whoever drowned that geologist knows how to hand him things." He looks up the street, where the fog swallows the streetlights a block on. "A case Barnette can't bury needs the man who brought the body in standing up in a courtroom in the spring. Not run off the base. Not in a cell. Standing up."`,
+  hanging: () => `"You're making yourself easy to hang, Pruett," he says. "Barnette has a page on you now, not a line. One more thing and he'll take whatever's handed to him about you, true or not, and the man who tied that knot would be glad to hand him something." He looks up the street, where the fog swallows the streetlights a block on. "A case Barnette can't bury needs the man who brought the body in standing up in a courtroom in the spring. Not run off the base. Not in a cell. Standing up."`,
 }
 
 const heatChoices = (_: State): readonly Choice[] => [
@@ -482,11 +482,11 @@ Curly sets his fork down very carefully.
     clock: '1967-11-21T15:30',
     goal: 'Hear the officer out.',
     text: (s) => `
-Half past three and the streetlights are already on. Ice fog hangs over Second Avenue at the height of the car roofs. You come out of the Northern Lights Café and there is a Fairbanks PD car at the curb with its engine running, and ${N.cop} leaning on the fender with his hands in his coat.
+Half past three, thirty below, and the streetlights are already on. Ice fog hangs over Second Avenue at the height of the car roofs. You come out of the Northern Lights Café and there is a Fairbanks PD car at the curb with its engine running, and ${N.cop} leaning on the fender with his hands in his coat.
 
 He's the officer who drove you to the jail in August. The one who put ${N.curlyShort}'s twenty back in his shirt pocket without looking at it.
 
-"Pruett." He doesn't straighten up. "I was at the help tent the night you and ${N.eli} brought the geologist in. The line on him was cut on both sides of something. Barnette never asked where the middle went." A car goes by slow on the ice. "Neither did you."
+"Pruett." He doesn't straighten up. "I was at the help tent the evening you and ${N.eli} brought the geologist in. The line on him was cut on both sides of something. Barnette never asked where the middle went." A car goes by slow on the ice. "Neither did you."
 
 ${officerReads[officerTier(s)](s)}
 
