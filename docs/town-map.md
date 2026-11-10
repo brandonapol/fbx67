@@ -160,6 +160,19 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
 - `eielsonBarracks`: Wade's room on the base map ([`base-map.md`](base-map.md)).
 - `surveyCamp`: Owen's camp on a gravel bar up the river, reached by Curly's plane. Its own space, not downtown.
 - `helpTent`: off the map south along Cushman beyond Fifth; its spot is a gap for the place-id ticket (#89).
+- `majorsOffice`: the Major's office in the squadron building (Sept 12, Oct 24), on the base map ([`base-map.md`](base-map.md)).
+- `squadronBuilding`: the squadron building's hall and duty desk (Oct 25), on the base map ([`base-map.md`](base-map.md)).
+- `photoLab`: the base photo lab's counter (Sept 14), on the base map ([`base-map.md`](base-map.md)).
+- `photoRecords`: the records room at the back of the photo lab (Sept 14), on the base map ([`base-map.md`](base-map.md)).
+- `baseHangar`: outside the hangar where Jake does contract maintenance (Nov 17), on the base map ([`base-map.md`](base-map.md)).
+- `lucysKitchen`: Lucy's kitchen table, where she reads what Wade brings her (Sept to Nov). Off the map: the design
+  does not say where she lives, and no scene walks there.
+- `hotelBar`: the hotel bar downtown where Tolliver drinks with men from Outside (Oct 7). Fictional (the Pioneer is
+  gone, item 23); off the walkable map until a building on it is chosen, a gap to fill.
+- `communityHall`: the hall on the edge of town where the Tanana Chiefs meet (Oct 21). Unnamed (fact-checks item 52)
+  and off the map.
+- `bushStrip`: Curly's tie-down at Phillips Field, north of the river (Nov 8). Off the map (see Phillips Field above).
+- `richardsonHighway`: the road between town and the base, where Barnette pulls Wade over (Nov 30). Off the map.
 
 ### Ours
 

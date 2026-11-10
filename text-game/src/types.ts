@@ -36,6 +36,17 @@ export type Place =
   | 'landOffice'
   | 'cityJail'
   | 'eielsonBarracks'
+  | 'majorsOffice'
+  | 'squadronBuilding'
+  | 'photoLab'
+  | 'photoRecords'
+  | 'baseHangar'
+  | 'lucysKitchen'
+  | 'hotelBar'
+  | 'communityHall'
+  | 'nlCafe'
+  | 'bushStrip'
+  | 'richardsonHighway'
 
 export type Clock = `${number}-${number}-${number}T${number}:${number}`
 

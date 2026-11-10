@@ -89,7 +89,7 @@ map does not.
 
 All buildings are ours. Building types follow [Building types](#building-types).
 
-| Id (proposed) | Place | Rectangle | Front door | Floor (y) | Height |
+| Id | Place | Rectangle | Front door | Floor (y) | Height |
 |---|---|---|---|---|---|
 | `eielsonGate` | The gate shack, on an island in the gate road | shack x −1.5..1.5, z −1.2..1.2; island x −3..3, z −1.5..1.5 | windows both ways | 0.3 | 1 floor, 3.5 m, a flat roof and a floodlight |
 | | Pass office (visitor passes) | x −18..−6, z 12..22, outside the fence | (−12, 12), north onto the gate apron | 0.3 | 1 floor, 4 m |
@@ -105,9 +105,9 @@ All buildings are ours. Building types follow [Building types](#building-types).
 | `baseHangar` | The hangar where Jake does contract maintenance | x 262..302, z −130..−100 | big doors on the south face, x 266..298, onto the apron; personnel door (262, −108), west onto Flight Line Road | 0.3 | 1 high floor, 12 m, steel arch |
 | `munitionsFence` | The munitions storage area, from outside its gate | gate across the munitions road at x 290, z 96..104 | | | igloos: low earth mounds, 4 m, inside at x 300..340, z 70..140 |
 
-`eielsonBarracks` is the only one of these ids in the `Place` type today (`text-game/src/types.ts`), used by the Act 1
-letter. The others are proposals: they enter the type when a scene sets them, with the place-id ticket that adds them.
-This doc changes no code.
+`eielsonBarracks` (the Act 1 letter), `majorsOffice`, `squadronBuilding`, `photoLab`, `photoRecords` and `baseHangar`
+(Act 2, #90) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
+proposals: they enter the type when a scene sets them.
 
 ### Interiors
 
