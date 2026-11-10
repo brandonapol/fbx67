@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
-import { choicesOf, choose, render, replay } from './engine.ts'
+import { choicesOf, choose, render, replay, sceneOf } from './engine.ts'
 import { menu, mission, send, sendMission } from './story.ts'
 import { endsOf, missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
@@ -448,8 +448,9 @@ test('a plan is +1 heat and its rashPlan; staying out is neither', () => {
   })
 })
 
-// The acceptance criterion: nothing in a lead-in gets past Lucy. Every way out of a3_rash, café or not, reaches its
-// plan's confession with Lucy in it before any other scene, and no lead-in offers more than walking into her.
+// The story side of the acceptance criterion (the engine's interception line and timer are its own): nothing in a
+// lead-in gets past Lucy. Every way out of a3_rash, café or not, reaches its plan's confession, Lucy stepping out of
+// the dark, before any other scene, and no lead-in offers more than walking into her.
 test('every way through a rash plan is intercepted by Lucy at its own confession', () => {
   const confessions = Object.values(confessionOf)
   const leadIns: Readonly<Record<string, SceneId>> = { a3_rash_safe: 'a3_confession_safe', a3_rash_burn: 'a3_confession_burn', a3_rash_gun: 'a3_confession_gun', a3_rash_none: 'a3_confession_none' }
@@ -458,7 +459,7 @@ test('every way through a rash plan is intercepted by Lucy at its own confession
       if (confessions.includes(c.scene)) {
         assert.ok(lead, `${c.scene} reached without a lead-in`)
         assert.equal(c.scene, leadIns[lead])
-        assert.match(render(c), /Lucy/)
+        assert.match(sceneOf(c).text(c), /She must have followed you|beside you in the dark|She drives/)
         return
       }
       assert.ok(['a3_rash', 'a3_rash_gossip', ...Object.keys(leadIns)].includes(c.scene), `${c.scene} reached before Lucy`)
@@ -472,7 +473,7 @@ test('every way through a rash plan is intercepted by Lucy at its own confession
 test('the lead-ins stage what the arm rules out: no climb, no stick shift driven, no shot fired', () => {
   const s = atRash[0]
   const lead = (n: string) => render(send(s, n))
-  assert.match(lead('safe'), /nothing to climb/)
+  assert.match(lead('safe'), /ground floor/)
   assert.match(lead('burn'), /stalls/)
   assert.match(lead('gunpoint'), /won't come to your shoulder/)
   ;['safe', 'burn', 'gunpoint'].forEach((n) => assert.doesNotMatch(lead(n), /oil rush/i))
