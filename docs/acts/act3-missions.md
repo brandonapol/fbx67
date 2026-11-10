@@ -7,7 +7,8 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the 
 [`design.md`](../../design.md) disagree, the design wins.
 
 **Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. Section 1's menu,
-`lucysDig`, and section 5's, `theRashPlan`, are already in `missions.ts`.
+`lucysDig`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's, `theRashPlan`, are already in
+`missions.ts`.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:

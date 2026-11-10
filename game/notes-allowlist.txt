@@ -37,7 +37,6 @@ a2_records:mapRoom
 a2_records:streetlight
 a2_records_log:putBack
 a2_steak:continue
-a3_arm:yell
 a3_confession_burn:stay
 a3_confession_burn:turn
 a3_confession_burn:walk
@@ -63,10 +62,6 @@ a3_home:tellEli
 a3_joan:honest
 a3_joan:lie
 a3_joan:soft
-a3_search:climb
-a3_search:downhill
-a3_ski_down:follow
-a3_ski_up:follow
 a3_survive_fire:saveFire
 a3_survive_fire:smoke
 a3_survive_fire:stampX
@@ -75,8 +70,6 @@ a3_survive_jake:smoke
 a3_survive_jake:stampX
 a3_turn:continue
 a3_walk:continue
-a3_wreck:keepIt
-a3_wreck:wakeJake
 lucysDig:cache
 lucysDig:marker
 lucysDig:stove
@@ -123,3 +116,7 @@ theRashPlan:burn
 theRashPlan:gunpoint
 theRashPlan:safe
 theRashPlan:stayedOut
+theSkiSearch:creek
+theSkiSearch:ridge
+theWreck:notShown
+theWreck:shown
