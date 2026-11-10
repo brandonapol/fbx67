@@ -395,7 +395,7 @@ The skis are on. Jake will fly Lucy up to Owen's camp the first clear week: Dece
 ${s.eliTrust > 0 ? 'She tells three people: Eli, Jake, and you.' : 'She doesn\'t want to tell you. But Jake needs a hand loading the plane the night before, and Eli says you\'re the only one with a truck pass for the strip. So she tells three people: Eli, Jake, and you.'}
 
 ${[
-  s.coJob ? 'She hasn\'t finished reading the Major\'s files. There is a lot of it.' : '',
+  'She hasn\'t finished reading the Major\'s files. There is a lot of it.',
   keyMissed(s) ? 'On base, the photo lab\'s duty sergeant has finally gone back through the key sign-out sheet and found a night in September nobody signed for. He\'s asking around the barracks who borrowed it, and somebody gave him your name.' : '',
 ].filter(Boolean).join('\n\n')}`,
     choices: () => [{ label: 'Go home and write to Mama.', note: 'writeMama', apply: (s) => (keyMissed(s) ? heat(1)(s) : s), next: 'a2_letter_work' }],
