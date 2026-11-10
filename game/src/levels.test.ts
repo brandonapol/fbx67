@@ -9,8 +9,10 @@ import { timeOf } from './lighting.ts'
 import { stageOf, townLayer } from './freezeup.ts'
 import { place } from '../../text-game/src/story.ts'
 import { spaceFor } from './router.ts'
+import { PILE_AT, STAIR_X } from './landoffice.ts'
 import { startFrom } from './start.ts'
-import { blocked } from './world.ts'
+import { walk } from './drive.ts'
+import { blocked, vec } from './world.ts'
 
 const at = (scene: SceneId): State => ({ ...initialState, scene })
 
@@ -88,4 +90,25 @@ test('the help tent renders in winter as its bare space, an empty variant', () =
   const winter = propsIn(tent, 'winter', '1968-01-20T12:00')
   assert.deepEqual(winter, tent.props)
   assert.ok(winter.every((p) => [p.box.x, p.box.z, p.box.w, p.box.d, p.h].every(Number.isFinite)))
+})
+
+// The land office (#172): the wet ledger pile and the staircase Lucy hauls them up are solid, so Wade walks around
+// them, not through them. Walked headless from where the `--choices` path to `a1_lucy` puts him.
+const inOffice = startFrom(`#path=${Array.from({ length: 18 }, () => 1).join(',')}`, '')
+
+test('the land office path puts Wade in the office space, at its spawn', () => {
+  assert.equal(inOffice.space, 'office')
+  assert.deepEqual(inOffice.pos, spaces.office.spawn)
+})
+
+test('Wade cannot walk through the wet ledger pile', () => {
+  assert.throws(() => walk(inOffice, [[-3.5, -3.0], [-3.5, 0.0]]), /blocked/)
+  assert.ok(blocked(PILE_AT, solids(spaces.office)))
+})
+
+test('Wade cannot walk through the staircase from the side of the room', () => {
+  assert.throws(() => walk(inOffice, [[3.0, -1.0], [3.0, 0.5], [STAIR_X, 0.5]]), /blocked/)
+  Array.from({ length: 10 }, (_, i) => vec(STAIR_X, -1.6 + 0.5 * (i + 0.5))).forEach((tread) =>
+    assert.ok(blocked(tread, solids(spaces.office)), `tread at z ${tread.z}`),
+  )
 })
