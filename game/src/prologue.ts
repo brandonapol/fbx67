@@ -1,6 +1,6 @@
 import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { menu, place, pov, send } from '../../text-game/src/story.ts'
+import { menu, place, send } from '../../text-game/src/story.ts'
 import { prologueThreads, prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
 import { say, within } from '../../text-game/src/ambient/select.ts'
 import { route } from './router.ts'
@@ -17,7 +17,8 @@ import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
 import { DECK_Y, rideAt, rideOver, riding } from './skiff.ts'
 
 import type { Body, Motion } from './cast.ts'
-import { INDOOR_PACE, JOG_SPEED, WALK_SPEED, bodies } from './cast.ts'
+import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
+import { bodyFor } from './pov.ts'
 
 export { HIDE_TIME, ROUND_TIME } from './levels.ts'
 
@@ -416,9 +417,8 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
 }
 
-// The player is whoever the story's pov(state) says: Owen in the prologue, Wade from Act 1 on.
-// On the skiff ride the story has already moved on to Wade, but it is still Owen in the stern.
-export const playerBody = (g: Game): Body => (riding(g.ride) ? bodies.owen : bodies[pov(g.story)])
+// The player is whoever the story's pov(state) says (pov.ts).
+export const playerBody = (g: Game): Body => bodyFor(g.story, riding(g.ride))
 
 // The player stands in the world only in a space of the story's act: not over the story backdrop, and not in the
 // prologue's flood under the end card, where the story has already moved on to Wade.
