@@ -106,14 +106,14 @@ All buildings are ours. Building types follow [Building types](#building-types).
 | `munitionsFence` | The munitions storage area, from outside its gate | gate across the munitions road at x 290, z 96..104 | | | igloos: low earth mounds, 4 m, inside at x 300..340, z 70..140 |
 
 `eielsonBarracks` (the Act 1 letter), `majorsOffice`, `squadronBuilding`, `photoLab`, `photoRecords` and `baseHangar`
-(Act 2, #90; Act 3's knock, confession and walk out, #91) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
+(Act 2, #90; Act 3's call from the gate and walk out, #91) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
 proposals: they enter the type when a scene sets them.
 
 ### Interiors
 
 **Wade's room** (8 × 8): two bunks, two wall lockers, a desk under the window, a footlocker at the foot of Wade's
 bunk (the cut piece of line lives there; `a2_curly`). The roommate is on another shift and never home when it matters.
-The window, on the east wall, looks across 14 m of snow at Dorm Street. It is where Lucy knocks at midnight in Act 3.
+The window, on the east wall, looks across 14 m of snow at Dorm Street. Lucy never comes to it: she can't get onto the base (#340).
 
 **The squadron building:**
 
@@ -180,8 +180,8 @@ Facing is a unit vector (x, z); (0, −1) faces north. y is the floor or the gra
 | Id | Position (x, y, z) | Facing | Notes |
 |---|---|---|---|
 | `eielsonGate` | (8, 0, 3) | (1, 0) | just inside the gate on the inbound side, looking down the gate road |
-| `eielsonBarracks` | (86, 0.3, −50) | (1, 0) | Wade's room, at the desk, facing the window; the Act 1 letter and the Act 3 knock both start here |
-| `barracksWindow` | (92, 0, −50) | (−1, 0) | outside the window in the snow, facing in; for a scene from Lucy's side |
+| `eielsonBarracks` | (86, 0.3, −50) | (1, 0) | Wade's room, at the desk, facing the window; the Act 1 letter and Lucy's Act 3 call both start here |
+| `barracksWindow` | (92, 0, −50) | (−1, 0) | outside the window in the snow, facing in; no story scene uses it since Lucy's knock moved off base (#340) |
 | `squadronBuilding` | (160, 0, −36) | (0, −1) | the squadron lot, facing the front door |
 | `majorsOffice` | (182, 0.3, −62) | (0, −1) | just inside the office door, facing the desk and the cabinet |
 | `photoLab` | (160, 0.3, 36) | (0, 1) | inside the front door, at the counter |

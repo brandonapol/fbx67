@@ -56,3 +56,10 @@ test('Lucy stops each rash plan where it happens, minutes after it starts', () =
     assert.ok(minutes > 0 && minutes <= 60, `${plan}: ${clock(rash)} to ${clock(confession)}`)
   })
 })
+
+// Walking out on Lucy leaves Wade off base, one-handed and without a car: a3_walk says how he gets back.
+test('walking away gets Wade back to base from wherever Lucy stopped him', () => {
+  const walk = (plan: number): string => render(last([...toRash, plan, 1, 2]))
+  assert.match(walk(2), /fuel truck/)
+  ;[1, 3, 4].forEach((plan) => assert.match(walk(plan), /cab off Second Avenue/))
+})

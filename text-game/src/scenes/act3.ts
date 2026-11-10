@@ -66,7 +66,14 @@ const turnedIn = (s: State): string =>
 
 // Lucy's confession (design: Lucy's Confession). She stops each rash plan where it is headed, a few minutes in; on the
 // quiet path she calls from outside the gate and drives Wade to her kitchen. The talk itself is the same everywhere.
-const stopped = 'Lucy steps out of the dark before you get there. She must have followed you.\n\n"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'
+const stop = '"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'
+const stopped = `Lucy steps out of the dark before you get there. She must have followed you.\n\n${stop}`
+// How Wade gets back to base after walking out on her: he can't drive the borrowed truck one-handed (rashPlan, which
+// liveness keeps only as burn or not by now).
+const walkBack = (s: State): string =>
+  s.rashPlan === 'burn'
+    ? 'You leave the borrowed truck on the cabin road, its gears too much for one hand, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn\'t ask about the cast.'
+    : 'A cab off Second Avenue takes the last of your pay to drop you at the main gate.'
 const confessionBody = (s: State): string => `She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Under those, the igloo count sheets from the summer, before the first sheet with your name forged on it: the demolition count short week after week, and every short sheet initialed up the line as if it added up. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Your letter with the date of Lucy\'s flight went out in November, right across his desk.' : ''}
 
 "They've been building you for weeks. You're the fall guy."
@@ -390,12 +397,13 @@ You borrow a rifle from a guy in the barracks who doesn't ask questions, and you
     text: () => `
 You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight the runner from the CQ desk bangs on your door: a phone call, a woman, and she says it can't wait.
 
-It's Lucy, out of breath, on the pay phone outside the main gate. "I can't get onto your base, Wade. Come out. I'm in my cousin's car, and I'm not saying the rest of it on a telephone."`,
+It's Lucy, on the pay phone outside the main gate. "I can't get onto your base, Wade. Come out. I'm in my cousin's car, and I'm not saying the rest of it on a telephone."`,
+    // The note keeps its old name (Lucy at the window): game/notes-allowlist.txt and the engine's menus key on it.
     choices: () => [{ label: 'Walk out past the gate and get in the car.', note: 'letHerIn', next: 'a3_confession_none' }],
   },
   confession('a3_confession_safe', 'tolliversOffice', '1967-12-28T23:15', stopped),
   confession('a3_confession_burn', 'tolliversCabin', '1967-12-29T02:00', stopped),
-  confession('a3_confession_gun', 'tolliversHouse', '1967-12-28T21:45', stopped),
+  confession('a3_confession_gun', 'tolliversHouse', '1967-12-28T21:45', `Lucy is beside you in the dark before the headlights ever turn in. She must have followed you.\n\n${stop}`),
   confession(
     'a3_confession_none',
     'lucysKitchen',
@@ -409,8 +417,10 @@ It's Lucy, out of breath, on the pay phone outside the main gate. "I can't get o
     place: 'eielsonBarracks',
     clock: '1967-12-29T04:00',
     goal: winterGoal,
-    text: () => `
-You hand her the folder back and walk out into the dark. She doesn't call after you. For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
+    text: (s) => `
+You hand her the folder back and walk out into the dark. She doesn't call after you. ${walkBack(s)}
+
+For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {
