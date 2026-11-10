@@ -59,6 +59,7 @@ a3_curly:continue
 a3_eli:leverage
 a3_eli:quiet
 a3_eli:report
+a3_hangar:goInside
 a3_found:home
 a3_home:lie
 a3_home:police
