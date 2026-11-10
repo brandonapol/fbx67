@@ -7,6 +7,7 @@ import type { Game } from './prologue.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
 import { PORCH, WALKWAY } from './highwater.ts'
+import { LINE_Z } from './searchEli.ts'
 import type { Rect } from './downtown.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
@@ -216,9 +217,10 @@ export const act2Soundscapes: Readonly<Record<Act2Space, Soundscape>> = { town, 
 
 export type Act1Space = 'line' | 'hospital' | 'barfight' | 'cell'
 
-export const RIVER_Z = -7
+// The line in the flooded town (searchEli.ts), and the deep water north of it on Second where the boats run.
+export const LINE_AT = vec(-1, LINE_Z)
+export const RIVER_Z = LINE_Z - 8
 export const BOATS_AT: readonly Vec[] = [vec(-7, RIVER_Z - 2), vec(6, RIVER_Z - 4)]
-export const LINE_AT = vec(0, -3)
 export const DRIPS_AT: readonly Vec[] = [vec(-2.5, -4), vec(1.8, 2.5), vec(0.4, 7)]
 export const RACK_AT = vec(-6.5, 2.4)
 export const RADIATOR_AT = vec(-1.8, -1.6)

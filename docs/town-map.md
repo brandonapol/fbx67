@@ -215,8 +215,7 @@ a staircase between the floors (item 45), which the Act 1 scene uses when Lucy h
 
 ### Spaces in `game/src/levels.ts`
 
-Two spaces are not placed: `line`, the Act 1 sandbag line across Cushman, is a piece of flooded street with no
-position on this map yet, and `story` is the backdrop for a scene that has no space.
+One space is not placed: `story`, the backdrop for a scene that has no space.
 
 | Space | Placement: center (x, z), yaw | Floor (y) | Check |
 |---|---|---|---|
@@ -225,6 +224,7 @@ position on this map yet, and `story` is the backdrop for a scene that has no sp
 | `room` (6 × 6) | (134, 85), 0° | 4.16 | spans x 131..137, z 82..88, inside the house; its window wall (local z −2.9) is the house's north wall at z 82, over the alley; the desk faces it |
 | `camp` | off the map | | |
 | `downtown` (250 × 200) | (70, 40), 0° | 0 for now (see below) | the play area itself, x −55..195, z −60..140, in world coordinates: a local coordinate is a map coordinate. Built by `game/src/downtown.ts`; see [In the engine](#in-the-engine-pass-1-gray-box) |
+| `line` (250 × 200) | (70, 40), 0° | the grade; water 1.2 | Act 1's flooded town, the morning after `flood`: the same pieces and high water, without the walkway's banks, so Wade wades the streets; built by `game/src/searchEli.ts`. See [The search for Eli](#the-search-for-eli-act-1) |
 | `flood` (250 × 200) | (70, 40), 0° | street grade 0.87; water 1.2 | `downtown` itself under the August flood: the same pieces in world coordinates, with the high-water layer of `game/src/highwater.ts` over them. Owen comes out of his door onto the porch at `floodedStreet`; the plank walkway runs along Third's north walk, x 118..154. The skiff (`game/src/skiff.ts`) lies across the street at the steps, its stern at (135.2, 99.4) and the hooded man in the bow at (135.2, 102.4) with his back to the house |
 
 ## The prologue route
@@ -337,6 +337,25 @@ What changes on these blocks:
   the sill: an open question for this doc.
 - The bridge is an island: both approaches are under water, and the crown stands just clear.
 - Across the river, St. Joseph's is being evacuated and the church stands in water. The displaced patients and the nurses who stayed work from a help tent on high ground south of town (`helpTent`; fact-checks item 42). Owen's body is taken there.
+
+### The search for Eli (Act 1)
+
+The trail of `docs/acts/act1-missions.md`, section 1, on the `line` space. Each stop is where that scene's menu opens;
+who stands there comes from the scene (`game/src/searchEli.ts`), and the walks between them are `LEGS` in
+`game/src/trail.ts`. Depth is the table above: wading slows Wade above the knee (0.5 m), most at the waist (1 m).
+
+| Stop | Scene | Where | Depth |
+|---|---|---|---|
+| The sandbag line | `a1_flood`, `a1_line` | across Cushman just south of Second, z 64.8, from the Federal Building's wall (x −7) to a gap at the east curb (x 5..7); Wade at (3.4, 66.3), the sergeant behind it at (−2.6, 68.6) | 0.59 m, thigh |
+| The man with the mattress | `a1_track` | Cushman's east walk at the Ptarmigan's corner, (6.2, 46.4), north across Second | 0.86 m |
+| The coffee window | `a1_track_2` | upstairs on Second's south side toward Lacey, (68, 64); Wade below it at (68, 62.2) | 0.63 m |
+| The couple's porch | `a1_couple` | Cushman's east side just short of Third, (6.3, 93.5) | 0.35 m |
+| The riverboat at Third | `a1_eli` | the corner of Cushman and Third, (−1.6, 104) | 0.32 m |
+| The way up to the help tent | `a1_errand` | the south end of Cushman, (3.5, 139.2): Wade goes up to `helpTent` here and comes back down here | 0.23 m |
+| The boy bailing a skiff | `a1_trail` | Third, east of the corner, (10.5, 104.5) | 0.32 m |
+| The riverboat on Fifth | `a1_trail` | Cushman at Fifth, (−1.8, 137), under the family on the roof | 0.23 m |
+
+`a1_delivered` opens where Wade caught up with Eli: at Third without the errand, on Fifth with it.
 
 ## Building types
 

@@ -122,6 +122,31 @@ const lamp: readonly Prop[] = [
 // The flood's layer over downtown: everything the flooded street adds to the July town.
 export const highWater: readonly Prop[] = [sheet, ...banks, ...decks, ...pickup, ...familyBoat, ...roofs, ...drift, ...neon, ...lamp]
 
+// The same layer for a player who wades the streets (Act 1, the search for Eli): no banks off the walkway's edges.
+export const streetWater: readonly Prop[] = highWater.filter((p) => !banks.includes(p))
+
+// How deep the water stands over the street: one flat plane at FLOOD_LEVEL over the grade, which is one
+// piecewise-linear function of z through the flood marks (docs/town-map.md, "Ground" and "The flood").
+export const FLOOD_LEVEL = 1.2
+
+const GRADE: readonly (readonly [number, number])[] = [
+  [2, -0.3],
+  [64, 0.6],
+  [80, 0.82],
+  [170, 1.05],
+]
+
+export const gradeAt = (z: number): number => {
+  const i = GRADE.findIndex(([k]) => k >= z)
+  if (i === 0) return GRADE[0]![1]
+  if (i < 0) return GRADE.at(-1)![1]
+  const [z0, y0] = GRADE[i - 1]!
+  const [z1, y1] = GRADE[i]!
+  return y0 + ((y1 - y0) * (z - z0)) / (z1 - z0)
+}
+
+export const depthAt = (z: number): number => Math.max(0, FLOOD_LEVEL - gradeAt(z))
+
 // Inside the boarding house that August: Owen's room upstairs is dry, rain on the window and the copies in his
 // satchel on the bed; the ground floor is knee-deep, a chair and a crate afloat in the hall and the parlor.
 export const HOUSE_WATER = 0.45
