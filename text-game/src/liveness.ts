@@ -16,11 +16,12 @@ const dropEvidence = (...es: readonly Evidence[]) => (s: State): State => ({
   evidence: s.evidence.filter((e) => !es.includes(e)),
 })
 
+const confessions = ['a3_confession_safe', 'a3_confession_burn', 'a3_confession_gun', 'a3_confession_none'] as const
+
 export const rules: readonly Rule[] = [
   { after: 'a1_ashby', apply: drop('barfight') },
   { after: 'a2_steak', apply: drop('barfightMove') },
   { after: 'a2_hotel', apply: dropEvidence('aerialPhotos') },
-  { after: 'a2_flight', apply: drop('coJob') },
   { after: 'a2_flight', apply: drop('photoLab') },
   { after: 'a3_home', apply: drop('nightSignal') },
   { after: 'a3_curly', apply: dropEvidence('knot', 'bruising', 'curlyKnot', 'curlyLefty', 'staffCar', 'wreckProof') },
@@ -30,8 +31,10 @@ export const rules: readonly Rule[] = [
   { after: ['a3_rash_safe', 'a3_rash_burn', 'a3_rash_gun'], apply: (s) => ({ ...s, heat: s.heat <= HEAT_LIMIT ? 0 : HEAT_LIMIT + 1 }) },
   { after: 'a3_joan', apply: (s) => ({ ...s, joan: s.joan >= 3 ? 3 : 0 }) },
   { after: 'a3_joan', apply: (s) => ({ ...s, momHonesty: Math.max(-2, Math.min(2, s.momHonesty)) }) },
-  { after: 'a3_confession', apply: (s) => ({ ...s, rashPlan: s.rashPlan === 'burn' ? 'burn' : 'safe' }) },
+  { after: confessions, apply: (s) => ({ ...s, rashPlan: s.rashPlan === 'burn' ? 'burn' : 'safe' }) },
   { after: 'a3_turn', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat > 0 ? 1 : 0 }) },
+  { after: confessions, apply: (s) => (s.afterConfession === 'turn' ? s : drop('coJob')(s)) },
+  { after: 'a3_turn', apply: drop('coJob') },
   { after: 'a4_testify', apply: dropEvidence('curlyNamesAshby', 'councilmanFlips') },
 ]
 

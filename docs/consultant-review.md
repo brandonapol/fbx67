@@ -42,7 +42,7 @@ Acts 4 and the epilogues also touch the fish camp; they are out of scope for thi
 | 15 | `a3_home` | Eli at the hospital | 79 |
 | 16 | `a3_eli` | The fish camp, Tolliver's ban and Eli's confession | 80, 3, 2 |
 | 17 | `a3_rash` | Tolliver holds the fish camp | 80, 2 |
-| 18 | `a3_confession` | Lucy on the Chiefs and the people she told | 52, 79 |
+| 18 | `a3_confession_*` | Lucy on the Chiefs and the people she told | 52, 79 |
 | 19 | `a3_turn` | Naming the Native woman to Barnette | 82 |
 
 ## Prologue (July 1967)
@@ -427,7 +427,7 @@ what Lucy would want, or is it the airman taking over? Does "She lets you talk" 
 
 ### 18. Lucy on the people she told
 
-Scene `a3_confession`, `03-middle.txt`.
+Scene `a3_confession_*` (all four share it), `03-middle.txt`.
 
 > "In August I told everybody about you. The girls at the office. Mr. Ashby, every time he came by about the claim.
 > People at the Chiefs' meeting. A good-hearted Texas boy from munitions who'd do anything I asked. I was proud of
@@ -447,11 +447,12 @@ a fair self-judgment, or does it put the blame on her? Does "a way in" show her 
 
 ### 19. Naming the Native woman to Barnette
 
-Scene `a3_turn`, `16-bad.txt` (only the worst path reaches it).
+Scene `a3_turn`, `16-bad.txt` (only the worst path reaches it). This is the path where Lucy went onto the base
+herself; if Wade searched the cabinet, he names her as the one who sent him instead (#339).
 
-> The next morning you go to Investigator Vernon Barnette. You tell him who the Native woman on the base was, and
-> that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were
-> her idea of a frame.
+> The next morning you go to Investigator Vernon Barnette. You tell him who the Native woman on the base was. You tell
+> him she's been running a private investigation with stolen Air Force files, and that the forged sign-outs were her
+> idea of a frame.
 >
 > Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are
 > in an evidence locker.

@@ -78,7 +78,7 @@ Acts 2 and 3 run from September 1967 to early January 1968. The base beats end i
 | September | the Major (`a2_major`), the photo lab (`a2_photos`) | frost, ice in the puddles by morning (the scene's own line) | daylight about 12 hours |
 | October | the Major's cabinet (`a2_co_heist`, `a2_co_lucy`) | first snow, 5 to 10 cm, plowed off the roads | dark by early evening |
 | November | Jake at the hangar (`a2_jake`) | 20 to 30 cm; plow berms 1 m along the roads | about six hours of daylight |
-| December | the munitions plan (`a3_rash_safe` opens with it; the scene is placed at Tolliver's office), Lucy at the window (`a3_rash_none`, `a3_confession`, `a3_walk`), the search call (`a3_search` opens with it; the scene is placed on the search ridge) | 40 to 50 cm; berms 1.5 m; packed snow on the walks | about four hours of sun (item 54); ice fog over the flight line below −30 |
+| December | the munitions plan (`a3_rash_safe` opens with it; the scene is placed at Tolliver's office), Lucy's call from outside the gate (`a3_rash_none`, `a3_walk`), the search call (`a3_search` opens with it; the scene is placed on the search ridge) | 40 to 50 cm; berms 1.5 m; packed snow on the walks | about four hours of sun (item 54); ice fog over the flight line below −30 |
 
 The berms matter for play: from November on, a 1.5 m berm along each road hides a crouching figure from the road and
 shows them to anyone on a walk. Plug-in posts stand along the head of every parking lot, one per stall, with cords
@@ -106,14 +106,14 @@ All buildings are ours. Building types follow [Building types](#building-types).
 | `munitionsFence` | The munitions storage area, from outside its gate | gate across the munitions road at x 290, z 96..104 | | | igloos: low earth mounds, 4 m, inside at x 300..340, z 70..140 |
 
 `eielsonBarracks` (the Act 1 letter), `majorsOffice`, `squadronBuilding`, `photoLab`, `photoRecords` and `baseHangar`
-(Act 2, #90; Act 3's knock, confession and walk out, #91) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
+(Act 2, #90; Act 3's call from the gate and walk out, #91) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
 proposals: they enter the type when a scene sets them.
 
 ### Interiors
 
 **Wade's room** (8 × 8): two bunks, two wall lockers, a desk under the window, a footlocker at the foot of Wade's
 bunk (the cut piece of line lives there; `a2_curly`). The roommate is on another shift and never home when it matters.
-The window, on the east wall, looks across 14 m of snow at Dorm Street. It is where Lucy knocks at midnight in Act 3.
+The window, on the east wall, looks across 14 m of snow at Dorm Street. Lucy never comes to it: she can't get onto the base (#340).
 
 **The squadron building:**
 
@@ -156,7 +156,7 @@ Walk times assume Wade on foot at 1.3 m/s, slower in deep snow.
 | Lucy on the crew | `a2_co_lucy` | the crew's truck stops at the shack (0, 3), parks in the squadron lot at (140, −20); Lucy in by the front door, the hall to the Major's office; out by the back door (130, −58) to Dorm Street, where the AP truck sees her at (109, −58) | | the scene's "spotted on the way out" is fixed at the back door, on the AP truck's loop |
 | To the hangar | `a2_jake` | (60, −30), east on the gate road to (245, 0), north on Flight Line Road to (245, −108), the hangar's personnel door (262, −108) | about 370 m, 5 minutes | the squadron building, the apron opening east, the hangar's big doors |
 | To the munitions fence | `a3_rash_safe` (seen from outside) | (60, −30), east on the gate road to (245, 0), south on Flight Line Road to (245, 100), east on the munitions road to the gate (286, 100) | about 340 m | the igloos behind the fence; the lifting itself happens inside, on Wade's shift, and is a cut |
-| Lucy at the window | `a3_rash_none`, midnight | Wade in his room; the knock comes at the window, (91, −50) outside it | | how Lucy got onto the base is the story's business; the map gives only the window |
+| Lucy's call from the gate | `a3_rash_none`, midnight | Wade's room, the CQ runner at the door; down the dorm lot from (60, −30) to (60, −7), across to the south walk (40, 6), west past the shack (2, 3) to the car outside it | about 80 m, 1 minute | Lucy can't get onto the base: she calls from the pay phone outside the gate and never comes past the shack |
 | The search call | `a3_search` | Wade's room, (60, −30), east to the apron outside the hangar, (280, −90), where the ground team's truck loads | about 390 m | the apron under floodlights and ice fog |
 
 ## Patrol lines
@@ -180,8 +180,8 @@ Facing is a unit vector (x, z); (0, −1) faces north. y is the floor or the gra
 | Id | Position (x, y, z) | Facing | Notes |
 |---|---|---|---|
 | `eielsonGate` | (8, 0, 3) | (1, 0) | just inside the gate on the inbound side, looking down the gate road |
-| `eielsonBarracks` | (86, 0.3, −50) | (1, 0) | Wade's room, at the desk, facing the window; the Act 1 letter and the Act 3 knock both start here |
-| `barracksWindow` | (92, 0, −50) | (−1, 0) | outside the window in the snow, facing in; for a scene from Lucy's side |
+| `eielsonBarracks` | (86, 0.3, −50) | (1, 0) | Wade's room, at the desk, facing the window; the Act 1 letter and Lucy's Act 3 call both start here |
+| `barracksWindow` | (92, 0, −50) | (−1, 0) | outside the window in the snow, facing in; no story scene uses it since Lucy's knock moved off base (#340) |
 | `squadronBuilding` | (160, 0, −36) | (0, −1) | the squadron lot, facing the front door |
 | `majorsOffice` | (182, 0.3, −62) | (0, −1) | just inside the office door, facing the desk and the cabinet |
 | `photoLab` | (160, 0.3, 36) | (0, 1) | inside the front door, at the counter |

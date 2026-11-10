@@ -198,12 +198,13 @@ stand of black spruce, late morning. Playing Wade, one-handed from the fall on.
 
 **Status: Proposed.**
 
-From the decision at `a3_rash` until Lucy steps out of the dark, `a3_confession`. Thursday night into Friday, 28 and
-29 December. Playing Wade, one-handed. Lucy always intercepts.
+From the decision at `a3_rash` until Lucy steps out of the dark, `a3_confession_<plan>`. Thursday night into Friday, 28
+and 29 December. Playing Wade, one-handed. Lucy always intercepts.
 
 - **Way in.** The prompt at `a3_rash` is *Blow the safe*, *Burn his cabin*, *At gunpoint*, or *Stay out of it*
   (`safe`, `burn`, `gunpoint`, `none`). A visit to the café first (`a3_rash_gossip`) is Dottie's read on the heat, not
-  part of the note. *Stay out of it* is not a mission: the barracks, the knock on the window, Lucy (`a3_rash_none`).
+  part of the note. *Stay out of it* is not a mission: the barracks, Lucy's call from the pay phone
+  outside the main gate (`a3_rash_none`).
 - **Objective.** The plan's `goal` line: the safe, the cabin, or Tolliver. The player never reaches it.
 - **The lead-ins.** Each is short, playable on foot, and visibly doomed before Lucy is there. Where the plan needs a
   verb the arm rules out, Wade tries it in a staged beat the player watches, not a verb the player gets.
@@ -225,8 +226,8 @@ From the decision at `a3_rash` until Lucy steps out of the dark, `a3_confession`
   - **No other ending.** Busted (a patrol car's lights on Wade, a neighbor at a window) is a retry from the last
     checkpoint, not an ending. There is no seen ending to accept and no way to quit the plan from inside it: the
     decision was the prompt at `a3_rash`.
-  - **The note is sent only at the interception.** Every note on the menu lands on `a3_confession`, so the story has no
-    ending where a plan was carried out.
+  - **The note is sent only at the interception.** Every note on the menu lands on its plan's `a3_confession_*`, so
+    the story has no ending where a plan was carried out.
 - **Checkpoints.** The start of the lead-in; the staged beat (the charge built, the truck stalled, the rifle that
   won't come up).
 - **The note.**
@@ -234,8 +235,8 @@ From the decision at `a3_rash` until Lucy steps out of the dark, `a3_confession`
   > The rash plan. Plan: safe / burn / gunpoint; or stayed out
 
   `safe`, `burn` and `gunpoint` apply that choice (`rashPlan`, +1 heat on `go`); `stayedOut` applies `none` and
-  follows `letHerIn`. The menu is `theRashPlan`; every note lands on `a3_confession`. `rashPlan` is read by the middle
-  ending's flavor (`burn`).
+  follows `letHerIn`. The menu is `theRashPlan`; every note lands on its plan's `a3_confession_*`. `rashPlan` is read
+  by the middle ending's flavor (`burn`).
 - **What shades heat or trust.** Only the plan: +1 heat for any of the three, as today. How well Wade sneaks shades
   nothing.
 - **New state.** None.

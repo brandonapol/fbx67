@@ -81,6 +81,7 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 81 | Eli's last freight to Minto before the ice (issue #77) | Act 2 | Plausible; consultant review | Low. |
 | 82 | "A Native woman seen" on the base, and Wade naming Lucy (issue #77) | Acts 2-3 | Plausible; consultant review | Medium. A description that identifies by race, then a betrayal. |
 | 83 | Eli's trip to Old Minto at freeze-up: a last barge down, a wheel-plane mail run home (issue #102) | Act 2 | Plausible; unchecked | Low. Did Old Minto have a wheel strip and mail-plane service in November 1967, and did a last barge run down the Tanana in late October with slush ice running? Also consultant question (`docs/consultant-review.md`, item 14). |
+| 84 | Lucy's call from outside the Eielson gate at midnight (issue #340) | Act 3 | Plausible | Low. |
 
 ## High priority
 
@@ -1367,8 +1368,7 @@ map's interior says. No scene text changes.
 
 ### 69. A 19-year-old airman's room in 1967
 
-**Claim.** Wade has a two-man room on the ground floor of a concrete dormitory, with a window a person outside can
-knock on (`a1_letter`, `a3_rash_none`).
+**Claim.** Wade has a two-man room on the ground floor of a concrete dormitory (`a1_letter`, `a3_rash_none`).
 
 **Verdict.** Plausible.
 
@@ -1593,8 +1593,8 @@ a death the story has not given Eli.
 **Claim.** After Lucy breaks into a squadron building on her cousin's janitorial crew, Barnette "has a description: a
 Native woman seen leaving a squadron building on an Air Force base at night. He doesn't have a name yet." A gossip
 line repeats it ("Barnette's been asking about a Native woman seen on the base at night"). In Act 2 the narration
-says "A Native woman asking questions cannot" do what a uniform with a guitar can, in the hotel bar. In Act 3, on one path, Wade tells Barnette "who
-the Native woman on the base was", and Lucy is suspended from the land office (`a2_co_lucy`, `gossip`, `a2_hotel`,
+says "A Native woman asking questions cannot" do what a uniform with a guitar can, in the hotel bar. In Act 3, if Wade refused the cabinet and then turns
+on Lucy, he tells Barnette "who the Native woman on the base was", and Lucy is suspended from the land office (`a2_co_lucy`, `gossip`, `a2_hotel`,
 `a3_turn`).
 
 **Verdict.** Plausible. A description of this kind is how it would be recorded; the betrayal is a story choice.
@@ -1623,3 +1623,22 @@ down the Tanana in late October with slush ice running, are not checked. Item 81
 
 **Recommended change.** None until checked. Ask the consultants how a Minto man in Fairbanks would have made the trip
 (`consultant-review.md`, item 14).
+
+## Act 3 continuity (issues #340, #341)
+
+### 84. Lucy's call from outside the Eielson gate at midnight
+
+**Claim.** At midnight "the runner from the CQ desk bangs on your door: a phone call, a woman". Lucy is "on the pay
+phone outside the main gate", in her cousin's car, and Wade walks out past the gate to her. She drives him "the forty
+minutes into town" (`a3_rash_none`, `a3_confession_none`). Walking away, he takes a cab from Second Avenue back to the
+gate, or from Tolliver's cabin rides out on the highway in a fuel truck (`a3_walk`).
+
+**Verdict.** Plausible.
+
+**Evidence.** A charge of quarters in an airmen's dormitory took calls on the dormitory phone after hours and sent a
+runner for the airman (item 70; general knowledge, unchecked for Eielson). A pay phone by a main gate, for visitors
+and airmen without cars, is ordinary but unchecked for Eielson in 1967. An airman walks out past the gate on his ID
+card without signing out. Eielson is about 26 miles from Fairbanks on the Richardson Highway, so forty minutes at
+night in winter is a fair drive, and a cab from town to the base is plausible fare for an airman's pay.
+
+**Recommended change.** None.

@@ -1,9 +1,9 @@
 import { mamaReply } from './mama.ts'
-import type { CacheSpot, Choice, NightSignal, Scene, SceneId, State } from '../types.ts'
+import type { CacheSpot, Choice, Clock, NightSignal, Place, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
 import { jakeFrostbitten, nightSignal, searchHours } from '../logic.ts'
-import { addEvidence, eliTrust, has, heat, joan, lucyHeat, mom, pipe, set, texan } from '../state.ts'
+import { addEvidence, eliTrust, has, heat, joan, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
 
@@ -56,6 +56,53 @@ const jakeAtFire = (s: State): string =>
   jakeFrostbitten(s)
     ? 'Jake lies by the fire with his left foot wrapped in a wool shirt, and Lucy keeps that foot back from the heat on purpose: thawed out here, it would only freeze again before a hospital. The toes are white and hard as candle wax. They froze while he lay pinned and she got the fire going.'
     : 'Jake lies by the fire under the sleeping bag, his leg splinted, both boots on. Lucy\'s fingertips are swollen and blistered from working the seat frame off his leg bare-handed before she ever struck a match. She splinted your arm with them anyway.'
+
+// What Wade gives Barnette at the Trade: the woman seen on the base if Lucy went in herself, or, if Wade searched the
+// Major's cabinet, his own photographs of it and who sent him (coJob, set at a2_co_ask).
+const turnedIn = (s: State): string =>
+  s.coJob === 'lucy'
+    ? 'You tell him who the Native woman on the base was.'
+    : `You tell him ${N.lucy} sent you into the Major's cabinet in October, and that the photographs you took that night are in her folder.`
+
+// Lucy's confession (design: Lucy's Confession). She stops each rash plan where it is headed, a few minutes in; on the
+// quiet path she calls from outside the gate and drives Wade to her kitchen. The talk itself is the same everywhere.
+const stop = '"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'
+const stopped = `Lucy steps out of the dark before you get there. She must have followed you.\n\n${stop}`
+// How Wade gets back to base after walking out on her: he can't drive the borrowed truck one-handed (rashPlan, which
+// liveness keeps only as burn or not by now).
+const walkBack = (s: State): string =>
+  s.rashPlan === 'burn'
+    ? 'You leave the borrowed truck on the cabin road, its gears too much for one hand, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn\'t ask about the cast.'
+    : 'A cab off Second Avenue takes the last of your pay to drop you at the main gate.'
+const confessionBody = (s: State): string => `She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Under those, the igloo count sheets from the summer, before the first sheet with your name forged on it: the demolition count short week after week, and every short sheet initialed up the line as if it added up. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Your letter with the date of Lucy\'s flight went out in November, right across his desk.' : ''}
+
+"They've been building you for weeks. You're the fall guy."
+
+She doesn't look at you for a long moment. When she does, her voice is flat, the way people talk when they've rehearsed something and it still won't come out right.
+
+"Why you, Wade? Out of every airman on that base. I've been asking myself since I opened this folder, and I know why." She holds up her hand before you can speak. "In August I told everybody about you. The girls at the office. Mr. Ashby, every time he came by about the claim. People at the Chiefs' meeting. A good-hearted Texas boy from munitions who'd do anything I asked. I was proud of myself. I thought I'd finally found a way in."
+
+Her voice breaks on the next part, and she makes it keep going.
+
+"Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."`
+const confessionChoices: readonly Choice[] = [
+  { label: 'Stay. "Then we finish this. Together."', note: 'stay', apply: set({ afterConfession: 'stay' }), next: 'a3_joan' },
+  { label: 'Walk away. You\'re done being anybody\'s tool.', note: 'walk', apply: set({ afterConfession: 'walk' }), next: 'a3_walk' },
+  { label: 'Turn on her. If she used you, you can use her.', note: 'turn', apply: set({ afterConfession: 'turn' }), next: 'a3_turn' },
+]
+const confession = (id: SceneId, place: Place, clock: Clock, opening: string): Scene => ({
+  id,
+  act,
+  title: 'Lucy',
+  place,
+  clock,
+  goal: `Decide where you stand with ${N.lucy}.`,
+  text: (s) => `
+${opening}
+
+${confessionBody(s)}`,
+  choices: () => confessionChoices,
+})
 
 const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
 
@@ -316,7 +363,7 @@ You tell Lucy you're going to do something about it. She lets you talk.`,
     goal: `Blow ${N.tolliverLast}'s safe.`,
     text: () => `
 You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
-    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
+    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_safe' }],
   },
   {
     id: 'a3_rash_burn',
@@ -327,7 +374,7 @@ You lift a demolition kit from the munitions bunker on a night shift, one-handed
     goal: `Burn ${N.tolliverLast}'s cabin.`,
     text: () => `
 You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and drive out the road to Tolliver's hunting cabin at two in the morning.`,
-    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
+    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_burn' }],
   },
   {
     id: 'a3_rash_gun',
@@ -338,7 +385,7 @@ You borrow a truck, buy two cans of kerosene at a gas station where nobody knows
     goal: `Make ${N.tolliverLast} talk.`,
     text: () => `
 You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.`,
-    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
+    choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_gun' }],
   },
   {
     id: 'a3_rash_none',
@@ -346,47 +393,34 @@ You borrow a rifle from a guy in the barracks who doesn't ask questions, and you
     title: 'Barracks',
     place: 'eielsonBarracks',
     clock: '1967-12-29T00:00',
-    goal: `Let ${N.lucy} in.`,
+    goal: `Go out to ${N.lucy}.`,
     text: () => `
-You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight somebody knocks on the window. It's Lucy, and she's been running.`,
-    choices: () => [{ label: 'Let her in.', note: 'letHerIn', next: 'a3_confession' }],
+You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight the runner from the CQ desk bangs on your door: a phone call, a woman, and she says it can't wait.
+
+It's Lucy, on the pay phone outside the main gate. "I can't get onto your base, Wade. Come out. I'm in my cousin's car, and I'm not saying the rest of it on a telephone."`,
+    // The note keeps its old name (Lucy at the window): game/notes-allowlist.txt and the engine's menus key on it.
+    choices: () => [{ label: 'Walk out past the gate and get in the car.', note: 'letHerIn', next: 'a3_confession_none' }],
   },
-  {
-    id: 'a3_confession',
-    act,
-    title: 'Lucy',
-    place: 'eielsonBarracks',
-    clock: '1967-12-29T02:00',
-    goal: `Decide where you stand with ${N.lucy}.`,
-    text: (s) => `
-${s.rashPlan === 'none' ? '"Barnette is building a case on you," she says. "Not tomorrow. But he\'s building it."' : 'Lucy steps out of the dark before you get there. She must have followed you.\n\n"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'}
-
-She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Under those, the igloo count sheets from the summer, before the first sheet with your name forged on it: the demolition count short week after week, and every short sheet initialed up the line as if it added up. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Your letter with the date of Lucy\'s flight went out in November, right across his desk.' : ''}
-
-"They've been building you for weeks. You're the fall guy."
-
-She doesn't look at you for a long moment. When she does, her voice is flat, the way people talk when they've rehearsed something and it still won't come out right.
-
-"Why you, Wade? Out of every airman on that base. I've been asking myself since I opened this folder, and I know why." She holds up her hand before you can speak. "In August I told everybody about you. The girls at the office. Mr. Ashby, every time he came by about the claim. People at the Chiefs' meeting. A good-hearted Texas boy from munitions who'd do anything I asked. I was proud of myself. I thought I'd finally found a way in."
-
-Her voice breaks on the next part, and she makes it keep going.
-
-"Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."`,
-    choices: () => [
-      { label: 'Stay. "Then we finish this. Together."', note: 'stay', apply: set({ afterConfession: 'stay' }), next: 'a3_joan' },
-      { label: 'Walk away. You\'re done being anybody\'s tool.', note: 'walk', apply: set({ afterConfession: 'walk' }), next: 'a3_walk' },
-      { label: 'Turn on her. If she used you, you can use her.', note: 'turn', apply: set({ afterConfession: 'turn' }), next: 'a3_turn' },
-    ],
-  },
+  confession('a3_confession_safe', 'tolliversOffice', '1967-12-28T23:15', stopped),
+  confession('a3_confession_burn', 'tolliversCabin', '1967-12-29T02:00', stopped),
+  confession('a3_confession_gun', 'tolliversHouse', '1967-12-28T21:45', `Lucy is beside you in the dark before the headlights ever turn in. She must have followed you.\n\n${stop}`),
+  confession(
+    'a3_confession_none',
+    'lucysKitchen',
+    '1967-12-29T01:00',
+    'She drives the forty minutes into town without a word and doesn\'t turn on the kitchen light until the curtains are shut.\n\n"Barnette is building a case on you," she says. "Not tomorrow. But he\'s building it."',
+  ),
   {
     id: 'a3_walk',
     act,
     title: 'Done',
     place: 'eielsonBarracks',
-    clock: '1967-12-29T02:20',
+    clock: '1967-12-29T04:00',
     goal: winterGoal,
-    text: () => `
-You hand her the folder back and walk out into the dark. She doesn't call after you. For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
+    text: (s) => `
+You hand her the folder back and walk out into the dark. She doesn't call after you. ${walkBack(s)}
+
+For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {
@@ -396,11 +430,11 @@ You hand her the folder back and walk out into the dark. She doesn't call after 
     place: 'troopersPost',
     clock: '1967-12-29T10:00',
     goal: winterGoal,
-    text: () => `
-The next morning you go to ${N.barnette}. You tell him who the Native woman on the base was, and that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were her idea of a frame.
+    text: (s) => `
+The next morning you go to ${N.barnette}. ${turnedIn(s)} You tell him she's been running a private investigation with stolen Air Force files, and that the forged sign-outs were her idea of a frame.
 
 Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are in an evidence locker.`,
-    choices: () => [{ label: 'Continue.', note: 'continue', apply: lucyHeat(2), next: 'a3_joan' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {
     id: 'a3_joan',

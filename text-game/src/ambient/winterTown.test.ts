@@ -74,7 +74,7 @@ test("the tickets' groups are all in town, each at the place and hour of its sce
 })
 
 test('nobody stands in a heist, on the hill, in a kitchen or at a confession', () => {
-  const quiet: readonly SceneId[] = ['a2_co_heist', 'a2_co_found', 'a2_co_seen', 'a2_hotel', 'a2_co_ask', 'a2_flight', 'a3_search', 'a3_arm', 'a3_wreck', 'a3_rash', 'a3_confession', 'a3_walk']
+  const quiet: readonly SceneId[] = ['a2_co_heist', 'a2_co_found', 'a2_co_seen', 'a2_hotel', 'a2_co_ask', 'a2_flight', 'a3_search', 'a3_arm', 'a3_wreck', 'a3_rash', 'a3_confession_safe', 'a3_confession_burn', 'a3_confession_gun', 'a3_confession_none', 'a3_walk']
   assert.deepEqual(winterTown.filter((p) => quiet.some((sc) => scenesOf(p.id).includes(sc))).map((p) => p.id), [])
 })
 
