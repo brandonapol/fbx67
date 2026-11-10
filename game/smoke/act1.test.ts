@@ -73,7 +73,7 @@ const take = async (p: Page, s: Step): Promise<void> => {
 
 const MAX_STEPS = 1500
 
-test('Act 1 plays from its path to Act 2’s first scene, a frame per beat in each band, inside its budgets', { timeout: 1500000 }, async () => {
+test('Act 1 plays from its path to Act 2’s first scene, a frame per beat in each band', { timeout: 1500000 }, async () => {
   const { page, errors, close } = await run.open(ACT1_PATH)
   const started = Date.now()
   try {
