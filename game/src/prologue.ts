@@ -17,7 +17,8 @@ import { choose, finish as penDown, open as openHome, turn as turnPage, write, w
 import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
 import { DECK_Y, rideAt, rideOver, riding } from './skiff.ts'
 import { searchSpot } from './searchEli.ts'
-import { entryFrom, paceAt, walksUp } from './trail.ts'
+import { entryFrom, walksUp } from './trail.ts'
+import { paceThrough, wash } from './hazards.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -65,6 +66,8 @@ export type Game = Readonly<{
   lit?: true
   carrying?: 'ledger'
   doused?: true
+  // Seconds since the current took Wade's feet on the search for Eli, while the screen fades (hazards.ts).
+  swept?: number
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -433,7 +436,7 @@ const walk = (g: Game, input: Input, dt: number): Game => {
   const off = angleBetween(facing, heading)
   const space = spaces[g.space]
   const interior = space.interior
-  const pace = space.id === 'line' ? paceAt(g.pos, standAt(space, g.pos)) : 1
+  const pace = space.id === 'line' ? paceThrough(g.pos, standAt(space, g.pos)) : 1
   const want = off <= TURN_GO ? topSpeed(input, interior) * push * Math.cos(off) * pace : 0
   const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? (interior ? INDOOR_ACCEL : ACCEL) : DECEL) * dt)
   const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
@@ -442,13 +445,17 @@ const walk = (g: Game, input: Input, dt: number): Game => {
   return { ...g, pos, facing, vel: arriving ? zero : dt > 0 ? scale(sub(pos, g.pos), 1 / dt) : g.vel }
 }
 
+// On the flooded street the water has its turn after Wade's step: the current, debris, what's under it (hazards.ts).
+const water = (g: Game, dt: number): Game => (g.space === 'line' ? wash(g, dt, standAt(spaces.line, g.pos), solids(spaces.line, g.story, g.path)) : g)
+
 export const tick = (g: Game, input: Input, dt: number): Game => {
   const t = g.t + dt
   if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   if (riding(g.ride)) return ride({ ...g, t }, dt)
-  const walked = walk({ ...g, t }, input, dt)
+  if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
+  const walked = water(walk({ ...g, t }, input, dt), dt)
   return douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt))
 }
 
