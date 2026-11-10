@@ -20,7 +20,6 @@ export const rules: readonly Rule[] = [
   { after: 'a1_ashby', apply: drop('barfight') },
   { after: 'a2_steak', apply: drop('barfightMove') },
   { after: 'a2_hotel', apply: dropEvidence('aerialPhotos') },
-  { after: 'a2_flight', apply: drop('coJob') },
   { after: 'a2_flight', apply: drop('photoLab') },
   { after: 'a3_home', apply: drop('nightSignal') },
   { after: 'a3_curly', apply: dropEvidence('knot', 'bruising', 'curlyKnot', 'curlyLefty', 'staffCar', 'wreckProof') },
@@ -32,6 +31,7 @@ export const rules: readonly Rule[] = [
   { after: 'a3_joan', apply: (s) => ({ ...s, momHonesty: Math.max(-2, Math.min(2, s.momHonesty)) }) },
   { after: 'a3_confession', apply: (s) => ({ ...s, rashPlan: s.rashPlan === 'burn' ? 'burn' : 'safe' }) },
   { after: 'a3_turn', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat > 0 ? 1 : 0 }) },
+  { after: 'a3_turn', apply: drop('coJob') },
   { after: 'a4_testify', apply: dropEvidence('curlyNamesAshby', 'councilmanFlips') },
 ]
 

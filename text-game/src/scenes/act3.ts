@@ -3,7 +3,7 @@ import type { CacheSpot, Choice, NightSignal, Scene, SceneId, State } from '../t
 import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
 import { jakeFrostbitten, nightSignal, searchHours } from '../logic.ts'
-import { addEvidence, eliTrust, has, heat, joan, lucyHeat, mom, pipe, set, texan } from '../state.ts'
+import { addEvidence, eliTrust, has, heat, joan, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
 
@@ -56,6 +56,13 @@ const jakeAtFire = (s: State): string =>
   jakeFrostbitten(s)
     ? 'Jake lies by the fire with his left foot wrapped in a wool shirt, and Lucy keeps that foot back from the heat on purpose: thawed out here, it would only freeze again before a hospital. The toes are white and hard as candle wax. They froze while he lay pinned and she got the fire going.'
     : 'Jake lies by the fire under the sleeping bag, his leg splinted, both boots on. Lucy\'s fingertips are swollen and blistered from working the seat frame off his leg bare-handed before she ever struck a match. She splinted your arm with them anyway.'
+
+// What Wade gives Barnette at the Trade: the woman seen on the base if Lucy went in herself, or, if Wade searched the
+// Major's cabinet, his own photographs of it and who sent him (coJob, set at a2_co_ask).
+const turnedIn = (s: State): string =>
+  s.coJob === 'lucy'
+    ? 'You tell him who the Native woman on the base was.'
+    : `You tell him ${N.lucy} sent you into the Major's cabinet in October, and that the photographs you took that night are in her folder.`
 
 const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
 
@@ -396,11 +403,11 @@ You hand her the folder back and walk out into the dark. She doesn't call after 
     place: 'troopersPost',
     clock: '1967-12-29T10:00',
     goal: winterGoal,
-    text: () => `
-The next morning you go to ${N.barnette}. You tell him who the Native woman on the base was, and that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were her idea of a frame.
+    text: (s) => `
+The next morning you go to ${N.barnette}. ${turnedIn(s)} You tell him she's been running a private investigation with stolen Air Force files, and that the forged sign-outs were her idea of a frame.
 
 Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended from the land office and her files are in an evidence locker.`,
-    choices: () => [{ label: 'Continue.', note: 'continue', apply: lucyHeat(2), next: 'a3_joan' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
   },
   {
     id: 'a3_joan',
