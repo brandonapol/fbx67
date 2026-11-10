@@ -29,7 +29,8 @@ export const postBoxSpot: Interactable = { id: POST_BOX, x: -4.5, z: 66, r: 1.5,
 // Whether the post box can be used: on the morning walk, until the letter is in it.
 export const canMail = (s: State, mailed: boolean): boolean => morning(s) && !mailed
 
-const yellow = '#d8b22a'
+// The same yellow braid as the line on Owen's sawhorse (knot.ts).
+const yellow = '#d9b52a'
 
 // Where the tie-down line runs: from the cleat on the float's east edge to the plane's near float strut.
 const strutAt = onBoard({ at: MOORED, y: 0, heading: MOORED_HEADING }, vec(1.3, 1.6))
