@@ -321,12 +321,41 @@ You feel sick. The only other place that date exists is the letter you wrote to 
     text: (s) => `
 ${s.curlyPlan === 'warn' ? `Lucy took Jake's tip straight to ${N.cop}, the officer who handed Curly back his twenty the night of the barfight. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Nobody was watching Curly. Two weeks after the crash, ${N.cop} finds him in a hunting cabin up the Chena Hot Springs road that he'd broken into. He's been dead for days, shot through the chest with his own rifle. ${N.barnette} calls it a hunting accident inside of an hour. It's the second accident this year.`}
 
-${s.curlyPlan === 'ignore' ? 'Beside him is a brand-new hunting bow, stolen, still strung. A left-handed one. He was waiting for somebody, and somebody came first.' : 'He\'d stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won\'t say.'}${has(s, 'bruising') || texan(s) ? '\n\n' : ''}${has(s, 'bruising') ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? `And Curly ties his bowlines backward, tail outside, like the one on Owen's sawhorse.\n\nYou give ${N.cop} the piece of line you cut off Owen's sawhorse. He takes it out to Curly's hangar and comes back with a coil of yellow tie-down line off Curly's workbench: the same braid, the same blue tracer thread running through it.` : ''}
+${s.curlyPlan === 'ignore' ? 'Beside him is a brand-new hunting bow, stolen, still strung. A left-handed one. He was waiting for somebody, and somebody came first.' : 'He\'d stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won\'t say.'}${has(s, 'bruising') || texan(s) ? '\n\n' : ''}${has(s, 'bruising') ? 'A left-handed man. Joan said the bruises were from a left hand. ' : ''}${texan(s) ? `And Curly ties his bowlines backward, tail outside, like the one on Owen's sawhorse.${s.curlyPlan === 'warn' ? '' : `\n\nYou give ${N.cop} the piece of line you cut off Owen's sawhorse. He takes it out to Curly's hangar and comes back with a coil of yellow tie-down line off Curly's workbench: the same braid, the same blue tracer thread running through it.`}` : ''}
 
 ${s.curlyPlan === 'ignore' ? 'Whatever Curly knew, he took it into the ground at Birch Hill.' : 'Curly is in a cell now, behind a door only the officer has the key to. Curly knows exactly what that means, and for the first time since August he sleeps.'}
 
 A letter from Mama is waiting at the hospital desk. ${mamaReply(1)(s)}`,
-    choices: () => [{ label: 'Continue.', note: 'continue', apply: addEvidence('curlyLefty'), next: 'a3_eli' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', apply: addEvidence('curlyLefty'), next: (s) => (s.curlyPlan === 'warn' ? 'a3_hangar' : 'a3_eli') }],
+  },
+  {
+    // The officer and the cut line (design: Act 3, warn path, #216). He has Curly in a cell and wants the case to hold,
+    // so he wants the line from Wade's own hand, beside the coil it came off. Reads curlyPlan only to be reached; moves
+    // nothing. Wade always has the cut line by now (both choices at a1_body add the knot); it reaches the hospital in his
+    // sergeant's duffel.
+    id: 'a3_hangar',
+    act,
+    title: 'The Coil',
+    place: 'bushStrip',
+    clock: '1967-12-26T13:00',
+    goal: `Answer ${N.cop}.`,
+    text: () => `
+${N.cop} called the ward that morning and asked you to bring him the middle of that line. It's in the bottom of the duffel your sergeant brought in from your footlocker the week after the crash. He picks you up outside the hospital after lunch and doesn't say where you're going until the car is past the railroad yards. Phillips Field. The sun is a sliver over the flats to the south, already on its way back down.
+
+He has Curly's key ring from the arrest. He opens the padlock on the hangar with it and lets you in ahead of him. It's colder inside than out. The coil of yellow tie-down line is on the workbench where you saw it in November, beside a coffee can of bolts.
+
+He holds out his hand. You get the piece of line out of your coat one-handed and give it to him. The knot is still in it, a bowline, backward, the tail outside the loop. He lays it on the bench beside the coil and pulls the free end off the coil alongside it. The same braid. The same blue tracer thread. He looks at the two of them for a while.
+
+"Where'd this come from, ${N.wadeLast}?"
+
+You tell him. Owen's sawhorse, in the flood, a hand's width above the knot and a hand's width below so it would stay tied. Your jacket pocket, then your footlocker. Four months.
+
+He writes it down, all of it, in pencil. He doesn't ask why you kept it.
+
+He puts the piece of line in an envelope and writes the date across the flap, and his name, and yours. "Spring," he says. "Grand jury."
+
+He drives you back to the hospital and lets you off at the door.`,
+    choices: () => [{ label: 'Go back inside.', note: 'goInside', next: 'a3_eli' }],
   },
   {
     id: 'a3_eli',
