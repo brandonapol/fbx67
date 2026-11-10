@@ -1,13 +1,19 @@
 import type { Scene, State } from '../types.ts'
 import { N } from '../names.ts'
-import { HEAT_LIMIT, curlyFate, curlyTalks, doubleAgentWorks, eliJailed, ending, iceJam, middleFlavor, momVerdict } from '../logic.ts'
+import { HEAT_LIMIT, claimWon, curlyFate, curlyTalks, doubleAgentWorks, eliJailed, ending, iceJam, middleFlavor, momVerdict } from '../logic.ts'
+
+// When the claim is won, by Lucy's logbook entry (design: epilogue timing). The testimony wins it either way.
+const logbook = (s: State): string => (s.recordsLog > 0 ? ' A page from the land office\'s old sign-out book goes in beside the testimony.' : '')
+const bestClaim = (s: State): string =>
+  `The family's allotment claim still takes ${claimWon(s) === 'twoYears' ? 'two' : 'three'} more years. The elders' testimony about generations of use on that bend is what wins it.${logbook(s)}`
+const goodClaim = (s: State): string => (claimWon(s) === 'threeYears' ? 'It takes about three years' : 'It takes years')
 
 const headline = (s: State): string => {
   const e = ending(s)
   if (e === 'best')
-    return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} The family's allotment claim still takes three more years. The elders' testimony about generations of use on that bend is what wins it. The fish camp is theirs again.`
+    return `${N.barnette} puts the cuffs on ${N.ashby} himself, on the courthouse steps, in front of the newspaper. He doesn't look at you. Then he does, and nods once.${doubleAgentWorks(s) ? ' The tape from your cast is what the grand jury keeps asking to hear again.' : ''} ${bestClaim(s)} The fish camp is theirs again.`
   if (e === 'good')
-    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened. It takes years, and it is won in the end on the elders' testimony about generations of use${iceJam(s) === 'blown' ? ', with the camp still under a foot of silt from the jam' : ''}. The fish camp is theirs again.${eliJailed(s) ? ' Eli watches it from a cell. You won, and you can\'t stand to look at what it cost.' : ''}`
+    return `Your testimony and Lucy's paper trail make the front page.${doubleAgentWorks(s) ? ' The tape from your cast gets Ashby indicted, and his company\'s lawyers get it thrown out: a recording made by the man whose name is on every stolen charge. Without Curly or Tolliver on the stand to back it up, the judge won\'t let a jury hear it.' : ''} ${N.ashby} is never convicted, but the company calls him back Outside and he never comes north again. The family's allotment claim is reopened. ${goodClaim(s)}, and it is won in the end on the elders' testimony about generations of use${iceJam(s) === 'blown' ? ', with the camp still under a foot of silt from the jam' : ''}.${logbook(s)} The fish camp is theirs again.${eliJailed(s) ? ' Eli watches it from a cell. You won, and you can\'t stand to look at what it cost.' : ''}`
   if (e === 'bad') {
     if (s.offer === 'fake')
       return `You tried to play Ashby, but you'd already burned the people who could have backed you up.${s.testified ? ' You testified anyway. Nobody believed which side you were on.' : ''} The grand jury never sees a case. Ashby wins.`

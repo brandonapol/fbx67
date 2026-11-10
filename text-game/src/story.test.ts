@@ -257,3 +257,48 @@ test('the forged sign-outs end by the date the files were copied', () => {
     assert.doesNotMatch(text, /going back to October/, sc.id)
   }
 })
+
+// #104: Lucy's after-hours search runs only while she keeps the land-office job, and sets the logbook flag.
+const atMinto = (lucyHeat: number): State => ({ ...initialState, scene: 'a2_minto', lucyHeat })
+
+test('Lucy searches the land office after hours while she has the job, and finds the logbook entry', () => {
+  for (const way of ['streetlight', 'mapRoom']) {
+    const search = send(atMinto(0), 'leave')
+    assert.equal(search.scene, 'a2_records')
+    const log = send(search, way)
+    assert.equal(log.scene, 'a2_records_log')
+    assert.equal(log.recordsLog, 0)
+    assert.match(menu(log).text, /RECEIVED[\s\S]*never comes back/)
+    assert.doesNotMatch(menu(search).text + menu(log).text, /Ashby|\boil\b/i)
+    const out = send(log, 'putBack')
+    assert.deepEqual([out.scene, out.recordsLog], ['a2_jake', 1])
+  }
+  assert.equal(send(atMinto(1), 'leave').scene, 'a2_records')
+})
+
+test('at Lucy heat 2 or more the records thread is closed: no search, and the logbook flag stays 0', () => {
+  for (const h of [2, 3, 4]) {
+    const out = send(atMinto(h), 'leave')
+    assert.deepEqual([out.scene, out.recordsLog], ['a2_jake', 0])
+  }
+})
+
+test('the epilogue moves the claim\'s date by the logbook, in good and best only', () => {
+  const won: State = {
+    ...initialState,
+    scene: 'end',
+    curlyPlan: 'warn',
+    eliTrespass: 'quiet',
+    afterConfession: 'stay',
+    offer: 'refuse',
+    testified: true,
+    sharedWreck: true,
+  }
+  const text = (patch: Partial<State>): string => menu({ ...won, ...patch }).text
+  assert.match(text({ recordsLog: 1 }), /takes two more years[\s\S]*old sign-out book/)
+  assert.match(text({ recordsLog: 0 }), /takes three more years/)
+  assert.doesNotMatch(text({ recordsLog: 0 }), /sign-out book/)
+  assert.match(text({ recordsLog: 1, curlyPlan: 'confront' }), /about three years[\s\S]*old sign-out book/)
+  assert.match(text({ recordsLog: 0, curlyPlan: 'confront' }), /It takes years/)
+  assert.equal(text({ recordsLog: 1, testified: false }), text({ recordsLog: 0, testified: false }))
+})

@@ -31,6 +31,7 @@ const KEYED = {
   evidence: true,
   heat: true,
   lucyHeat: true,
+  recordsLog: true,
   eliTrust: true,
   joan: true,
 } as const satisfies Record<keyof State, true>
