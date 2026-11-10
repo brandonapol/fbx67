@@ -3,17 +3,18 @@ import { place } from '../../text-game/src/story.ts'
 import type { Game } from '../src/prologue.ts'
 import type { SpaceId } from '../src/levels.ts'
 import { spaces } from '../src/levels.ts'
-import { starts } from './starts.ts'
 
 export type { Step } from './act1Plan.ts'
 export { bands, label, nextStep } from './act1Plan.ts'
 
-// Act 2 played as the smoke test plays it: from the text build's Act 2 start (the a2_major start the prologue's run
-// opens, starts.ts) to Act 3's first scene, every choice after it the first. Act 1's planner says what a player does
-// next (act1Plan.ts, nextStep); act2Plan.test.ts proves it headless, and act2.test.ts does the same steps in the browser.
+// Act 2 played as the smoke test plays it: from where the Act 1 run reaches Act 2's first scene to Act 3's first
+// scene, every choice the first. Act 1's planner says what a player does next (act1Plan.ts, nextStep); act2Plan.test.ts
+// proves it headless, and act2.test.ts does the same steps in the browser. The a2_major start the prologue's run opens
+// (starts.ts) has spent Eli's trust, which holds the story at dusk or worse at any heat, so its clear band could not be
+// captured; on this path Eli still trusts Wade, and the heat alone sets the band.
 export const ACT2_FIRST: SceneId = 'a2_major'
 
-export const ACT2_PATH: string = starts.find((s) => s.scene === ACT2_FIRST)!.path
+export const ACT2_PATH = '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1'
 
 export const ACT3_FIRST: SceneId = 'a3_camp'
 

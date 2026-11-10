@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { menu } from '../../text-game/src/story.ts'
+import { menu, weather } from '../../text-game/src/story.ts'
 import { replayPath, startFrom } from '../src/start.ts'
 import type { Game } from '../src/prologue.ts'
 import { interact, press, still, tick } from '../src/prologue.ts'
@@ -9,7 +9,7 @@ import type { Vec } from '../src/world.ts'
 import { distance, sub, vec } from '../src/world.ts'
 import { poses } from '../src/probe.ts'
 import type { Step } from './act2Plan.ts'
-import { ACT2_FIRST, ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, isBeat, nextStep, poseFor } from './act2Plan.ts'
+import { ACT2_FIRST, ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, isBeat, nextStep, poseFor } from './act2Plan.ts'
 
 const DT = 1 / 30
 
@@ -56,7 +56,7 @@ const played = (): Played => {
   return { end: g, beats }
 }
 
-test('Act 2 plays from its start to Act 3’s first scene, every choice after it the first, as the text build does', () => {
+test('Act 2 plays from its start to Act 3’s first scene, every choice the first, as the text build does', () => {
   const start = startFrom(`#path=${ACT2_PATH}`, '')
   assert.equal(start.story.scene, ACT2_FIRST)
   assert.equal(menu(start.story).act, 'Act 2: Freeze-up')
@@ -65,8 +65,7 @@ test('Act 2 plays from its start to Act 3’s first scene, every choice after it
   const text = replayPath(end.path.join(','))
   assert.ok(!('error' in text), 'the engine’s path replays in the text build')
   assert.deepEqual(end.story, text.story, 'the engine reaches the same state as the text build on its path')
-  assert.equal(end.path.slice(0, start.path.length).join(','), ACT2_PATH)
-  assert.ok(end.path.slice(start.path.length).every((n) => n === 1), `every choice after the start is the first: ${end.path.join(',')}`)
+  assert.ok(end.path.every((n) => n === 1), `every choice is the first: ${end.path.join(',')}`)
 })
 
 test('each Act 2 beat is a place on the path, and each has a pose in the space it plays in', () => {
@@ -90,4 +89,14 @@ test('a beat starts where the place changes, or the space, not at every scene', 
   assert.equal(isBeat(major, photos), true, 'the major’s office to the photo lab')
   assert.equal(isBeat(photos, photos), false)
   assert.equal(isBeat(photos, { ...photos, space: 'eielson' }), true, 'same place, another space')
+})
+
+// The probe's capture sets only the heat: on a start where Eli's trust is already spent, every band's frame is dusk or
+// night, and the clear band is never captured.
+test('every beat’s frame in each band is in that band, the heat the probe sets taking it there', () => {
+  const { beats } = played()
+  const want = { '': 'clear', _dusk: 'dusk', _night: 'night' } as const
+  beats.forEach((b) =>
+    bands.forEach((band) => assert.equal(weather({ ...b.story, heat: band.heat }), want[band.suffix], `${b.story.scene}${band.suffix}`)),
+  )
 })

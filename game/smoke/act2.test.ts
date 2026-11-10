@@ -6,8 +6,8 @@ import { ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, isBeat, label, nex
 import type { Page } from './browser.ts'
 import { frames, game, smoke } from './browser.ts'
 
-// Act 2's smoke run, its own job beside Act 1's (make test/game/smoke/act2): from the text build's Act 2 start to Act
-// 3's first scene, in headless Chromium, every choice after it the first. At the start of each beat (each place the
+// Act 2's smoke run, its own job beside Act 1's (make test/game/smoke/act2): from where the Act 1 run reaches Act 2 to
+// Act 3's first scene, in headless Chromium, every choice the first. At the start of each beat (each place the
 // story moves to) it captures the frame of the space it plays in, in each moral-weather band, into
 // game/smoke/baselines/act2. No Act 2 scene routes to a space yet, so it also visits the Eielson blockout from the Act 2
 // start, and samples every Act 2 space against docs/perf.md. act2Plan.test.ts proves the same steps headless.
