@@ -5,8 +5,11 @@ import { readFileSync } from 'node:fs'
 import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
-import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, inWorld, playerBody, playerMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
-import { DT, back, flyNorth, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toBed, toRoom, walk, walkLeg, writeLetter } from './drive.ts'
+import { HIDE_TIME, INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, beingCaught, curlyNow, footY, hiding, inWorld, playerBody, playerMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick, watcher } from './prologue.ts'
+import { DT, back, flyNorth, hold, holdWhenSafe, holdWhenWatched, leaveBar, phase, playPrologue, routes, talk, toBed, toRoom, wait, walk, walkLeg, writeLetter } from './drive.ts'
+import { ALARM_GLANCE, CAUGHT_LINE, CAUGHT_TIME, FILL, beatStart } from './curly.ts'
+import { groundY, surfaceAt } from './campGround.ts'
+import { stealthOf } from './stealthView.ts'
 import { angleBetween, length, vec } from './world.ts'
 import { bodies, clipFor } from './cast.ts'
 import { spaces } from './levels.ts'
@@ -34,6 +37,10 @@ const atCamp = () => {
   const room = toRoom(bar)
   return flyNorth(walkLeg(toBed(writeLetter(room))))
 }
+
+const run = (g: Game, input: Input, n: number): Game => Array.from({ length: n }).reduce<Game>((cur) => tick(cur, input, DT), g)
+
+const holding: Input = { dir: vec(0, 0), hold: true }
 
 test('the door only opens after a conversation, and Hank only sells the round before one', () => {
   const g = press(start(), 'close')
@@ -101,6 +108,78 @@ test('the plane only takes Owen home once the notes are hidden', () => {
   assert.equal(interact(home).space, 'room', 'home in August is his room, rain on the window')
 })
 
+test('busted plays Curly\'s line first, then the retry; neither is the story\'s', () => {
+  const camp = walk(atCamp(), routes.marker)
+  const watched = wait(camp, (cur) => seen(cur) && !cur.watch?.alarm)
+  const started = interact(watched)
+  const held = run(started, holding, Math.ceil(FILL / DT) + 2)
+  assert.equal(held.holding, undefined, 'Curly has seen him at it')
+  assert.ok(beingCaught(held))
+  assert.equal(held.panel, undefined, 'the line plays before any panel')
+  assert.equal(stealthOf(held).line, `Curly: "${CAUGHT_LINE}"`)
+  assert.equal(angleBetween(watcher(held).facing, Math.atan2(held.pos.x - curlyNow(held).at.x, held.pos.z - curlyNow(held).at.z)) < 0.01, true, 'he faces Owen')
+  const frozen = run(held, { dir: vec(1, 0), hold: false }, 10)
+  assert.deepEqual(frozen.pos, held.pos, 'Owen stands caught')
+  const after = run(held, still, Math.ceil(CAUGHT_TIME / DT) + 1)
+  assert.equal(after.panel?.kind, 'busted')
+  assert.equal(after.panel?.text, `"${CAUGHT_LINE}"`)
+  assert.deepEqual(after.panel?.buttons.map((b) => b.id), ['retry'])
+  assert.equal(after.busts, 1)
+  assert.deepEqual(after.story, replay([1, 1, 1, 1]).at(-1))
+  const retried = press(after, 'retry')
+  assert.equal(retried.watch, undefined, 'Curly starts his day over')
+  assert.ok(!beingCaught(retried))
+})
+
+test('running on the gravel turns Curly round to the noise, and a hold then in his view is caught', () => {
+  const camp = { ...atCamp(), pos: vec(-2, -1.5) }
+  const quiet = run(camp, { dir: vec(1, 0), hold: false }, 20)
+  assert.equal(quiet.watch?.alarm, undefined, 'walking on the gravel at this distance makes no noise he hears')
+  const loud = run(camp, { dir: vec(1, 0), hold: false, run: true }, 20)
+  assert.ok(loud.watch?.alarm, 'running on the gravel does')
+  assert.equal(surfaceAt(loud.watch!.alarm!.at), 'gravel')
+  const looking = run(loud, still, Math.ceil(ALARM_GLANCE / DT) + 4)
+  assert.ok(curlyNow(looking).eyes, 'after his head turns he looks toward the noise')
+})
+
+test('walking through the willows is quiet even close to Curly; running through them is not', () => {
+  const inWillow = { ...atCamp(), pos: vec(-3.6, 1.8) }
+  const walked = run(inWillow, { dir: vec(1, 0), hold: false }, 40)
+  assert.equal(surfaceAt(walked.pos), 'willow')
+  assert.equal(walked.watch?.alarm, undefined)
+  const ran = run(inWillow, { dir: vec(1, 0), hold: false, run: true }, 12)
+  assert.ok(ran.watch?.alarm)
+})
+
+test('each spot has its own hiding: the floorboard in the tent, the cache ladder, the trenching tool, about 2.5 s held', () => {
+  assert.equal(HIDE_TIME, 2.5)
+  const at = (spot: keyof typeof routes, k: number) => {
+    const g = interact(wait(walk(atCamp(), routes[spot]), (cur) => phase(cur) < DT))
+    return hiding(run(g, holding, Math.round((k * HIDE_TIME) / DT)))
+  }
+  assert.ok(at('stove', 0.5)!.tool > 0.5, 'the board is up mid-hold')
+  assert.ok(at('cache', 0.5)!.lift > 1, 'Owen is up the ladder')
+  assert.equal(at('cache', 0.05)!.lift < at('cache', 0.3)!.lift, true, 'climbing')
+  assert.equal(at('marker', 0.3)!.clip, 'sneak', 'down on one knee to dig')
+  assert.equal(hiding(atCamp()), undefined)
+})
+
+test('the eye at the top of the screen: shut at work, turning before he looks, open while he looks', () => {
+  const camp = atCamp()
+  assert.deepEqual(stealthOf(camp), { shown: true, eye: 'shut', aware: 0, line: undefined })
+  const turning = run(camp, still, Math.ceil((beatStart('glance') + 0.4) / DT))
+  assert.equal(stealthOf(turning).eye, 'turning')
+  const looking = run(turning, still, Math.ceil(0.9 / DT))
+  assert.equal(stealthOf(looking).eye, 'open')
+  assert.equal(stealthOf(press(start(), 'close')).shown, false, 'only at the camp')
+})
+
+test('Owen walks on the ground: up on the marker\'s rise his feet are off the gravel', () => {
+  const camp = walk(atCamp(), routes.marker)
+  assert.ok(footY(camp) > 0.3)
+  assert.equal(footY(camp), groundY(camp.pos.x, camp.pos.z))
+})
+
 test('Curly cannot see through the cook tent', () => {
   const camp = walk(atCamp(), [[-6, 2], [-2, -1.5], [6, -4.6]])
   const t = Array.from({ length: 300 }, (_, i) => i * 0.03)
@@ -112,9 +191,6 @@ test('a hold with nothing nearby is refused', () => {
   assert.deepEqual(start().story, initialState)
 })
 
-const run = (g: Game, input: Input, n: number): Game => Array.from({ length: n }).reduce<Game>((cur) => tick(cur, input, DT), g)
-
-const holding: Input = { dir: vec(0, 0), hold: true }
 
 test('walking out of reach cancels a hold and nothing is sent', () => {
   const started = interact(walk(atCamp(), routes.stove))

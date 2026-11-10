@@ -48,6 +48,11 @@ tolerances. Issue #37 can automate all of them.
 Measured on the targets (1st / 50th / 99th percentile luma; mean hue): `silver-pan` 28 / 68 / 193, 27 degrees;
 `second-ave` 32 / 88 / 205, 22 degrees; `survey-camp` 33 / 78 / 196, 32 degrees.
 
+The survey camp's establishing shot (the `camp` pose in `game/src/probe.ts`: over Owen's shoulder up the bar, the
+cache, the cook tent, Curly at the cans by the floatplane) is held to `survey-camp` by the smoke test: the luma
+percentiles and mean hue above are measured on the captured frame (`game/smoke/look.ts`) and the run fails outside
+the tolerances. Its framing is our own, by the Camera rules; only the grade is measured.
+
 ### Camera
 
 Heights are above the ground under the player. Pitch is positive when the camera looks up and negative when it

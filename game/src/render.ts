@@ -2,7 +2,7 @@ import * as pc from 'playcanvas'
 import { weather } from '../../text-game/src/story.ts'
 import type { Clock } from '../../text-game/src/types.ts'
 import type { Figure, Prop, Space } from './levels.ts'
-import { CURLY_HALF_ANGLE, CURLY_RANGE, centerOf, present, propsIn, spaces } from './levels.ts'
+import { centerOf, present, propsIn, spaces } from './levels.ts'
 import { stageOf } from './freezeup.ts'
 import type { Pose } from './camera.ts'
 import { FOV, NEAR } from './camera.ts'
@@ -13,7 +13,9 @@ import type { CastId } from './cast.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
-import { footY, inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
+import { footY, hiding, inWorld, playerBody, playerMotion, shows } from './prologue.ts'
+import type { CampView } from './campView.ts'
+import { buildCamp } from './campView.ts'
 import { boatIn } from './cabinRide.ts'
 import { closeUp } from './knot.ts'
 import type { Debris } from './hazards.ts'
@@ -37,6 +39,8 @@ export type View = Readonly<{
   sync: (g: Game, dt: number, cam: Pose) => void
   pose: (shot: Shot | undefined) => void
   reset: () => void
+  // The accessibility option that keeps Curly's sight cone on the ground at the survey camp (frontEnd.ts, Prefs).
+  cone: (on: boolean) => void
   groundAt: (x: number, y: number) => Readonly<{ x: number; z: number }> | undefined
   screenAt: (x: number, y: number, z: number) => Readonly<{ x: number; y: number }> | undefined
 }>
@@ -95,7 +99,7 @@ const floating = (root: pc.Entity, d: Debris): pc.Entity => {
 }
 
 const addProp = (root: pc.Entity, p: Prop): pc.Entity | undefined => {
-  if (p.h < 0.02) return undefined
+  if (p.h < 0.02 || p.unseen) return undefined
   const y = (p.y ?? 0) + p.h / 2
   return primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow && !p.flat })
 }
@@ -123,18 +127,6 @@ const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
   e.setLocalEulerAngles(0, (f.facing * 180) / Math.PI, 0)
   root.addChild(e)
   return e
-}
-
-const fan = (device: pc.GraphicsDevice, range: number, half: number, steps = 18): pc.Mesh => {
-  const points = Array.from({ length: steps + 1 }, (_, i) => -half + (2 * half * i) / steps)
-  const positions = [0, 0.04, 0, ...points.flatMap((a) => [Math.sin(a) * range, 0.04, Math.cos(a) * range])]
-  const indices = points.slice(1).flatMap((_, i) => [0, i + 1, i + 2])
-  const mesh = new pc.Mesh(device)
-  mesh.setPositions(positions)
-  mesh.setNormals(Array.from({ length: positions.length / 3 }).flatMap(() => [0, 1, 0]))
-  mesh.setIndices(indices)
-  mesh.update()
-  return mesh
 }
 
 // The sky cubemap's face size: big enough that the sun's halo is a smooth gradient, small enough to build per space.
@@ -203,7 +195,7 @@ const shadowsFor = (outdoor: boolean, l: Lighting) => ({
 const applyGrade = (frame: pc.CameraFrame, l: Lighting): void => {
   const g = grades[l.grade]
   frame.grading.enabled = true
-  frame.grading.brightness = g.brightness
+  frame.grading.brightness = g.brightness * (l.exposure ?? 1)
   frame.grading.contrast = g.contrast
   frame.grading.saturation = g.saturation
   frame.grading.tint = color(g.tint)
@@ -218,7 +210,11 @@ const applyLighting = (app: pc.Application, sun: pc.Entity, lamp: pc.Entity, fra
   const old = app.scene.skybox
   app.scene.skybox = skyCubemap(app.graphicsDevice, l)
   old?.destroy()
-  app.scene.ambientLight = color(l.ambient)
+  // The sky's fill is exposed down less than the sun (to the power 0.37): under a high sun the open sky
+  // lights the shade more, and shade under spruce is not black.
+  const fill = color(l.ambient)
+  const lift = (l.exposure ?? 1) ** -0.63
+  app.scene.ambientLight = new pc.Color(fill.r * lift, fill.g * lift, fill.b * lift)
   app.scene.fog.type = pc.FOG_LINEAR
   app.scene.fog.color = color(l.fog)
   app.scene.fog.start = l.fogStart
@@ -246,8 +242,8 @@ type Built = Readonly<{
   id: Space['id']
   root: pc.Entity
   figures: ReadonlyMap<string, pc.Entity>
-  cone?: pc.Entity
-  coneMats?: readonly [pc.StandardMaterial, pc.StandardMaterial]
+  // The survey camp's terrain, plants, structures and Curly at work (campView.ts).
+  camp?: CampView
   rain: readonly pc.Entity[]
   // The rain falls in a box that goes where the player goes, so it is overhead anywhere in a town-sized space.
   rainRoot: pc.Entity
@@ -324,23 +320,13 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const space = spaces[g.space]
     const root = new pc.Entity(space.id)
     const c = centerOf(space)
-    primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
+    if (space.id !== 'camp') primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
     const toggles = propsIn(space, t.season, t.clock).flatMap((p) => {
       const e = addProp(root, p)
       return e && p.while ? [[e, p.while] as const] : []
     })
     const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f, cast)] as const))
-    const cone = space.id === 'camp' ? new pc.Entity('sight') : undefined
-    const coneMats = cone
-      ? ([material('#ffe9a8', { opacity: 0.28, unlit: true }), material('#ff4a3a', { opacity: 0.45, unlit: true })] as const)
-      : undefined
-    if (cone && coneMats) {
-      cone.addComponent('render', {
-        meshInstances: [new pc.MeshInstance(fan(app.graphicsDevice, CURLY_RANGE, CURLY_HALF_ANGLE), coneMats[0])],
-        castShadows: false,
-      })
-      root.addChild(cone)
-    }
+    const camp = space.id === 'camp' ? buildCamp(app, root, base) : undefined
     const boat = space.id === 'flood' || space.id === 'cabin' ? new pc.Entity('boat') : undefined
     if (boat) {
       boatIn(space.id).hull.forEach((p) => addProp(boat, p))
@@ -365,10 +351,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles }
+    return { id: space.id, root, figures, camp, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles }
   }
 
-  const state: { built?: Built; held?: Shot; crowd?: CrowdView } = {}
+  const state: { built?: Built; held?: Shot; crowd?: CrowdView; cone: boolean } = { cone: false }
 
   const isCast = (e: pc.GraphNode | null): boolean => (e ? e.tags.has('cast') || isCast(e.parent) : false)
 
@@ -377,7 +363,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const mats = new Set<pc.Material>(
       (b.root.findComponents('render') as pc.RenderComponent[]).filter((r) => !isCast(r.entity)).flatMap((r) => r.meshInstances.flatMap((mi) => (mi.material ? [mi.material] : []))),
     )
-    b.coneMats?.forEach((m) => mats.add(m))
+    b.camp?.dispose()
     b.root.destroy()
     mats.forEach((m) => m.destroy())
   }
@@ -406,8 +392,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     state.built = b
     const player = playerFor(playerBody(g).cast)
     const motion = playerMotion(g)
-    const clip = clipFor(motion)
-    if (player) cast.play(player, clip, playbackRate(clip, motion.speed))
+    // Hiding the notes at the camp, Owen kneels, climbs or digs (camp.ts, hidePose).
+    const hid = hiding(g)
+    const clip = hid?.clip ?? clipFor(motion)
+    if (player) cast.play(player, clip, hid ? 1 : playbackRate(clip, motion.speed))
     // Curly in the left seat, or on his walkaround at the float (floatDock.ts): drawn there, with that one clip.
     const drawn = curlyAt(g)
     spaces[g.space].figures.forEach((f) => {
@@ -444,7 +432,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       // At the camp the plane is drawn only while it comes in; parked, the camp's own plane stands there.
       const air = flying(g.flight)
       const p = air ? planeAt(g.flight) : restingIn(g.space === 'camp' ? 'camp' : 'downtown')
-      b.plane.enabled = air || g.space === 'downtown'
+      b.plane.enabled = air || g.space === 'downtown' || (g.space === 'camp' && shows(g, 'parked'))
       b.plane.setLocalPosition(p.at.x, p.y, p.at.z)
       b.plane.setLocalEulerAngles(0, (p.heading * 180) / Math.PI, 0)
       // Stopped to talk, Curly is back where his figure stands.
@@ -461,18 +449,12 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     })
     b.rainRoot.setLocalPosition(g.pos.x, 0, g.pos.z)
     if (player) {
-      player.setLocalPosition(g.pos.x, footY(g), g.pos.z)
-      player.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
+      const where = hid?.at ?? g.pos
+      player.setLocalPosition(where.x, footY(g) + (hid?.lift ?? 0), where.z)
+      player.setLocalEulerAngles(0, ((hid?.facing ?? g.facing) * 180) / Math.PI, 0)
       player.enabled = inWorld(g) && (!cam.close || state.held !== undefined)
     }
-    if (b.cone && b.coneMats) {
-      const w = watcher(g)
-      b.cone.setLocalPosition(w.at.x, 0, w.at.z)
-      b.cone.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
-      const mi = b.cone.render?.meshInstances[0]
-      if (mi) mi.material = seen(g) ? b.coneMats[1] : b.coneMats[0]
-      if (!drawn) b.figures.get('curly')?.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
-    }
+    b.camp?.sync(g, flying(g.flight) ? undefined : b.figures.get('curly'), cast, state.cone)
     b.toggles.forEach(([e, w]) => {
       e.enabled = shows(g, w)
     })
@@ -523,5 +505,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
   }
 
   app.start()
-  return { app, camera, sync, pose, reset, groundAt, screenAt }
+  const cone = (on: boolean): void => {
+    state.cone = on
+  }
+
+  return { app, camera, sync, pose, reset, groundAt, screenAt, cone }
 }

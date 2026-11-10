@@ -1,5 +1,6 @@
 import type { Prop, SpaceId } from './levels.ts'
 import type { Lighting } from './lighting.ts'
+import { summerExposure } from './lighting.ts'
 import type { Interactable, Vec } from './world.ts'
 import { angleTo, vec } from './world.ts'
 
@@ -75,7 +76,8 @@ export const flightFade = (t: number | undefined): number =>
 
 // Over town the flight is lit low and gold: the morning sun held a few degrees over the hills to the east, a warm key
 // and a warm haze. The story is already at the camp's 10:00 by then, and its high sun would light the town leg flat.
-// The camp leg is the camp scene at its own clock; the dip to black between the legs hides the change of light.
+// The camp leg is the camp scene at its own clock; the dip to black between the legs hides the change of light. The
+// gold is exposed for its own low sun, not the camp clock's high one (summerExposure in lighting.ts).
 const GOLD = {
   sun: '#ffb25a',
   sunAzimuth: 80,
@@ -87,7 +89,7 @@ const GOLD = {
 export const litGold = (t: number | undefined): boolean => flying(t) && legAt(t) === 'downtown'
 
 export const flightLight = (l: Lighting, t: number | undefined): Lighting =>
-  litGold(t) ? { ...l, ...GOLD, sunUp: true } : l
+  litGold(t) ? { ...l, ...GOLD, sunUp: true, exposure: summerExposure(GOLD.sunElevation) } : l
 
 // Where the plane is: the hull's middle on the ground plane, how high it is, and its heading.
 export type Pose = Readonly<{ at: Vec; y: number; heading: number }>

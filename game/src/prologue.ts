@@ -7,7 +7,12 @@ import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
 import type { Mark, SpaceId } from './levels.ts'
-import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, STAIR_FOOT, curlyFacing, flooded, occluders, solids, spaces, standAt } from './levels.ts'
+import { STAIR_FOOT, flooded, occluders, solids, spaces, standAt } from './levels.ts'
+import type { Watch } from './curly.ts'
+import { CAUGHT_LINE, CAUGHT_TIME, CURLY_HALF_ANGLE, CURLY_RANGE, calm, curlyPose, gaze, listen, notice } from './curly.ts'
+import { groundY, surfaceAt } from './campGround.ts'
+import type { HidePose } from './camp.ts'
+import { hidePose } from './camp.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 import { jailSpot, letOut } from './jail.ts'
 import { tentSpot } from './hospital.ts'
@@ -31,7 +36,8 @@ import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
 import { bodyFor } from './pov.ts'
 
-export { HIDE_TIME, ROUND_TIME } from './levels.ts'
+export { ROUND_TIME } from './levels.ts'
+export { HIDE_TIME } from './camp.ts'
 
 export const WALK = WALK_SPEED
 export const JOG = JOG_SPEED
@@ -83,6 +89,8 @@ export type Game = Readonly<{
   flight?: number
   // Seconds since Owen lay down in his room: the fade and the date card run, then the story moves to the morning.
   sleeping?: number
+  // Curly at the survey camp: his routine's clock, the noise he turned to, how much of Owen he has seen (curly.ts).
+  watch?: Watch
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -139,6 +147,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   doused: undefined,
   look: undefined,
   flight: undefined,
+  watch: undefined,
 })
 
 export const start = (): Game => ({
@@ -201,9 +210,21 @@ export const focus = (g: Game): Interactable | undefined =>
 export const label = (g: Game, i: Interactable): string =>
   (i.note ? menu(g.story).options.find((o) => o.note === i.note)?.label : i.prompt) ?? i.id
 
-export const watcher = (g: Game) => ({ at: CURLY_AT, facing: curlyFacing(g.t), range: CURLY_RANGE, halfAngle: CURLY_HALF_ANGLE })
+export const watchOf = (g: Game): Watch => g.watch ?? calm
 
-export const seen = (g: Game): boolean => g.space === 'camp' && sees(watcher(g), g.pos, occluders(spaces.camp))
+// Curly as the camp's watcher: where he stands and looks, and whether he is looking at all (curly.ts).
+export const curlyNow = (g: Game) => curlyPose(watchOf(g), g.t, g.pos)
+
+export const watcher = (g: Game) => {
+  const p = curlyNow(g)
+  return { at: p.at, facing: gaze(p), range: CURLY_RANGE, halfAngle: CURLY_HALF_ANGLE, eyes: p.eyes }
+}
+
+export const seen = (g: Game): boolean => {
+  if (g.space !== 'camp') return false
+  const w = watcher(g)
+  return w.eyes && sees(w, g.pos, occluders(spaces.camp))
+}
 
 const leftPrologue = (from: State, to: State): boolean => menu(from).act === 'Prologue' && menu(to).act !== 'Prologue'
 
@@ -278,12 +299,38 @@ export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit &
 // Lucy takes a lit cigarette out of Wade's mouth as soon as he is near her, and drops it in the water.
 const douse = (g: Game): Game => (g.space === 'office' && g.lit && takesIt(g.pos) ? { ...g, lit: undefined, doused: true } : g)
 
+// Caught hiding the notes: Curly turns to Owen and says so (the busted beat), and then the retry comes up. Neither is
+// the story's: it never hears of it (Rule 4).
+const caught = (g: Game): Game => ({ ...g, holding: undefined, vel: zero, watch: { ...watchOf(g), caught: 0 } })
+
 const busted = (g: Game): Game => ({
   ...g,
-  holding: undefined,
   busts: g.busts + 1,
-  panel: { kind: 'busted', title: 'Busted', text: 'Curly turns around. That was way too obvious.', buttons: [{ id: 'retry', label: 'Try again' }] },
+  panel: { kind: 'busted', title: 'Curly', text: `"${CAUGHT_LINE}"`, buttons: [{ id: 'retry', label: 'Try again' }] },
 })
+
+// How Owen looks while he hides the notes at a spot (camp.ts): lifting the floorboard, up the ladder, digging.
+export const hiding = (g: Game): HidePose | undefined => {
+  const h = g.holding
+  return g.space === 'camp' && h && isSpot(h.id) ? hidePose(h.id, h.progress / h.time) : undefined
+}
+
+export const beingCaught = (g: Game): boolean => g.watch?.caught !== undefined
+
+const scolded = (g: Game, dt: number): Game => {
+  const w = watchOf(g)
+  const at = (w.caught ?? 0) + dt
+  return at >= CAUGHT_TIME ? busted({ ...g, vel: zero }) : { ...g, vel: zero, watch: { ...w, caught: at } }
+}
+
+// Curly's attention, once a frame at the camp: he hears Owen's steps, his alarm runs down, the indicator fills while
+// he can see him.
+const attend = (g: Game, dt: number): Game => {
+  if (g.space !== 'camp') return g
+  const heard = listen(watchOf(g), g.t, { pos: g.pos, vel: g.vel, surface: surfaceAt(g.pos) })
+  const next = { ...g, watch: heard }
+  return { ...next, watch: notice(heard, seen(next), dt) }
+}
 
 const endCard: Panel = {
   kind: 'end',
@@ -476,7 +523,7 @@ const hold = (g: Game, input: Input, dt: number): Game => {
   const h = g.holding
   if (!h) return g
   if (!input.hold || (h.id !== CIGARETTE && !inReach(g, h.id))) return { ...g, holding: undefined }
-  if (seen(g)) return busted(g)
+  if (isSpot(h.id) && watchOf(g).aware >= 1) return caught(g)
   const progress = h.progress + dt
   return progress < h.time ? { ...g, holding: { ...h, progress } } : finish(g, h)
 }
@@ -529,7 +576,8 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (flying(g.flight)) return fly({ ...g, t }, dt)
   if (riding(g.ride)) return ride({ ...g, t }, dt)
   if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
-  const walked = water(walk({ ...g, t }, input, dt), dt)
+  if (beingCaught(g)) return scolded({ ...g, t }, dt)
+  const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
   return douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt))
 }
 
@@ -545,7 +593,7 @@ export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaki
 // How high Owen's feet are: on the plane's cabin floor in the air, on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
 export const footY = (g: Game): number =>
-  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : standAt(spaces[g.space], g.pos)
+  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : standAt(spaces[g.space], g.pos)
 
 // The heading the camera is held behind on the ride and the flight (skiff.ts, keepBehind); none on foot.
 export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) ? g.facing : undefined)

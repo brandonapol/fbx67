@@ -1,7 +1,7 @@
 import type { Game, Input } from './prologue.ts'
 import { place } from '../../text-game/src/story.ts'
-import { HIDE_TIME, interact, press, start, still, tick } from './prologue.ts'
-import { CURLY_PERIOD } from './levels.ts'
+import { interact, press, seen, start, still, tick, watchOf } from './prologue.ts'
+import { CURLY_PERIOD, LOOK_FROM, clockOf } from './curly.ts'
 import { legs } from './downtown.ts'
 import { flying } from './flight.ts'
 import type { Vec } from './world.ts'
@@ -33,19 +33,26 @@ export const wait = (g: Game, until: (g: Game) => boolean, input: Input = still)
   return go(g, 0)
 }
 
-export const phase = (g: Game): number => ((g.t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD
+// Where Curly is in his routine (curly.ts): seconds into its period, by his own clock.
+export const phase = (g: Game): number => {
+  const t = clockOf(watchOf(g), g.t)
+  return ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD
+}
 
 export const hold = (g: Game): Game => {
   const started = interact(g)
   if (!started.holding) throw new Error(`nothing to hold at ${g.pos.x.toFixed(2)},${g.pos.z.toFixed(2)}`)
-  return wait(started, (cur) => !cur.holding, { dir: vec(0, 0), hold: true })
+  return wait(started, (cur) => !cur.holding && cur.watch?.caught === undefined, { dir: vec(0, 0), hold: true })
 }
 
-export const holdWhenSafe = (g: Game): Game => hold(wait(g, (cur) => phase(cur) < DT))
+// Curly is back at work, not turned to a noise.
+const calmNow = (g: Game): boolean => !watchOf(g).alarm
 
-const WATCHED = CURLY_PERIOD - 0.9 - HIDE_TIME
+// Holds as Curly goes back to the cans: the whole of his work is ahead before he looks again.
+export const holdWhenSafe = (g: Game): Game => hold(wait(g, (cur) => phase(cur) < DT && calmNow(cur)))
 
-export const holdWhenWatched = (g: Game): Game => hold(wait(g, (cur) => phase(cur) > WATCHED && phase(cur) < WATCHED + 3 * DT))
+// Holds as soon as Curly, looking over the camp, has Owen in view.
+export const holdWhenWatched = (g: Game): Game => hold(wait(g, (cur) => seen(cur) && phase(cur) > LOOK_FROM && !watchOf(cur).alarm))
 
 export const routes = {
   stove: [[-6, 2], [-2, -1.5], [5.6, 0.5], [5.6, 0.1]],

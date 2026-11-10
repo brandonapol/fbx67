@@ -168,9 +168,10 @@ export type TextSize = 'normal' | 'large'
 // Reduced motion follows the system unless the player sets it.
 export type Motion = 'system' | 'on' | 'off'
 
-export type Prefs = Readonly<{ text: TextSize; motion: Motion }>
+// cone keeps Curly's sight cone on the ground at the survey camp, for players who want the watcher's view drawn.
+export type Prefs = Readonly<{ text: TextSize; motion: Motion; cone: boolean }>
 
-export const defaultPrefs: Prefs = { text: 'normal', motion: 'system' }
+export const defaultPrefs: Prefs = { text: 'normal', motion: 'system', cone: false }
 
 export const parsePrefs = (raw: string | null): Prefs => {
   try {
@@ -178,6 +179,7 @@ export const parsePrefs = (raw: string | null): Prefs => {
     return {
       text: p.text === 'large' ? 'large' : 'normal',
       motion: p.motion === 'on' || p.motion === 'off' ? p.motion : 'system',
+      cone: p.cone === true,
     }
   } catch {
     return defaultPrefs

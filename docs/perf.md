@@ -24,8 +24,9 @@ prologue's; the initial download is the prologue run's to measure.
 any act is budgeted before it is played.
 
 - **Draw calls:** `app.stats.drawCallCount`, every draw call the device issued in the frame, shadow passes included.
-- **Triangles:** the index count over three of every visible mesh instance in the scene, for one pass. The release
-  build of PlayCanvas does not count primitives itself.
+- **Triangles:** the index count over three of every visible mesh instance in the scene, times its instance count when
+  it is drawn instanced (the camp's plants), for one pass. The release build of PlayCanvas does not count
+  primitives itself.
 - **Texture memory:** `app.stats.vramTextureBytes`, every texture and render target alive, shadow maps included.
 - **CPU frame time:** wall time from `frameupdate` to `frameend`, reported as median, 95th percentile and peak.
   Headless Chromium renders in software (SwiftShader), so this is reported and never fails the build.

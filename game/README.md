@@ -5,10 +5,11 @@ copies its text or re-implements its gates: each mission ends by sending the sto
 offers (see [`docs/story-api.md`](../docs/story-api.md)).
 
 Today it plays the prologue as Owen: the Silver Pan, the walk home, the boarding house (the landlady in her parlor,
-then the letter to Lucy typed out at the desk upstairs), hiding the notes at the survey camp while Curly refuels, and
-the skiff in the flood. "Continue as Wade" on the end card puts the player on the sandbag line on
-Cushman as Wade, where Act 1 opens; its later scenes play as menus there until their spaces exist, and Act 2 goes on
-in the text build at the path played so far.
+then the letter to Lucy typed out at the desk upstairs), hiding the notes at the survey camp while Curly works (he
+looks over the camp after he lights a cigarette, and turns to a run on the gravel; the eye at the top of the screen
+says when he is looking), and the skiff in the flood. "Continue as Wade" on the end card puts the player on the
+sandbag line on Cushman as Wade, where Act 1 opens; its later scenes play as menus there until their spaces exist, and
+Act 2 goes on in the text build at the path played so far.
 
 The player is whoever the story's `pov(state)` says, never a scene id: `bodies` in `src/cast.ts` gives each point of
 view its model and clip set, the camera's eye height (Wade's is 1.8 m, Owen's 1.7 m) and its footstep voice. Owen's
@@ -88,13 +89,18 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
 src/world.ts      vectors, collision, line of sight, the watcher cone, target picking; pure
 src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, interior and exterior arms; pure
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
-src/levels.ts     the spaces as data (the prologue's, the boarding house's hall among them, Act 1's sandbag line, the story backdrop), and Curly's look schedule
+src/levels.ts     the spaces as data (the prologue's, the boarding house's hall among them, Act 1's sandbag line, the story backdrop)
+src/camp.ts       the survey camp as data: its props, the three hiding spots and how Owen looks hiding at each
+src/campGround.ts the camp's heightmap, surfaces underfoot, splat weights and where every plant grows; pure
+src/curly.ts      Curly at the camp: his routine, the look that is the danger, noise, the awareness meter; pure
+src/campView.ts   PlayCanvas: the camp's terrain, instanced plants, mosquitoes, structures, and the optional sight cone
+src/stealthView.ts the eye at the top of the screen that shows what Curly is doing and how much he has seen
 src/router.ts     which space a scene plays in, from the story's place; pure
 src/start.ts      reads a #path= or ?from= link and replays it through the story; pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   sun, sky, fog and grade per space, season and moral-weather band; pure
 src/render.ts     PlayCanvas: draws the game state, owns nothing
-src/settings.ts   the settings panel: text size, reduced motion, controls
+src/settings.ts   the settings panel: text size, reduced motion, the sight cone, controls
 src/frontEnd.ts   the front end: screens, the objective line, the journal, the save, load progress; pure
 src/frontEndView.ts  the title, pause menu, journal, loading bar and objective line in the DOM
 src/frontEndMap.ts   the pocket map: which places are known, where the player is, where to go; pure

@@ -134,8 +134,9 @@ test('prefs round-trip and fall back to the defaults on anything else', () => {
   assert.deepEqual(parsePrefs(null), defaultPrefs)
   assert.deepEqual(parsePrefs('not json'), defaultPrefs)
   assert.deepEqual(parsePrefs('{"text":"huge","motion":"sometimes"}'), defaultPrefs)
-  const p = { text: 'large', motion: 'on' } as const
+  const p = { text: 'large', motion: 'on', cone: true } as const
   assert.deepEqual(parsePrefs(JSON.stringify(p)), p)
+  assert.equal(parsePrefs('{"cone":"yes"}').cone, false, 'the sight cone is off unless set')
   assert.equal(reduced(defaultPrefs, true), true)
   assert.equal(reduced(defaultPrefs, false), false)
   assert.equal(reduced({ ...defaultPrefs, motion: 'off' }, true), false)

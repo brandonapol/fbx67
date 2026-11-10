@@ -18,6 +18,7 @@ import { roomThings } from './room.ts'
 import { eielson } from './eielson.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
+import { camp } from './camp.ts'
 
 export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'story'
 
@@ -37,6 +38,8 @@ export type Prop = Readonly<{
   while?: Mark
   // A floor the player stands on, at its top, while over it (the flood's porch and walkway).
   deck?: true
+  // Stops the player or blocks sight, but the space's own view draws it (the survey camp, campView.ts).
+  unseen?: true
 }>
 
 export type Letter = 'unfolded' | 'folded'
@@ -99,8 +102,6 @@ const edges = (w: number, d: number): readonly Prop[] => [
   { box: { x: -w / 2 - 0.5, z: 0, w: 1, d: d + 2 }, h: 0.01, color: '#000000', solid: true },
   { box: { x: w / 2 + 0.5, z: 0, w: 1, d: d + 2 }, h: 0.01, color: '#000000', solid: true },
 ]
-
-export const HIDE_TIME = 2.4
 
 export const ROUND_TIME = 1.2
 
@@ -299,74 +300,6 @@ export const room: Space = {
   ],
 }
 
-export const CURLY_AT = vec(-6.4, 5.4)
-
-export const camp: Space = {
-  id: 'camp',
-  act: 'Prologue',
-  place: 'surveyCamp',
-  name: 'The survey camp',
-  interior: false,
-  size: { w: 28, d: 24 },
-  ground: '#6f7a4a',
-  spawn: vec(-8.2, 3.6),
-  props: [
-    ...edges(28, 24),
-    { box: { x: 0, z: 10, w: 28, d: 4 }, h: 0.05, color: '#4f6f78', solid: true },
-    { box: { x: -9, z: 7.2, w: 1.1, d: 5.2 }, h: 1.2, y: 0.5, color: '#c9c2b0', solid: true, occludes: true, while: 'parked' },
-    { box: { x: -9, z: 7.2, w: 7, d: 0.9 }, h: 0.12, y: 1.6, color: '#b13d2a', while: 'parked' },
-    { box: { x: -6.8, z: 6.6, w: 0.9, d: 0.9 }, h: 1.0, color: '#7a2a1c', solid: true, shape: 'cylinder' },
-    { box: { x: 6, z: -2.4, w: 3.6, d: 3.0 }, h: 2.2, color: '#d8ceb0', solid: true, occludes: true, shape: 'box' },
-    { box: { x: 6.9, z: -2.9, w: 0.25, d: 0.25 }, h: 1.6, y: 2.2, color: '#4a4a4a' },
-    { box: { x: 9.2, z: 5.2, w: 1.8, d: 1.6 }, h: 1.2, y: 1.9, color: '#6a5034' },
-    { box: { x: 8.5, z: 4.6, w: 0.2, d: 0.2 }, h: 1.9, color: '#5a4430' },
-    { box: { x: 9.9, z: 4.6, w: 0.2, d: 0.2 }, h: 1.9, color: '#5a4430' },
-    { box: { x: 8.5, z: 5.8, w: 0.2, d: 0.2 }, h: 1.9, color: '#5a4430' },
-    { box: { x: 9.9, z: 5.8, w: 0.2, d: 0.2 }, h: 1.9, color: '#5a4430' },
-    { box: { x: 1.8, z: -9.3, w: 0.25, d: 0.25 }, h: 1.3, color: '#d9c25a' },
-    { box: { x: 1.8, z: -9.3, w: 2.4, d: 2.4 }, h: 0.4, color: '#7d7f5a', shape: 'cylinder' },
-    ...[
-      [-1, 1.5],
-      [-5.5, -1.5],
-      [2.6, -4.2],
-      [3.4, -6.3],
-      [-3.4, -3.6],
-      [11.6, 1.6],
-      [12, -7],
-      [-11, -6.5],
-      [-6.2, -8.6],
-      [5.2, 7.4],
-    ].map(([x, z]): Prop => ({
-      box: { x, z, w: 1.4, d: 1.4 },
-      h: 4,
-      color: '#2f4a33',
-      solid: true,
-      occludes: true,
-      shape: 'cone',
-    })),
-    ...[
-      [-2.6, 1.8],
-      [4, 2.2],
-      [7.4, 1.8],
-    ].map(([x, z]): Prop => ({
-      box: { x, z, w: 2.2, d: 1.2 },
-      h: 1.4,
-      color: '#5b7a3a',
-      solid: false,
-      occludes: true,
-    })),
-  ],
-  figures: [
-    { id: 'curly', at: CURLY_AT, facing: -Math.PI / 2, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75 },
-  ],
-  spots: [
-    { id: 'stove', x: 5.6, z: -0.5, r: 1.1, note: 'stove', hold: HIDE_TIME },
-    { id: 'cache', x: 9.2, z: 3.8, r: 1.1, note: 'cache', hold: HIDE_TIME },
-    { id: 'marker', x: 1.8, z: -8.1, r: 1.1, note: 'marker', hold: HIDE_TIME },
-    { id: 'plane', x: -7.6, z: 4.6, r: 1.6, prompt: 'Fly home with Curly' },
-  ],
-}
-
 // The August flood on the same streets as July: downtown's own data with the high water laid over it (highwater.ts),
 // in world coordinates. Owen comes out on his porch on Third; the skiff waits at the steps (skiff.ts).
 export const flood: Space = {
@@ -456,25 +389,3 @@ export const solids = (s: Space, story?: State, path?: readonly number[]): reado
 ]
 
 export const occluders = (s: Space): readonly Box[] => s.props.filter((p) => p.occludes).map((p) => p.box)
-
-const TURN = 0.9
-export const WORK = 4.6
-const SWEEP = 2.8
-export const CURLY_PERIOD = WORK + TURN + SWEEP + TURN
-
-const atPlane = -Math.PI / 2
-const sweepFrom = Math.PI / 2 - 0.85
-const sweepTo = Math.PI / 2 + 0.85
-
-const lerp = (a: number, b: number, k: number): number => a + (b - a) * k
-
-export const curlyFacing = (t: number): number => {
-  const u = ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD
-  if (u < WORK) return atPlane + 0.15 * Math.sin(u * 2.1)
-  if (u < WORK + TURN) return lerp(atPlane, sweepFrom, (u - WORK) / TURN)
-  if (u < WORK + TURN + SWEEP) return lerp(sweepFrom, sweepTo, (u - WORK - TURN) / SWEEP)
-  return lerp(sweepTo, atPlane + 2 * Math.PI, (u - WORK - TURN - SWEEP) / TURN)
-}
-
-export const CURLY_RANGE = 19
-export const CURLY_HALF_ANGLE = 0.55

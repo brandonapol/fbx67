@@ -12,6 +12,9 @@ import { poses } from '../src/probe.ts'
 import { MB, breaches, parseBudgets, perfMarkdown, summarize } from './budget.ts'
 import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
+import { PNG } from 'pngjs'
+import { TARGETS, lookOf, misses } from './look.ts'
+import { CURLY_PERIOD } from '../src/curly.ts'
 import { starts } from './starts.ts'
 import { legs } from '../src/downtown.ts'
 import { FLOOD_WALK, HALL } from '../src/drive.ts'
@@ -166,10 +169,12 @@ const snap = async (p: Page, name: string, settle = 0): Promise<void> => {
 
 const checked: FrameResult[] = []
 
-const capture = async (p: Page, name: string, pose: string = name): Promise<void> => {
+const capture = async (p: Page, name: string, pose: string = name): Promise<Buffer> => {
   await p.evaluate(([n, at]) => (window as any).__prologue.capture(n, at), [name, pose] as const)
-  checked.push(checkFrame(dirs, name, await p.screenshot({ timeout: 120000 })))
+  const shot = await p.screenshot({ timeout: 120000 })
+  checked.push(checkFrame(dirs, name, shot))
   await p.evaluate(() => (window as any).__prologue.release())
+  return shot
 }
 
 type Run = { downloadBytes?: number; samples: Sample[] }
@@ -399,14 +404,30 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   lap('dock')
   await tour(page, [-8.2, 3.6], [-6, 2])
   await walk(page, [[-2, -1.5], [0, -6], [1.8, -7.5]], true)
-  // Hiding waits for a window a tenth of a second wide in Curly's beat: one tick a frame, so no frame steps over it.
+  // The establishing shot is held to the target frame's grade (docs/art/README.md#target-frames, look.ts).
+  const established = lookOf(PNG.sync.read(await capture(page, 'camp')))
+  console.log(`  camp against its target: ${JSON.stringify(established)} (target ${JSON.stringify(TARGETS.surveyCamp)})`)
+  assert.deepEqual(misses(established, TARGETS.surveyCamp), [])
+  // The ground cone is off; the accessibility setting brings it back (settings panel, Prefs.cone).
+  assert.equal(await page.evaluate(() => (window as any).__prologue.shown('sight')), false)
+  await page.locator('#settings-open').click()
+  await page.locator('#sight-cone').check()
+  await frames(page, 2)
+  assert.equal(await page.evaluate(() => (window as any).__prologue.shown('sight')), true)
+  await page.locator('#sight-cone').uncheck()
+  await page.locator('#settings-close').click()
+  await frames(page, 2)
+  assert.equal(await page.evaluate(() => (window as any).__prologue.shown('sight')), false)
+  // Hiding waits for Curly to go back to his cans (curly.ts): his routine's clock, which stops while he looks toward a
+  // noise, is early in its period, and the whole of his work is ahead before he looks again.
   await pace(page, 1)
   await page.waitForFunction(
-    () => {
+    (period) => {
       const g = (window as any).__prologue.game()
-      return g.t % 9.2 < 0.1
+      const w = g.watch ?? { lost: 0 }
+      return !w.alarm && (((g.t - w.lost) % period) + period) % period < 1
     },
-    null,
+    CURLY_PERIOD,
     { timeout: 90000 },
   )
   await page.keyboard.down('e')

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import type { AnimLayerLike } from './probe.ts'
 import { freezeAnims, posed, poses } from './probe.ts'
 import { centerOf, spaces } from './levels.ts'
-import { start } from './prologue.ts'
+import { playerMotion, start } from './prologue.ts'
+import { clipFor } from './cast.ts'
 import { weather } from '../../text-game/src/story.ts'
 
 type Log = string[]
@@ -77,4 +78,11 @@ test('the skiff band poses put the same shot in each moral-weather band', () => 
   assert.deepEqual([band('skiff'), band('skiff_dusk'), band('skiff_night')], ['clear', 'dusk', 'night'])
   assert.deepEqual(poses.skiff_dusk!.shot, poses.skiff!.shot)
   assert.deepEqual(poses.skiff_night!.shot, poses.skiff!.shot)
+})
+
+test('a capture pose stands the player still, whatever pace the live game had', () => {
+  const walking = { ...start(), space: 'camp' as const, vel: { x: 1.4, z: 0 } }
+  const p = posed(walking, poses.camp!)
+  assert.deepEqual(p.vel, { x: 0, z: 0 })
+  assert.equal(clipFor(playerMotion(p)), 'idle', 'the clip in the frame does not depend on how fast Owen was walking')
 })

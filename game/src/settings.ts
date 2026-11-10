@@ -84,16 +84,19 @@ export const mountSettings = (get: () => Controls, set: (c: Controls) => void): 
   return { open: () => !panel.hidden, show }
 }
 
-// Text size and reduced motion (frontEnd.ts), at the top of the same panel. Each change applies and saves at once.
+// Text size, reduced motion and the sight cone (frontEnd.ts), at the top of the same panel. Each change applies and saves at once.
 export const mountPrefs = (get: () => Prefs, set: (p: Prefs) => void): void => {
   const text = $<HTMLSelectElement>('text-size')
   const motion = $<HTMLSelectElement>('reduce-motion')
+  const cone = $<HTMLInputElement>('sight-cone')
   const draw = (): void => {
     text.value = get().text
     motion.value = get().motion
+    cone.checked = get().cone
   }
-  const change = (): void => set(parsePrefs(JSON.stringify({ text: text.value, motion: motion.value })))
+  const change = (): void => set(parsePrefs(JSON.stringify({ text: text.value, motion: motion.value, cone: cone.checked })))
   text.addEventListener('change', change)
   motion.addEventListener('change', change)
+  cone.addEventListener('change', change)
   draw()
 }

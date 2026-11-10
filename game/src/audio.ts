@@ -5,10 +5,10 @@ import { pace, standing, stepTempF, surfaceAt } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
 import { spaces } from './levels.ts'
 import type { Game } from './prologue.ts'
-import { playerBody } from './prologue.ts'
+import { curlyNow, playerBody } from './prologue.ts'
 import { season } from '../../text-game/src/story.ts'
 import type { Event } from './soundscape.ts'
-import { arrivals, ducked, holds, soundscapes, sourceAt, walked } from './soundscape.ts'
+import { arrivals, cues, ducked, holds, soundscapes, sourceAt, walked } from './soundscape.ts'
 import type { Buffers, Rand, Voice } from './synth.ts'
 import { between, footstep, layerVoice, makeBuffers, mulberry, spot } from './synth.ts'
 import type { Vec } from './world.ts'
@@ -239,6 +239,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
     })
     events(gr, s, g)
     arrivals(live.prev, g).forEach((a) => oneShot(gr, 'sfx', g.pos, (dest) => spot(gr.ctx, gr.buffers, a, dest, rand)))
+    cues(live.prev, g).forEach((c) => oneShot(gr, 'sfx', curlyNow(g).at, (dest) => spot(gr.ctx, gr.buffers, c, dest, rand)))
     steps(gr, g, dt)
   }
 
