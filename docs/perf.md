@@ -39,6 +39,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `helpTent` |   1,500 | 1,500,000 |                 512 |
 | `office` |     1,500 | 1,500,000 |                 512 |
 | `eielson` |    1,500 | 1,500,000 |                 512 |
+| `cabin` |      1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 
 | Download         | Limit (MB) |

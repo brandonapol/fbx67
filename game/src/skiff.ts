@@ -1,6 +1,8 @@
 import type { Prop } from './levels.ts'
 import type { Vec } from './world.ts'
-import { add, angleTo, distance, scale, sub, vec } from './world.ts'
+import { vec } from './world.ts'
+import type { Boat, Ride } from './boat.ts'
+import { course } from './boat.ts'
 
 // The skiff on flooded Third (docs/town-map.md, "August: the skiff"), and the ride after Owen climbs in. World
 // coordinates off the town map: x east, z south. The skiff lies across the street from Owen's steps with its bow to
@@ -31,31 +33,17 @@ export const RIDE_LOOK = (80 * Math.PI) / 180
 // The man stands a little proud of the hull's floor; Owen sits on the stern thwart.
 export const DECK_Y = 0.25
 
-const segments = RIDE_PATH.slice(1).map((b, i) => ({ a: RIDE_PATH[i]!, b, len: distance(RIDE_PATH[i]!, b) }))
+const skiffCourse = course(RIDE_PATH, BOW, RIDE_SPEED)
 
-export const RIDE_LENGTH = segments.reduce((n, s) => n + s.len, 0) - BOW
+export const RIDE_LENGTH = skiffCourse.length
 
-export const RIDE_TIME = RIDE_LENGTH / RIDE_SPEED
-
-const along = (d: number): Vec => {
-  const go = (i: number, left: number): Vec => {
-    const s = segments[i]!
-    if (left <= s.len || i === segments.length - 1) return add(s.a, scale(sub(s.b, s.a), Math.min(1, left / s.len)))
-    return go(i + 1, left - s.len)
-  }
-  return go(0, Math.max(0, d))
-}
+export const RIDE_TIME = skiffCourse.time
 
 // Where the skiff is `t` seconds into the ride (before it, at the steps): Owen's seat, the man in the bow, the hull's
 // middle, and the heading from the one to the other.
-export type Ride = Readonly<{ seat: Vec; bow: Vec; hull: Vec; heading: number }>
+export type { Ride }
 
-export const rideAt = (t = 0): Ride => {
-  const d = Math.min(RIDE_LENGTH, Math.max(0, t) * RIDE_SPEED)
-  const seat = along(d)
-  const bow = along(d + BOW)
-  return { seat, bow, hull: along(d + BOW / 2), heading: angleTo(seat, bow) }
-}
+export const rideAt = skiffCourse.at
 
 export const SKIFF = rideAt()
 
@@ -104,3 +92,5 @@ export const hull: readonly Prop[] = [
   { box: { x: 0, z: -HULL_L / 2 - 0.2, w: 0.3, d: 0.35 }, h: 0.45, y: 0.45, color: '#3a3c3e' },
   { box: { x: 0.35, z: BOW / 2 + 0.15, w: 0.05, d: 0.05 }, h: 3.2, y: 0.2, color: '#8a7a5a', shape: 'cylinder' },
 ]
+
+export const skiff: Boat = { course: skiffCourse, hull, man: 'hooded', deck: DECK_Y }

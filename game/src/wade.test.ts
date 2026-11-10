@@ -6,7 +6,7 @@ import { sceneIds } from '../../text-game/src/sceneIds.ts'
 import { menu, pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, handedOff, inWorld, interact, playerBody, press, still, tick } from './prologue.ts'
-import { jailTalk, officeReach, prologueSteps, walk } from './drive.ts'
+import { jailTalk, officeReach, prologueSteps, wait, walk } from './drive.ts'
 import { nextStop, start as onFoot } from './trailDrive.ts'
 import { bodies } from './cast.ts'
 import { spaces } from './levels.ts'
@@ -50,7 +50,9 @@ test('hearing her out opens the scene menu; going after Eli matches the text bui
   const stay = press(heard, 'note:stayOnLine')
   assert.deepEqual(stay.story, textBuild(stay))
   assert.equal(stay.story.scene, 'a1_body')
-  assert.equal(stay.panel?.title, menu(stay.story).title)
+  assert.equal(stay.space, 'cabin', 'out to the cabin in the boat with Eli')
+  assert.equal(stay.panel, undefined)
+  assert.equal(wait(stay, (g) => g.panel !== undefined).panel?.title, menu(stay.story).title, 'its menu at the end of the ride')
 })
 
 // A letter home is written through the letter view (letters.ts): pick its first line and let the pen finish it.
@@ -80,6 +82,8 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
     }
     // In the land office Wade walks over to Lucy at the foot of the stair to talk.
     if (g.space === 'office' && !g.panel) return play(officeReach(g, 'lucy'), n + 1)
+    // Out to the cabin Wade rides in Eli's boat; the scene's menu comes up when it stops.
+    if (g.space === 'cabin' && !g.panel) return play(wait(g, (x) => x.panel !== undefined), n + 1)
     assert.equal(g.panel?.kind, 'story', `${g.story.scene} in ${g.space} has no menu`)
     const note = g.panel.buttons.find((b) => b.id.startsWith('note:'))
     assert.ok(note, `${g.story.scene} offers no note`)

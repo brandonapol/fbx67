@@ -14,8 +14,9 @@ import { BOARD_AT, SKIFF } from './skiff.ts'
 import { office } from './landoffice.ts'
 import { line } from './searchEli.ts'
 import { eielson } from './eielson.ts'
+import { cabin } from './cabinRide.ts'
 
-export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'story'
+export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -410,7 +411,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets that are built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the
