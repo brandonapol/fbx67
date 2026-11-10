@@ -1,5 +1,5 @@
 node_modules
 dist
 smoke-shots
-smoke-report
+smoke-report*
 .cache
