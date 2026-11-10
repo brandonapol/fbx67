@@ -381,7 +381,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     spaces[g.space].figures.forEach((f) => {
       const e = b.figures.get(f.id)
       if (!e) return
-      e.enabled = present(f, g.story)
+      e.enabled = present(f, g.story, g.path)
       if (!castFor(f.cast ?? f.id)) return
       const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)

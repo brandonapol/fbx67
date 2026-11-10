@@ -22,7 +22,7 @@ export const poses: Readonly<Record<string, Pose>> = {
   skiff_dusk: { space: 'flood', pos: vec(135.2, 98.5), facing: 0, t: 0, shot: { eye: [147, 3.2, 98.8], at: [135.2, 0.9, 100.5] }, heat: 2 },
   skiff_night: { space: 'flood', pos: vec(135.2, 98.5), facing: 0, t: 0, shot: { eye: [147, 3.2, 98.8], at: [135.2, 0.9, 100.5] }, heat: 4 },
   // Act 1's first frame: Wade on the sandbag line, the woman from Minto at his shoulder, the river past the bags.
-  line: { space: 'line', pos: vec(0.7, -1.2), facing: Math.PI, t: 0, shot: { eye: [3.2, 2.6, 3.6], at: [0, 1.1, -3] } },
+  line: { space: 'line', pos: vec(3.4, 66.3), facing: Math.PI, t: 0, shot: { eye: [5.9, 2.6, 71.1], at: [2.7, 1.1, 64.3] } },
   // Act 1's morning in the drunk tank: Wade in the cell, Barnette at the bars, the desk beyond.
   cell: { space: 'jail', pos: vec(-3.6, 1.4), facing: Math.PI / 2, t: 0, shot: { eye: [-4.6, 2.4, 3.6], at: [-0.5, 1.1, -0.5] } },
   // Act 1's night at the help tent: Wade in from the flap, Joan at the tarp on the last cot, Eli at its foot.

@@ -16,6 +16,8 @@ import type { Letter as Home } from './letters.ts'
 import { choose, finish as penDown, open as openHome, turn as turnPage, write, written } from './letters.ts'
 import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
 import { DECK_Y, rideAt, rideOver, riding } from './skiff.ts'
+import { searchSpot } from './searchEli.ts'
+import { entryFrom, paceAt, walksUp } from './trail.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -151,9 +153,6 @@ export const failed = (text: string): Game => ({
 // A door downtown opens when the story is at the place behind it.
 const doorOpen = (g: Game, id: string): boolean => doors.some((d) => d.id === id && d.place === place(g.story))
 
-// The story's menu has this note: a spot that sends it is live, by what the story offers rather than a scene id.
-const offers = (g: Game, note: string): boolean => menu(g.story).options.some((o) => o.note === note)
-
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
@@ -162,7 +161,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
     if (g.space === 'flood') return g.story.scene === 'p_end'
     if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
-    if (g.space === 'line') return offers(g, 'findEli')
+    if (g.space === 'line') return searchSpot(g.story, i.id)
     if (g.space === 'jail') return jailSpot(g.story, i.id)
     if (g.space === 'helpTent') return tentSpot(g.story, i.id)
     // In August the house is flooded: the only way is down the stair and out the front door.
@@ -219,11 +218,18 @@ const arrive = (g: Game): Game => {
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
   // out of the front door onto his porch.
   if (r.space === 'flood' && g.space !== 'flood') return g.space === 'boarding' ? enter(g, 'flood', FLOOD_AT, FLOOD_FACING) : enter(g, 'room')
+  // On the search for Eli, Wade wades up to the help tent from the street: the way up waits at the end of Cushman.
+  if (walksUp(g.space, r.space, g.path)) return { ...g, panel: undefined }
   if (r.space !== g.space) {
-    // Back in a space with nothing to walk to (the line, after the errand at the tent), the scene plays as its menu.
-    const into = enter(g, r.space)
+    // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
+    // the town where he went up.
+    const entry = entryFrom(g.space, r.space)
+    const into = entry ? enter(g, r.space, entry.at, entry.facing) : enter(g, r.space)
     return available(into).length ? into : menuPanel(into)
   }
+  // In the flooded town each scene of the search opens its menu at its stop, so Wade wades there; a scene with no
+  // stop opens where he stands.
+  if (r.space === 'line' && available(g).length) return { ...g, panel: undefined }
   const out = letOut(g.story, g.pos)
   if (r.space === 'jail' && out) return enter(g, 'jail', out.at, out.facing)
   // On the laugh path Joan's line waits for Wade at the flap, on his way out.
@@ -334,6 +340,8 @@ export const interact = (g: Game): Game => {
     if (door?.locked) return { ...g, panel: locked(door.title) }
   }
   if (g.space === 'line' && id === 'woman') return { ...g, panel: storyPanel(g.story, ['findEli', 'stayOnLine'], [close('Keep passing bags.')]) }
+  if (g.space === 'line' && id === 'tent') return enter(g, 'helpTent')
+  if (g.space === 'line') return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
   // Barnette at the bars is decision 1: a held choice. The game stops and asks, with no way to walk off and no clock.
   if (g.space === 'jail') return { ...g, panel: storyPanel(g.story, allNotes(g.story), id === 'ashby' ? [close('Step back.')] : []) }
   // At the help tent the story's own menu opens at Joan, or at the flap where she catches Wade's sleeve.
@@ -423,12 +431,14 @@ const walk = (g: Game, input: Input, dt: number): Game => {
   const heading = push > 0 ? angleTo(zero, input.dir) : g.facing
   const facing = push > 0 ? turn(g.facing, heading, TURN_RATE * dt) : g.facing
   const off = angleBetween(facing, heading)
-  const interior = spaces[g.space].interior
-  const want = off <= TURN_GO ? topSpeed(input, interior) * push * Math.cos(off) : 0
+  const space = spaces[g.space]
+  const interior = space.interior
+  const pace = space.id === 'line' ? paceAt(g.pos, standAt(space, g.pos)) : 1
+  const want = off <= TURN_GO ? topSpeed(input, interior) * push * Math.cos(off) * pace : 0
   const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? (interior ? INDOOR_ACCEL : ACCEL) : DECEL) * dt)
   const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
   const step = arriving ? scale(normalize(input.dir), input.limit ?? 0) : scale(vel, dt)
-  const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(spaces[g.space], g.story)) : g.pos
+  const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(space, g.story, g.path)) : g.pos
   return { ...g, pos, facing, vel: arriving ? zero : dt > 0 ? scale(sub(pos, g.pos), 1 / dt) : g.vel }
 }
 

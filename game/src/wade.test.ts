@@ -7,6 +7,7 @@ import { menu, pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, handedOff, inWorld, interact, playerBody, press, still, tick } from './prologue.ts'
 import { jailTalk, officeReach, prologueSteps, walk } from './drive.ts'
+import { nextStop, start as onFoot } from './trailDrive.ts'
 import { bodies } from './cast.ts'
 import { spaces } from './levels.ts'
 
@@ -44,8 +45,8 @@ test('hearing her out opens the scene menu; going after Eli matches the text bui
   assert.deepEqual(go.story, textBuild(go))
   assert.equal(go.story.scene, 'a1_track')
   assert.equal(go.space, 'line')
-  assert.deepEqual(go.panel?.buttons.map((b) => b.id), ['note:lacey'], 'a1_track has its menu, not a dead end')
-  assert.equal(available(go).length, 0, 'the woman has said her piece')
+  assert.equal(go.panel, undefined, 'he wades off after Eli')
+  assert.deepEqual(available(go).map((i) => i.id), ['mattress'], 'the woman has said her piece; a1_track opens up the street')
   const stay = press(heard, 'note:stayOnLine')
   assert.deepEqual(stay.story, textBuild(stay))
   assert.equal(stay.story.scene, 'a1_body')
@@ -70,6 +71,8 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
       const spot = available(g)[0]!
       return play(interact(walk(g, [[spot.x, spot.z + (spot.z > 0 ? -0.9 : 0.9)]])), n + 1)
     }
+    // In the flooded town Wade wades to whoever the story has him talk to next.
+    if (g.space === 'line' && !g.panel) return play(nextStop(onFoot(g)).game, n + 1)
     if (g.home) {
       const next = writeHome(g)
       assert.deepEqual(next.story, textBuild(next), next.story.scene)
