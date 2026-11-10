@@ -52,13 +52,15 @@ const quad = (b: Builder, m: pc.Mat4, corners: readonly (readonly [number, numbe
 }
 
 // A frustum: bottom w x d, top scaled by `top`, height h, from y 0. top 1 is a box.
-const frustum = (b: Builder, m: pc.Mat4, w: number, h: number, d: number, color: Rgb, top = 1): void => {
+// under: how the bottom face is shaded against the color; a foliage tier's underside takes the light bounced up off
+// the bar and is lighter, not darker.
+const frustum = (b: Builder, m: pc.Mat4, w: number, h: number, d: number, color: Rgb, top = 1, under = 0.9): void => {
   const [x0, z0, x1, z1] = [w / 2, d / 2, (w / 2) * top, (d / 2) * top]
   const lo = [[-x0, 0, -z0], [x0, 0, -z0], [x0, 0, z0], [-x0, 0, z0]] as const
   const hi = [[-x1, h, -z1], [x1, h, -z1], [x1, h, z1], [-x1, h, z1]] as const
   const side = shade(color, 0.92)
   quad(b, m, [hi[0], hi[3], hi[2], hi[1]], color)
-  quad(b, m, [lo[0], lo[1], lo[2], lo[3]], shade(color, 0.6))
+  quad(b, m, [lo[0], lo[1], lo[2], lo[3]], shade(color, under))
   quad(b, m, [lo[0], hi[0], hi[1], lo[1]], side)
   quad(b, m, [lo[1], hi[1], hi[2], lo[2]], color)
   quad(b, m, [lo[2], hi[2], hi[3], lo[3]], side)
@@ -71,10 +73,18 @@ const at = (x: number, y: number, z: number, yaw = 0, pitch = 0, roll = 0): pc.M
 const box = (b: Builder, x: number, y: number, z: number, w: number, h: number, d: number, color: string | Rgb, yaw = 0, pitch = 0, roll = 0): void =>
   frustum(b, at(x, y, z, yaw, pitch, roll), w, h, d, typeof color === 'string' ? rgb(color) : color)
 
-const toMesh = (device: pc.GraphicsDevice, b: Builder): pc.Mesh => {
+// Foliage normals are bent up: a crown takes light from the sky like the leaves in it, so a tier's underside is never
+// a black band facing the ground.
+const bentUp = (normals: readonly number[]): number[] =>
+  Array.from({ length: normals.length / 3 }).flatMap((_, i) => {
+    const n = new pc.Vec3(normals[i * 3], normals[i * 3 + 1] + 1.5, normals[i * 3 + 2]).normalize()
+    return [n.x, n.y, n.z]
+  })
+
+const toMesh = (device: pc.GraphicsDevice, b: Builder, foliage = false): pc.Mesh => {
   const mesh = new pc.Mesh(device)
   mesh.setPositions(b.positions)
-  mesh.setNormals(b.normals)
+  mesh.setNormals(foliage ? bentUp(b.normals) : b.normals)
   mesh.setColors(b.colors, 4)
   mesh.setIndices(b.indices)
   mesh.update()
@@ -125,10 +135,10 @@ const meshEntity = (name: string, mesh: pc.Mesh, material: pc.Material, shadows:
 // --- The ground: the heightmap as a grid, its splat weights mixed into vertex colors over a grain texture. ---
 
 const LAYER: Readonly<Record<'gravel' | 'sand' | 'moss' | 'silt', Rgb>> = {
-  gravel: rgb('#7c7262'),
-  sand: rgb('#8a7f6a'),
-  moss: rgb('#5e6638'),
-  silt: rgb('#7a6a52'),
+  gravel: rgb('#6a6153'),
+  sand: rgb('#726856'),
+  moss: rgb('#434a28'),
+  silt: rgb('#57493a'),
 }
 
 const grain = (device: pc.GraphicsDevice): pc.Texture => {
@@ -209,11 +219,11 @@ const terrain = (device: pc.GraphicsDevice): pc.Mesh => {
 
 // --- The camp's structures, merged into one mesh. ---
 
-const canvas = '#c9bea2'
-const canvasShade = '#a99f86'
-const weathered = '#6e5a42'
-const darkWood = '#4e3e2e'
-const stove = '#2c2a28'
+const canvas = '#a39a80'
+const canvasShade = '#8a826c'
+const weathered = '#584836'
+const darkWood = '#5e4c3a'
+const stove = '#403c38'
 
 const structures = (b: Builder): void => {
   const { x, z, w, d, wall, ridge } = TENT
@@ -259,7 +269,7 @@ const structures = (b: Builder): void => {
   box(b, c.x, gc + c.legs, c.z, c.w + 0.1, 0.08, c.d + 0.1, darkWood)
   box(b, c.x, gc + c.legs + 0.08, c.z, c.w, c.h - 0.2, c.d, weathered)
   ;[-1, 1].forEach((side) => box(b, c.x + (side * c.w) / 4, gc + c.legs + c.h - 0.18, c.z, c.w / 2 + 0.35, 0.06, c.d + 0.4, '#5a4a38', 0, 0, -side * 0.45))
-  box(b, c.x, gc + c.legs + 0.2, c.z - c.d / 2 - 0.01, 0.62, 0.66, 0.03, '#3a2e22')
+  box(b, c.x, gc + c.legs + 0.2, c.z - c.d / 2 - 0.01, 0.62, 0.66, 0.03, '#584634')
   // Leaning from its foot to the hatch's sill on the cache's south face.
   const lean = Math.atan2(c.z - c.d / 2 - LADDER_FOOT.z, c.legs + 0.25)
   ;[-1, 1].forEach((side) => box(b, LADDER_FOOT.x + side * 0.22, gc, LADDER_FOOT.z, 0.07, c.legs + 0.25, 0.07, '#7a6650', 0, lean))
@@ -302,12 +312,12 @@ const plantMesh = (device: pc.GraphicsDevice, kind: Kind): pc.Mesh => {
     Array.from({ length: 7 }).forEach((_, i) => {
       const y = 0.6 + i * 0.62
       const r = 1.0 - i * 0.12
-      frustum(b, at(0, y, 0, i * 0.7), r, 0.7, r, mix(rgb('#33432c'), rgb('#425238'), (i % 3) / 2), 0.15)
+      frustum(b, at(0, y, 0, i * 0.7), r, 0.7, r, mix(rgb('#38462e'), rgb('#455539'), (i % 3) / 2), 0.15, 1.3)
     })
-    frustum(b, at(0, 4.9, 0), 0.45, 0.6, 0.45, rgb('#36452c'), 0.2)
+    frustum(b, at(0, 4.9, 0), 0.45, 0.6, 0.45, rgb('#2a3622'), 0.2)
   } else if (kind === 'willow' || kind === 'alder') {
     const tall = kind === 'alder' ? 2.6 : 1.6
-    const leaf = kind === 'alder' ? ['#465a34', '#50643c'] : ['#56703a', '#627a44']
+    const leaf = kind === 'alder' ? ['#36462a', '#3e4e30'] : ['#43562e', '#4c6036']
     Array.from({ length: 6 }).forEach((_, i) => {
       const a = (i / 6) * Math.PI * 2
       const lean = 0.25 + 0.15 * (i % 2)
@@ -323,13 +333,13 @@ const plantMesh = (device: pc.GraphicsDevice, kind: Kind): pc.Mesh => {
       frustum(b, at(Math.cos(a) * 0.14, h * 0.8, Math.sin(a) * 0.14, a), 0.06, h * 0.24, 0.06, rgb(i % 2 ? '#9a4a6e' : '#a85a80'), 0.3)
     })
   } else {
-    frustum(b, at(0, 0, 0), 0.55, 0.22, 0.5, rgb('#6a6a3a'), 0.6)
+    frustum(b, at(0, 0, 0), 0.55, 0.22, 0.5, rgb('#55552f'), 0.6)
     Array.from({ length: 5 }).forEach((_, i) => {
       const a = (i / 5) * Math.PI * 2
-      box(b, Math.cos(a) * 0.12, 0.15, Math.sin(a) * 0.12, 0.03, 0.32, 0.12, i % 2 ? '#8e8a52' : '#7a7a44', a, 0.5)
+      box(b, Math.cos(a) * 0.12, 0.15, Math.sin(a) * 0.12, 0.03, 0.32, 0.12, i % 2 ? '#716e42' : '#615f37', a, 0.5)
     })
   }
-  return toMesh(device, b)
+  return toMesh(device, b, true)
 }
 
 type Instanced = Readonly<{ kind: Kind; plants: readonly Plant[]; data: Float32Array; vb: pc.VertexBuffer; swaying: boolean }>
@@ -453,7 +463,7 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): C
   const gt = groundY(TENT.x, TENT.z)
   const board = part('floorboard', 0.5, 0.035, 0.7, '#7e664c', [STOVE_AT.x - 0.1, gt + 0.03, STOVE_AT.z + 0.35], [0, 0, -0.35])
   const gc = groundY(CACHE_BOX.x, CACHE_BOX.z)
-  const hatch = part('hatch', 0.6, 0.64, 0.03, '#4a3a2a', [CACHE_BOX.x - 0.3, gc + CACHE_BOX.legs + 0.2, CACHE_BOX.z - CACHE_BOX.d / 2 - 0.03], [0.3, 0, 0])
+  const hatch = part('hatch', 0.6, 0.64, 0.03, '#5a4836', [CACHE_BOX.x - 0.3, gc + CACHE_BOX.legs + 0.2, CACHE_BOX.z - CACHE_BOX.d / 2 - 0.03], [0.3, 0, 0])
   const shovel = new pc.Entity('trenching tool')
   const sb = builder()
   box(sb, 0, 0, 0, 0.035, 0.6, 0.035, '#5a4a36')

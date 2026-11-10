@@ -195,7 +195,7 @@ const shadowsFor = (outdoor: boolean, l: Lighting) => ({
 const applyGrade = (frame: pc.CameraFrame, l: Lighting): void => {
   const g = grades[l.grade]
   frame.grading.enabled = true
-  frame.grading.brightness = g.brightness
+  frame.grading.brightness = g.brightness * (l.exposure ?? 1)
   frame.grading.contrast = g.contrast
   frame.grading.saturation = g.saturation
   frame.grading.tint = color(g.tint)
@@ -210,7 +210,11 @@ const applyLighting = (app: pc.Application, sun: pc.Entity, lamp: pc.Entity, fra
   const old = app.scene.skybox
   app.scene.skybox = skyCubemap(app.graphicsDevice, l)
   old?.destroy()
-  app.scene.ambientLight = color(l.ambient)
+  // The sky's fill is exposed down less than the sun (to the power 0.37): under a high sun the open sky
+  // lights the shade more, and shade under spruce is not black.
+  const fill = color(l.ambient)
+  const lift = (l.exposure ?? 1) ** -0.63
+  app.scene.ambientLight = new pc.Color(fill.r * lift, fill.g * lift, fill.b * lift)
   app.scene.fog.type = pc.FOG_LINEAR
   app.scene.fog.color = color(l.fog)
   app.scene.fog.start = l.fogStart

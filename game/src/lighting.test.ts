@@ -9,7 +9,7 @@ import { replay } from '../../text-game/src/engine.ts'
 import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { spaces } from './levels.ts'
 import type { Band, BandedSeason, Cell, LitSeason, Lighting } from './lighting.ts'
-import { MIDNIGHT_SUN, bandBySeason, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
+import { MIDNIGHT_SUN, summerExposure, bandBySeason, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
 import { sunAt } from './sun.ts'
 
 const weathers: readonly Weather[] = ['clear', 'dusk', 'night']
@@ -55,7 +55,15 @@ test('the July morning at the camp follows the real sun, not the 11 pm sun', () 
   assert.ok(morning.sunElevation > 30, `elevation ${morning.sunElevation}`)
   assert.ok(morning.sunAzimuth > 90 && morning.sunAzimuth < 180, `azimuth ${morning.sunAzimuth}`)
   assert.equal(morning.sunUp, true)
-  assert.deepEqual({ ...morning, sunAzimuth: 0, sunElevation: 0 }, { ...evening, sunAzimuth: 0, sunElevation: 0 }, 'only the sun moves')
+  assert.deepEqual({ ...morning, sunAzimuth: 0, sunElevation: 0, exposure: 0 }, { ...evening, sunAzimuth: 0, sunElevation: 0, exposure: 0 }, 'only the sun and the exposure move')
+  assert.equal(evening.exposure, 1, 'the low midnight sun keeps the summer grade as it is')
+  assert.ok(morning.exposure! > 0.2 && morning.exposure! < 0.4, `the high morning sun is exposed down: ${morning.exposure}`)
+})
+
+test('summer exposure falls as the sun climbs, and never under a low sun', () => {
+  assert.equal(summerExposure(3), 1)
+  assert.equal(summerExposure(10), 1)
+  assert.ok(summerExposure(25) < 1 && summerExposure(25) > summerExposure(45))
 })
 
 test('each space is lit at its scene: the bar at eleven, the flood on 14 August, the story backdrop at no hour', () => {

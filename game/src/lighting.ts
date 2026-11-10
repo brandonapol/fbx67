@@ -56,6 +56,10 @@ export type Lighting = Readonly<{
   // Deep winter outdoors: breath shows as fog at every exhale, and snow lies on roofs and spruce boughs.
   breath: boolean
   snowLoad: boolean
+  // A multiplier on the grade's brightness: below 1 outdoors under the high summer sun, which the summer grade (made
+  // for the low midnight sun) would otherwise blow out; 1 when unset. The ambient fill is exposed down only to the
+  // power 0.37 (render.ts, applyLighting).
+  exposure?: number
 }>
 
 export const grades: Readonly<Record<Lighting['grade'], Grade>> = {
@@ -186,6 +190,7 @@ const INDOOR = {
   fog: '#4a3a2e',
   ambient: '#a49482',
   sunIntensity: summer.sunIntensity * 0.5,
+  exposure: 1,
   rain: false,
   breath: false,
   snowLoad: false,
@@ -216,6 +221,15 @@ export const summerSun = (at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevatio
   return { sunAzimuth: clamp(signed, lo - 360, hi - 360) + 360, sunElevation: MIDNIGHT_SUN.elevation }
 }
 
+// The summer grade is set for a sun a few degrees up; as the sun climbs past LOW_SUN the frame is exposed down, to about
+// 0.3 at the camp's 10 am sun (about 42 degrees), so a morning keeps the targets' grade (docs/art/README.md).
+const LOW_SUN = 10
+
+export const summerExposure = (elevation: number): number => {
+  const rad = (d: number): number => (d * Math.PI) / 180
+  return 1 / (1 + 4.6 * Math.max(0, Math.sin(rad(elevation)) - Math.sin(rad(LOW_SUN))))
+}
+
 // The sun at a clock held inside a cell's arc.
 const heldSun = (arc: Arc, at: Clock): Pick<Lighting, 'sunAzimuth' | 'sunElevation'> => {
   const real = sunAt(at)
@@ -236,7 +250,11 @@ const banded = (season: BandedSeason, band: Band, when?: Clock): Lighting => {
 }
 
 const outdoors = (space: SpaceId, season: LitSeason, weather: Weather, when?: Clock): Lighting => {
-  if (season === 'summer') return when === undefined ? summer : { ...summer, ...summerSun(when) }
+  if (season === 'summer') {
+    if (when === undefined) return summer
+    const sun = summerSun(when)
+    return { ...summer, ...sun, exposure: summerExposure(sun.sunElevation) }
+  }
   const band = bandOf[weather]
   const base = banded(season, band, when)
   const key = streetKey[band]

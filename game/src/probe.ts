@@ -105,7 +105,7 @@ const triangles = (app: pc.AppBase): number =>
   (app.root.findComponents('render') as pc.RenderComponent[])
     .filter((r) => r.enabled && r.entity.enabled)
     .flatMap((r) => r.meshInstances.filter((mi) => mi.visible))
-    .reduce((n, mi) => n + Math.floor((mi.mesh?.primitive[0]?.count ?? 0) / 3), 0)
+    .reduce((n, mi) => n + Math.floor((mi.mesh?.primitive[0]?.count ?? 0) / 3) * (mi.instancingData ? Math.max(1, mi.instancingCount) : 1), 0)
 
 const hudStyle = 'body[data-capture] > :not(#scene) { visibility: hidden !important; }'
 
