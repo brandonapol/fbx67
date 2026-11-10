@@ -7,6 +7,10 @@ import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { propsIn, solids, spaces } from './levels.ts'
 import { timeOf } from './lighting.ts'
 import { stageOf, townLayer } from './freezeup.ts'
+import { place } from '../../text-game/src/story.ts'
+import { spaceFor } from './router.ts'
+import { startFrom } from './start.ts'
+import { blocked } from './world.ts'
 
 const at = (scene: SceneId): State => ({ ...initialState, scene })
 
@@ -63,4 +67,25 @@ test('an undated scene keeps the season of the last dated scene before it', () =
     const want = before ? season(before)! : 'summer'
     assert.deepEqual(timeOf(spaces.downtown, s), { season: want === 'breakup' ? 'winter' : want }, s.scene)
   })
+})
+
+// St. Joseph's in the flood (#169): the design sends the half-flooded hospital's patients and nurses to the help tent
+// on high ground, so the place id #89 gives Act 1's hospital is `helpTent` (hospital.ts). Its cots, spawn and
+// seasonal dressing are that space; Act 3's winter return (#145) fills the empty winter hook.
+test("the Act 1 hospital's place id is a space with a clear spawn, and the errand path starts Wade there", () => {
+  const id = spaceFor('Act 1: Flood', 'helpTent')
+  assert.equal(id, 'helpTent')
+  const tent = spaces[id!]
+  assert.equal(blocked(tent.spawn, solids(tent)), false)
+  const g = startFrom(`#path=${Array.from({ length: 10 }, () => 1).join(',')}`, '')
+  assert.equal(place(g.story), 'helpTent')
+  assert.equal(g.space, 'helpTent')
+  assert.deepEqual(g.pos, tent.spawn)
+})
+
+test('the help tent renders in winter as its bare space, an empty variant', () => {
+  const tent = spaces.helpTent
+  const winter = propsIn(tent, 'winter', '1968-01-20T12:00')
+  assert.deepEqual(winter, tent.props)
+  assert.ok(winter.every((p) => [p.box.x, p.box.z, p.box.w, p.box.d, p.h].every(Number.isFinite)))
 })
