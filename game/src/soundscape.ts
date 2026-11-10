@@ -367,8 +367,19 @@ const slope: Soundscape = {
 // The crash itself ('impact') and Wade's falls ('fall') are beats, not weather: the missions fire them.
 export const act3Soundscapes: Readonly<Record<Act3Space, Soundscape>> = { icefog, cockpit, crash, slope }
 
+// The base in freeze-up: wind over the flat, the central steam plant's hum, a truck idling somewhere on the line.
+const airbase: Soundscape = {
+  ground: { surface: 'gravel', regions: [], tempF: SEASON_F.freezeup },
+  layers: [
+    ...wind(0.18),
+    { kind: 'hum', bus: 'ambience', gain: 0.05, buzz: 0.2 },
+    { kind: 'idle', bus: 'ambience', gain: 0.06, at: vec(245, 0), rpm: 700 },
+  ],
+  events: [{ spot: 'door', bus: 'ambience', every: [20, 50], spread: 60 }],
+}
+
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 
