@@ -28,6 +28,8 @@ export type SlotKind =
   | 'lean'
   | 'jukebox'
   | 'pool'
+  | 'booth'
+  | 'end'
   | 'bench'
   | 'porch'
   | 'corner'
@@ -77,8 +79,10 @@ const stroll = (spot: string, id: string, from: Vec, to: Vec, seats: number): Sl
   seats,
 })
 
-// The Silver Pan, in the bar space's own meters (levels.ts): the counter runs x -5..2 at z -3.3, the free table is at
-// (-4.2, 1.8), the jukebox glows on the east wall. Curly and Wade's table and Hank's place are the space's figures.
+// The Silver Pan, in the bar space's own meters (levels.ts), around its dressing (silverPan.ts): the counter runs
+// x -5..2 at z -3.3 with stools along it, the card game is at the free table (-4.2, 1.8), the pool table is west of
+// it, the booth is in the southeast corner and the jukebox stands against the east wall. Curly and Wade's table and
+// Hank's place are the space's figures. The old-timer sleeps on the last stool.
 const bar = at('bar', 'silverPan')
 const town = (spot: string) => at('downtown', spot)
 
@@ -86,11 +90,12 @@ export const slots: readonly Slot[] = [
   bar('tap', 'tap', -3.8, -4.08, S),
   bar('stool1', 'stool', -4.5, -2.35, N, 'sitDrink'),
   bar('stool2', 'stool', -3.5, -2.35, N, 'sitDrink'),
-  bar('stool3', 'stool', 0.6, -2.35, N, 'sitDrink'),
-  bar('stool4', 'stool', 1.5, -2.35, N, 'sitDrink'),
-  bar('end', 'lean', 2.55, -3.3, W, 'drink'),
-  bar('jukebox', 'jukebox', 5.2, -0.5, E),
-  bar('pool', 'pool', -3.8, -0.6, W),
+  bar('end', 'end', 1.5, -2.35, N, 'sit'),
+  bar('jukebox', 'jukebox', 4.85, -0.5, E),
+  bar('pool.a', 'pool', -2.35, -0.9, W),
+  bar('pool.b', 'pool', -5.4, -0.6, E),
+  bar('booth.n', 'booth', 4.9, 2.85, S, 'sitDrink'),
+  bar('booth.s', 'booth', 4.9, 4.35, N, 'sitDrink'),
   bar('table.n', 'table', -4.2, 0.75, S, 'sitDrink'),
   bar('table.s', 'table', -4.2, 2.85, N, 'sitDrink'),
   bar('table.w', 'table', -5.25, 1.8, E, 'sitDrink'),
@@ -122,13 +127,13 @@ export const wants: Readonly<Record<string, readonly SlotKind[]>> = {
   hank: ['tap'],
   nightBartender: ['tap'],
   airmanJukebox: ['jukebox'],
-  airmanCounter: ['stool'],
+  airmanCounter: ['pool', 'stool'],
   airmanPool: ['pool'],
-  pilotGray: ['table'],
-  pilotYoung: ['table'],
-  miner: ['stool'],
-  reporter: ['stool', 'lean'],
-  foreman: ['lean'],
+  pilotGray: ['booth'],
+  pilotYoung: ['booth'],
+  miner: ['end', 'stool'],
+  reporter: ['table', 'lean'],
+  foreman: ['table', 'lean'],
   preacher: ['corner'],
   cabbie: ['curb'],
   touristHusband: ['stroll'],

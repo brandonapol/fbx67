@@ -108,8 +108,8 @@ export const readTime = (text: string): number => READ_BASE + READ_PER_CHAR * te
 
 const nameOf = (a: Ambient, by: Said['by']): string => (by === 'owen' ? N.owenShort : by === 'aside' ? '' : a.name)
 
-// Lines play one after another, after anything still on screen.
-const queue = (talk: Talk, a: Ambient, said: readonly Said[], now: number): Talk => {
+// Lines play one after another, after anything still on screen. barTalk.ts queues the bar's own exchanges with it.
+export const queue = (talk: Talk, a: Ambient, said: readonly Said[], now: number): Talk => {
   const start = Math.max(now, talk.log.at(-1)?.until ?? now)
   const lines = said.reduce<readonly Line[]>((acc, l) => {
     const from = acc.at(-1)?.until ?? start
