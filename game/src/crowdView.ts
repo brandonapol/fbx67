@@ -48,8 +48,9 @@ const person = (root: pc.Entity, who: string, prim: Primitive): Person => {
   // The head pivots at the neck, so a nod dips it and a look turns it.
   const head = new pc.Entity('head')
   head.setLocalPosition(0, body + 0.05, 0)
-  prim(head, 'sphere', look.skin, [0, 0.15, 0], [0.32, 0.36, 0.32])
-  prim(head, 'sphere', look.hair, [0, 0.27, -0.04], [0.34, 0.2, 0.34])
+  // Only the body casts a shadow: a crowd's heads add shadow casters and nothing anyone sees.
+  prim(head, 'sphere', look.skin, [0, 0.15, 0], [0.32, 0.36, 0.32], { shadows: false })
+  prim(head, 'sphere', look.hair, [0, 0.27, -0.04], [0.34, 0.2, 0.34], { shadows: false })
   whole.addChild(head)
   e.addChild(whole)
   // The impostor: one box in the coat's color, the person's height, casting no shadow.

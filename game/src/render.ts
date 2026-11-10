@@ -428,6 +428,8 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     // The town's people, in the bar and on the street (crowdView.ts): the same the schedule places for talk and asking
     // the way (townsfolk.ts).
     state.crowd = crowdFor(state.crowd, b.root, g, primitive)
+    // The schedule is the story clock's: a probe shot at another hour shows the space without this hour's people.
+    state.crowd.root.enabled = !state.held?.clock
     syncCrowd(state.crowd, g, dt)
     if (b.boat) {
       const craft = boatIn(g.space)
