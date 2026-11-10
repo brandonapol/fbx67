@@ -1,7 +1,7 @@
 import type { State } from '../../text-game/src/types.ts'
 import type { Figure, Prop } from './levels.ts'
 import type { Pose } from './ambient.ts'
-import { poses } from './ambient.ts'
+import { lookOf, poses } from './ambient.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
 
@@ -142,25 +142,6 @@ export const doingAt = (slot: string): Doing => {
   const by: Readonly<Record<string, Doing>> = { tap: 'tending', table: 'cards', pool: 'pool', jukebox: 'jukebox', booth: 'booth', end: 'asleep' }
   return by[kind] ?? 'drinking'
 }
-
-// How each patron looks as a gray-box figure until they have models: coat, skin, hair and height.
-type Look = Readonly<{ coat: string; skin: string; hair: string; height: number }>
-
-const looks: Readonly<Record<string, Look>> = {
-  nightBartender: { coat: '#d8d0bc', skin: '#d9a982', hair: '#2e2018', height: 1.76 },
-  airmanJukebox: { coat: '#5c6650', skin: '#c99a74', hair: '#3a2a1c', height: 1.78 },
-  airmanCounter: { coat: '#5c6650', skin: '#e3b28a', hair: '#8a6a3a', height: 1.74 },
-  airmanPool: { coat: '#6a7058', skin: '#8a5a3a', hair: '#1e1612', height: 1.81 },
-  pilotGray: { coat: '#6e5a40', skin: '#d4a07a', hair: '#b8b4ac', height: 1.72 },
-  pilotYoung: { coat: '#4e5a6a', skin: '#e0b090', hair: '#7a5a34', height: 1.8 },
-  miner: { coat: '#5a4a38', skin: '#c88e66', hair: '#d0ccc4', height: 1.68 },
-  reporter: { coat: '#7a7464', skin: '#e2b896', hair: '#4a3424', height: 1.75 },
-  foreman: { coat: '#7a3a2a', skin: '#c99068', hair: '#5a4a3a', height: 1.84 },
-}
-
-const plain: Look = { coat: '#6a5a48', skin: '#d4a07a', hair: '#4a3424', height: 1.75 }
-
-export const lookOf = (who: string): Look => looks[who] ?? plain
 
 // The patrons the schedule seats in the bar now, as figures the renderer can stand: one per placed pose, wearing
 // their look, at their slot. They are the ambient people, not the space's own figures, so they never block the

@@ -75,7 +75,10 @@ import type { FrontEndAction } from './frontEndView.ts'
 import { mountFrontEnd } from './frontEndView.ts'
 import { pocketMap, seenAt } from './frontEndMap.ts'
 import { mountSigns } from './streetSignsView.ts'
-import type { Vec } from './world.ts'
+import type { Talk, Visit } from './talk.ts'
+import { showing } from './talk.ts'
+import { ASK_PROMPT, TOWN_SEED, ask, asker, townsfolk } from './townsfolk.ts'
+import type { Interactable, Vec } from './world.ts'
 import { distance, length, sub, vec } from './world.ts'
 
 const $ = <T extends HTMLElement>(id: string): T => {
@@ -96,6 +99,7 @@ const placeEl = $('place')
 const stickEl = $('stick')
 const knobEl = $('stick-knob')
 const helpEl = $('help')
+const subtitleEl = $('subtitle')
 
 // The front end (frontEnd.ts): its handler is filled in below, once the game exists; until then the loading bar is up.
 const onFront: { go: (a: FrontEndAction) => void } = { go: () => undefined }
@@ -156,6 +160,9 @@ const live: {
   began?: number
   interactive?: number
   shownAt: number
+  // What the town has said to the player (talk.ts): asking the way puts a line here, shown over the speaker.
+  talk: Talk
+  shownLine?: string
 } = {
   g: first,
   rig: rigFor(first.facing, armFor(spaces[first.space])),
@@ -171,6 +178,7 @@ const live: {
   screen: firstShown,
   now: 0,
   shownAt: 0,
+  talk: { spent: {}, log: [] },
   log: firstShown === 'play' ? parseLog(store.read(JOURNAL_KEY), savePath(first.path)) : emptyLog,
   prefs: parsePrefs(store.read(PREFS_KEY)),
 }
@@ -221,8 +229,17 @@ window.addEventListener(
 
 const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.location.href).toString()
 
-// Interacting with the person in front of the player puts them in the journal.
+// The game as talk.ts sees it: the town placed with the view's seed, its lines on the play clock.
+const here = (): Visit => ({ game: live.g, talk: live.talk, clock: live.now, seed: TOWN_SEED })
+
+// Interacting with the person in front of the player puts them in the journal; a passer-by on the street, asked, tells
+// the way.
 const interactNow = (): void => {
+  const v = here()
+  if (asker(v)) {
+    live.talk = ask(v).talk
+    return
+  }
   live.log = metAt(live.log, live.g, focus(live.g)?.id)
   act(interact)
 }
@@ -324,15 +341,33 @@ const lighting = (g: Game): boolean => canLight(g) || g.holding?.id === CIGARETT
 
 const smoke = { id: CIGARETTE, hold: 1 } as const
 
+// The line a townsperson is saying now, over their head; nothing once they are done or out of the space.
+const renderSubtitle = (g: Game): void => {
+  const line = showing(live.talk, live.now).at(-1)
+  const who = line && townsfolk(g).find((f) => f.id === line.who)
+  const at = who && view.screenAt(who.at.x, 2.3, who.at.z)
+  subtitleEl.hidden = !line || !at
+  if (!line || !at) return
+  const text = `${line.name}: ${line.text}`
+  if (live.shownLine !== text) {
+    live.shownLine = text
+    subtitleEl.dataset.who = line.who
+    subtitleEl.textContent = text
+  }
+  subtitleEl.style.left = `${Math.max(16, Math.min(window.innerWidth - 16, at.x))}px`
+  subtitleEl.style.top = `${Math.max(16, at.y)}px`
+}
+
 const renderHud = (g: Game): void => {
   const target = focus(g)
-  const f = target ?? (lighting(g) ? smoke : undefined)
+  const passer = target ? undefined : asker(here())
+  const f: Pick<Interactable, 'id' | 'hold'> | undefined = target ?? (passer ? { id: passer.id } : lighting(g) ? smoke : undefined)
   promptEl.hidden = !f
   placeEl.textContent = spaces[g.space].name
   if (f) {
     const hold = f.hold !== undefined
     const key = glyph(live.device, live.controls)
-    const text = target ? label(g, target) : 'Light a cigarette'
+    const text = target ? label(g, target) : passer ? ASK_PROMPT : 'Light a cigarette'
     const said = hold ? `Hold: ${text}` : text
     const id = `${f.id}|${key}|${said}`
     if (live.promptKey !== id) {
@@ -345,8 +380,10 @@ const renderHud = (g: Game): void => {
     const fill = promptEl.querySelector<SVGCircleElement>('.fill')
     const k = g.holding && g.holding.id === f.id ? g.holding.progress / g.holding.time : 0
     fill?.setAttribute('stroke-dashoffset', String(RING * (1 - Math.min(1, k))))
-    placePrompt(target ? view.screenAt(target.x, 1.9, target.z) : undefined)
+    const over = target ?? passer
+    placePrompt(over ? view.screenAt(over.x, 1.9, over.z) : undefined)
   }
+  renderSubtitle(g)
   renderPanel(g)
   fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept), flightFade(g.flight), sleepFade(g)))
   const card = sleepCard(g) ?? ''
@@ -718,6 +755,7 @@ Object.assign(window, {
   },
   __prologue: {
     game: () => live.g,
+    talk: () => live.talk,
     walkTo: (x: number, z: number) => {
       live.target = vec(x, z)
     },

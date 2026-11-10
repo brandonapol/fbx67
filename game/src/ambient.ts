@@ -151,6 +151,41 @@ export const wants: Readonly<Record<string, readonly SlotKind[]>> = {
   fisherman: ['fishing'],
 }
 
+// How each townsperson looks as a gray-box figure until they have models: coat, skin, hair and height. The bar's
+// patrons (silverPan.ts) and the people downtown (townsfolk.ts) wear these.
+export type Look = Readonly<{ coat: string; skin: string; hair: string; height: number }>
+
+const looks: Readonly<Record<string, Look>> = {
+  nightBartender: { coat: '#d8d0bc', skin: '#d9a982', hair: '#2e2018', height: 1.76 },
+  airmanJukebox: { coat: '#5c6650', skin: '#c99a74', hair: '#3a2a1c', height: 1.78 },
+  airmanCounter: { coat: '#5c6650', skin: '#e3b28a', hair: '#8a6a3a', height: 1.74 },
+  airmanPool: { coat: '#6a7058', skin: '#8a5a3a', hair: '#1e1612', height: 1.81 },
+  pilotGray: { coat: '#6e5a40', skin: '#d4a07a', hair: '#b8b4ac', height: 1.72 },
+  pilotYoung: { coat: '#4e5a6a', skin: '#e0b090', hair: '#7a5a34', height: 1.8 },
+  miner: { coat: '#5a4a38', skin: '#c88e66', hair: '#d0ccc4', height: 1.68 },
+  reporter: { coat: '#7a7464', skin: '#e2b896', hair: '#4a3424', height: 1.75 },
+  foreman: { coat: '#7a3a2a', skin: '#c99068', hair: '#5a4a3a', height: 1.84 },
+  preacher: { coat: '#24242a', skin: '#d8ac88', hair: '#9a948a', height: 1.79 },
+  cabbie: { coat: '#4a4030', skin: '#c4926a', hair: '#2a2018', height: 1.73 },
+  touristHusband: { coat: '#8a7a5a', skin: '#e6bc98', hair: '#6a5a44', height: 1.8 },
+  touristWife: { coat: '#a85a5a', skin: '#e8c0a0', hair: '#c8a060', height: 1.65 },
+  landlady: { coat: '#6a4a5a', skin: '#dcb092', hair: '#a8a29a', height: 1.6 },
+  boarder: { coat: '#5a5448', skin: '#d0a07c', hair: '#3a2c20', height: 1.77 },
+  waitress: { coat: '#c8c0a8', skin: '#e2b490', hair: '#6a3a22', height: 1.63 },
+  cook: { coat: '#e4e0d4', skin: '#b88660', hair: '#1e1814', height: 1.76 },
+  landClerk: { coat: '#4a5058', skin: '#e0b896', hair: '#5a4632', height: 1.74 },
+  paperKid: { coat: '#7a5a3a', skin: '#e4b894', hair: '#a8702e', height: 1.42 },
+  mother: { coat: '#4a6a7a', skin: '#deb08e', hair: '#4a3020', height: 1.64 },
+  father: { coat: '#5a4a3a', skin: '#d2a07c', hair: '#3a2a1e', height: 1.82 },
+  daughter: { coat: '#c86a4a', skin: '#e6bc9a', hair: '#8a5a2a', height: 1.22 },
+  dockHand: { coat: '#5a6048', skin: '#b07a52', hair: '#2a1e16', height: 1.78 },
+  fisherman: { coat: '#6a6a4a', skin: '#c89470', hair: '#8a8478', height: 1.7 },
+}
+
+const plain: Look = { coat: '#6a5a48', skin: '#d4a07a', hair: '#4a3424', height: 1.75 }
+
+export const lookOf = (who: string): Look => looks[who] ?? plain
+
 // Who holds each slot, by slot id. A person holds at most one.
 export type Claims = Readonly<Record<string, readonly string[]>>
 
