@@ -78,7 +78,7 @@ Acts 2 and 3 run from September 1967 to early January 1968. The base beats end i
 | September | the Major (`a2_major`), the photo lab (`a2_photos`) | frost, ice in the puddles by morning (the scene's own line) | daylight about 12 hours |
 | October | the Major's cabinet (`a2_co_heist`, `a2_co_lucy`) | first snow, 5 to 10 cm, plowed off the roads | dark by early evening |
 | November | Jake at the hangar (`a2_jake`) | 20 to 30 cm; plow berms 1 m along the roads | about six hours of daylight |
-| December | the munitions plan (`a3_rash_safe` opens with it; the scene is placed at Tolliver's office), Lucy at the window (`a3_rash_none`, `a3_confession`, `a3_walk`), the search call (`a3_search` opens with it; the scene is placed on the search ridge) | 40 to 50 cm; berms 1.5 m; packed snow on the walks | about four hours of sun (item 54); ice fog over the flight line below −30 |
+| December | the munitions plan (`a3_rash_safe` opens with it; the scene is placed at Tolliver's office), Lucy's call from outside the gate (`a3_rash_none`, `a3_walk`), the search call (`a3_search` opens with it; the scene is placed on the search ridge) | 40 to 50 cm; berms 1.5 m; packed snow on the walks | about four hours of sun (item 54); ice fog over the flight line below −30 |
 
 The berms matter for play: from November on, a 1.5 m berm along each road hides a crouching figure from the road and
 shows them to anyone on a walk. Plug-in posts stand along the head of every parking lot, one per stall, with cords
@@ -156,7 +156,7 @@ Walk times assume Wade on foot at 1.3 m/s, slower in deep snow.
 | Lucy on the crew | `a2_co_lucy` | the crew's truck stops at the shack (0, 3), parks in the squadron lot at (140, −20); Lucy in by the front door, the hall to the Major's office; out by the back door (130, −58) to Dorm Street, where the AP truck sees her at (109, −58) | | the scene's "spotted on the way out" is fixed at the back door, on the AP truck's loop |
 | To the hangar | `a2_jake` | (60, −30), east on the gate road to (245, 0), north on Flight Line Road to (245, −108), the hangar's personnel door (262, −108) | about 370 m, 5 minutes | the squadron building, the apron opening east, the hangar's big doors |
 | To the munitions fence | `a3_rash_safe` (seen from outside) | (60, −30), east on the gate road to (245, 0), south on Flight Line Road to (245, 100), east on the munitions road to the gate (286, 100) | about 340 m | the igloos behind the fence; the lifting itself happens inside, on Wade's shift, and is a cut |
-| Lucy at the window | `a3_rash_none`, midnight | Wade in his room; the knock comes at the window, (91, −50) outside it | | how Lucy got onto the base is the story's business; the map gives only the window |
+| Lucy's call from the gate | `a3_rash_none`, midnight | Wade's room, the CQ runner at the door; down the dorm lot from (60, −30) to (60, −7), across to the south walk (40, 6), west past the shack (2, 3) to the car outside it | about 80 m, 1 minute | Lucy can't get onto the base: she calls from the pay phone outside the gate and never comes past the shack |
 | The search call | `a3_search` | Wade's room, (60, −30), east to the apron outside the hangar, (280, −90), where the ground team's truck loads | about 390 m | the apron under floodlights and ice fog |
 
 ## Patrol lines

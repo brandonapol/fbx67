@@ -353,10 +353,12 @@ You borrow a rifle from a guy in the barracks who doesn't ask questions, and you
     title: 'Barracks',
     place: 'eielsonBarracks',
     clock: '1967-12-29T00:00',
-    goal: `Let ${N.lucy} in.`,
+    goal: `Go out to ${N.lucy}.`,
     text: () => `
-You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight somebody knocks on the window. It's Lucy, and she's been running.`,
-    choices: () => [{ label: 'Let her in.', note: 'letHerIn', next: 'a3_confession' }],
+You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight the runner from the CQ desk bangs on your door: a phone call, a woman, and she says it can't wait.
+
+It's Lucy, out of breath, on the pay phone outside the main gate. "I can't get onto your base, Wade. Come out. I'm in my cousin's car, and I'm not saying the rest of it on a telephone."`,
+    choices: () => [{ label: 'Walk out past the gate and get in the car.', note: 'letHerIn', next: 'a3_confession' }],
   },
   {
     id: 'a3_confession',

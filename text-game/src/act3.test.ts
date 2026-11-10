@@ -34,3 +34,10 @@ test('turning on Lucy leaves her own standing with the law where it was', () => 
   assert.equal(after(toRash).lucyHeat, last(toRash).lucyHeat)
   assert.equal(after(lucyToRash).lucyHeat, last(lucyToRash).lucyHeat)
 })
+
+// #340: Lucy can't get onto the base, so staying out of it never puts her at Wade's barracks window.
+test('staying out of it meets Lucy off the base', () => {
+  const none = last([...toRash, 4])
+  assert.equal(none.scene, 'a3_rash_none')
+  assert.doesNotMatch(render(none), /window/)
+})

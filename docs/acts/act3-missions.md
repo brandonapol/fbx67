@@ -203,7 +203,8 @@ From the decision at `a3_rash` until Lucy steps out of the dark, `a3_confession`
 
 - **Way in.** The prompt at `a3_rash` is *Blow the safe*, *Burn his cabin*, *At gunpoint*, or *Stay out of it*
   (`safe`, `burn`, `gunpoint`, `none`). A visit to the café first (`a3_rash_gossip`) is Dottie's read on the heat, not
-  part of the note. *Stay out of it* is not a mission: the barracks, the knock on the window, Lucy (`a3_rash_none`).
+  part of the note. *Stay out of it* is not a mission: the barracks, Lucy's call from the pay phone
+  outside the main gate (`a3_rash_none`).
 - **Objective.** The plan's `goal` line: the safe, the cabin, or Tolliver. The player never reaches it.
 - **The lead-ins.** Each is short, playable on foot, and visibly doomed before Lucy is there. Where the plan needs a
   verb the arm rules out, Wade tries it in a staged beat the player watches, not a verb the player gets.
