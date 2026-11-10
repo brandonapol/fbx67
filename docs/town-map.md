@@ -117,6 +117,7 @@ boat up.
 - **Float:** log and plank, x 112..126, z −22..−10. Its deck is 0.4 m above summer water (y −3.1).
 - **Gangway:** hinged at the bank crest (z 0, y −0.3) and resting on the float's inner edge (z −10, y −3.1), x
   117..120. That is 10 m of run and 2.8 m of drop, about 16°.
+- **The morning:** Curly is out on the plane's near (west) float at the hand pump, the plane tied to a cleat on the float's east edge with a bowline in yellow line (`game/src/floatDock.ts`). The panel `p_dock` opens at the dock's door, (118.5, −16), at the foot of the gangway.
 - **In the flood:** the float rides up on its pilings to y 1.6, and the gangway tips up about 11°.
 
 ## Places
@@ -202,7 +203,7 @@ Place ids used by the scenes that are not on the walkable map (the `Place` type 
 | `owensRoom` | Owen's room | upstairs at the back of the boarding house | x 131..137, z 82..88 | the stairs | 4.16 | |
 | | Quonset float shed | A2, First Avenue | x 130..150, z 18..28 | (140, 18) north onto First | 0.23 | 5 m arch |
 | `floatDock` | The float dock | south bank between Lacey and Noble | see [Float dock](#float-dock) | | | |
-| | Curly's floatplane | moored on the float's west (downstream) side | about x 97..110, z −22..−11 | | | nose east, upstream into the current |
+| | Curly's floatplane | moored alongside the float's east edge (`MOORED` in `game/src/flight.ts`) | hull's middle at (129.2, −16); floats x 127.65..128.15 and 130.25..130.75, z −19.4..−13; wing x 123.7..134.7 | | | nose north (−z), a high-wing bush plane on floats; the flood has no plane |
 | `helpTent` | The help tent (field hospital / Red Cross station) | high ground off the map, south along Cushman beyond Fifth Avenue; coordinates are a gap for the place-id ticket (#89) | not yet placed | not yet placed | | canvas tents and a school-gym-style cot line, 6 m |
 | | Skiff and riverboat landing | lower bank east of the bridge | x 22..70, z −10..−5 | | | |
 
@@ -216,7 +217,7 @@ a staircase between the floors (item 45), which the Act 1 scene uses when Lucy h
 
 ### Spaces in `game/src/levels.ts`
 
-One space is not placed: `story`, the backdrop for a scene that has no space.
+One space is not placed: `story`, the backdrop for a scene that has no space. Spaces with their own coordinates, off this map, are listed under "Place ids" above and in `levels.ts`: `jail` (`cityJail`), `helpTent`, `office` (the land office's two floors, `landOffice`, Act 1), `cabin` (`floodCabin`) and `eielson` (the base, [`base-map.md`](base-map.md)).
 
 | Space | Placement: center (x, z), yaw | Floor (y) | Check |
 |---|---|---|---|
@@ -225,8 +226,8 @@ One space is not placed: `story`, the backdrop for a scene that has no space.
 | `room` (6 × 6) | (134, 85), 0° | 4.16 | spans x 131..137, z 82..88, inside the house; its window wall (local z −2.9) is the house's north wall at z 82, over the alley; the desk faces it |
 | `camp` | off the map | | |
 | `downtown` (250 × 200) | (70, 40), 0° | 0 for now (see below) | the play area itself, x −55..195, z −60..140, in world coordinates: a local coordinate is a map coordinate. Built by `game/src/downtown.ts`; see [In the engine](#in-the-engine-pass-1-gray-box) |
-| `line` (250 × 200) | (70, 40), 0° | the grade; water 1.2 | Act 1's flooded town, the morning after `flood`: the same pieces and high water, without the walkway's banks, so Wade wades the streets; built by `game/src/searchEli.ts`. See [The search for Eli](#the-search-for-eli-act-1) |
-| `flood` (250 × 200) | (70, 40), 0° | street grade 0.87; water 1.2 | `downtown` itself under the August flood: the same pieces in world coordinates, with the high-water layer of `game/src/highwater.ts` over them. Owen comes out of his door onto the porch at `floodedStreet`; the plank walkway runs along Third's north walk, x 118..154. The skiff (`game/src/skiff.ts`) lies across the street at the steps, its stern at (135.2, 99.4) and the hooded man in the bow at (135.2, 102.4) with his back to the house |
+| `line` (250 × 200) | (70, 40), 0° | the grade; water 1.2 | Act 1's flooded town (story place `floodedStreet`), the morning after `flood`: the same pieces and high water, without the walkway's banks, so Wade wades the streets; built by `game/src/searchEli.ts`. See [The search for Eli](#the-search-for-eli-act-1) |
+| `flood` (250 × 200) | (70, 40), 0° | street grade 0.87; water 1.2 | `downtown` itself under the August flood: the same pieces in world coordinates, with the high-water layer of `game/src/highwater.ts` over them, and no plane. Its story place is `boardingHouse` (`p_end`, 14 August). Owen comes out of his door onto the porch at the `floodedStreet` spawn; the plank walkway runs along Third's north walk, x 118..154. The skiff (`game/src/skiff.ts`) lies across the street at the steps, its stern at (135.2, 99.4) and the hooded man in the bow at (135.2, 102.4) with his back to the house |
 
 ## The prologue route
 
@@ -252,7 +253,7 @@ Facing is a unit vector (x, z); (0, −1) faces north. y is grade or floor from 
 | `boardingHouse` | (134, 0.87, 98.5) | (0, −1) | Third's north walk, facing the door; the morning walk starts here |
 | `owensRoom` | (134, 4.16, 86.2) | (0, −1) | the same spot as `room.spawn` (0, 1.2) |
 | `floatDock` | (118.5, −0.30, 1) | (0, −1) | top of the gangway, looking down at the float and the plane |
-| `floodedStreet` | (135.4, 0.87, 97.5) | (0, −1) | the `flood` space's spawn, on the porch at Owen's door (the engine turns him to face the street); water 0.33 m deep below it |
+| `floodedStreet` | (135.4, 0.87, 97.5) | (0, −1) | the `flood` space's spawn (the id is the spawn's, not the story place's), on the porch at Owen's door (the engine turns him to face the street); water 0.33 m deep below it |
 | `postBox` | (−6, 0.63, 66) | (1, 0) | Cushman's west walk, facing the box at the curb, (−4.5, 66) |
 | `landOffice` | (107, 0.57, 62) | (0, 1) | Second's south walk at Lucy's door |
 | `nlCafe` | (12, 0.57, 62) | (0, 1) | Second's south walk at Dottie's door |
@@ -268,18 +269,29 @@ It is procedural boxes only, no art assets (issue #41, pass 1).
   with the named buildings standing out of it at their rectangles and heights; door slabs at every front door; the
   water, the bank, the skiff landing, the float, the gangway, the plane; the bridge deck and rails; the post box;
   the church, the hospital, the Northward and the N.C.'s stacks as backdrop.
+- **Street signs:** a post at every corner where an avenue crosses a street, the two names on two blades, from the
+  street tables above (`game/src/streetSigns.ts`); in the `flood` space too. The pocket map and the directions a
+  passer-by gives read the same street tables (`game/src/pocketMapCharts.ts`; see
+  [`story-api.md`](story-api.md), "Where to go next"). A street name changed here changes all three.
+- **People:** the ambient schedule's street people stand on the street (`game/src/townsfolk.ts`) and will tell the
+  player the way. The Silver Pan is dressed and seated by `game/src/silverPan.ts`.
+- **The post box:** a hold at the box (−4.5, 66) on the morning walk mails Owen's letter to Lucy; the story keeps no
+  note of it (`game/src/floatDock.ts`).
+- **The flight:** `fly` at the dock plays the plane off the Chena over town and down at the camp
+  (`game/src/flight.ts`); interact skips it.
 - **Collision:** every building and block is solid, the water is solid except the bridge deck and the float, and the
   play area's edge stops Owen. South of Third only Cushman's lots are play space.
 - **Flat for now:** Owen walks at y 0. The grade, the bank's slope, the gangway's drop and the bridge's crown are drawn
   flat; the y values in the spawn table are kept for the pass that adds them.
 - **The prologue walks it.** The Silver Pan's door opens onto Second at `secondAve`, and Owen walks the night leg to
-  the boarding house door, which leads up to his room. After the letter he comes out at `boardingHouse` and walks the
+  the boarding house door, which leads up to his room. After the letter he sleeps (the screen fades, a date card for the morning), comes out at `boardingHouse` and walks the
   morning leg to the float, where the dock's menu opens. The waypoints are the route table's, moved off the walls by
   Owen's width.
 - **Doors:** a door opens when the story is at the place behind it (the Silver Pan, Owen's room, the float). The land
-  office is locked through the prologue and says so; its two floors are not built in this pass.
+  office's street door is locked on the downtown walk and says so; its two floors are the `office` space, played from
+  Act 1.
 - **Not yet:** the navmesh for NPCs, natural out-of-bounds edges (today the play area's edge is a plain stop), the
-  Silver Pan's side door, preloading interiors near their doors, LODs, the skyline shell, and the flood variant.
+  Silver Pan's side door, preloading interiors near their doors, LODs, and the skyline shell.
 
 ## The flood (August 1967)
 

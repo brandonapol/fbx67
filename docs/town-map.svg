@@ -158,15 +158,16 @@
   <rect class="interior" x="131" y="82" width="6" height="6" />
   <rect class="ours" x="130" y="18" width="20" height="10" rx="4" ry="4" />
 
-  <!-- Float dock, gangway, floatplane (nose east, upstream) -->
+  <!-- Float dock, gangway, floatplane (moored on the float's east side, nose north) -->
   <rect class="dock" x="117" y="-10" width="3" height="10" />
   <rect class="dock" x="112" y="-22" width="14" height="12" />
   <g>
-    <rect class="plane" x="99" y="-17.2" width="10" height="1.4" rx="0.6" />
-    <rect class="plane" x="102.6" y="-22" width="1.8" height="11.2" />
-    <rect class="plane" x="97.6" y="-16.9" width="1.8" height="0.8" />
-    <rect class="plane" x="98.5" y="-19.2" width="10.5" height="0.8" rx="0.4" fill="#d0ccc0" />
-    <rect class="plane" x="98.5" y="-14.4" width="10.5" height="0.8" rx="0.4" fill="#d0ccc0" />
+    <rect class="plane" x="127.65" y="-19.4" width="0.5" height="6.4" rx="0.25" fill="#d0ccc0" />
+    <rect class="plane" x="130.25" y="-19.4" width="0.5" height="6.4" rx="0.25" fill="#d0ccc0" />
+    <rect class="plane" x="128.6" y="-18.9" width="1.2" height="5" rx="0.5" />
+    <rect class="plane" x="123.7" y="-17.7" width="11" height="1.6" />
+    <rect class="plane" x="127.5" y="-12.55" width="3.4" height="0.9" />
+    <rect class="plane" x="128.2" y="-19.9" width="2" height="0.3" />
   </g>
 
   <!-- Skiffs pulled up on the lower bank; a freight boat tied off -->
@@ -212,7 +213,7 @@
   <text class="tst halo" x="120" y="-44" text-anchor="middle" fill="#1f4f66">CHENA RIVER</text>
   <text class="tb" x="120" y="-38.5" text-anchor="middle">flows west, toward the Tanana</text>
   <text class="tb halo" x="119" y="-24.5" text-anchor="middle">float dock</text>
-  <text class="tb halo" x="90" y="-25" text-anchor="end">Curly's floatplane</text>
+  <text class="tb halo" x="136" y="-24" text-anchor="start">Curly's floatplane</text>
   <text class="tb halo" x="40" y="-17" text-anchor="middle">skiff landing</text>
   <text class="tw" x="1.6" y="-32" text-anchor="middle" transform="rotate(-90 1.6 -32)">BRIDGE (late 1950s)</text>
   <text class="t" x="-31" y="-100" text-anchor="middle">Immaculate Conception</text>
