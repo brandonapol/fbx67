@@ -73,6 +73,22 @@ export const isGood = (s: State): boolean => !isBad(s) && !isBest(s) && paperRou
 export const ending = (s: State): Ending =>
   isBad(s) ? 'bad' : isBest(s) ? 'best' : isGood(s) ? 'good' : 'middle'
 
+// Lucy's heat at which she is let go from the land office (design: Systems > Heat). Below it she keeps the job, and
+// the records thread is open: her after-hours search runs. At or above it the thread is closed and recordsLog stays 0.
+export const LUCY_LET_GO = 2
+
+export const recordsOpen = (s: State): boolean => s.lucyHeat < LUCY_LET_GO
+
+export type ClaimWon = 'twoYears' | 'threeYears' | 'yearsLater' | 'lost'
+
+// When the family's claim is won (design: Outcomes, epilogue timing). The elders' testimony wins it in the good and
+// best endings either way; Lucy's logbook entry only puts paper beside it, so it wins sooner. No ending gate reads it.
+export const claimWon = (s: State): ClaimWon => {
+  const e = ending(s)
+  const log = s.recordsLog > 0
+  return e === 'best' ? (log ? 'twoYears' : 'threeYears') : e === 'good' ? (log ? 'threeYears' : 'yearsLater') : 'lost'
+}
+
 export const eliJailed = (s: State): boolean =>
   s.eliTrespass === 'report' || s.eliTrespass === 'leverage' || s.offer === 'take'
 

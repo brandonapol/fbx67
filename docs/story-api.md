@@ -91,7 +91,7 @@ light for yet, falls back to winter. The story backdrop ignores the clock.
 
 | Query | Returns | Notes |
 |---|---|---|
-| `pov(state)` | `'owen'`, `'wade'` or `'lucy'` | Owen in the prologue; Wade from Act 1 on, except Lucy's scenes. Today those are `a3_camp` through `a3_survive_jake`. It is a lookup by scene id (`lucyScenes` in `queries.ts`), not prose parsing. The Act 2 land-office search (#84, written by #104) must add its scene ids to that set. Eli's trip to Minto (`a2_minto`) stays Wade's: Wade isn't on the trip, and the scene is him hearing about it afterward. |
+| `pov(state)` | `'owen'`, `'wade'` or `'lucy'` | Owen in the prologue; Wade from Act 1 on, except Lucy's scenes. Today those are her Act 2 land-office search (`a2_records`, `a2_records_log`, which runs only while `lucyHeat` < 2) and `a3_camp` through `a3_survive_jake`. It is a lookup by scene id (`lucyScenes` in `queries.ts`), not prose parsing. Eli's trip to Minto (`a2_minto`) stays Wade's: Wade isn't on the trip, and the scene is him hearing about it afterward. |
 | `oneHanded(state)` | `true` from `a3_arm` onward, by scene order, else `false` | Wade's right arm breaks in `a3_arm`. Nothing yet says when it heals, so it stays true to the end. The broken-arm design decision (#88) may set a duration; this one query is where that changes. |
 
 ### What Wade knows

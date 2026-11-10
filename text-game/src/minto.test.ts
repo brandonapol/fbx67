@@ -8,11 +8,12 @@ import type { State } from './types.ts'
 // #102: Eli's trip to Minto (a2_minto). Wade hears about it afterward, from Eli if Eli trusts him, else from Lucy.
 const at = (patch: Partial<State> = {}): State => ({ ...initialState, scene: 'a2_minto', ...patch })
 
-test('both ways out of the airstrip pass through Minto before Jake', () => {
+test('both ways out of the airstrip pass through Minto before Lucy\'s search or Jake', () => {
   const curly: State = { ...initialState, scene: 'a2_curly' }
   assert.equal(send(curly, 'excuse').scene, 'a2_minto')
   assert.equal(send(send(curly, 'steak'), 'continue').scene, 'a2_minto')
-  assert.equal(send(at(), 'leave').scene, 'a2_jake')
+  assert.equal(send(at(), 'leave').scene, 'a2_records')
+  assert.equal(send(at({ lucyHeat: 2 }), 'leave').scene, 'a2_jake')
 })
 
 test('Eli tells the trip himself when he trusts Wade, and Lucy tells it when he does not', () => {

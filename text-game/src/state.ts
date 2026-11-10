@@ -8,6 +8,7 @@ export const initialState: State = {
   evidence: [],
   heat: 0,
   lucyHeat: 0,
+  recordsLog: 0,
   eliTrust: 0,
   joan: 0,
 }
@@ -18,6 +19,8 @@ export const BOUNDS = {
   joan: [0, 3],
   momHonesty: [-3, 3],
   lucyHeat: [0, 4],
+  // Lucy found the logbook entry in her after-hours search (design: Systems > Lucy). 0 or 1.
+  recordsLog: [0, 1],
 } as const
 
 export type Bounded = keyof typeof BOUNDS
@@ -40,6 +43,8 @@ export const eliTrust = (n: number) => (s: State): State => ({ ...s, eliTrust: c
 export const joan = (n: number) => (s: State): State => ({ ...s, joan: clamp(BOUNDS.joan, s.joan + n) })
 
 export const lucyHeat = (n: number) => (s: State): State => ({ ...s, lucyHeat: clamp(BOUNDS.lucyHeat, s.lucyHeat + n) })
+
+export const recordsLog = (n: number) => (s: State): State => ({ ...s, recordsLog: clamp(BOUNDS.recordsLog, s.recordsLog + n) })
 
 export const mom = (line: MomLine) => (s: State): State => ({
   ...s,

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { BOUNDS, addEvidence, eliTrust, heat, initialState, joan, lefty, lucyHeat, mom, pipe, texan } from './state.ts'
+import { BOUNDS, addEvidence, eliTrust, heat, initialState, joan, lefty, lucyHeat, mom, pipe, recordsLog, texan } from './state.ts'
 import type { Bounded } from './state.ts'
 import type { State } from './types.ts'
 
@@ -11,10 +11,11 @@ const helpers: Readonly<Record<Bounded, (n: number) => (s: State) => State>> = {
   eliTrust,
   joan,
   lucyHeat,
+  recordsLog,
   momHonesty: (n) => repeat(mom(n > 0 ? 'honest' : 'lie'), Math.abs(n)),
 }
 
-const bounded: readonly Bounded[] = ['heat', 'eliTrust', 'joan', 'momHonesty', 'lucyHeat']
+const bounded: readonly Bounded[] = ['heat', 'eliTrust', 'joan', 'momHonesty', 'lucyHeat', 'recordsLog']
 
 test('the bounded list covers BOUNDS', () => {
   assert.deepEqual([...bounded].sort(), Object.keys(BOUNDS).sort())

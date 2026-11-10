@@ -84,6 +84,7 @@ export type State = Readonly<{
   evidence: readonly Evidence[]
   heat: number
   lucyHeat: number
+  recordsLog: number
   eliTrust: number
   joan: number
 }>
