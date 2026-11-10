@@ -1,6 +1,6 @@
 import type { CacheSpot, State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
-import { menu, place, send } from '../../text-game/src/story.ts'
+import { menu, place, pov, send } from '../../text-game/src/story.ts'
 import { prologueThreads, prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
 import { say, within } from '../../text-game/src/ambient/select.ts'
 import { route } from './router.ts'
