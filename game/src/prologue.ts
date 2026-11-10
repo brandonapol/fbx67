@@ -10,6 +10,7 @@ import type { Letter, SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 import { jailSpot, letOut } from './jail.ts'
+import { tentSpot } from './hospital.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED, bodies } from './cast.ts'
@@ -144,6 +145,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
     if (g.space === 'line') return offers(g, 'findEli')
     if (g.space === 'jail') return jailSpot(g.story, i.id)
+    if (g.space === 'helpTent') return tentSpot(g.story, i.id)
     if (g.space === 'room') return i.id === 'bed' ? g.letter === 'folded' : g.letter === undefined
     return true
   })
@@ -178,9 +180,15 @@ const arrive = (g: Game): Game => {
     const notes = allNotes(g.story)
     return { ...g, panel: storyPanel(g.story, notes, notes.length ? [] : [restart]) }
   }
-  if (r.space !== g.space) return enter(g, r.space)
+  if (r.space !== g.space) {
+    // Back in a space with nothing to walk to (the line, after the errand at the tent), the scene plays as its menu.
+    const into = enter(g, r.space)
+    return available(into).length ? into : { ...into, panel: storyPanel(g.story, allNotes(g.story)) }
+  }
   const out = letOut(g.story, g.pos)
   if (r.space === 'jail' && out) return enter(g, 'jail', out.at, out.facing)
+  // On the laugh path Joan's line waits for Wade at the flap, on his way out.
+  if (r.space === 'helpTent' && !tentSpot(g.story, 'joan')) return { ...g, panel: undefined }
   const back = spaces[r.space].back
   if (back) return { ...g, panel: storyPanel(g.story, [], [close(back)]) }
   return { ...g, panel: storyPanel(g.story, allNotes(g.story)) }
@@ -277,6 +285,8 @@ export const interact = (g: Game): Game => {
   if (g.space === 'line' && id === 'woman') return { ...g, panel: storyPanel(g.story, ['findEli', 'stayOnLine'], [close('Keep passing bags.')]) }
   // Barnette at the bars is decision 1: a held choice. The game stops and asks, with no way to walk off and no clock.
   if (g.space === 'jail') return { ...g, panel: storyPanel(g.story, allNotes(g.story), id === 'ashby' ? [close('Step back.')] : []) }
+  // At the help tent the story's own menu opens at Joan, or at the flap where she catches Wade's sleeve.
+  if (g.space === 'helpTent') return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }

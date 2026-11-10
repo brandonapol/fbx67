@@ -62,7 +62,7 @@ const body = (t: readonly (readonly string[])[], header: readonly string[]): rea
 
 const spaceRow = (r: readonly string[]): readonly [string, Limits] => {
   if (r.length !== 4) fail(`a budget row has ${r.length} cells, expected 4: ${r.join(' | ')}`)
-  const id = /^`([a-z]+)`$/.exec(r[0]!)?.[1] ?? fail(`${r[0]} is not a backticked space id`)
+  const id = /^`([a-z][a-zA-Z]*)`$/.exec(r[0]!)?.[1] ?? fail(`${r[0]} is not a backticked space id`)
   return [id, { drawCalls: number(r[1]!), triangles: number(r[2]!), textureMB: number(r[3]!) }]
 }
 

@@ -32,9 +32,9 @@ test('the same town data renders July, the flood and freeze-up', () => {
   assert.deepEqual(solids(town), town.props.filter((p) => p.solid).map((p) => p.box), 'collision is the town alone')
 })
 
-test('only downtown takes a season layer', () => {
+test('only downtown and the help tent take a season layer', () => {
   Object.values(spaces)
-    .filter((s) => s.id !== 'downtown')
+    .filter((s) => s.id !== 'downtown' && s.id !== 'helpTent')
     .forEach((s) => assert.equal(propsIn(s, 'freezeup', '1967-11-20T12:00'), s.props, s.id))
 })
 

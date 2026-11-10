@@ -168,6 +168,8 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   room: { color: '#ffd29a', intensity: 1.8, range: 8, at: [1.2, 2.2, -1.2] },
   // The jail: caged bulbs over the cell and the desk, and the desk lamp.
   jail: { color: '#ffd29a', intensity: 1.8, range: 12, at: [0, 2.6, 0] },
+  // The help tent at night: two lanterns on the uprights.
+  helpTent: { color: '#ffc27a', intensity: 1.6, range: 11, at: [0, 2.2, 0] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 
