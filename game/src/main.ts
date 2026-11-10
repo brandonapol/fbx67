@@ -71,6 +71,7 @@ import {
 import type { FrontEndAction } from './frontEndView.ts'
 import { mountFrontEnd } from './frontEndView.ts'
 import { pocketMap, seenAt } from './frontEndMap.ts'
+import { mountSigns } from './streetSignsView.ts'
 import type { Vec } from './world.ts'
 import { distance, length, sub, vec } from './world.ts'
 
@@ -106,6 +107,7 @@ const watcher =
       })
 watcher?.observe({ type: 'resource', buffered: true })
 const view = await createView(canvas, import.meta.env.BASE_URL)
+const syncSigns = mountSigns(document.body)
 watcher?.disconnect()
 front.loading(undefined)
 performance.mark('second-rush:loaded')
@@ -689,6 +691,7 @@ view.app.on('update', (dtRaw: number) => {
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)
   renderHud(g)
+  syncSigns(g, view.screenAt)
   const seen = seenAt(live.log.seen, g)
   if (seen !== live.log.seen) live.log = { ...live.log, seen }
   live.objective = objectiveFor(live.objective, g.story, live.now)

@@ -1,7 +1,8 @@
 import type { PocketMap } from './frontEndMap.ts'
 import type { Rect } from './downtown.ts'
 
-// Draws the pocket map (frontEndMap.ts) as SVG in the map's own meters: x east, z south, so north is up.
+// Draws the pocket map (frontEndMap.ts) as SVG in the sheet's own meters: x east, z south, so north is up. The town
+// sheet has the Chena along its north edge; the base sheet has no river.
 
 const NS = 'http://www.w3.org/2000/svg'
 
@@ -24,11 +25,11 @@ const label = (r: Rect, text: string, cls: string): SVGElement => {
 
 export const drawMap = (root: HTMLElement, m: PocketMap): void => {
   const [x0, x1, z0, z1] = m.play
-  const map = svg('svg', { viewBox: `${x0} ${z0} ${x1 - x0} ${z1 - z0}`, role: 'img', 'aria-label': 'Street map of downtown Fairbanks' })
+  const map = svg('svg', { viewBox: `${x0} ${z0} ${x1 - x0} ${z1 - z0}`, role: 'img', 'aria-label': `Street map: ${m.title}` })
+  const river: Rect | undefined = m.water === undefined ? undefined : [x0, x1, z0, m.water]
   map.append(
     box(m.play, 'land'),
-    box([x0, x1, z0, m.water], 'water'),
-    label([x0, x1, z0, m.water], 'Chena River', 'river'),
+    ...(river ? [box(river, 'water'), label(river, 'Chena River', 'river')] : []),
     ...m.streets.map((s) => box(s.rect, 'street')),
     ...m.streets.map((s) => label(s.rect, s.name, 'street-name')),
     ...m.spots.map((s) => box(s.rect, ['spot', s.known ? 'known' : '', s.here ? 'here' : '', s.next ? 'next' : ''].join(' ').trim())),
@@ -53,6 +54,6 @@ export const drawMap = (root: HTMLElement, m: PocketMap): void => {
   const legend = Object.assign(document.createElement('p'), { className: 'legend', innerHTML: '<span class="k here"></span>You are here<br><span class="k next"></span>Where to go' })
   const aside = document.createElement('div')
   aside.className = 'aside'
-  aside.append(legend, ...(m.margin.length ? [Object.assign(document.createElement('h3'), { textContent: 'Off this map' }), margin] : []))
+  aside.append(Object.assign(document.createElement('h3'), { className: 'sheet-title', textContent: m.title }), legend, ...(m.margin.length ? [Object.assign(document.createElement('h3'), { textContent: 'Off this map' }), margin] : []))
   root.replaceChildren(where, map, aside)
 }
