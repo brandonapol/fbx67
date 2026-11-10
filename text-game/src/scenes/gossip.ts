@@ -18,12 +18,12 @@ const tiers: readonly (readonly string[])[] = [
     `"Barnette's still curious about you. Curious isn't trouble. Not yet."`,
   ],
   [
-    `"Vernon Barnette's got your name written down, hon. I saw it on his napkin. He's the kind who believes a man right up until the day he doesn't. You're close to that day."`,
+    `"${N.barnetteFull}'s got your name written down, hon. I saw it on his napkin. He's the kind who believes a man right up until the day he doesn't. You're close to that day."`,
     `"Barnette's got a little notebook now, and your name's in it. One more thing and he's done believing you."`,
     `"You're right at the edge with Barnette, hon. One more reason and he'll never take your word on anything."`,
   ],
   [
-    `"Vernon Barnette sat right where you're sitting and said your name three times in one cup of coffee. If he hauled you in tomorrow, he wouldn't believe a word you said, not even the true ones. Lay low, or don't count on him for anything."`,
+    `"${N.barnetteFull} sat right where you're sitting and said your name three times in one cup of coffee. If he hauled you in tomorrow, he wouldn't believe a word you said, not even the true ones. Lay low, or don't count on him for anything."`,
     `"Barnette's past curious. He thinks you're dirty. Whatever you tell him now, he'll assume it's a lie."`,
     `"I'll be honest, hon. Barnette wouldn't believe you if you told him it was snowing. You've used up his patience."`,
   ],
@@ -41,7 +41,7 @@ const lucyTalk = (s: State): string =>
 const intros: Readonly<Record<GossipId, string>> = {
   a2_co_gossip: `${N.gossip} works the counter at the Northern Lights Café on Second Avenue. She ran the telephone switchboard for eleven years and her cousin is married to a city cop. Everything said in this town gets said over her coffee eventually.`,
   a2_heat_gossip: `The Northern Lights Café is warm and smells like burnt coffee. ${N.gossip}, the counter waitress who used to run the switchboard, slides a cup in front of you before you ask.`,
-  a3_rash_gossip: `You go to the Northern Lights Café with your arm in a sling. ${N.gossip.split(' ')[0]}, the old switchboard operator behind the counter, clucks at the cast and pours you coffee you didn't order.`,
+  a3_rash_gossip: `You go to the Northern Lights Café with your arm in a sling. ${N.gossipShort}, the old switchboard operator behind the counter, clucks at the cast and pours you coffee you didn't order.`,
 }
 
 const outros: Readonly<Record<GossipId, string>> = {
@@ -64,7 +64,7 @@ ${outros[id]}`,
 })
 
 export const askGossip = (id: GossipId): Choice => ({
-  label: `Stop by the café first and hear what ${N.gossip.split(' ')[0]} has heard.`,
+  label: `Stop by the café first and hear what ${N.gossipShort} has heard.`,
   note: 'gossip',
   next: id,
 })

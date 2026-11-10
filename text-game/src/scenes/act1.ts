@@ -34,7 +34,7 @@ export const act1: readonly Scene[] = [
     clock: '1967-08-15T09:00',
     goal: 'Hold the sandbag line.',
     text: () => `
-You are ${N.wade} Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
+You are ${N.wade} ${N.wadeLast}: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
 
 Your sergeant puts you on a sandbag line across Cushman Street, thigh-deep, passing bags hand to hand. He counts heads every quarter hour.
 
@@ -291,7 +291,7 @@ The floor is slick with mud. There's a hot stove, a moose rack on the wall, and 
     clock: '1967-08-19T21:30',
     goal: 'Get out of the fight in one piece.',
     text: () => `
-You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.`,
+You stay in your seat. Eli takes the first punch alone. Then ${N.curly} comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.`,
     choices: () => fightMoves(false),
   },
   {
@@ -334,7 +334,7 @@ ${N.eli} is by the stove, his lip split, the drunk's friend sitting in the mud a
     text: () => `
 ${N.cop} of Fairbanks PD hauls you, Eli, and Curly out to the car. He knows Curly by name. On the way, Curly presses a folded twenty into the officer's hand, friendly as anything. The officer tucks it back into Curly's shirt pocket without looking at it and shuts the door.
 
-In the morning ${N.barnette} comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
+In the morning ${N.barnette} comes to the cell. He wants to know who started it, and why a Texan airman is running around with ${N.curly} and "the river Indian."
 
 "Give me a name and you walk."`,
     choices: () => [
