@@ -14,6 +14,7 @@ import { FLOOD_AT, highWater, indoors } from './highwater.ts'
 import { BOARD_AT, SKIFF } from './skiff.ts'
 import { office } from './landoffice.ts'
 import { line } from './searchEli.ts'
+import { roomThings } from './room.ts'
 import { eielson } from './eielson.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
@@ -294,6 +295,7 @@ export const room: Space = {
     { id: 'desk', x: DESK_AT.x, z: DESK_AT.z, r: 1.2, prompt: `Write to ${N.lucy}` },
     { id: 'bed', x: BED_AT.x, z: BED_AT.z, r: 1.3, note: 'sleep' },
     { id: 'downstairs', x: 0, z: 2.4, r: 1.0, prompt: 'Go downstairs' },
+    ...roomThings,
   ],
 }
 

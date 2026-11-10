@@ -96,5 +96,5 @@ test('in July the room and the hall keep their July ways and never offer the way
   assert.ok(!available(hall).some((i) => i.id === 'front'))
   assert.ok(available(hall).some((i) => i.id === 'stair'))
   const room = toRoom(talk(start(), 'texas'))
-  assert.deepEqual(available(room).map((i) => i.id), ['desk'])
+  assert.deepEqual(available(room).map((i) => i.id), ['desk', 'maps', 'reel'])
 })

@@ -48,7 +48,7 @@ test('the stair takes Owen up to his room, where the desk answers and the bed wa
   const up = interact(walk(hall(), HALL))
   assert.equal(up.space, 'room')
   assert.equal(up.story.scene, 'p_letter')
-  assert.deepEqual(ids(up), ['desk'])
+  assert.deepEqual(ids(up), ['desk', 'maps', 'reel'])
 })
 
 test("the letter types out p_letter's text verbatim, then folds and goes by the door", () => {

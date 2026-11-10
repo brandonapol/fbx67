@@ -306,6 +306,18 @@ body[data-panel='open'] #help {
   display: none;
 }
 
+/* The date card over the black while Owen sleeps. */
+#card {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #e8e1d0;
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
 /* The skiff ride ends on black, under the end card. */
 #fade {
   position: fixed;
