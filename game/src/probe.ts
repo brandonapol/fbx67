@@ -98,7 +98,7 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
   const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
-  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
+  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, vel: vec(0, 0), holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
 }
 
 const triangles = (app: pc.AppBase): number =>
