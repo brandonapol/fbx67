@@ -326,3 +326,20 @@ test('Jake is introduced without the "straight arrow" label', () => {
   assert.match(intro, /they don't talk/)
   assert.doesNotMatch(intro, /straight arrow/)
 })
+
+// #213: if Lucy was let go before Act 3, the confession carries it: the folder comes from her trunk, not her desk, and
+// she says once that the job went for the cabinet. The talk between is the same, and Wade is not asked to fix it.
+test('Lucy\'s confession changes weight when she has lost her job, and only there', () => {
+  for (const sc of scenes.filter((x) => x.id.startsWith('a3_confession_'))) {
+    const [kept, lost] = [0, 2].map((lucyHeat) => sc.text({ ...initialState, scene: sc.id, lucyHeat }))
+    assert.match(kept, /bottom drawer of her desk at the land office/, sc.id)
+    assert.doesNotMatch(kept, /cedar trunk|let me go/, sc.id)
+    assert.match(lost, /cedar trunk at the foot of her bed/, sc.id)
+    assert.doesNotMatch(lost, /drawer of her desk/, sc.id)
+    assert.equal(lost.match(/let me go over that cabinet[\s\S]*I'd go in again/g)?.length, 1, sc.id)
+    assert.doesNotMatch(lost, /\boil\b|sorry about the job/i, sc.id)
+    const talk = (t: string): string => t.slice(t.indexOf('It\'s the Major\'s files'), t.indexOf('that\'s how they picked you too.'))
+    assert.equal(talk(lost), talk(kept), sc.id)
+    assert.equal(sc.text({ ...initialState, scene: sc.id, lucyHeat: 1 }), kept, `${sc.id} at Lucy heat 1`)
+  }
+})
