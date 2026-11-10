@@ -10,6 +10,7 @@ import type { Ambient, Bit, Said, Thread, Trigger } from './format.ts'
 import { MAX_LINE } from './format.ts'
 import { pool, within } from './select.ts'
 import { canonicalKey } from '../liveness.ts'
+import { pov } from '../queries.ts'
 
 const fromAct4: ReadonlySet<string> = new Set(['Act 4: Breakup', 'Epilogue'])
 
@@ -48,6 +49,14 @@ const lintLine = (where: string, text: string, early: boolean): readonly string[
 
 const before4 = (heard: readonly State[]): boolean => heard.some((s) => !fromAct4.has(menu(s).act))
 
+const speakers: ReadonlySet<string> = new Set(['them', 'aside'])
+
+// A line in the player's mouth is said only where the story is played as that player: Wade never speaks for Owen.
+const wrongPlayer = (where: string, lines: readonly Said[], heard: readonly State[]): readonly string[] =>
+  [...new Set(lines.filter((l) => !speakers.has(l.by)).map((l) => l.by))].flatMap((by) =>
+    [...new Set(heard.map(pov))].filter((p) => p !== by).map((p) => `${where}: a line by ${by}, heard where the player is ${p}`),
+  )
+
 const lintPerson = (a: Ambient, states: readonly State[]): readonly string[] => [
   ...(named(a.name) ? [] : [`${a.id}: name "${a.name}" is neither in names.ts nor a role name`]),
   ...(Object.entries(a.lines) as [Trigger, readonly Bit[]][]).flatMap(([trigger, bits]) =>
@@ -58,6 +67,7 @@ const lintPerson = (a: Ambient, states: readonly State[]): readonly string[] => 
         ...(b.lines.length < 1 || b.lines.length > 3 ? [`${where}: ${b.lines.length} lines, not 1-3`] : []),
         ...(heard.length ? [] : [`${where}: never heard at any place and time the story reaches`]),
         ...said(b).flatMap((l) => lintLine(where, l.text, before4(heard))),
+        ...wrongPlayer(where, said(b), heard),
       ]
     }),
   ),

@@ -88,3 +88,12 @@ test('ids are unique', () => {
   assert.deepEqual(lint([airman, airman]), ['duplicate ambient id airman'])
   assert.deepEqual(lint(fixture, [threads[0], threads[0]]), ['duplicate thread id shift'])
 })
+
+test('a player line is only said where the story is played as that player', () => {
+  const reply = (by: 'owen' | 'wade'): Ambient => ({
+    ...bartender,
+    lines: { talk: [{ id: 'sun', lines: [{ by: 'them', text: 'Slow night.' }], reply: { label: 'Yes.', lines: [{ by, text: 'Yes.' }] } }] },
+  })
+  assert.deepEqual(lint([reply('owen')]), [])
+  assert.deepEqual(lint([reply('wade')]), ['bartender talk sun: a line by wade, heard where the player is owen'])
+})

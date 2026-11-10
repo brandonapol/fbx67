@@ -777,6 +777,10 @@ Ordered by impact.
 - Whether civilian mechanics worked in a base hangar in 1967, and on what aircraft (item 68): base aero club history,
   Pioneer Air Museum.
 - Dormitory rooms or open bays for junior airmen at Eielson in 1967 (item 69): veterans, base yearbooks.
+- How a Lower Tanana boatman ferrying people out of the flooded town should appear, and whether he would come from
+  Nenana or Minto (item 71): consultants.
+- Whether the land office kept Native allotment applications in books or case files, and how Lucy's choice to save
+  them first should read (item 72): BLM Alaska history; consultants.
 
 ## Engine look checks (issue #32)
 
@@ -1376,3 +1380,78 @@ walks the hall every 20 minutes (patrol P2).
 unchecked.
 
 **Recommended change.** None.
+
+## The flooded town (issue #107)
+
+Ambient lines in `text-game/src/ambient/floodTown.ts`, 15 to 19 August 1967. None of these was researched for this
+pass; each is general knowledge, unchecked, and rated against the accuracy bar in `design.md`.
+
+### 71. A Lower Tanana boatman from Nenana on First Avenue
+
+**For consultant review.**
+
+**Claim.** A Lower Tanana man ran his riverboat up from Nenana when the water rose and, from midday on 15 August (after
+Eli has the message, so he never stands in for Eli's boat), ferries people out of houses on First Avenue and the slough,
+from a list of houses written on a paper bag. He tells Wade, whom he calls "soldier", to hold the bow; he means to go
+home when his list is done, because his nets are in the same river. He says the water came up in two days and will take
+longer to go down.
+
+**Verdict.** Plausible. The details are ours.
+
+**Evidence.** Minto was flooded and evacuated to Fairbanks (item 11). That private boats did much of the rescue work
+downtown is general knowledge, unchecked. A freighter running up the Tanana and the Chena from Nenana
+during the crest is general knowledge, unchecked. He is from Nenana, not Minto, on purpose: he is not Eli and Lucy's
+relative and says nothing about the lower Chatanika or the claim. He does work and has his own reason to leave; he is
+not bar color (item 36).
+
+**Recommended change.** None until consultants review. Ask: whether a Nenana boatman would come up in the flood or stay
+with his own village (whether Nenana itself flooded in 1967 is unchecked); whether "soldier" and the nets read right;
+and whether he should be from Nenana, Minto or unnamed.
+
+### 72. Lucy saves the Native allotment books first
+
+**For consultant review.**
+
+**Claim.** The morning after the body (16 August), the land office crew hauls wet ledgers up the stairs. The clerk
+from the prologue says Lucy went down for the Native allotment books before she would let anybody touch the mining
+claims. A records clerk turns wet pages with a butter knife and says pencil holds where ink runs; plats dry on a
+clothesline out back.
+
+**Verdict.** Plausible. The details are ours.
+
+**Evidence.** The land office is invented and two-story by owner decision (items 30 and 45). Native allotment
+applications under the 1906 Act went through the BLM (item 2); whether the Fairbanks office kept them in bound books,
+case files or both is unchecked, and "books" may need to become "files". The line shows Lucy acting on her family's
+claim without anyone asking her to (design.md: her own aims).
+
+**Recommended change.** None until consultants review. Ask whether a Lower Tanana clerk would be seen choosing the
+allotment records first, in front of white coworkers, and whether that reads as her own judgment or as a target on
+her.
+
+### 73. The help tent's St. Joseph's staff
+
+**Claim.** A nursing sister from St. Joseph's keeps a list of every patient carried up the hill (sixty-one patients,
+sixty names); an orderly carries them up from the boats; a doctor tells everyone cut in the water to get a tetanus
+shot and the airmen to boil their water or bring it from the base; by evening there are six under tarps.
+
+**Verdict.** Plausible. St. Joseph's was run by the Sisters of Providence and evacuated in the flood (item 16); the
+help tent is the design's (item 42). Tetanus shots and boil-water orders after a flood are general knowledge,
+unchecked for August 1967. Six dead in the whole flood (item 11) matches the doctor's "six today" and the scene's "six
+drownings"; that all six were at one tent is ours.
+
+**Recommended change.** None.
+
+### 74. Flood texture on the street and in the Silver Pan
+
+**Claim.** Airmen fill and throw bags off a deuce-and-a-half on Cushman; the water smells like a gas station and is
+about forty degrees; a café on Second has two feet of river in it; the railroad is under out to the depot; floatplanes
+are tied to poles; Phillips Field is a lake; a tourist couple from Dayton lost their car on Second; a family waits on
+their roof on Lacey with a dog; a university student works the land office's summer counter; the Steese washed out at
+two creeks; 15 August 1967 is a Tuesday.
+
+**Verdict.** Plausible. 15 August 1967 was a Tuesday. Fuel tanks and cars leaking into the water, Phillips Field
+under water, the depot flooded, rooftop waits and pets in the boats are general knowledge from the flood record,
+unchecked per site. The Chena's temperature is unchecked.
+
+**Recommended change.** None. Check Phillips Field and the depot against item 34's high-water marks if a local
+objects.

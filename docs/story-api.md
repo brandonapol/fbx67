@@ -111,7 +111,9 @@ The people Owen passes, and what they say, are story data in `text-game/src/ambi
 `names.ts` or a role name ("the airman at the jukebox"), the `Window`s of place and story clock it is around for, and
 its lines keyed by trigger: `greet`, `talk`, `bark`, `use`, `askAbout:<topic>` (the survey, Curly, the weather, the land
 office) and `react:<event>` (bump, run, stare). A `Bit` is one exchange of one to three lines, with an optional reply
-Owen can give, and may read story state through `when` (for example `boughtRound(state)`). A `Thread` is an overheard
+the player can give, and may read story state through `when` (for example `boughtRound(state)`). A line's speaker is
+`them`, `aside`, or the player character by `pov` (`owen`, `wade`, `lucy`); the lint fails a player line heard in a
+scene played as someone else. A `Thread` is an overheard
 exchange between ambient people, played in order.
 
 | Query | Returns |
@@ -126,6 +128,8 @@ matter is a menu note, with its field in `state.ts`. `lintAmbient(cast, threads,
 the source, a speaker name that is neither in `names.ts` nor a role name, the oil rule before Act 4, an unfilled token
 (`undefined`, `${`, `TODO`), an empty line or one over 120 characters, and a line that is never heard at any place and
 time the story reaches. It runs in `make check/text/lint`.
+
+The casts are `prologueTown.ts` (Owen's July town, #45) and `floodTown.ts` (Wade's flooded town in Act 1, #107).
 
 The things Owen can use in the prologue (the jukebox, the empty chair, the reel-to-reel) are `Ambient`s of kind
 `thing` in `text-game/src/ambient/prologueThings.ts`, with only `use` lines. The engine build's verbs live in

@@ -1,13 +1,12 @@
 import type { Clock, Place, State } from '../types.ts'
-import type { Ambient, Bit, Thread, Window } from './format.ts'
+import type { Thread, Window } from './format.ts'
+import type { Townsperson } from './town.ts'
+import { line, person, talker } from './town.ts'
 import { boughtRound } from '../story.ts'
 import { N } from '../names.ts'
 
 // The prologue's town (issue #45): the people Owen passes on 14 and 15 July 1967 and what they say. Written to the
 // story rules: nobody states the land scheme, nobody says oil, and a person's honesty is something they do.
-// Each person also carries a role, a want and a habit, for the writers and for the game's idle animation.
-
-export type Townsperson = Ambient & Readonly<{ role: string; want: string; habit: string }>
 
 const hank = N.bartenderShort
 const mister = `Mr. ${N.owen.split(' ')[1]}`
@@ -26,22 +25,7 @@ const notYet = (s: State): boolean => !boughtRound(s)
 const morning = (s: State): boolean => s.scene === 'p_dock'
 const night = (s: State): boolean => !morning(s)
 
-// A pool entry the person says alone.
-const line = (id: string, text: string, when?: (s: State) => boolean): Bit => ({
-  id,
-  lines: [{ by: 'them', text }],
-  ...(when ? { when } : {}),
-})
-
-// A short exchange with one reply Owen can give.
-const talk = (id: string, texts: readonly string[], reply: string, answer: string, when?: (s: State) => boolean): Bit => ({
-  id,
-  lines: texts.map((text) => ({ by: 'them' as const, text })),
-  reply: { label: reply, lines: [{ by: 'owen', text: reply }, { by: 'them', text: answer }] },
-  ...(when ? { when } : {}),
-})
-
-const person = (p: Omit<Townsperson, 'kind'>): Townsperson => ({ kind: 'person', ...p })
+const talk = talker('owen')
 
 export const prologueTown: readonly Townsperson[] = [
   // The Silver Pan, the night of 14 July.
