@@ -789,8 +789,9 @@ Ordered by impact.
 - Dormitory rooms or open bays for junior airmen at Eielson in 1967 (item 69): veterans, base yearbooks.
 - How a Lower Tanana boatman ferrying people out of the flooded town should appear, and whether he would come from
   Nenana or Minto (item 71): consultants.
-- Whether the land office kept Native allotment applications in books or case files, and how Lucy's choice to save
-  them first should read (item 72): BLM Alaska history; consultants.
+- Whether the land office kept Native allotment applications in books or case files, how Lucy's choice to save
+  them first should read, and whether it logged file charge-outs in a book with an address column (item 72): BLM
+  Alaska history; consultants.
 
 ## Engine look checks (issue #32)
 
@@ -1436,6 +1437,13 @@ claim without anyone asking her to (design.md: her own aims).
 **Recommended change.** None until consultants review. Ask whether a Lower Tanana clerk would be seen choosing the
 allotment records first, in front of white coworkers, and whether that reads as her own judgment or as a target on
 her.
+
+**Act 2 (issue #104).** Lucy's after-hours search reads a counter sign-out book: every file that leaves the drawers
+is logged with who took it, the day, and the day it came back, with an address column. Her grandfather's application
+is stamped received in June 1948 and signed out in March 1951 to an illegible signature and "Box 212", with no town;
+she is staying late "typing an abstract". Plausible: offices that lent case files kept charge-out logs, and abstracts
+of title were routine land-office work. Unchecked: whether the BLM's Fairbanks office in 1948-51 logged charge-outs in
+a bound book with an address column, and whether its files then sat in steel drawers by serial number.
 
 ### 73. The help tent's St. Joseph's staff
 

@@ -3,6 +3,9 @@ import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
 import {
   HEAT_LIMIT,
+  LUCY_LET_GO,
+  claimWon,
+  recordsOpen,
   curlyFate,
   doubleAgentWorks,
   eliJailed,
@@ -188,4 +191,36 @@ test('the signal sets how long the ground team takes: smoke soonest, a saved fir
 test('no signal yet reads as the saved fire, in one place', () => {
   assert.equal(nightSignal(initialState), 'saveFire')
   assert.equal(searchHours(initialState), searchHours({ ...initialState, nightSignal: 'saveFire' }))
+})
+
+// #104: Lucy's logbook entry moves only the date the claim is won, and only where it is won.
+test('the logbook wins the claim sooner in good and best, and nothing in bad or middle', () => {
+  const good = w({ curlyPlan: 'confront' })
+  const middle = w({ testified: false })
+  const bad = w({ offer: 'take' })
+  const rows: readonly (readonly [State, number, string, string])[] = [
+    [base, 1, 'best', 'twoYears'],
+    [base, 0, 'best', 'threeYears'],
+    [good, 1, 'good', 'threeYears'],
+    [good, 0, 'good', 'yearsLater'],
+    [middle, 1, 'middle', 'lost'],
+    [middle, 0, 'middle', 'lost'],
+    [bad, 1, 'bad', 'lost'],
+    [bad, 0, 'bad', 'lost'],
+  ]
+  for (const [s, log, e, won] of rows) {
+    const at = { ...s, recordsLog: log }
+    assert.equal(ending(at), e, `${e} with recordsLog ${log}`)
+    assert.equal(claimWon(at), won, `${e} with recordsLog ${log}`)
+  }
+})
+
+test('no ending gate reads the logbook', () => {
+  for (const s of [base, w({ curlyPlan: 'confront' }), w({ testified: false }), w({ offer: 'take' })])
+    assert.deepEqual([ending({ ...s, recordsLog: 1 }), missingForBest({ ...s, recordsLog: 1 })], [ending({ ...s, recordsLog: 0 }), missingForBest({ ...s, recordsLog: 0 })])
+})
+
+test('the records thread is open below Lucy\'s let-go heat and closed at it or above', () => {
+  assert.equal(LUCY_LET_GO, 2)
+  assert.deepEqual([0, 1, 2, 3, 4].map((h) => recordsOpen(w({ lucyHeat: h }))), [true, true, false, false, false])
 })

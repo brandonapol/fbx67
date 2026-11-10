@@ -48,6 +48,8 @@ export const sceneIds = [
   'a2_curly',
   'a2_steak',
   'a2_minto',
+  'a2_records',
+  'a2_records_log',
   'a2_jake',
   'a2_confront',
   'a2_confront_knot',

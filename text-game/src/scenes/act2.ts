@@ -1,7 +1,7 @@
 import { N } from '../names.ts'
-import { type BarfightMemory, hankRemembers, keyMissed } from '../logic.ts'
-import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, set } from '../state.ts'
-import type { Choice, Scene, State } from '../types.ts'
+import { type BarfightMemory, hankRemembers, keyMissed, recordsOpen } from '../logic.ts'
+import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, recordsLog, set } from '../state.ts'
+import type { Choice, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 
 const act = 'Act 2: Freeze-up' as const
@@ -21,6 +21,11 @@ const coGoal = 'Decide whether to search the Major\'s cabinet.'
 const heatGoal = `Get through the dark to ${N.lucy}'s flight.`
 const lucyNext = `See what ${N.lucy} needs next.`
 const letterGoal = 'Write home to Mama.'
+const recordsGoal = `Find what happened to your grandfather's allotment application.`
+
+// Lucy's after-hours search runs only while she still has the land-office job (design: Systems > Lucy).
+const afterMinto = (s: State): SceneId => (recordsOpen(s) ? 'a2_records' : 'a2_jake')
+
 const heardAt = { place: 'hotelBar', clock: '1967-10-07T22:30', goal: `Pack up and tell ${N.lucy} what you heard.` } as const
 
 // Eli's trip to Minto (a2_minto). What he did is the same whoever tells it; only the teller and the frame differ.
@@ -332,7 +337,44 @@ ${teller.opening} ${mintoSat}
 
 ${teller.closing}`
     },
-    choices: () => [{ label: 'Leave them to their work.', note: 'leave', next: 'a2_jake' }],
+    choices: () => [{ label: 'Leave them to their work.', note: 'leave', next: afterMinto }],
+  },
+  {
+    id: 'a2_records',
+    act,
+    title: 'Lucy: After Hours',
+    place: 'landOffice',
+    clock: '1967-11-14T21:30',
+    goal: recordsGoal,
+    text: () => `
+You are ${N.lucy}. The land office closed at five. You stayed at your desk typing an abstract nobody needed until the supervisor put on his coat, lit the last cigarette of his day, and told you to lock up behind yourself. You turned the lights off when he left, and you haven't turned them back on. You have sat there while the Second Avenue foot traffic thinned out and the city patrol car made its pass along the front window.
+
+The allotment files are in green steel drawers in the back, by serial number. You pull them all day for whoever asks. The folder with your grandfather's number on the tab has been empty since before you were hired, and the office's answer is the one families up and down the river have had for twenty years: lost.
+
+Every file that leaves those drawers goes into the sign-out book at the counter first: who took it, the day, the day it came back. The old books are on the bottom shelf, swollen and wavy from August. Nobody reads that column but the clerk who writes in it.`,
+    choices: () => [
+      { label: 'Read at the counter by the streetlight through the front window.', note: 'streetlight', next: 'a2_records_log' },
+      { label: 'Carry the old books into the map room, shut the door, and read by flashlight.', note: 'mapRoom', next: 'a2_records_log' },
+    ],
+  },
+  {
+    id: 'a2_records_log',
+    act,
+    title: 'Lucy: The Sign-Out Column',
+    place: 'landOffice',
+    clock: '1967-11-14T22:30',
+    goal: 'Put it all back the way it was and lock up.',
+    text: () => `
+You know the year your grandfather filed. You turn to it and run your finger down the serial column until it stops on his number.
+
+RECEIVED, and the office stamp beside it: June 3, 1948. Logged in by a clerk whose initials you know from a hundred other lines.
+
+Three years on, the file goes out. March 1951. Where the name belongs there is a scrawl, two loops and a stroke, that could be anybody's. In the address column, Box 212, and no town. Fairbanks had a Box 212, and so did Anchorage and Juneau. The return column is empty. You turn forty more pages. It never comes back.
+
+Nothing on the page says who wanted the file, or why. It says the office had it, and that somebody walked out the door with it.`,
+    choices: () => [
+      { label: 'Read the line once more. Put the book back on the bottom shelf, spine out the way it was, and lock up.', note: 'putBack', apply: recordsLog(1), next: 'a2_jake' },
+    ],
   },
   {
     id: 'a2_jake',
