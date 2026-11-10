@@ -1,13 +1,14 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
-import type { Activity } from './cast.ts'
-import type { Act, Clock, Place } from '../../text-game/src/types.ts'
+import type { Activity, CastId } from './cast.ts'
+import type { Act, Clock, Place, State } from '../../text-game/src/types.ts'
 import type { Season } from '../../text-game/src/story.ts'
 import { N } from '../../text-game/src/names.ts'
 import { CENTER, SIZE, doorSpots, gaps, pieces, spawnAt } from './downtown.ts'
 import { standing, townLayer } from './freezeup.ts'
+import { jail } from './jail.ts'
 
-export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'story'
+export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -38,6 +39,10 @@ export type Figure = Readonly<{
   // The story place while which this figure stands in for its townsperson, so the town does not place them again;
   // the space's own place when it has one.
   during?: Place
+  // The cast model this figure wears when its id is not one (a second place for the same person in a space).
+  cast?: CastId
+  // Whether the figure is in the space at this state of the story; always, when unset.
+  when?: (s: State) => boolean
 }>
 
 export type Space = Readonly<{
@@ -428,7 +433,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, story }
 
 // What a space shows in a season: its own props, and downtown's seasonal layer (freezeup.ts). The season is the
 // story's, never the space's (timeOf in lighting.ts). Season layers add nothing solid, so collision reads s.props.
@@ -443,7 +448,13 @@ export const FIGURE_WIDTH = 0.5
 
 export const figureBox = (f: Figure): Box => ({ x: f.at.x, z: f.at.z, w: FIGURE_WIDTH, d: FIGURE_WIDTH })
 
-export const solids = (s: Space): readonly Box[] => [...s.props.filter((p) => p.solid).map((p) => p.box), ...s.figures.map(figureBox)]
+export const present = (f: Figure, story?: State): boolean => story === undefined || (f.when?.(story) ?? true)
+
+// What stops the player: solid props, and the figures in the space at the story's state (every figure without one).
+export const solids = (s: Space, story?: State): readonly Box[] => [
+  ...s.props.filter((p) => p.solid).map((p) => p.box),
+  ...s.figures.filter((f) => present(f, story)).map(figureBox),
+]
 
 export const occluders = (s: Space): readonly Box[] => s.props.filter((p) => p.occludes).map((p) => p.box)
 

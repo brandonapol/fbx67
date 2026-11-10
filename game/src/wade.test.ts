@@ -6,7 +6,7 @@ import { sceneIds } from '../../text-game/src/sceneIds.ts'
 import { menu, pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, handedOff, inWorld, interact, playerBody, press } from './prologue.ts'
-import { prologueSteps } from './drive.ts'
+import { jailTalk, prologueSteps } from './drive.ts'
 import { bodies } from './cast.ts'
 import { spaces } from './levels.ts'
 
@@ -56,6 +56,8 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
   const play = (g: Game, n: number): Game => {
     if (handedOff(g)) return g
     assert.ok(n < 60, `no way out of ${g.story.scene}`)
+    // In the jail Wade walks to whoever is in play: Barnette at the bars, then the man at the desk.
+    if (g.space === 'jail' && !g.panel) return play(jailTalk(g, available(g)[0]!.id as 'barnette' | 'ashby'), n + 1)
     assert.equal(g.panel?.kind, 'story', `${g.story.scene} in ${g.space} has no menu`)
     const note = g.panel.buttons.find((b) => b.id.startsWith('note:'))
     assert.ok(note, `${g.story.scene} offers no note`)

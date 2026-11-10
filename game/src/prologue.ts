@@ -9,6 +9,7 @@ import { add, angleBetween, angleTo, distance, length, move, normalize, pick, sc
 import type { Letter, SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
+import { jailSpot, letOut } from './jail.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED, bodies } from './cast.ts'
@@ -70,6 +71,8 @@ const storyPanel = (story: State, notes: readonly string[], extra: readonly Butt
     buttons: [...m.options.filter((o) => notes.includes(o.note)).map((o) => noteButton(o.note, o.label)), ...extra],
   }
 }
+
+const allNotes = (story: State): readonly string[] => menu(story).options.map((o) => o.note)
 
 const close = (label: string): Button => ({ id: 'close', label })
 
@@ -140,6 +143,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'flood') return g.story.scene === 'p_end'
     if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
     if (g.space === 'line') return offers(g, 'findEli')
+    if (g.space === 'jail') return jailSpot(g.story, i.id)
     if (g.space === 'room') return i.id === 'bed' ? g.letter === 'folded' : g.letter === undefined
     return true
   })
@@ -171,13 +175,15 @@ const arrive = (g: Game): Game => {
   const r = route(g.story, g.space)
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') {
-    const notes = menu(g.story).options.map((o) => o.note)
+    const notes = allNotes(g.story)
     return { ...g, panel: storyPanel(g.story, notes, notes.length ? [] : [restart]) }
   }
   if (r.space !== g.space) return enter(g, r.space)
+  const out = letOut(g.story, g.pos)
+  if (r.space === 'jail' && out) return enter(g, 'jail', out.at, out.facing)
   const back = spaces[r.space].back
   if (back) return { ...g, panel: storyPanel(g.story, [], [close(back)]) }
-  return { ...g, panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note)) }
+  return { ...g, panel: storyPanel(g.story, allNotes(g.story)) }
 }
 
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
@@ -269,6 +275,8 @@ export const interact = (g: Game): Game => {
     if (door?.locked) return { ...g, panel: locked(door.title) }
   }
   if (g.space === 'line' && id === 'woman') return { ...g, panel: storyPanel(g.story, ['findEli', 'stayOnLine'], [close('Keep passing bags.')]) }
+  // Barnette at the bars is decision 1: a held choice. The game stops and asks, with no way to walk off and no clock.
+  if (g.space === 'jail') return { ...g, panel: storyPanel(g.story, allNotes(g.story), id === 'ashby' ? [close('Step back.')] : []) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
@@ -332,7 +340,7 @@ const walk = (g: Game, input: Input, dt: number): Game => {
   const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? (interior ? INDOOR_ACCEL : ACCEL) : DECEL) * dt)
   const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
   const step = arriving ? scale(normalize(input.dir), input.limit ?? 0) : scale(vel, dt)
-  const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(spaces[g.space])) : g.pos
+  const pos = length(step) > 0 ? move(g.pos, step, length(step), solids(spaces[g.space], g.story)) : g.pos
   return { ...g, pos, facing, vel: arriving ? zero : dt > 0 ? scale(sub(pos, g.pos), 1 / dt) : g.vel }
 }
 
