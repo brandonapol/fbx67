@@ -1,6 +1,6 @@
 import type { Act, Choice, Scene, SceneId, State } from '../types.ts'
 import { N } from '../names.ts'
-import { HEAT_LIMIT } from '../logic.ts'
+import { HEAT_LIMIT, lucyLetGo } from '../logic.ts'
 
 const visits = ['a2_co_gossip', 'a2_heat_gossip', 'a3_rash_gossip'] as const satisfies readonly SceneId[]
 
@@ -35,7 +35,7 @@ const lawTalk = (s: State, id: GossipId): string => tiers[tierOf(s.heat)][visits
 
 const lucyTalk = (s: State): string =>
   s.lucyHeat > 0
-    ? `\n\n"And that land office girl. Barnette's been asking about a Native woman seen on the base at night. He doesn't have her name. Yet."`
+    ? `\n\n"And ${lucyLetGo(s) ? 'that girl the land office let go' : 'that land office girl'}. Barnette's been asking about a Native woman seen on the base at night. He doesn't have her name. Yet."`
     : ''
 
 const intros: Readonly<Record<GossipId, string>> = {

@@ -77,7 +77,11 @@ export const ending = (s: State): Ending =>
 // the records thread is open: her after-hours search runs. At or above it the thread is closed and recordsLog stays 0.
 export const LUCY_LET_GO = 2
 
-export const recordsOpen = (s: State): boolean => s.lucyHeat < LUCY_LET_GO
+// Read after Act 2 too (a3_turn, a4_news, the epilogue) as "she was let go before Act 3". That holds because the
+// cabinet refusal is the only source of lucyHeat; a later source would need its own flag.
+export const lucyLetGo = (s: State): boolean => s.lucyHeat >= LUCY_LET_GO
+
+export const recordsOpen = (s: State): boolean => !lucyLetGo(s)
 
 export type ClaimWon = 'twoYears' | 'threeYears' | 'yearsLater' | 'lost'
 

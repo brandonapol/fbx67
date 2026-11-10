@@ -51,6 +51,7 @@ export const sceneIds = [
   'a2_minto',
   'a2_records',
   'a2_records_log',
+  'a2_let_go',
   'a2_jake',
   'a2_confront',
   'a2_confront_knot',

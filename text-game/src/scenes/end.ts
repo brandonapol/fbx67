@@ -1,6 +1,6 @@
 import type { Scene, State } from '../types.ts'
 import { N } from '../names.ts'
-import { HEAT_LIMIT, claimWon, curlyFate, curlyTalks, doubleAgentWorks, eliJailed, ending, iceJam, middleFlavor, momVerdict } from '../logic.ts'
+import { HEAT_LIMIT, claimWon, curlyFate, curlyTalks, doubleAgentWorks, eliJailed, ending, iceJam, lucyLetGo, middleFlavor, momVerdict } from '../logic.ts'
 
 // When the claim is won, by Lucy's logbook entry (design: epilogue timing). The testimony wins it either way.
 const logbook = (s: State): string => (s.recordsLog > 0 ? ' A page from the land office\'s old sign-out book goes in beside the testimony.' : '')
@@ -80,7 +80,7 @@ const epilogues = (s: State): readonly string[] => {
   const won = e === 'best' || e === 'good'
   return [
     `ELI: ${eliLine(s)}`,
-    `LUCY: ${e === 'bad' ? 'Loses her job at the land office. Keeps the case files in a trunk for the rest of her life.' : e === 'middle' ? 'Keeps working the claim, one lost form at a time.' : (eliJailed(s) ? 'Goes to work for the Tanana Chiefs on the claims settlement. Her brother is in jail because of you, and she never speaks to you again.' : 'Goes to work for the Tanana Chiefs on the claims settlement.')}${s.lucyHeat > 0 && e !== 'bad' ? ' Barnette never does put a name to the woman seen on the base.' : ''}`,
+    `LUCY: ${e === 'bad' ? `${lucyLetGo(s) ? 'Never works at the land office again' : 'Loses her job at the land office'}. Keeps the case files in a trunk for the rest of her life.` : e === 'middle' ? 'Keeps working the claim, one lost form at a time.' : (eliJailed(s) ? 'Goes to work for the Tanana Chiefs on the claims settlement. Her brother is in jail because of you, and she never speaks to you again.' : 'Goes to work for the Tanana Chiefs on the claims settlement.')}${s.lucyHeat > 0 && e !== 'bad' ? ' Barnette never does put a name to the woman seen on the base.' : ''}`,
     `CURLY: ${curlyLine(s)}`,
     `JAKE: ${s.sharedWreck ? 'Flies again by fall, knowing it wasn\'t his fault.' : 'Spends a year thinking he nearly killed Lucy. Flies again eventually.'}`,
     `TOLLIVER: ${tolliverLine(s, won)}`,

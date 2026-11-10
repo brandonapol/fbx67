@@ -52,7 +52,7 @@ test('season is undefined where the scene has no clock, like clock', () => {
 })
 
 test('every scene id has a pov: Owen in the prologue, Lucy in her scenes, Wade otherwise', () => {
-  const lucy = ['a2_records', 'a2_records_log', 'a3_camp', 'a3_wrong_spot', 'a3_found', 'a3_crash', 'a3_survive_fire', 'a3_survive_jake']
+  const lucy = ['a2_records', 'a2_records_log', 'a2_let_go', 'a3_camp', 'a3_wrong_spot', 'a3_found', 'a3_crash', 'a3_survive_fire', 'a3_survive_jake']
   sceneIds.forEach((id) => {
     const want = id.startsWith('p_') ? 'owen' : lucy.includes(id) ? 'lucy' : 'wade'
     assert.equal(pov(at(id)), want, id)

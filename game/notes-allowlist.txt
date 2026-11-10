@@ -23,6 +23,7 @@ a2_heat_gossip:lieLow
 a2_jake:confront
 a2_jake:ignore
 a2_jake:warn
+a2_let_go:carryHome
 a2_letter_friends:honest
 a2_letter_friends:lie
 a2_letter_friends:soft

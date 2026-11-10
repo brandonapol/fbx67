@@ -35,11 +35,12 @@ export const season = (s: State): Season | undefined => {
 
 export type Pov = 'owen' | 'wade' | 'lucy'
 
-// Scenes played as Lucy: her Act 2 land-office search and her Act 3 flight. Every other scene after the prologue is
-// Wade; the prologue is Owen.
+// Scenes played as Lucy: her Act 2 land-office search (or the day she is let go) and her Act 3 flight. Every other
+// scene after the prologue is Wade; the prologue is Owen.
 const lucyScenes: ReadonlySet<SceneId> = new Set<SceneId>([
   'a2_records',
   'a2_records_log',
+  'a2_let_go',
   'a3_camp',
   'a3_wrong_spot',
   'a3_found',

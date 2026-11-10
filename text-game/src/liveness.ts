@@ -1,6 +1,6 @@
 import type { Evidence, SceneId, State } from './types.ts'
 import { sceneIndex } from './sceneIds.ts'
-import { HEAT_LIMIT } from './logic.ts'
+import { HEAT_LIMIT, LUCY_LET_GO } from './logic.ts'
 
 type OptionalKey = { [K in keyof State]-?: undefined extends State[K] ? K : never }[keyof State]
 
@@ -32,7 +32,7 @@ export const rules: readonly Rule[] = [
   { after: 'a3_joan', apply: (s) => ({ ...s, joan: s.joan >= 3 ? 3 : 0 }) },
   { after: 'a3_joan', apply: (s) => ({ ...s, momHonesty: Math.max(-2, Math.min(2, s.momHonesty)) }) },
   { after: confessions, apply: (s) => ({ ...s, rashPlan: s.rashPlan === 'burn' ? 'burn' : 'safe' }) },
-  { after: 'a3_turn', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat > 0 ? 1 : 0 }) },
+  { after: 'a3_turn', apply: (s) => ({ ...s, lucyHeat: s.lucyHeat >= LUCY_LET_GO ? LUCY_LET_GO : s.lucyHeat > 0 ? 1 : 0 }) },
   { after: confessions, apply: (s) => (s.afterConfession === 'turn' ? s : drop('coJob')(s)) },
   { after: 'a3_turn', apply: drop('coJob') },
   { after: 'a4_testify', apply: dropEvidence('curlyNamesAshby', 'councilmanFlips') },
