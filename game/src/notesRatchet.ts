@@ -110,16 +110,30 @@ export const parseAllowlist = (text: string): readonly string[] =>
     .map((l) => l.replace(/#.*/, '').trim())
     .filter(Boolean)
 
-export type Ratchet = Readonly<{ story: ReadonlySet<string>; sent: ReadonlySet<string>; allowed: readonly string[]; base?: readonly string[] }>
+// `base` is main's allowlist and `baseMenus` the scenes and missions main's story had. A line not on main's list fails,
+// unless its scene or mission is new since main: a new scene the engine has not built yet starts on the list.
+export type Ratchet = Readonly<{
+  story: ReadonlySet<string>
+  sent: ReadonlySet<string>
+  allowed: readonly string[]
+  base?: readonly string[]
+  baseMenus?: ReadonlySet<string>
+}>
+
+const menuOf = (key: string): string => key.slice(0, key.indexOf(':'))
 
 // Why the ratchet fails, one line per note; empty when it holds.
-export const failures = ({ story, sent, allowed, base }: Ratchet): readonly string[] => {
+export const failures = ({ story, sent, allowed, base, baseMenus }: Ratchet): readonly string[] => {
   const listed = new Set(allowed)
   return [
     ...[...story].filter((k) => !sent.has(k) && !listed.has(k)).map((k) => `${k}: on a story menu, but no engine path sends it`),
     ...allowed.filter((k) => sent.has(k)).map((k) => `${k}: the engine sends it now; delete it from the allowlist`),
     ...allowed.filter((k) => !story.has(k)).map((k) => `${k}: no Act 1-3 menu offers it; delete it from the allowlist`),
     ...allowed.filter((k, i) => allowed.indexOf(k) !== i).map((k) => `${k}: listed twice`),
-    ...(base ? allowed.filter((k) => !base.includes(k)).map((k) => `${k}: not on main's allowlist, which may only shrink`) : []),
+    ...(base
+      ? allowed
+          .filter((k) => !base.includes(k) && (baseMenus === undefined || baseMenus.has(menuOf(k))))
+          .map((k) => `${k}: not on main's allowlist, which may only shrink`)
+      : []),
   ]
 }
