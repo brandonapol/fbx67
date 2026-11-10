@@ -1,14 +1,16 @@
 # Act 2 mission specs
 
-How Act 2's three spy missions play in the engine build, and the one note each sends the story
-([`story-api.md`](../story-api.md), Rules 1 to 4). Issue #96. The scene text is in
+How Act 2's three spy missions and Lucy's after-hours search of the land office play in the engine build, and the one
+note each sends the story ([`story-api.md`](../story-api.md), Rules 1 to 4). Issue #96; the land office search is
+#228's mission, written here as #84 asked. The scene text is in
 [`text-game/src/scenes/act2.ts`](../../text-game/src/scenes/act2.ts) and the menus in
 [`missions.ts`](../../text-game/src/missions.ts). Where this file and [`design.md`](../../design.md) disagree, the
 design wins.
 
-**Status: draft.** The owner approves the specs in review.
+**Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. The first three
+sections' menus are already in `missions.ts`; the land office search has no scene yet (#104).
 
-**Ground rules for all three.** The ones in [`act1-missions.md`](act1-missions.md) hold, plus:
+**Ground rules for all four.** The ones in [`act1-missions.md`](act1-missions.md) hold, plus:
 
 - **Seen is not busted.** *Busted* is the mission's fail: someone catches Wade at it, a fade, and the last checkpoint.
   The story never hears about it, and nothing about getting caught is state (Rule 4, #86). *Seen* is an ending the
@@ -19,6 +21,8 @@ design wins.
 - **Refusing is a deliberate prompt,** asked before the mission starts, never read off the player walking away.
 
 ## 1. The photo lab
+
+**Status: Proposed.**
 
 From the decision at `a2_photos` until Wade hands Lucy the photographs (or doesn't), at `a2_hotel`.
 
@@ -55,6 +59,8 @@ From the decision at `a2_photos` until Wade hands Lucy the photographs (or doesn
 
 ## 2. The hotel bar
 
+**Status: Proposed.**
+
 From the decision at `a2_hotel` until Wade packs up his guitar, at `a2_chiefs`. October, downtown.
 
 - **Way in.** The prompt at `a2_hotel` is *Bring your guitar* or *Skip it* (`guitar`, `skip`). Skipping is -1 heat:
@@ -87,6 +93,8 @@ From the decision at `a2_hotel` until Wade packs up his guitar, at `a2_chiefs`. 
 
 ## 3. The Major's cabinet
 
+**Status: Proposed.**
+
 From Lucy's ask at `a2_co_ask` until the files are photographed and back in the drawer, at `a2_curly`. Night, the
 squadron building on base.
 
@@ -112,7 +120,8 @@ squadron building on base.
   `refuse` and the beat after it (`a2_co_lucy`): Lucy goes in herself on her cousin's janitorial crew, gets the files
   and is seen (`coJob` `lucy`, `coFiles`, +2 `lucyHeat`, which #101 gates). The menu is `theMajorsCabinet`; every note
   lands on `a2_curly`. `code.seen` and `forced.unseen` land on the same state: both are +2 heat. The duty log in
-  `a2_co_seen` and the pry marks are colour; no later scene reads them, so neither is state.
+  `a2_co_seen` and the pry marks are color; no later scene reads them, so neither is state. Refusing is also what
+  closes Lucy's records thread: the +2 `lucyHeat` reaches the job gate (#211), she is let go, and section 4 never runs.
 - **What shades heat or trust.**
 
   | Detail | Effect |
@@ -123,3 +132,46 @@ squadron building on base.
   | Refused | +2 Lucy's heat, none on Wade |
 
 - **New state.** None.
+
+## 4. Lucy's records search
+
+**Status: Proposed.**
+
+Lucy's after-hours search of the land office for the family's allotment application (`design.md`, Systems > Lucy,
+#84). Night, freeze-up, after the Major's cabinet; the land office interior from Act 1 (#172), place `landOffice`.
+Playing Lucy: `pov(state)` is `'lucy'` here (#217). The scene, its id and its clock are #104's; this spec names what
+the mission needs from them.
+
+- **When it runs.** Only while Lucy still has the job: at `lucyHeat` >= 2 she was let go after the cabinet (#211) and
+  there is no mission and no note. No prompt asks the player to refuse it: it is her work, and she goes.
+- **Way in.** Her own key to the back door, after the last clerk leaves. Not a choice and not in the note.
+- **Objective.** The `goal` line says what Lucy came for: the family's allotment application. The player doesn't
+  find it, because it isn't there; what she finds is why.
+- **Verbs.** *Read*: a drawer label, a file tab, the logbook's columns, by a shaded flashlight. *Pull*: a drawer, a
+  file, the logbook off its shelf. *Put back*: whatever she pulled, where it was. *Listen*: the building's custodian on
+  his round, and the police car that tries the doors along Second Avenue.
+- **The search.** The allotment drawer has the file's folder, empty. The way on is the logbook of files received and
+  signed out: the application's line is there, received and date-stamped, then signed out and never returned. The
+  player has to read along the line to the sign-out column; nothing points at it but the empty folder. The signature
+  is a scrawl and a box number that lead nowhere. Nothing on the page names anyone or says why the file was wanted
+  (Twist 6; the oil rule). Lucy takes nothing; the exit is the back door once the logbook is back on its shelf.
+- **Uncertain stakes.** The search fails at what the `goal` asked for, and the find is a line in a ledger with a
+  dead-end name. Nothing in the mission says it will matter; the epilogue does, years on.
+- **Seen and busted.** Busted is the custodian's light on Lucy, or a drawer left out when he passes: retry from the
+  start of the search, as the design has it, and the story never hears of it (Rule 4, #86). There is no seen ending: a sighting would be
+  `lucyHeat`, and nothing in the design gives her heat here. Leaving drawers as she found them is how she gets out
+  clean, not a detail the note carries.
+- **Checkpoints.** One: inside the back door. The search is short, and the design sends a busted Lucy back to its
+  start.
+- **The note.**
+
+  > Lucy's records search. Logbook: found
+
+  One ending, `found`, applying the scene's choice that sets `recordsLog` to 1. The menu is proposed as
+  `theRecordsSearch`; its start and end scenes are #104's, and its row in the story-api table is added with the menu.
+  A note is sent only at the back door, after the logbook entry was read, so the mission has no note that leaves
+  `recordsLog` at 0. That 0 belongs to the paths where the mission never ran.
+- **What shades heat or trust.** Nothing. How well Lucy sneaks shades nothing.
+- **New state.** `recordsLog` (0 or 1), adopted in `design.md` and added by #104 with its sweep coverage. Its reader
+  is the epilogue timing in `logic.ts`: with it, the good and best endings win the claim sooner. No ending gate
+  reads it.
