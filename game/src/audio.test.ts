@@ -79,13 +79,14 @@ test('every space in an act has an ambience bed and a surface under every walkab
   })
 })
 
-test('surfaces: wood indoors, gravel and creek mud at camp, water and a doorstep in the flood', () => {
+test('surfaces: wood indoors, gravel and creek mud at camp, the porch and the walkway over the water in the flood', () => {
   assert.equal(surfaceAt(soundscapes.bar.ground, spaces.bar.spawn), 'wood')
   assert.equal(surfaceAt(soundscapes.room.ground, spaces.room.spawn), 'wood')
   assert.equal(surfaceAt(soundscapes.camp.ground, vec(1.8, -7.5)), 'gravel')
   assert.equal(surfaceAt(soundscapes.camp.ground, vec(0, 7.4)), 'mud')
-  assert.equal(surfaceAt(soundscapes.flood.ground, spaces.flood.spawn), 'water')
-  assert.equal(surfaceAt(soundscapes.flood.ground, vec(0, 7.1)), 'wood')
+  assert.equal(surfaceAt(soundscapes.flood.ground, spaces.flood.spawn), 'wood')
+  assert.equal(surfaceAt(soundscapes.flood.ground, vec(150, 97.5)), 'wood')
+  assert.equal(surfaceAt(soundscapes.flood.ground, vec(135, 104)), 'water')
 })
 
 test('walking a real route counts steps from the distance the game moved', () => {

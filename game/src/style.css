@@ -305,3 +305,12 @@ body #sound {
 body[data-panel='open'] #help {
   display: none;
 }
+
+/* The skiff ride ends on black, under the end card. */
+#fade {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}

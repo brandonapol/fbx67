@@ -1,6 +1,7 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, handedOff, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { fade } from './skiff.ts'
 import { startFrom } from './start.ts'
 import type { Letter } from './letters.ts'
 import { sheet } from './letters.ts'
@@ -49,6 +50,7 @@ const $ = <T extends HTMLElement>(id: string): T => {
 
 const canvas = $<HTMLCanvasElement>('scene')
 const promptEl = $<HTMLButtonElement>('prompt')
+const fadeEl = $('fade')
 const panelEl = $('panel')
 const titleEl = $('panel-title')
 const textEl = $('panel-text')
@@ -233,6 +235,7 @@ const renderHud = (g: Game): void => {
     placePrompt(view.screenAt(f.x, 1.9, f.z))
   }
   renderPanel(g)
+  fadeEl.style.opacity = String(fade(g.ride))
 }
 
 const readPad = (): Pad | undefined => {
@@ -441,7 +444,7 @@ view.app.on('update', (dtRaw: number) => {
   placeRig(live.g)
   const g = live.g
   const sway = bob(g.t, length(g.vel), topSpeed(frame.input, spaces[g.space].interior), reducedMotion.matches)
-  const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway, playerBody(g).eye)
+  const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway, playerBody(g).eye + footY(g), heldBehind(g))
   live.rig = next.rig
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)
@@ -456,6 +459,10 @@ Object.assign(window, {
     },
     textBuild: () => textBuild(live.g),
     camera: () => live.rig,
+    eye: () => {
+      const p = view.camera.getPosition()
+      return [p.x, p.y, p.z]
+    },
     aim: (yaw: number, pitch: number) => {
       live.rig = { ...live.rig, yaw, pitch, idle: 0 }
     },

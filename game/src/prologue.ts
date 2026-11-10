@@ -7,12 +7,14 @@ import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
 import type { Letter, SpaceId } from './levels.ts'
-import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids, spaces } from './levels.ts'
+import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, STAIR_FOOT, curlyFacing, flooded, occluders, solids, spaces, standAt } from './levels.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 import { jailSpot, letOut } from './jail.ts'
 import { tentSpot } from './hospital.ts'
 import type { Letter as Home } from './letters.ts'
 import { choose, finish as penDown, open as openHome, turn as turnPage, write, written } from './letters.ts'
+import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
+import { DECK_Y, rideAt, rideOver, riding } from './skiff.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED, bodies } from './cast.ts'
@@ -53,6 +55,8 @@ export type Game = Readonly<{
   letter?: 'folded'
   // A letter home (letters.ts) while one is open: the view draws it, and its lines are the only choices.
   home?: Home
+  // Seconds into the skiff ride, from the moment Owen climbs in (skiff.ts).
+  ride?: number
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -102,6 +106,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   typed: undefined,
   letter: undefined,
   home: undefined,
+  ride: undefined,
 })
 
 export const start = (): Game => ({
@@ -151,7 +156,9 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'line') return offers(g, 'findEli')
     if (g.space === 'jail') return jailSpot(g.story, i.id)
     if (g.space === 'helpTent') return tentSpot(g.story, i.id)
-    if (g.space === 'room') return i.id === 'bed' ? g.letter === 'folded' : g.letter === undefined
+    // In August the house is flooded: the only way is down the stair and out the front door.
+    if (g.space === 'room') return flooded(g.story) ? i.id === 'downstairs' : i.id === 'bed' ? g.letter === 'folded' : i.id !== 'downstairs' && g.letter === undefined
+    if (g.space === 'boarding') return (i.id === 'front') === flooded(g.story)
     return true
   })
 
@@ -199,6 +206,9 @@ const arrive = (g: Game): Game => {
   const r = route(g.story, g.space)
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
+  // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
+  // out of the front door onto his porch.
+  if (r.space === 'flood' && g.space !== 'flood') return g.space === 'boarding' ? enter(g, 'flood', FLOOD_AT, FLOOD_FACING) : enter(g, 'room')
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to (the line, after the errand at the tent), the scene plays as its menu.
     const into = enter(g, r.space)
@@ -290,10 +300,12 @@ export const interact = (g: Game): Game => {
   if (g.space === 'boarding') {
     if (id === 'landlady') return { ...g, panel: landladyPanel(g.story) }
     if (id === 'stair') return arrive(g)
+    if (id === 'front') return arrive(g)
   }
   if (g.space === 'room') {
     if (id === 'desk') return { ...g, panel: letterPanel(g.story, false), typed: 0 }
     if (id === 'bed' && target.note) return arrive(sendNote(g, target.note))
+    if (id === 'downstairs') return enter(g, 'boarding', STAIR_FOOT, 0)
   }
   if (g.space === 'camp' && id === 'plane') return arrive(g)
   if (g.space === 'downtown') {
@@ -325,9 +337,24 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'fold') return { ...g, panel: undefined, typed: undefined, letter: 'folded' }
   if (button.startsWith('note:')) {
     const next = sendNote(g, button.slice(5))
-    return leftPrologue(g.story, next.story) ? { ...next, panel: endCard } : arrive(next)
+    if (!leftPrologue(g.story, next.story)) return arrive(next)
+    // Climbing into the skiff sends the story on; the ride plays out before the end card comes up.
+    return g.space === 'flood' ? board(next) : { ...next, panel: endCard }
   }
   return g
+}
+
+const seated = (g: Game, ride: number): Game => {
+  const r = rideAt(ride)
+  return { ...g, ride, pos: r.seat, facing: r.heading, view: r.heading, vel: zero }
+}
+
+const board = (g: Game): Game => ({ ...seated(g, 0), panel: undefined, holding: undefined })
+
+// The ride: the skiff poles on along its path whatever the player does, and the end card comes up on the black.
+const ride = (g: Game, dt: number): Game => {
+  const next = seated(g, (g.ride ?? 0) + dt)
+  return rideOver(next.ride) ? { ...next, panel: endCard } : next
 }
 
 const finish = (g: Game, h: Holding): Game => {
@@ -384,18 +411,27 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
+  if (riding(g.ride)) return ride({ ...g, t }, dt)
   const walked = walk({ ...g, t }, input, dt)
   return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
 }
 
 // The player is whoever the story's pov(state) says: Owen in the prologue, Wade from Act 1 on.
-export const playerBody = (g: Game): Body => bodies[pov(g.story)]
+// On the skiff ride the story has already moved on to Wade, but it is still Owen in the stern.
+export const playerBody = (g: Game): Body => (riding(g.ride) ? bodies.owen : bodies[pov(g.story)])
 
 // The player stands in the world only in a space of the story's act: not over the story backdrop, and not in the
 // prologue's flood under the end card, where the story has already moved on to Wade.
-export const inWorld = (g: Game): boolean => spaces[g.space].act === menu(g.story).act
+export const inWorld = (g: Game): boolean => (riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act)
 
-export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: 'stand', talking: false })
+export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: riding(g.ride) ? 'sit' : 'stand', talking: false })
+
+// How high Owen's feet are: on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
+// and walkway), else the ground.
+export const footY = (g: Game): number => (riding(g.ride) ? DECK_Y : standAt(spaces[g.space], g.pos))
+
+// The heading the camera is held behind on the ride (skiff.ts, keepBehind); none on foot.
+export const heldBehind = (g: Game): number | undefined => (riding(g.ride) ? g.facing : undefined)
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
 

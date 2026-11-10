@@ -105,10 +105,29 @@ export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof 
   const camp = press(dock, 'note:fly')
   const hidden = holdWhenSafe(walk(camp, routes[spot]))
   const home = interact(walk(hidden, back(spot)))
-  const skiff = interact(walk(home, [[0.2, 5.4]]))
-  const end = press(skiff, 'note:continue')
-  return [bar, night, hall, room, desk, folded, morning, dock, camp, hidden, home, skiff, end]
+  const below = downstairs(home)
+  const street = wadeOut(below)
+  const skiff = toSkiff(street)
+  const aboard = press(skiff, 'note:continue')
+  const end = rideOut(aboard)
+  return [bar, night, hall, room, desk, folded, morning, dock, camp, hidden, home, below, street, skiff, aboard, end]
 }
+
+// August: from his room down the stair, along the knee-deep hall and out of the front door onto the porch; along the
+// porch to the steps, where the skiff waits; and the ride, which plays itself out to the end card.
+export const FLOOD_WALK = {
+  room: [[0, 1.8]],
+  hall: [[0.2, 2.0], [0, 5.6]],
+  porch: [[135.2, 98.5]],
+} as const
+
+export const downstairs = (room: Game): Game => interact(walk(room, FLOOD_WALK.room))
+
+export const wadeOut = (hall: Game): Game => interact(walk(hall, FLOOD_WALK.hall))
+
+export const toSkiff = (street: Game): Game => interact(walk(street, FLOOD_WALK.porch))
+
+export const rideOut = (aboard: Game): Game => wait(aboard, () => false)
 
 export const playPrologue = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): Game => prologueSteps(who, spot).at(-1)!
 

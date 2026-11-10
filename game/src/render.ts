@@ -13,7 +13,8 @@ import type { CastId } from './cast.ts'
 import { castFor, clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
-import { inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
+import { footY, inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
+import { DECK_Y, hull, rideAt } from './skiff.ts'
 
 const FAR_CLIP = 200
 
@@ -232,6 +233,10 @@ type Built = Readonly<{
   cone?: pc.Entity
   coneMats?: readonly [pc.StandardMaterial, pc.StandardMaterial]
   rain: readonly pc.Entity[]
+  // The rain falls in a box that goes where the player goes, so it is overhead anywhere in a town-sized space.
+  rainRoot: pc.Entity
+  // The skiff in the flood, which carries the hooded man and, once he climbs in, Owen.
+  boat?: pc.Entity
   weather: string
   time: Time
   toggles: readonly (readonly [pc.Entity, Prop['while']])[]
@@ -314,10 +319,17 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       })
       root.addChild(cone)
     }
+    const boat = space.id === 'flood' ? new pc.Entity('skiff') : undefined
+    if (boat) {
+      hull.forEach((p) => addProp(boat, p))
+      root.addChild(boat)
+    }
     const l = lighting(space.id, t.season, weather(g.story), t.clock)
+    const rainRoot = new pc.Entity('rain')
+    root.addChild(rainRoot)
     const rain = l.rain
       ? Array.from({ length: 220 }, (_, i) => {
-          const r = primitive(root, 'box', '#c8d0da', [((i * 7.31) % 24) - 12, (i * 3.7) % 9, ((i * 5.17) % 18) - 9], [0.02, 0.5, 0.02], {
+          const r = primitive(rainRoot, 'box', '#c8d0da', [((i * 7.31) % 24) - 12, (i * 3.7) % 9, ((i * 5.17) % 18) - 9], [0.02, 0.5, 0.02], {
             shadows: false,
           })
           return r
@@ -325,7 +337,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, weather: weather(g.story), time: t, toggles }
+    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, weather: weather(g.story), time: t, toggles }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -374,8 +386,17 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
     })
+    if (b.boat) {
+      const r = rideAt(g.ride ?? 0)
+      b.boat.setLocalPosition(r.hull.x, 0, r.hull.z)
+      b.boat.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
+      const man = b.figures.get('hooded')
+      man?.setLocalPosition(r.bow.x, DECK_Y, r.bow.z)
+      man?.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
+    }
+    b.rainRoot.setLocalPosition(g.pos.x, 0, g.pos.z)
     if (player) {
-      player.setLocalPosition(g.pos.x, 0, g.pos.z)
+      player.setLocalPosition(g.pos.x, footY(g), g.pos.z)
       player.setLocalEulerAngles(0, (g.facing * 180) / Math.PI, 0)
       player.enabled = inWorld(g) && (!cam.close || state.held !== undefined)
     }

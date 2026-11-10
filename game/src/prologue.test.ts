@@ -98,7 +98,7 @@ test('the plane only takes Owen home once the notes are hidden', () => {
   const hidden = holdWhenSafe(walk(camp, routes.cache))
   const home = walk(hidden, back('cache'))
   assert.equal(focus(home)?.id, 'plane')
-  assert.equal(interact(home).space, 'flood')
+  assert.equal(interact(home).space, 'room', 'home in August is his room, rain on the window')
 })
 
 test('Curly cannot see through the cook tent', () => {
