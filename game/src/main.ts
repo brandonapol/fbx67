@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { fade } from './skiff.ts'
 import { sweepFade } from './hazards.ts'
 import { startFrom } from './start.ts'
@@ -39,7 +39,38 @@ import {
   serialize,
   touchStick,
 } from './input.ts'
-import { mountSettings } from './settings.ts'
+import { mountPrefs, mountSettings } from './settings.ts'
+import type { Log, Objective, Prefs, Screen } from './frontEnd.ts'
+import {
+  JOURNAL_KEY,
+  PAD_BACK,
+  PAD_START,
+  PREFS_KEY,
+  SAVE_KEY,
+  TITLE_TURN,
+  back,
+  emptyLog,
+  firstScreen,
+  isCastFile,
+  journal,
+  loadShare,
+  metAt,
+  objectiveFor,
+  objectiveShown,
+  parseLog,
+  parsePrefs,
+  recall,
+  reduced,
+  runs,
+  saveLog,
+  savePath,
+  savedPath,
+  talkHeard,
+  titleScene,
+} from './frontEnd.ts'
+import type { FrontEndAction } from './frontEndView.ts'
+import { mountFrontEnd } from './frontEndView.ts'
+import { pocketMap, seenAt } from './frontEndMap.ts'
 import type { Vec } from './world.ts'
 import { distance, length, sub, vec } from './world.ts'
 
@@ -61,8 +92,23 @@ const stickEl = $('stick')
 const knobEl = $('stick-knob')
 const helpEl = $('help')
 
-placeEl.textContent = 'Loading…'
+// The front end (frontEnd.ts): its handler is filled in below, once the game exists; until then the loading bar is up.
+const onFront: { go: (a: FrontEndAction) => void } = { go: () => undefined }
+const front = mountFrontEnd((a) => onFront.go(a))
+const arrived = { n: 0 }
+front.loading(0)
+const watcher =
+  typeof PerformanceObserver === 'undefined'
+    ? undefined
+    : new PerformanceObserver((list) => {
+        arrived.n += list.getEntries().filter((e) => isCastFile(e.name)).length
+        front.loading(loadShare(arrived.n))
+      })
+watcher?.observe({ type: 'resource', buffered: true })
 const view = await createView(canvas, import.meta.env.BASE_URL)
+watcher?.disconnect()
+front.loading(undefined)
+performance.mark('second-rush:loaded')
 
 const store = safeStore(() => window.localStorage)
 
@@ -70,7 +116,9 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
 type Drag = Readonly<{ id: number; origin: Stick; at: Stick }>
 
-const first = startFrom(window.location.hash, window.location.search)
+const firstShown = firstScreen(window.location.hash, window.location.search)
+const first = firstShown === 'title' ? titleScene() : startFrom(window.location.hash, window.location.search)
+const savedAt = (): string | undefined => savedPath(store.read(SAVE_KEY))
 
 const live: {
   g: Game
@@ -92,6 +140,16 @@ const live: {
   // Game ticks per drawn frame: 1 in play. The smoke test raises it so software rendering's few frames a second
   // don't stretch its walks and the skiff ride into real minutes; each tick is still at most 0.1 s.
   pace: number
+  // The front end: the screen up, the objective line, the journal's people and lines, and the player's settings.
+  screen: Screen
+  now: number
+  objective?: Objective
+  log: Log
+  prefs: Prefs
+  saved?: string
+  began?: number
+  interactive?: number
+  shownAt: number
 } = {
   g: first,
   rig: rigFor(first.facing, armFor(spaces[first.space])),
@@ -104,7 +162,25 @@ const live: {
   run: false,
   turn: { x: 0, y: 0 },
   pace: 1,
+  screen: firstShown,
+  now: 0,
+  shownAt: 0,
+  log: firstShown === 'play' ? parseLog(store.read(JOURNAL_KEY), savePath(first.path)) : emptyLog,
+  prefs: parsePrefs(store.read(PREFS_KEY)),
 }
+
+const applyPrefs = (): void => {
+  document.body.dataset.text = live.prefs.text
+}
+applyPrefs()
+mountPrefs(
+  () => live.prefs,
+  (p) => {
+    live.prefs = p
+    store.write(PREFS_KEY, JSON.stringify(p))
+    applyPrefs()
+  },
+)
 
 const settings = mountSettings(
   () => live.controls,
@@ -125,10 +201,25 @@ const localStore = (): Storage | undefined => {
 }
 
 const audio = createAudio(localStore())
-mountSoundPanel(audio)
+const soundPanel = mountSoundPanel(audio).querySelector<HTMLElement>('#sound-panel')
+// An Esc that closes the sound panel is spent on it: note before the panel's own handler runs that it was open.
+const escClosing = { panel: false }
+window.addEventListener(
+  'keydown',
+  (e) => {
+    escClosing.panel = e.code === 'Escape' && soundPanel?.hidden === false
+  },
+  { capture: true },
+)
 ;['pointerdown', 'touchend', 'keydown'].forEach((type) => window.addEventListener(type, audio.unlock, { capture: true }))
 
 const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.location.href).toString()
+
+// Interacting with the person in front of the player puts them in the journal.
+const interactNow = (): void => {
+  live.log = metAt(live.log, live.g, focus(live.g)?.id)
+  act(interact)
+}
 
 const act = (f: (g: Game) => Game): void => {
   live.g = f(live.g)
@@ -183,6 +274,7 @@ const renderPanel = (g: Game): void => {
   panelEl.hidden = !g.panel
   document.body.dataset.panel = g.panel ? 'open' : ''
   if (!g.panel) return
+  if (g.panel.kind === 'talk') live.log = talkHeard(live.log, g.panel.title, g.panel.text)
   if (document.pointerLockElement) document.exitPointerLock()
   panelEl.dataset.kind = g.panel.kind
   titleEl.textContent = g.panel.title
@@ -276,13 +368,23 @@ const padFrame = (pad: Pad | undefined): void => {
   if (!pad) return
   if (padActive(pad)) setDevice(padKind(pad.id))
   if (settings.open()) return
+  const pick = (): void => (document.activeElement instanceof HTMLButtonElement ? document.activeElement : front.buttons()[0])?.click()
+  if (pressedNow(prev, now, PAD_START)) return live.screen === 'title' ? pick() : go(runs(live.screen) ? 'pause' : 'resume')
+  if (!runs(live.screen)) {
+    if (pressedNow(prev, now, PAD.a)) pick()
+    if (pressedNow(prev, now, PAD.down)) menuFocus(1)
+    if (pressedNow(prev, now, PAD.up)) menuFocus(-1)
+    if (pressedNow(prev, now, PAD.b)) go('back')
+    return
+  }
+  if (pressedNow(prev, now, PAD_BACK)) showObjective()
   if (live.g.panel) {
     if (pressedNow(prev, now, PAD.a)) confirmPanel()
     if (pressedNow(prev, now, PAD.down)) panelFocus(1)
     if (pressedNow(prev, now, PAD.up)) panelFocus(-1)
     return
   }
-  if (pressedNow(prev, now, PAD.a)) act(interact)
+  if (pressedNow(prev, now, PAD.a)) interactNow()
 }
 
 const longest = (sticks: readonly Stick[]): Stick =>
@@ -320,6 +422,22 @@ const input = (pad: Pad | undefined, dt: number): Readonly<{ input: Input; look:
 window.addEventListener('keydown', (e) => {
   setDevice('keyboard')
   if (e.repeat) return
+  if (!runs(live.screen)) {
+    // The Esc that let go of the mouse already paused (pointerlockchange); it does not also resume.
+    if (e.code === 'Escape' && performance.now() - live.shownAt > 250) go('back')
+    if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+      e.preventDefault()
+      menuFocus(e.code === 'ArrowDown' ? 1 : -1)
+    }
+    return
+  }
+  const free = actionFor(live.controls.bindings, e.code) === undefined
+  if (free && ((e.code === 'Escape' && !escClosing.panel) || e.code === 'KeyP')) {
+    e.preventDefault()
+    return go('pause')
+  }
+  if (free && e.code === 'KeyO') return showObjective()
+  if (free && e.code === 'KeyM') return go('map')
   live.keys.add(e.code)
   const g = live.g
   if (g.home) {
@@ -342,7 +460,7 @@ window.addEventListener('keydown', (e) => {
   }
   if (actionFor(live.controls.bindings, e.code) === 'interact') {
     e.preventDefault()
-    act(interact)
+    interactNow()
   }
 })
 window.addEventListener('keyup', (e) => live.keys.delete(e.code))
@@ -351,7 +469,7 @@ window.addEventListener('blur', () => live.keys.clear())
 promptEl.addEventListener('pointerdown', (e) => {
   e.preventDefault()
   live.touchHold = true
-  act(interact)
+  interactNow()
 })
 const release = () => {
   live.touchHold = false
@@ -380,7 +498,7 @@ const showStick = (d: Drag | undefined): void => {
 }
 
 canvas.addEventListener('pointerdown', (e) => {
-  if (live.g.panel || settings.open()) return
+  if (live.g.panel || settings.open() || !runs(live.screen)) return
   if (e.pointerType === 'mouse') {
     setDevice('keyboard')
     if (document.pointerLockElement !== canvas) Promise.resolve(canvas.requestPointerLock()).catch(() => undefined)
@@ -443,9 +561,114 @@ const placeRig = (g: Game): void => {
 
 renderHelp()
 
+// --- The front end: which screen is up, and what each of its buttons does.
+
+const menuFocus = (step: number): void => {
+  const buttons = front.buttons()
+  if (!buttons.length) return
+  const i = buttons.indexOf(document.activeElement as HTMLButtonElement)
+  buttons[(i + step + buttons.length) % buttons.length].focus({ preventScroll: true })
+}
+
+const showObjective = (): void => {
+  if (live.objective) live.objective = recall(live.objective, live.now)
+}
+
+const drawFront = (): void =>
+  front.show(live.screen, {
+    canContinue: savedAt() !== undefined,
+    goal: objectiveShown(live.objective ? recall(live.objective, live.now) : undefined, live.now),
+    journal: live.screen === 'journal' ? journal(live.g, live.log) : undefined,
+    map: live.screen === 'map' ? pocketMap(live.g, live.log.seen) : undefined,
+  })
+
+const begin = (g: Game, log: Log): void => {
+  live.g = g
+  live.log = log
+  live.target = undefined
+  live.objective = undefined
+  live.saved = undefined
+  live.rig = rigFor(g.facing, armFor(spaces[g.space]))
+  live.rigFor = ''
+  live.keys.clear()
+  live.began = performance.now()
+  live.interactive = undefined
+}
+
+const show = (screen: Screen): void => {
+  if (screen !== live.screen) live.shownAt = performance.now()
+  live.screen = screen
+  live.keys.clear()
+  if (!runs(screen) && document.pointerLockElement) document.exitPointerLock()
+  drawFront()
+}
+
+const go = (a: FrontEndAction): void => {
+  if (a === 'continue') {
+    const path = savedAt()
+    if (!path) return
+    begin(startFrom(`#path=${path}`, ''), parseLog(store.read(JOURNAL_KEY), path))
+    return show('play')
+  }
+  if (a === 'new') {
+    forgetStart()
+    begin(start(), emptyLog)
+    return show('play')
+  }
+  if (a === 'title') {
+    forgetStart()
+    begin(titleScene(), emptyLog)
+    return show('title')
+  }
+  if (a === 'settings') return settings.show(true)
+  if (a === 'pause') return show(runs(live.screen) ? 'pause' : live.screen)
+  if (a === 'map' && live.screen === 'title') return
+  if (a === 'resume') return show('play')
+  if (a === 'back') return show(back(live.screen))
+  return show(a)
+}
+onFront.go = go
+
+// Losing the pointer lock in play (Esc, switching windows) pauses, unless a panel took it.
+document.addEventListener('pointerlockchange', () => {
+  if (!document.pointerLockElement && runs(live.screen) && !live.g.panel && !settings.open()) go('pause')
+})
+
+// Saves the path, and the journal with it, whenever the path grows: Continue and the text build resume from there.
+const save = (g: Game): void => {
+  const path = savePath(g.path)
+  const log = saveLog(g.path, live.log)
+  if (live.saved === path + log) return
+  live.saved = path + log
+  if (g.path.length) store.write(SAVE_KEY, path)
+  store.write(JOURNAL_KEY, log)
+}
+
+// Off the game: the title turns its camera slowly; a pause holds the last frame and the story clock.
+const offGame = (dt: number): void => {
+  if (live.screen !== 'title') return
+  const g = live.g
+  const turn = reduced(live.prefs, reducedMotion.matches) ? 0 : TITLE_TURN * dt
+  const next = follow(live.rig, spaces[g.space], g.pos, g.facing, { yaw: turn, pitch: 0 }, dt, 0, playerBody(g).eye + footY(g), undefined)
+  live.rig = next.rig
+  view.sync(g, dt, next.pose)
+}
+
+drawFront()
+
 view.app.on('update', (dtRaw: number) => {
   const dt = Math.min(dtRaw, 0.1)
   const pad = readPad()
+  if (!runs(live.screen)) {
+    padFrame(pad)
+    offGame(dt)
+    return
+  }
+  if (live.interactive === undefined) {
+    live.interactive = performance.now()
+    performance.mark('second-rush:interactive')
+  }
+  live.now += dt
   const l3 = pad ? pressedNow(live.pad, pad.buttons, PAD.l3) : false
   const lean = pad ? padMove(pad) : { x: 0, y: 0 }
   live.run = runLatch(live.run, l3, Math.hypot(lean.x, lean.y))
@@ -460,15 +683,26 @@ view.app.on('update', (dtRaw: number) => {
   more(live.pace - 1)
   placeRig(live.g)
   const g = live.g
-  const sway = bob(g.t, length(g.vel), topSpeed(frame.input, spaces[g.space].interior), reducedMotion.matches)
+  const sway = bob(g.t, length(g.vel), topSpeed(frame.input, spaces[g.space].interior), reduced(live.prefs, reducedMotion.matches))
   const next = follow(live.rig, spaces[g.space], g.pos, g.facing, g.panel ? { yaw: 0, pitch: 0 } : frame.look, dt, sway, playerBody(g).eye + footY(g), heldBehind(g))
   live.rig = next.rig
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)
   renderHud(g)
+  const seen = seenAt(live.log.seen, g)
+  if (seen !== live.log.seen) live.log = { ...live.log, seen }
+  live.objective = objectiveFor(live.objective, g.story, live.now)
+  front.objective(g.panel ? undefined : objectiveShown(live.objective, live.now))
+  save(g)
 })
 
 Object.assign(window, {
+  __frontEnd: {
+    screen: () => live.screen,
+    go,
+    // Milliseconds from the title's button (or the page's start, for a link) to the first frame the player controls.
+    timing: () => ({ began: live.began ?? 0, interactive: live.interactive }),
+  },
   __prologue: {
     game: () => live.g,
     walkTo: (x: number, z: number) => {

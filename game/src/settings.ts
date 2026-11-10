@@ -1,7 +1,9 @@
 import type { Action, Controls } from './input.ts'
 import { SENSITIVITY, actionNames, actions, defaults, keyLabel, rebind } from './input.ts'
+import type { Prefs } from './frontEnd.ts'
+import { parsePrefs } from './frontEnd.ts'
 
-export type Settings = Readonly<{ open: () => boolean }>
+export type Settings = Readonly<{ open: () => boolean; show: (open: boolean) => void }>
 
 const $ = <T extends HTMLElement>(id: string): T => {
   const el = document.getElementById(id)
@@ -79,5 +81,19 @@ export const mountSettings = (get: () => Controls, set: (c: Controls) => void): 
     { capture: true },
   )
 
-  return { open: () => !panel.hidden }
+  return { open: () => !panel.hidden, show }
+}
+
+// Text size and reduced motion (frontEnd.ts), at the top of the same panel. Each change applies and saves at once.
+export const mountPrefs = (get: () => Prefs, set: (p: Prefs) => void): void => {
+  const text = $<HTMLSelectElement>('text-size')
+  const motion = $<HTMLSelectElement>('reduce-motion')
+  const draw = (): void => {
+    text.value = get().text
+    motion.value = get().motion
+  }
+  const change = (): void => set(parsePrefs(JSON.stringify({ text: text.value, motion: motion.value })))
+  text.addEventListener('change', change)
+  motion.addEventListener('change', change)
+  draw()
 }

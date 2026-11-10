@@ -596,6 +596,40 @@ test('touch walks with the stick, orbits with a drag and holds the prompt button
   await close()
 })
 
+// The front end (issue #51): pausing holds the story clock, and the journal is a full page, so its frame is the page alone.
+test('the pause menu holds the story clock; the journal and the map show what was played', { timeout: 300000 }, async () => {
+  const { page, errors, close } = await open({ path: '1,1,1,1,1,1,1,1,1,2,1,1,1' })
+  const front = (a: string) => page.evaluate((a) => (window as any).__frontEnd.go(a), a)
+  await front('pause')
+  assert.equal(await page.evaluate(() => (window as any).__frontEnd.screen()), 'pause')
+  const t = (await game(page)).t
+  await frames(page, 10)
+  assert.equal((await game(page)).t, t)
+  await front('journal')
+  await frames(page, 2)
+  assert.ok((await page.locator('#journal li').count()) > 5)
+  checked.push(checkFrame(dirs, 'journal', await page.screenshot({ timeout: 120000 })))
+  await front('back')
+  // The pocket map (issue #303): only the places the story has been or points to, and the clock still held.
+  await front('map')
+  await frames(page, 2)
+  assert.equal((await game(page)).t, t)
+  assert.ok((await page.locator('#map .spot.known').count()) > 0)
+  checked.push(checkFrame(dirs, 'map', await page.screenshot({ timeout: 120000 })))
+  await front('back')
+  await front('back')
+  assert.equal(await page.evaluate(() => (window as any).__frontEnd.screen()), 'play')
+  await front('title')
+  await page.waitForFunction(() => document.querySelector('#title button[data-action=continue]:not([hidden])') !== null)
+  await front('continue')
+  await page.waitForFunction(() => (window as any).__frontEnd.timing().interactive !== undefined, null, { timeout: 120000 })
+  const time = await page.evaluate(() => (window as any).__frontEnd.timing())
+  console.log(`  title to the first controllable frame: ${((time.interactive - time.began) / 1000).toFixed(2)} s`)
+  assert.equal((await game(page)).story.scene, 'a1_body')
+  assert.deepEqual(errors, [])
+  await close()
+})
+
 test('every frame matches its baseline and every space holds its budget in docs/perf.md', () => {
   const over = publish()
   assert.deepEqual(
