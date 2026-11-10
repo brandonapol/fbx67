@@ -5,10 +5,14 @@ import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
 import { KNOT_SHOT } from './knot.ts'
+import { OWEN_SEAT, planeAt, seatAt } from './flight.ts'
+
+const FLIGHT_SHOT = 22
 
 // heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band; ride, when
-// set, holds a boat at that many seconds into its ride, so the frame does not depend on how fast the page ran.
-export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number }>
+// set, holds a boat at that many seconds into its ride, so the frame does not depend on how fast the page ran; flight,
+// likewise, holds the plane that many seconds into the flight north (flight.ts).
+export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number; flight?: number }>
 
 export const poses: Readonly<Record<string, Pose>> = {
   bar: { space: 'bar', pos: vec(0, 3.9), facing: Math.PI, t: 0, shot: { eye: [0, 9.5, 9.5], at: [0, 0.9, 0] } },
@@ -45,6 +49,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   knot_dusk: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: KNOT_SHOT, heat: 2 },
   knot_night: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: KNOT_SHOT, heat: 4 },
   base: { space: 'eielson', pos: vec(160, -7), facing: Math.PI, t: 0, shot: { eye: [175, 22, 12], at: [130, 0, -45] } },
+  // The flight north in its climbing turn over the west end of town, lit low and gold: from off its left wingtip,
+  // looking east past the plane to the town and the low morning sun.
+  flight: { space: 'downtown', pos: seatAt(FLIGHT_SHOT, OWEN_SEAT).at, facing: planeAt(FLIGHT_SHOT).heading, t: 0, flight: FLIGHT_SHOT, shot: { eye: [-56, 31, -26], at: [-36, 24, -19] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
@@ -85,7 +92,7 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
   const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
-  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }) }
+  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
 }
 
 const triangles = (app: pc.AppBase): number =>

@@ -373,6 +373,8 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   const aloft = await game(page)
   assert.equal(aloft.space, 'downtown')
   assert.equal(typeof aloft.flight, 'number')
+  // The flight held mid-turn over town, in its low gold light (probe.ts, poses.flight).
+  await capture(page, 'flight')
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'camp')
   await snap(page, '08-camp', 10)

@@ -1,4 +1,5 @@
 import type { Prop, SpaceId } from './levels.ts'
+import type { Lighting } from './lighting.ts'
 import type { Interactable, Vec } from './world.ts'
 import { angleTo, vec } from './world.ts'
 
@@ -65,6 +66,29 @@ export const flying = (t: number | undefined): t is number => t !== undefined
 
 export const landed = (t: number | undefined): boolean => flying(t) && t >= FLIGHT_TIME
 
+// The cut from the town leg to the camp leg is a dip to black: LEG_FADE seconds down to it, and as long back up.
+export const LEG_FADE = 1.2
+
+// How black the screen is at `t`; clear when nobody is flying.
+export const flightFade = (t: number | undefined): number =>
+  flying(t) ? Math.max(0, 1 - Math.abs(t - TOWN_TIME) / LEG_FADE) : 0
+
+// Over town the flight is lit low and gold: the morning sun held a few degrees over the hills to the east, a warm key
+// and a warm haze. The story is already at the camp's 10:00 by then, and its high sun would light the town leg flat.
+// The camp leg is the camp scene at its own clock; the dip to black between the legs hides the change of light.
+const GOLD = {
+  sun: '#ffb25a',
+  sunAzimuth: 80,
+  sunElevation: 8,
+  fog: '#d2aa88',
+  sky: { zenith: '#7f8fb6', horizon: '#c7a58e', sunward: '#f6aa5e' },
+} as const
+
+export const litGold = (t: number | undefined): boolean => flying(t) && legAt(t) === 'downtown'
+
+export const flightLight = (l: Lighting, t: number | undefined): Lighting =>
+  litGold(t) ? { ...l, ...GOLD, sunUp: true } : l
+
 // Where the plane is: the hull's middle on the ground plane, how high it is, and its heading.
 export type Pose = Readonly<{ at: Vec; y: number; heading: number }>
 
@@ -92,15 +116,15 @@ export const planeAt = (t = 0): Pose => (t < TOWN_TIME ? along(OVER_TOWN, t) : a
 // The plane when nobody is flying it: moored downtown, parked at the camp.
 export const restingIn = (leg: Leg): Pose => (leg === 'downtown' ? planeAt(0) : planeAt(FLIGHT_TIME))
 
-// A point in the plane's own frame (x across to starboard, z forward to the nose) in the space's.
+// A point in the plane's own frame (x across to port, z forward to the nose) in the space's.
 export const onBoard = (p: Pose, local: Vec): Vec => {
   const [s, c] = [Math.sin(p.heading), Math.cos(p.heading)]
   return vec(p.at.x + local.x * c + local.z * s, p.at.z - local.x * s + local.z * c)
 }
 
 // Curly flies from the left seat, Owen rides in the right with the satchel on his knees; the cabin floor's height.
-export const PILOT_SEAT = vec(-0.3, 1.2)
-export const OWEN_SEAT = vec(0.3, 1.2)
+export const PILOT_SEAT = vec(0.3, 1.2)
+export const OWEN_SEAT = vec(-0.3, 1.2)
 export const CABIN_FLOOR = 1.0
 
 export type Seat = Readonly<{ at: Vec; y: number; heading: number }>

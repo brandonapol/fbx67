@@ -19,7 +19,8 @@ import { closeUp } from './knot.ts'
 import type { Debris } from './hazards.ts'
 import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
-import { PILOT_SEAT, flying, planeAt, planeHull, restingIn, seatAt } from './flight.ts'
+import { flightLight, flying, litGold, planeAt, planeHull, restingIn } from './flight.ts'
+import { curlyAt } from './floatDock.ts'
 
 const FAR_CLIP = 200
 
@@ -252,6 +253,8 @@ type Built = Readonly<{
   boat?: pc.Entity
   // Curly's floatplane: moored at the float downtown, and on the flight north over town and down at the camp.
   plane?: pc.Entity
+  // Whether it is lit by the flight's gold over town (flight.ts, flightLight).
+  gold: boolean
   // What comes down the flooded town's streets on the water (hazards.ts).
   debris: readonly (readonly [pc.Entity, Debris])[]
   weather: string
@@ -347,7 +350,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       root.addChild(plane)
     }
     const debris = space.id === 'line' ? DEBRIS.map((d) => [floating(root, d), d] as const) : []
-    const l = lighting(space.id, t.season, weather(g.story), t.clock)
+    const l = flightLight(lighting(space.id, t.season, weather(g.story), t.clock), g.flight)
     const rainRoot = new pc.Entity('rain')
     root.addChild(rainRoot)
     const rain = l.rain
@@ -360,7 +363,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, toggles }
+    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -393,19 +396,30 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       here.time.season !== t.season ||
       stageOf(here.time.season, here.time.clock) !== stageOf(t.season, t.clock)
     if (rebuild) dispose(state.built)
-    // The light snaps to the story's clock at each scene; the space itself stays as it is.
-    if (!rebuild && here.time.clock !== t.clock) light(lighting(space.id, t.season, weather(g.story), t.clock), space)
-    const b: Built = rebuild ? build(g, t) : { ...here, time: t }
+    // The light snaps to the story's clock at each scene, and to the flight's gold over town; the space stays as it is.
+    const gold = litGold(g.flight)
+    if (!rebuild && (here.time.clock !== t.clock || here.gold !== gold))
+      light(flightLight(lighting(space.id, t.season, weather(g.story), t.clock), g.flight), space)
+    const b: Built = rebuild ? build(g, t) : { ...here, time: t, gold }
     state.built = b
     const player = playerFor(playerBody(g).cast)
     const motion = playerMotion(g)
     const clip = clipFor(motion)
     if (player) cast.play(player, clip, playbackRate(clip, motion.speed))
+    // Curly in the left seat, or on his walkaround at the float (floatDock.ts): drawn there, with that one clip.
+    const drawn = curlyAt(g)
     spaces[g.space].figures.forEach((f) => {
       const e = b.figures.get(f.id)
       if (!e) return
-      e.enabled = present(f, g.story, g.path)
+      e.enabled = present(f, g.story, g.path) || (f.id === 'curly' && flying(g.flight))
       if (!castFor(f.cast ?? f.id)) return
+      if (f.id === 'curly' && drawn) {
+        const c = clipFor(drawn.motion)
+        e.setLocalPosition(drawn.at.x, drawn.y, drawn.at.z)
+        e.setLocalEulerAngles(0, (drawn.heading * 180) / Math.PI, 0)
+        cast.play(e, c, playbackRate(c, drawn.motion.speed))
+        return
+      }
       const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
     })
@@ -425,15 +439,12 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       b.plane.enabled = air || g.space === 'downtown'
       b.plane.setLocalPosition(p.at.x, p.y, p.at.z)
       b.plane.setLocalEulerAngles(0, (p.heading * 180) / Math.PI, 0)
-      // Curly flies it from the left seat; on the ground he is where his figure stands.
+      // Stopped to talk, Curly is back where his figure stands.
       const curly = b.figures.get('curly')
       const f = spaces[g.space].figures.find((x) => x.id === 'curly')
-      if (curly && f) {
-        const seat = air ? seatAt(g.flight, PILOT_SEAT) : { at: f.at, y: 0, heading: f.facing }
-        if (air) curly.enabled = true
-        curly.setLocalPosition(seat.at.x, seat.y, seat.at.z)
-        curly.setLocalEulerAngles(0, (seat.heading * 180) / Math.PI, 0)
-        if (air) cast.play(curly, clipFor({ speed: 0, sneaking: false, activity: 'sit', talking: false }), 1)
+      if (curly && f && !drawn) {
+        curly.setLocalPosition(f.at.x, 0, f.at.z)
+        curly.setLocalEulerAngles(0, (f.facing * 180) / Math.PI, 0)
       }
     }
     b.debris.forEach(([e, d]) => {
@@ -452,7 +463,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       b.cone.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
       const mi = b.cone.render?.meshInstances[0]
       if (mi) mi.material = seen(g) ? b.coneMats[1] : b.coneMats[0]
-      b.figures.get('curly')?.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
+      if (!drawn) b.figures.get('curly')?.setLocalEulerAngles(0, (w.facing * 180) / Math.PI, 0)
     }
     b.toggles.forEach(([e, w]) => {
       e.enabled = shows(g, w)

@@ -24,11 +24,12 @@ import {
   writeLetter,
 } from './drive.ts'
 import { start, still } from './prologue.ts'
-import { legs } from './downtown.ts'
-import { POST_BOX, dockFigures, dockProps } from './floatDock.ts'
-import { FLIGHT_TIME, SKIP, TOWN_TIME, flying } from './flight.ts'
+import { FLOAT, legs } from './downtown.ts'
+import { CURLY_ON_FLOAT, FLOAT_DECK, MORNING, POST_BOX, ROUND_TIME, curlyAt, curlyRound, dockFigures, dockProps } from './floatDock.ts'
+import { WALK_SPEED, clipFor } from './cast.ts'
+import { FLIGHT_TIME, MOORED, MOORED_HEADING, PILOT_SEAT, SKIP, TOWN_TIME, flying, onBoard, seatAt } from './flight.ts'
 import { present, spaces } from './levels.ts'
-import { vec } from './world.ts'
+import { distance, vec } from './world.ts'
 
 // The text build's path through the whole prologue with Wade's Texas talk and the notes behind the stove:
 // `node src/cli.ts --choices 1,1,1,1,1,1` ends on a1_flood.
@@ -145,4 +146,46 @@ test('the end of the prologue plays through the dock, the flight and the flood i
     assert.deepEqual(g.path, PROLOGUE)
     assert.deepEqual(g.story, replay(PROLOGUE).at(-1))
   })
+})
+
+test("Curly walks round on the plane's near float: from the pump up to its bow, down to its heel and back", () => {
+  const begin = curlyRound(0)
+  assert.deepEqual(begin.at, CURLY_ON_FLOAT)
+  assert.equal(begin.speed, 0)
+  const near = onBoard({ at: MOORED, y: 0, heading: MOORED_HEADING }, vec(1.3, 0))
+  assert.ok(near.x > FLOAT[1], 'the plane\'s float, not the dock')
+  const samples = Array.from({ length: Math.ceil(ROUND_TIME * 10) }, (_, i) => curlyRound(i / 10))
+  samples.forEach((w, i) => {
+    assert.ok(Math.abs(w.at.x - near.x) < 1e-9, `on the float's deck at ${i / 10}`)
+    assert.ok(Math.abs(w.at.z - MOORED.z) < 3.3, `within the float's length at ${i / 10}`)
+    assert.ok(w.speed <= WALK_SPEED + 1e-9, 'a walk, never a run')
+  })
+  const zs = samples.map((w) => w.at.z)
+  assert.ok(Math.max(...zs) - Math.min(...zs) > 5, 'he walks the length of the float')
+  assert.ok(samples.some((w) => w.speed > 0) && samples.filter((w) => w.speed === 0).length > samples.length / 3, 'and stops to look')
+  // A loop, and a pure function of the time: no jumps a frame apart.
+  assert.deepEqual(curlyRound(ROUND_TIME), curlyRound(0))
+  Array.from({ length: Math.ceil(ROUND_TIME * 30) }, (_, i) => i / 30).forEach((t) => {
+    assert.ok(distance(curlyRound(t).at, curlyRound(t + 1 / 30).at) < 0.1, `jump at ${t}`)
+  })
+})
+
+test("Curly's one pose a frame: flying from the left seat, walking round on the morning, standing to talk", () => {
+  const dock = { ...start(), story: { ...start().story, scene: MORNING }, space: 'downtown', panel: undefined } as Game
+  const walking = curlyAt({ ...dock, pos: vec(118.5, -2), t: 7 })
+  assert.ok(walking)
+  assert.deepEqual(walking.at, curlyRound(7).at)
+  assert.equal(walking.y, FLOAT_DECK)
+  assert.equal(clipFor(walking.motion), curlyRound(7).speed > 0 ? 'walk' : 'idle')
+  // Owen down on the dock, or the scene's menu up: Curly is at the pump, as the scene finds him.
+  ;[{ pos: vec(118.5, -16) }, { pos: vec(118.5, -2), panel: { kind: 'story', title: '', text: '', buttons: [] } as Game['panel'] }].forEach((at) => {
+    const held = curlyAt({ ...dock, ...at, t: 7 })
+    assert.deepEqual(held?.at, CURLY_ON_FLOAT)
+    assert.equal(held?.motion.speed, 0)
+  })
+  const aloft = curlyAt({ ...dock, flight: 20 })
+  assert.ok(aloft)
+  assert.equal(clipFor(aloft.motion), 'sit')
+  assert.deepEqual(aloft.at, seatAt(20, PILOT_SEAT).at)
+  assert.equal(curlyAt({ ...dock, story: { ...dock.story, scene: 'p_camp' }, space: 'camp' }), undefined, 'at the camp he is the watcher')
 })
