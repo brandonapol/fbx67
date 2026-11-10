@@ -54,7 +54,7 @@ check/web: ## Typecheck web
 
 check/game: check/game/typecheck check/game/main test/game/unit build/game ## Typecheck, unit-test and build the engine build
 
-.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke test/game/smoke/act1
+.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke test/game/smoke/act1 test/game/smoke/act2
 check/game/main: ## Fetch origin/main if missing (a shallow CI checkout): the notes ratchet's allowlist only shrinks against it
 	@git rev-parse -q --verify origin/main >/dev/null || git fetch -q --depth=1 origin +main:refs/remotes/origin/main
 
@@ -70,12 +70,18 @@ test/game/smoke: build/game ## Play the prologue in headless Chromium; compare f
 test/game/smoke/act1: build/game ## Play Act 1 from its path to Act 2 in headless Chromium; compare its frames and budgets
 	cd $(GAME) && npm run -s smoke:act1
 
-.PHONY: generate/baselines generate/baselines/act1
-generate/baselines: build/game generate/baselines/act1 ## Replay the smoke tests (prologue and Act 1) and overwrite game/smoke/baselines with their frames
+test/game/smoke/act2: build/game ## Play Act 2 from its start to Act 3 in headless Chromium; compare its frames and budgets
+	cd $(GAME) && npm run -s smoke:act2
+
+.PHONY: generate/baselines generate/baselines/act1 generate/baselines/act2
+generate/baselines: build/game generate/baselines/act1 generate/baselines/act2 ## Replay the smoke tests (prologue, Acts 1 and 2) and overwrite game/smoke/baselines with their frames
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke
 
 generate/baselines/act1: build/game ## Replay only the Act 1 smoke test and overwrite game/smoke/baselines/act1
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke:act1
+
+generate/baselines/act2: build/game ## Replay only the Act 2 smoke test and overwrite game/smoke/baselines/act2
+	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke:act2
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden

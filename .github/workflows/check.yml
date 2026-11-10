@@ -186,3 +186,40 @@ jobs:
           path: game/smoke-report-act1/
           retention-days: 14
           if-no-files-found: ignore
+
+  # Act 2 is its own job, so a failure names the act: it plays from the Act 2 start to Act 3's first scene and checks its
+  # frames (game/smoke/baselines/act2) and the Act 2 spaces' budgets in docs/perf.md (game/smoke/act2.test.ts).
+  smoke-act2:
+    name: Act 2 smoke
+    needs: changes
+    if: needs.changes.outputs.game == 'true' || (github.event_name != 'pull_request' && github.event_name != 'merge_group')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: text-game/.nvmrc
+          cache: npm
+          cache-dependency-path: |
+            text-game/package-lock.json
+            game/package-lock.json
+      - name: Install
+        run: |
+          make setup/text
+          make setup/game
+      - name: Install Chromium
+        working-directory: game
+        run: npx playwright install --with-deps chromium
+      - name: Play Act 2 in headless Chromium
+        env:
+          SMOKE_REPORT: ${{ github.workspace }}/game/smoke-report-act2
+          SMOKE_ARTIFACT: act2-frames-${{ github.run_number }}-${{ github.run_attempt }}
+        run: make test/game/smoke/act2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: act2-frames-${{ github.run_number }}-${{ github.run_attempt }}
+          path: game/smoke-report-act2/
+          retention-days: 14
+          if-no-files-found: ignore
