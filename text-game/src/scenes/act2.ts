@@ -1,5 +1,5 @@
 import { N } from '../names.ts'
-import { type BarfightMemory, hankRemembers, keyMissed, lucyLetGo, recordsOpen } from '../logic.ts'
+import { type BarfightMemory, HEAT_LIMIT, hankRemembers, keyMissed, lucyLetGo, recordsOpen } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, recordsLog, set } from '../state.ts'
 import type { Choice, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
@@ -70,6 +70,30 @@ const coChoices = (_: State): readonly Choice[] => [
   { label: 'Search the Major\'s cabinet tonight.', note: 'search', next: 'a2_co_heist' },
   { label: 'Refuse. That\'s your own CO. You\'d hang for it.', note: 'refuse', apply: set({ coJob: 'lucy' }), next: 'a2_co_lucy' },
 ]
+
+// The officer's stop (a2_officer, #215): he reads Wade's heat back to him. Below 2 he is only curious; up to the
+// ceiling Barnette tolerates (HEAT_LIMIT) he counts off what he has seen; above it he says Wade is making himself easy
+// to hang. Reads existing heat only.
+export type OfficerTier = 'curious' | 'counting' | 'hanging'
+
+export const officerTier = (s: State): OfficerTier => (s.heat < 2 ? 'curious' : s.heat <= HEAT_LIMIT ? 'counting' : 'hanging')
+
+// What a city patrolman downtown could have seen for himself. The base is not his beat.
+const officerSaw = (s: State): string =>
+  [
+    'The Silver Pan in August.',
+    has(s, 'hotelTalk') ? `Two hours on a stool by ${N.tolliverLast}'s booth at the hotel, playing the quiet ones.` : '',
+    'The only uniform at the Chiefs meeting.',
+    s.curlyPlan === 'confront' ? `Saturday at the Pan, asking ${N.curlyShort} where his money comes from.` : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+const officerReads: Readonly<Record<OfficerTier, (s: State) => string>> = {
+  curious: () => `"Nobody's made a complaint on you," he says. "Not the Troopers, not the base. That's what I can't figure. An airman with a clean sheet, and every place that geologist's business turns up, there you are, off duty, just passing." He waits, in case you want to explain it. You don't. "I'm curious, is all. Curious isn't a charge."`,
+  counting: (s) => `He counts it off without hurry, the way a man reads back an order. "${officerSaw(s)} And Barnette has your name in his notebook. He showed me." He lets that sit. "None of it's against the law. I'm only telling you somebody can count."`,
+  hanging: () => `"You're making yourself easy to hang, Pruett," he says. "Barnette has a page on you now, not a line. One more thing and he'll take whatever's handed to him about you, true or not, and whoever drowned that geologist knows how to hand him things." He looks up the street, where the fog swallows the streetlights a block on. "A case Barnette can't bury needs the man who brought the body in standing up in a courtroom in the spring. Not run off the base. Not in a cell. Standing up."`,
+}
 
 const heatChoices = (_: State): readonly Choice[] => [
   { label: 'Lie low until Lucy\'s flight. Play some gigs, be seen being boring.', note: 'lieLow', apply: heat(-2), next: 'a3_camp' },
@@ -414,9 +438,9 @@ ${N.jake} catches you outside the hangar where he does contract maintenance for 
 
 He rubs the back of his neck. "A man in over his head like that, whoever's paying him won't want him around long. Somebody ought to tell somebody who can keep an eye on him. Not me. I fix airplanes."`,
     choices: () => [
-      { label: 'Tell Lucy everything Jake said.', note: 'warn', apply: set({ curlyPlan: 'warn' }), next: 'a2_flight' },
+      { label: 'Tell Lucy everything Jake said.', note: 'warn', apply: set({ curlyPlan: 'warn' }), next: 'a2_officer' },
       { label: 'Go confront Curly yourself.', note: 'confront', apply: set({ curlyPlan: 'confront' }), next: 'a2_confront' },
-      { label: 'Let it go. Curly talks big when he drinks.', note: 'ignore', apply: set({ curlyPlan: 'ignore' }), next: 'a2_flight' },
+      { label: 'Let it go. Curly talks big when he drinks.', note: 'ignore', apply: set({ curlyPlan: 'ignore' }), next: 'a2_officer' },
     ],
   },
   {
@@ -432,7 +456,7 @@ You ask Curly straight out where his money is coming from. The smile stays on hi
 "Texas boys stick together, Wade. Don't make me wonder about you."`,
     choices: (s) => [
       ...(has(s, 'knot') ? [{ label: 'Lean on him: "I saw how that line was tied on Owen, Curly."', note: 'leanOnHim', next: 'a2_confront_knot' } satisfies Choice] : []),
-      { label: 'Let it drop. Eat your steak.', note: 'letDrop', next: 'a2_flight' },
+      { label: 'Let it drop. Eat your steak.', note: 'letDrop', next: 'a2_officer' },
     ],
   },
   {
@@ -446,7 +470,30 @@ You ask Curly straight out where his money is coming from. The smile stays on hi
 Curly sets his fork down very carefully.
 
 "Lot of men tie a knot like that, Wade." He picks up the check and leaves before his steak comes. You have the feeling you just made a mistake.`,
-    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_flight' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_officer' }],
+  },
+  {
+    // The officer speaks for himself (design: his cast entry and Act 2, #83, #215). Short and dry; it reads heat and
+    // moves nothing. He can't be bought, and no tier offers or takes a deal.
+    id: 'a2_officer',
+    act,
+    title: 'Second Avenue',
+    place: 'nlCafe',
+    clock: '1967-11-21T15:30',
+    goal: 'Hear the officer out.',
+    text: (s) => `
+Half past three and the streetlights are already on. Ice fog hangs over Second Avenue at the height of the car roofs. You come out of the Northern Lights Café and there is a Fairbanks PD car at the curb with its engine running, and ${N.cop} leaning on the fender with his hands in his coat.
+
+He's the officer who drove you to the jail in August. The one who put ${N.curlyShort}'s twenty back in his shirt pocket without looking at it.
+
+"Pruett." He doesn't straighten up. "I was at the help tent the night you and ${N.eli} brought the geologist in. The line on him was cut on both sides of something. Barnette never asked where the middle went." A car goes by slow on the ice. "Neither did you."
+
+${officerReads[officerTier(s)](s)}
+
+He opens the car door, then stops. "And don't buy me a coffee. I gave ${N.curlyShort} his twenty back. I'd give you yours."
+
+The car pulls off into the fog. He doesn't look back.`,
+    choices: () => [{ label: 'Walk on.', note: 'walkOn', next: 'a2_flight' }],
   },
   {
     id: 'a2_flight',

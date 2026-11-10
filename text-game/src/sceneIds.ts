@@ -55,6 +55,7 @@ export const sceneIds = [
   'a2_jake',
   'a2_confront',
   'a2_confront_knot',
+  'a2_officer',
   'a2_flight',
   'a2_letter_work',
   'a2_letter_friends',

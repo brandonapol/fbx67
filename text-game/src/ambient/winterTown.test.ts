@@ -62,7 +62,7 @@ test("the tickets' groups are all in town, each at the place and hour of its sce
     'the hotel crowd': [['hotelBartender', 'hotelWaitress', 'professorWhite', 'professorBlack', 'contractor'], ['a2_hotel_set', 'a2_hotel_heard', 'a2_hotel_pieces']],
     'the bush strip': [['pilotYoung'], ['a2_curly']],
     'the Silver Pan in November': [['miner', 'barflyRiver'], ['a2_steak', 'a2_confront', 'a2_confront_knot']],
-    'the café regulars in freeze-up': [['cook', 'landClerk', 'pilotGray'], ['a2_co_gossip', 'a2_heat_gossip']],
+    'the café regulars in freeze-up': [['cook', 'landClerk', 'pilotGray'], ['a2_co_gossip', 'a2_officer', 'a2_heat_gossip']],
     'the café regulars in deep winter': [['waitress', 'landlady', 'reporter', 'paperKid'], ['a3_rash_gossip']],
     "St. Joseph's in winter": [['sister', 'orderly', 'doctor', 'trapper'], ['a3_home', 'a3_curly', 'a3_joan']],
     'the hospital lot at forty below': [['plugIn', 'cabbie'], ['a3_eli']],
