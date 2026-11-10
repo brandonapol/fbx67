@@ -75,6 +75,7 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 75 | A smoke signal fed through a December morning (issue #208) | Act 3 | Plausible; unchecked | Low-medium. Oil, rags and green boughs keep a column going; at -38 F under an inversion it may spread flat. |
 | 76 | A night helicopter pickup at -38 F (issue #208) | Act 3 | Plausible; unchecked | Medium. Army helicopters at Fort Wainwright in 1967; a dark landing by flares and fire is the soft spot. |
 | 77 | Frostbite care and surgery timing, 1967-68 (issue #208) | Act 3, Act 4 | Plausible | Low. No thaw in the field if it may refreeze; amputation waits weeks for demarcation. |
+| 78 | Eli's trip to Old Minto at freeze-up: a last barge down, a wheel-plane mail run home (issue #102) | Act 2 | Plausible; unchecked | Low. Did Old Minto have a wheel strip and mail-plane service in November 1967, and did a last barge run down the Tanana in late October with slush ice running? Also consultant question (`docs/consultant-review.md`, `a2_minto`). |
 
 ## High priority
 

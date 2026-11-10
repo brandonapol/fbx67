@@ -19,9 +19,9 @@ same either way. Play it with `node src/cli.ts --choices <path> --last` from `te
 
 Shared opening:
 
-> November. The Tanana froze while Eli was in Minto. He went down the week after the Chiefs meeting, on the last
-> freight run of the year, with slush ice already running, and came home ten days later on the mail plane. Nobody
-> told you he was going.
+> The Tanana froze while Eli was in Minto. He rode down the week after the Chiefs meeting on the last barge of the
+> year, with slush ice already running, and came home ten days later on the mail plane, on wheels, off the village
+> strip. Nobody told you he was going.
 >
 > Lucy's kitchen table is covered in it: a school notebook gone soft at the corners, carbon paper, and a stack of
 > statements she has typed out clean at night, one for each elder. Each has a signature at the bottom, or a mark with
@@ -30,12 +30,12 @@ Shared opening:
 When Eli tells it:
 
 > Eli tells it himself, at more length than you have ever heard from him outside the Chiefs meeting. He sat with the
-> old people one at a time, in their kitchens, and let each of them talk until they were done: who fished the camp,
+> old people one at a time, in their houses, and let each of them talk until they were done: who fished the camp,
 > which summers, where the racks stood, his grandfather's smokehouse, his mother as a girl cutting fish on the bank.
 > Then he read it all back to them and asked if he had it right.
 >
-> "Eleven," he says. "The oldest one remembers my grandfather's father. They say the first application got lost. So
-> we file a new one, with eleven names on it this time."
+> "Eleven," he says. "The oldest one remembers my grandfather's father. The land office says the first
+> application got lost. So we file a new one, with eleven names on it this time."
 >
 > He squares the stack against the table and slides it back inside the notebook. Lucy is already reading the next
 > page.
@@ -45,16 +45,16 @@ When Lucy tells it:
 > Eli doesn't look up from the notebook. Lucy tells it, while he checks her typing line by line against his own
 > handwriting. He sat with the old people one at a time, [...the same as above...]
 >
-> "Eleven," she says. "The oldest one remembers our grandfather's father. They say the first application got lost. So
-> we file a new one, with eleven names on it this time."
+> "Eleven," she says. "The oldest one remembers our grandfather's father. The land office says the first
+> application got lost. So we file a new one, with eleven names on it this time."
 >
 > Eli finds a word she typed wrong and hands the page back to her. He hasn't said a word to you.
 
 Questions for the consultants:
 
 1. In 1967 the village was at Old Minto on the Tanana, reached by river until freeze-up and by mail plane after. Is
-   a late-October freight run down, and a mail plane home once the river closed, how a Minto man in Fairbanks would
-   have made that trip?
+   a late-October barge down, and a wheel-plane mail run home off the village strip once the river closed, how a
+   Minto man in Fairbanks would have made that trip? (The logistics are also fact-check item 78.)
 2. Is sitting with elders one at a time, in their homes, and reading their words back to them a respectful way to
    show a family gathering testimony for a land claim? Would he have brought something (food, groceries) that the
    scene should show?
