@@ -20,7 +20,7 @@ export const mountSigns = (parent: HTMLElement): ((g: Game, screenAt: ScreenAt) 
     return el
   })
   return (g, screenAt) => {
-    const shown = g.space === 'downtown' && !g.panel ? readable(g.pos).slice(0, MAX_SHOWN) : []
+    const shown = (g.space === 'downtown' || g.space === 'flood') && !g.panel ? readable(g.pos).slice(0, MAX_SHOWN) : []
     const blades = shown.flatMap((s) => s.texts.map((text, i) => ({ text, at: screenAt(s.at.x, BLADE_Y[i]! + 0.11, s.at.z) })))
     pool.forEach((el, i) => {
       const b = blades[i]
