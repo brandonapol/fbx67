@@ -40,18 +40,18 @@ export const sitAndOrder = (p: Pan): Pan => {
 
 export const standUp = (p: Pan): Pan => ({ ...p, seated: undefined })
 
-// The jukebox: five records, picked by their button. A record the story has a line for says it (the steel guitar on
-// B7, the polka); the rest just play. The music the audio layer plays is the style.
+// The jukebox: five records, picked by their button. Each says the story's aside for it (the steel guitar on
+// B7, the polka, the fiddle, the ballad, the rockabilly). The music the audio layer plays is the style.
 export type SongKey = 'A1' | 'B7' | 'C3' | 'D5' | 'E2'
 
 export type Song = Readonly<{ key: SongKey; style: 'fiddle' | 'steel' | 'polka' | 'ballad' | 'rockabilly'; bit?: string }>
 
 export const songs: readonly Song[] = [
-  { key: 'A1', style: 'fiddle' },
+  { key: 'A1', style: 'fiddle', bit: 'fiddle' },
   { key: 'B7', style: 'steel', bit: 'dime' },
   { key: 'C3', style: 'polka', bit: 'polka' },
-  { key: 'D5', style: 'ballad' },
-  { key: 'E2', style: 'rockabilly' },
+  { key: 'D5', style: 'ballad', bit: 'ballad' },
+  { key: 'E2', style: 'rockabilly', bit: 'rockabilly' },
 ]
 
 const JUKE_REACH = 1.6
