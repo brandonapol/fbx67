@@ -16,6 +16,7 @@ import { PNG } from 'pngjs'
 import { TARGETS, lookOf, misses } from './look.ts'
 import { CURLY_PERIOD } from '../src/curly.ts'
 import { starts } from './starts.ts'
+import { CURLY_WINDOW, FAST } from './pace.ts'
 import { legs } from '../src/downtown.ts'
 import { FLOOD_WALK, HALL } from '../src/drive.ts'
 import { faceSeen, manAt } from '../src/skiff.ts'
@@ -119,9 +120,7 @@ const tour = async (p: Page, home: Point, away: Point, ms = 10000): Promise<void
 
 const game = (p: Page) => p.evaluate(() => (window as any).__prologue.game())
 
-// Game ticks per drawn frame (main.ts). Software rendering draws a few frames a second and each tick is capped at
-// 0.1 s, so at 1 the walks downtown and the skiff ride take several times their game time; FAST keeps them short.
-const FAST = 4
+// Game ticks per drawn frame (main.ts): FAST keeps the walks, the wait for Curly and the skiff ride short (pace.ts).
 const pace = (p: Page, n: number) => p.evaluate((n) => (window as any).__prologue.pace(n), n)
 
 const camera = (p: Page) => p.evaluate(() => (window as any).__prologue.camera())
@@ -418,16 +417,18 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await page.locator('#settings-close').click()
   await frames(page, 2)
   assert.equal(await page.evaluate(() => (window as any).__prologue.shown('sight')), false)
+  lap('camp walk, establishing shot and settings')
   // Hiding waits for Curly to go back to his cans (curly.ts): his routine's clock, which stops while he looks toward a
-  // noise, is early in its period, and the whole of his work is ahead before he looks again.
-  await pace(page, 1)
+  // noise, is early in its period, and the whole of his work is ahead before he looks again. The wait stays at FAST: a
+  // period is about 20 s of game time, which at one tick a frame cost this run over 3 minutes in software rendering;
+  // pace.test.ts holds that no frame at FAST steps over the window and the hide ends before he looks.
   await page.waitForFunction(
-    (period) => {
+    ([period, early]) => {
       const g = (window as any).__prologue.game()
       const w = g.watch ?? { lost: 0 }
-      return !w.alarm && (((g.t - w.lost) % period) + period) % period < 1
+      return !w.alarm && (((g.t - w.lost) % period) + period) % period < early
     },
-    CURLY_PERIOD,
+    [CURLY_PERIOD, CURLY_WINDOW] as const,
     { timeout: 90000 },
   )
   await page.keyboard.down('e')
@@ -436,8 +437,7 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await snap(page, '09-hidden')
   await capture(page, 'hidden')
 
-  await pace(page, FAST)
-  lap('camp and hiding')
+  lap('waiting on Curly and hiding')
   await walk(page, [[0, -6], [-2, -1.5], [-6, 2], [-7.4, 3.8]], true)
   await page.keyboard.press('e')
   // August: his room, then down the stair (the view follows the camera on the next frame, so each aim waits a few), the flooded hall and out of the front door.
