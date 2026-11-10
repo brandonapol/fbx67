@@ -348,7 +348,7 @@ const slope: Soundscape = {
 export const act3Soundscapes: Readonly<Record<Act3Space, Soundscape>> = { icefog, cockpit, crash, slope }
 
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 

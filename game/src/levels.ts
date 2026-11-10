@@ -7,8 +7,9 @@ import { N } from '../../text-game/src/names.ts'
 import { CENTER, SIZE, doorSpots, gaps, pieces, spawnAt } from './downtown.ts'
 import { standing, townLayer } from './freezeup.ts'
 import { jail } from './jail.ts'
+import { helpTent, tentProps } from './hospital.ts'
 
-export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'story'
+export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -433,12 +434,13 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, story }
 
-// What a space shows in a season: its own props, and downtown's seasonal layer (freezeup.ts). The season is the
-// story's, never the space's (timeOf in lighting.ts). Season layers add nothing solid, so collision reads s.props.
+// What a space shows in a season: its own props, downtown's seasonal layer (freezeup.ts) and the help tent's dressing
+// (hospital.ts). The season is the story's, never the space's (timeOf in lighting.ts). Season layers add nothing
+// solid, so collision reads s.props.
 export const propsIn = (s: Space, season: Season, clock?: Clock): readonly Prop[] =>
-  s.id === 'downtown' ? [...s.props, ...townLayer(season, clock)] : s.props
+  s.id === 'downtown' ? [...s.props, ...townLayer(season, clock)] : s.id === 'helpTent' ? tentProps(s.props, season, clock) : s.props
 
 export const centerOf = (s: Space): Vec => s.center ?? vec(0, 0)
 
