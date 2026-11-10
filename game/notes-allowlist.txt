@@ -49,8 +49,6 @@ a3_confession_none:walk
 a3_confession_safe:stay
 a3_confession_safe:turn
 a3_confession_safe:walk
-a3_crash:fire
-a3_crash:jake
 a3_curly:continue
 a3_eli:leverage
 a3_eli:quiet
@@ -62,12 +60,6 @@ a3_home:tellEli
 a3_joan:honest
 a3_joan:lie
 a3_joan:soft
-a3_survive_fire:saveFire
-a3_survive_fire:smoke
-a3_survive_fire:stampX
-a3_survive_jake:saveFire
-a3_survive_jake:smoke
-a3_survive_jake:stampX
 a3_turn:continue
 a3_walk:continue
 lucysDig:cache
@@ -102,6 +94,12 @@ theBarfight:stayedSeated.shove.stoodWithEli.redHanded
 theHotelBar:heardMost
 theHotelBar:heardPieces
 theHotelBar:skipped
+theLongNight:fire.saveFire
+theLongNight:fire.smoke
+theLongNight:fire.stampX
+theLongNight:jake.saveFire
+theLongNight:jake.smoke
+theLongNight:jake.stampX
 theMajorsCabinet:code.seen
 theMajorsCabinet:code.unseen
 theMajorsCabinet:forced.seen

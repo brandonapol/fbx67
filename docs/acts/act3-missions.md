@@ -7,8 +7,8 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the 
 [`design.md`](../../design.md) disagree, the design wins.
 
 **Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. Section 1's menu,
-`lucysDig`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's, `theRashPlan`, are already in
-`missions.ts`.
+`lucysDig`, section 2's, `theLongNight`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's,
+`theRashPlan`, are already in `missions.ts`.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:
@@ -119,14 +119,13 @@ hillside of black spruce forty minutes out from the camp. Playing Lucy.
   > The long night. Order: fire first / Jake first. Signal: smoke / X / saved the fire
 
   Each pair is a note, `fire.smoke` and so on, applying `fire` or `jake`, then `smoke`, `stampX` or `saveFire`. The
-  menu is `theLongNight`; all six notes land on `a3_search`. Today the scene keeps neither choice, so all six land on
-  the same state; that changes with the state below.
+  menu is `theLongNight`; all six notes land on `a3_search`, each on its own state, since both choices carry (below).
 - **What shades heat or trust.** Nothing about how it is played.
 - **New state.** `design.md` adopts the survival-night order and signal as state: Jake's frostbite carries into Act 4,
-  and the signal changes how long the search takes. Proposed: `nightOrder` (`fire` or `jake`; fire first leaves Jake
-  frostbitten) and `nightSignal` (`smoke`, `stampX` or `saveFire`), each with a reader in `logic.ts` and sweep
-  coverage. The readers and magnitudes are picked in the implementing ticket, not here; this spec only names what the
-  note must carry.
+  and the signal changes how long the search takes. Built: `nightOrder` (`fire` or `jake`), read by `jakeFrostbitten`
+  (fire first leaves Jake frostbitten), and `nightSignal` (`smoke`, `stampX` or `saveFire`), read by `searchHours`
+  (3, 5 or 7 hours until the rest of the team reaches the wreck), both covered by the sweep and in `liveness.ts`. The
+  menu adds none: how well the night is played (warmth, the fire, frostbite on Lucy's hands) stays inside the mission.
 
 ## 3. The ski search
 
