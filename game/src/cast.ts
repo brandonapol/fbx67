@@ -1,4 +1,5 @@
 import type { Pov } from '../../text-game/src/story.ts'
+import { lucy } from './lucy.ts'
 
 export const castIds = ['owen', 'curly', 'wade', 'hank'] as const
 
@@ -51,7 +52,7 @@ export const modelUrl = (base: string, who: CastId): string => `${base}character
 
 // Who the player is, by the story's pov(state): the model and clip set, the camera's eye height (the pivot the arm
 // hangs from) and the footstep voice (tread: a pitch and a weight). Wade is nineteen, taller and lighter than Owen: a higher eye, a lighter, quicker
-// step. Lucy has no model yet; her scenes hand off to the text build.
+// step. Lucy's body is hers, in lucy.ts.
 export type Tread = Readonly<{ pitch: number; weight: number }>
 
 export type Body = Readonly<{ cast?: CastId; eye: number; tread: Tread }>
@@ -59,5 +60,5 @@ export type Body = Readonly<{ cast?: CastId; eye: number; tread: Tread }>
 export const bodies: Readonly<Record<Pov, Body>> = {
   owen: { cast: 'owen', eye: 1.7, tread: { pitch: 1, weight: 1 } },
   wade: { cast: 'wade', eye: 1.8, tread: { pitch: 1.15, weight: 0.85 } },
-  lucy: { eye: 1.6, tread: { pitch: 1.3, weight: 0.7 } },
+  lucy,
 }
