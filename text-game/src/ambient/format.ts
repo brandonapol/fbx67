@@ -1,7 +1,8 @@
-// The ambient format: the people (and things) Owen passes, and every line they say, keyed by trigger. Ambient talk
-// never changes plot state; a line can only read it, through `when`. An interaction that must matter is a menu note
-// (docs/story-api.md), with its field in state.ts.
+// The ambient format: the people (and things) the player passes, and every line they say, keyed by trigger. Ambient
+// talk never changes plot state; a line can only read it, through `when`. An interaction that must matter is a menu
+// note (docs/story-api.md), with its field in state.ts.
 import type { Act, Clock, Place, State } from '../types.ts'
+import type { Pov } from '../queries.ts'
 import { N } from '../names.ts'
 
 export type Topic = 'survey' | 'curly' | 'weather' | 'landOffice'
@@ -10,12 +11,13 @@ export type Reaction = 'bump' | 'run' | 'stare'
 
 export type Trigger = 'greet' | 'talk' | 'bark' | 'use' | `askAbout:${Topic}` | `react:${Reaction}`
 
-// Who says a line: Owen, the person or thing it belongs to, or a narrated aside.
-export type Speaker = 'owen' | 'them' | 'aside'
+// Who says a line: the player character (Owen in the prologue, Wade after), the person or thing it belongs to, or a
+// narrated aside. The lint holds a player line to the scenes played as that character.
+export type Speaker = Pov | 'them' | 'aside'
 
 export type Said = Readonly<{ by: Speaker; text: string }>
 
-// One exchange: one to three lines, an optional reply Owen can give, and an optional read of story state.
+// One exchange: one to three lines, an optional reply the player can give, and an optional read of story state.
 export type Bit = Readonly<{
   id: string
   lines: readonly Said[]
@@ -36,8 +38,8 @@ export type Ambient = Readonly<{
   lines: Partial<Readonly<Record<Trigger, readonly Bit[]>>>
 }>
 
-// An overheard thread: lines between ambient people, played in order while Owen lingers. `plants` says what it sets
-// up and `paysOff` the act where that lands; both are notes for writers, read by nobody at runtime.
+// An overheard thread: lines between ambient people, played in order while the player lingers. `plants` says what it
+// sets up and `paysOff` the act where that lands; both are notes for writers, read by nobody at runtime.
 export type Thread = Readonly<{
   id: string
   at: Window
