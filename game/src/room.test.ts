@@ -14,7 +14,9 @@ const night = (): Game => toRoom(talk(start(), 'texas'))
 test("the tape plays the reel-to-reel's own line from the story layer, and sends no note", () => {
   const g = night()
   const played = useRoom(g, 'reel')!
-  const line = prologueThings.find((t) => t.id === 'reelToReel')!.lines.use![0]!.lines[0]!.text
+  const bit = prologueThings.find((t) => t.id === 'reelToReel')!.lines.use![0]!
+  const line = bit.lines.map((l) => l.text).join(' ')
+  assert.ok(bit.lines.some((l) => l.by === 'owen'), 'the tape carries Owen dictating')
   assert.equal(played.panel?.kind, 'talk')
   assert.equal(played.panel?.title, 'The reel-to-reel')
   assert.equal(played.panel?.text, line)

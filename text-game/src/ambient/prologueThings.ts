@@ -38,7 +38,21 @@ export const prologueThings: readonly Ambient[] = [
     at: [{ place: 'owensRoom', from: '1967-07-15T00:00', to: '1967-07-15T01:30' }],
     lines: {
       use: [
-        aside('play', 'You thread the tape. Your own voice reads stake numbers off a survey line, flat and tired.'),
+        {
+          id: 'play',
+          lines: [
+            { by: 'aside', text: 'You thread the tape. Your own voice, flat and tired, dictating.' },
+            { by: 'owen', text: 'Stake four-twelve plus fifty. Four-thirteen. Iron pipe, brass cap, flagged in orange.' },
+            { by: 'owen', text: 'Lower Chatanika, gravel on the bench, good footing. The line holds north of the slough.' },
+          ],
+        },
+        {
+          id: 'client',
+          lines: [
+            { by: 'aside', text: 'The tape runs on past the stakes. The voice drops.' },
+            { by: 'owen', text: 'Note to file. The client wants the route run before the parcels settle. Nobody asked why.' },
+          ],
+        },
         aside('rewind', 'The reels whine back to the start. You leave it there and listen to the street instead.'),
       ],
     },
