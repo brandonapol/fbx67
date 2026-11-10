@@ -303,3 +303,26 @@ test('the epilogue moves the claim\'s date by the logbook, in good and best only
   assert.match(text({ recordsLog: 0, curlyPlan: 'confront' }), /It takes years/)
   assert.equal(text({ recordsLog: 1, testified: false }), text({ recordsLog: 0, testified: false }))
 })
+
+// #342: Lucy does not rub frozen toes while keeping Jake's frozen foot from the fire; she checks, finds Wade's numb, and warms them.
+test('Lucy checks and warms Wade\'s numb toes at the wreck, on every route there', () => {
+  const text = (id: State['scene'], s: State): string => (scenes.find((sc) => sc.id === id) as Scene).text(s)
+  const wrecks = [1, 2].map((o) => text('a3_wreck', reach(o, 1, 'a3_wreck')))
+  for (const w of wrecks) {
+    assert.doesNotMatch(w, /works the feeling back|frozen toes/)
+    assert.match(w, /numb but not frozen/)
+    assert.match(w, /against her stomach/)
+  }
+  const s = reach(1, 1, 'a3_wreck')
+  assert.match(text('a3_ski_down', s), /toes go numb/)
+  assert.match(text('a3_ski_up', s), /toes go numb/)
+})
+
+// #344: Jake's honesty is shown by what he says about his uncle, not labeled.
+test('Jake is introduced without the "straight arrow" label', () => {
+  const jake = scenes.find((sc) => sc.id === 'a2_jake') as Scene
+  const intro = jake.text(initialState)
+  assert.match(intro, /Bush pilot, mechanic\./)
+  assert.match(intro, /they don't talk/)
+  assert.doesNotMatch(intro, /straight arrow/)
+})
