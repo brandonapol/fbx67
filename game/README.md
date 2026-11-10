@@ -89,6 +89,10 @@ src/drive.ts      a headless player for tests
 src/probe.ts      test-only hooks: fixed capture poses and per-frame stats; loaded only with ?test=1
 src/props.ts      the glTF loader for every model (meshopt decoding), and prop placement
 src/viewer.ts     viewer.html: the generated assets and one animated character, for make test/assets
+src/combat.ts     the grounded combat core: shove, grab, use, get up, the clock to the law, the tally; pure
+src/fightSpace.ts the fight's test space: one room, the player and one man against him
+src/fightControls.ts the fight's keys and gamepad buttons; pure
+src/fightView.ts  fight.html: the test space drawn in blocks, on keyboard or gamepad (make serve/game)
 tools/            asset generators: characters.ts, assets.ts and procedural.ts (docs/art/pipeline.md)
 smoke/            the end-to-end browser test, frame comparison and budget checks
 smoke/baselines/  the committed frame per capture pose
