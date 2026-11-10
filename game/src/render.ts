@@ -14,7 +14,7 @@ import { castFor, clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { footY, inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
-import { DECK_Y, hull, rideAt } from './skiff.ts'
+import { boatIn } from './cabinRide.ts'
 import type { Debris } from './hazards.ts'
 import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
@@ -246,7 +246,7 @@ type Built = Readonly<{
   rain: readonly pc.Entity[]
   // The rain falls in a box that goes where the player goes, so it is overhead anywhere in a town-sized space.
   rainRoot: pc.Entity
-  // The skiff in the flood, which carries the hooded man and, once he climbs in, Owen.
+  // The skiff in the flood, which carries the hooded man and, once he climbs in, Owen; Eli's riverboat to the cabin.
   boat?: pc.Entity
   // What comes down the flooded town's streets on the water (hazards.ts).
   debris: readonly (readonly [pc.Entity, Debris])[]
@@ -332,9 +332,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       })
       root.addChild(cone)
     }
-    const boat = space.id === 'flood' ? new pc.Entity('skiff') : undefined
+    const boat = space.id === 'flood' || space.id === 'cabin' ? new pc.Entity('boat') : undefined
     if (boat) {
-      hull.forEach((p) => addProp(boat, p))
+      boatIn(space.id).hull.forEach((p) => addProp(boat, p))
       root.addChild(boat)
     }
     const debris = space.id === 'line' ? DEBRIS.map((d) => [floating(root, d), d] as const) : []
@@ -401,11 +401,12 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
     })
     if (b.boat) {
-      const r = rideAt(g.ride ?? 0)
+      const craft = boatIn(g.space)
+      const r = craft.course.at(g.ride ?? 0)
       b.boat.setLocalPosition(r.hull.x, 0, r.hull.z)
       b.boat.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
-      const man = b.figures.get('hooded')
-      man?.setLocalPosition(r.bow.x, DECK_Y, r.bow.z)
+      const man = b.figures.get(craft.man)
+      man?.setLocalPosition(r.bow.x, craft.deck, r.bow.z)
       man?.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
     }
     b.debris.forEach(([e, d]) => {

@@ -15,7 +15,8 @@ import { officeSpot, takesIt } from './landoffice.ts'
 import type { Letter as Home } from './letters.ts'
 import { choose, finish as penDown, open as openHome, turn as turnPage, write, written } from './letters.ts'
 import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
-import { DECK_Y, rideAt, rideOver, riding } from './skiff.ts'
+import { riding } from './skiff.ts'
+import { boatIn } from './cabinRide.ts'
 import { searchSpot } from './searchEli.ts'
 import { entryFrom, walksUp } from './trail.ts'
 import { paceThrough, wash } from './hazards.ts'
@@ -223,6 +224,8 @@ const arrive = (g: Game): Game => {
   if (r.space === 'flood' && g.space !== 'flood') return g.space === 'boarding' ? enter(g, 'flood', FLOOD_AT, FLOOD_FACING) : enter(g, 'room')
   // On the search for Eli, Wade wades up to the help tent from the street: the way up waits at the end of Cushman.
   if (walksUp(g.space, r.space, g.path)) return { ...g, panel: undefined }
+  // To the cabin Wade goes by boat with Eli: in it from the first frame, the scene's menu at the end of the ride.
+  if (r.space === 'cabin' && g.space !== 'cabin') return board(enter(g, 'cabin'))
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
     // the town where he went up.
@@ -244,11 +247,12 @@ const arrive = (g: Game): Game => {
 
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
 
-// Smoking is a held action anywhere Wade is in the world: hold interact with nothing in front of him to light one.
+// Smoking is a held action anywhere Wade is on his feet in the world: hold interact with nothing in front of him to
+// light one. Not in a boat, where the ride ticks before any hold.
 export const CIGARETTE = 'cigarette'
 export const LIGHT_TIME = 1.5
 
-export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
+export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit && !riding(g.ride) && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
 
 // Lucy takes a lit cigarette out of Wade's mouth as soon as he is near her, and drops it in the water.
 const douse = (g: Game): Game => (g.space === 'office' && g.lit && takesIt(g.pos) ? { ...g, lit: undefined, doused: true } : g)
@@ -381,16 +385,18 @@ export const press = (g: Game, button: string): Game => {
 }
 
 const seated = (g: Game, ride: number): Game => {
-  const r = rideAt(ride)
+  const r = boatIn(g.space).course.at(ride)
   return { ...g, ride, pos: r.seat, facing: r.heading, view: r.heading, vel: zero }
 }
 
 const board = (g: Game): Game => ({ ...seated(g, 0), panel: undefined, holding: undefined })
 
-// The ride: the skiff poles on along its path whatever the player does, and the end card comes up on the black.
+// The ride: the boat poles on along its course whatever the player does. At the end of the skiff's the end card comes
+// up on the black; at the end of Eli's, the cabin scene's menu.
 const ride = (g: Game, dt: number): Game => {
   const next = seated(g, (g.ride ?? 0) + dt)
-  return rideOver(next.ride) ? { ...next, panel: endCard } : next
+  if ((next.ride ?? 0) < boatIn(g.space).course.time) return next
+  return g.space === 'flood' ? { ...next, panel: endCard } : menuPanel(next)
 }
 
 const finish = (g: Game, h: Holding): Game => {
@@ -460,7 +466,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
 }
 
 // The player is whoever the story's pov(state) says (pov.ts).
-export const playerBody = (g: Game): Body => bodyFor(g.story, riding(g.ride))
+export const playerBody = (g: Game): Body => bodyFor(g.story, g.space === 'flood' && riding(g.ride))
 
 // The player stands in the world only in a space of the story's act: not over the story backdrop, and not in the
 // prologue's flood under the end card, where the story has already moved on to Wade.
@@ -470,7 +476,7 @@ export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaki
 
 // How high Owen's feet are: on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
-export const footY = (g: Game): number => (riding(g.ride) ? DECK_Y : standAt(spaces[g.space], g.pos))
+export const footY = (g: Game): number => (riding(g.ride) ? boatIn(g.space).deck : standAt(spaces[g.space], g.pos))
 
 // The heading the camera is held behind on the ride (skiff.ts, keepBehind); none on foot.
 export const heldBehind = (g: Game): number | undefined => (riding(g.ride) ? g.facing : undefined)

@@ -5,8 +5,9 @@ import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
 
-// heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band.
-export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number }>
+// heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band; ride, when
+// set, holds a boat at that many seconds into its ride, so the frame does not depend on how fast the page ran.
+export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number }>
 
 export const poses: Readonly<Record<string, Pose>> = {
   bar: { space: 'bar', pos: vec(0, 3.9), facing: Math.PI, t: 0, shot: { eye: [0, 9.5, 9.5], at: [0, 0.9, 0] } },
@@ -34,6 +35,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   downtown_flood: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-08-15T12:00' } },
   downtown_freezeup: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-10-28T12:30' } },
   // The base blockout: Wade on the gate road at the squadron lot, the squadron building and his dorm beyond.
+  // Act 1's evening at the cabin: the ride over, Wade on the thwart, Eli in the bow, the body off to starboard with the
+  // yellow line down to the drowned sawhorse, the cabin sunk to its eaves beyond.
+  cabin: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: { eye: [-0.4, 3.2, -2.2], at: [4.1, 0.2, -9.2] } },
   base: { space: 'eielson', pos: vec(160, -7), facing: Math.PI, t: 0, shot: { eye: [175, 22, 12], at: [130, 0, -45] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
@@ -75,7 +79,7 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
   const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
-  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined }
+  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }) }
 }
 
 const triangles = (app: pc.AppBase): number =>

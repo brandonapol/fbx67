@@ -107,9 +107,18 @@ const RAN = ['findEli', 'lacey', 'drink', 'helpTent', 'envelope', 'waitBaby', 'w
 const PATHS = { skipped: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1], ran: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] }
 
 // No teleport: within a space every tick moves Wade no farther than his top speed allows. The one change of space
-// is up to the help tent and back, and he comes back down into the town where he went up.
-const noJumps = (w: Walked) => {
+// is up to the help tent and back, and he comes back down into the town where he went up. The search ends with Wade
+// in Eli's boat, at the start of the ride out to the cabin (cabinRide.test.ts).
+const ashore = (w: Walked): Walked => {
+  const last = w.steps.at(-1)!
+  assert.equal(last.space, 'cabin', 'the search ends in the boat')
+  assert.deepEqual(last.pos, spaces.cabin.spawn)
+  return { ...w, steps: w.steps.slice(0, -1) }
+}
+
+const noJumps = (all: Walked) => {
   const most = JOG * DT + 1e-6
+  const w = ashore(all)
   w.steps.forEach((s, i) => {
     const prev = w.steps[i - 1]
     if (!prev) return
@@ -122,7 +131,7 @@ const noJumps = (w: Walked) => {
 test('the trail without the errand is walkable end to end, and lands where the text build and the mission note do', () => {
   const w = play(SKIPPED)
   noJumps(w)
-  assert.ok(w.steps.every((s) => s.space === 'line'), 'never leaves the town')
+  assert.ok(ashore(w).steps.every((s) => s.space === 'line'), 'never leaves the town on foot')
   assert.equal(w.game.story.scene, 'a1_body')
   assert.deepEqual(w.game.path, PATHS.skipped)
   assert.deepEqual(w.game.story, replay(PATHS.skipped).at(-1))
@@ -132,8 +141,9 @@ test('the trail without the errand is walkable end to end, and lands where the t
 test('the trail with the errand is walkable end to end through the help tent, and lands where the text build does', () => {
   const w = play(RAN)
   noJumps(w)
-  assert.ok(w.steps.some((s) => s.space === 'helpTent'), 'up to the tent')
-  assert.equal(w.steps.filter((s, i) => i > 0 && s.space !== w.steps[i - 1]!.space).length, 2, 'there and back, once')
+  const walked = ashore(w).steps
+  assert.ok(walked.some((s) => s.space === 'helpTent'), 'up to the tent')
+  assert.equal(walked.filter((s, i) => i > 0 && s.space !== walked[i - 1]!.space).length, 2, 'there and back, once')
   assert.equal(w.game.story.scene, 'a1_body')
   assert.deepEqual(w.game.path, PATHS.ran)
   assert.deepEqual(w.game.story, replay(PATHS.ran).at(-1))

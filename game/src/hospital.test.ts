@@ -6,7 +6,7 @@ import { seasonOn } from '../../text-game/src/queries.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, interact, press } from './prologue.ts'
 import { startFrom } from './start.ts'
-import { walk } from './drive.ts'
+import { wait, walk } from './drive.ts'
 import { propsIn, solids, spaces } from './levels.ts'
 import { lighting } from './lighting.ts'
 import { soundscapes } from './soundscape.ts'
@@ -46,7 +46,8 @@ test("the tent's place id has a spawn point, clear of every solid and figure", (
 })
 
 test('the body comes in from the boat: sending the body mission walks Wade into the tent', () => {
-  const body = startFrom(hash(TO_RULING.slice(0, -1)), '')
+  const body = wait(startFrom(hash(TO_RULING.slice(0, -1)), ''), (g) => g.panel !== undefined)
+  assert.equal(body.space, 'cabin')
   assert.equal(body.panel?.kind, 'story')
   const note = body.panel!.buttons.find((b) => b.id.startsWith('note:'))!
   const inTent = press(body, note.id)

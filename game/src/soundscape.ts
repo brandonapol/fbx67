@@ -378,8 +378,19 @@ const airbase: Soundscape = {
   events: [{ spot: 'door', bus: 'ambience', every: [20, 50], spread: 60 }],
 }
 
+// The slough out to the cabin in the evening: still water against the hull, the river moving somewhere off past the
+// spruce, a raven now and then.
+const cabin: Soundscape = {
+  ground: { surface: 'water', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 380, gain: 0.22, wobble: { rate: 0.12, depth: 0.4, on: 'freq' } },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 1200, gain: 0.12, wobble: { rate: 0.3, depth: 0.6, on: 'gain' } },
+  ],
+  events: [{ spot: 'raven', bus: 'ambience', every: [20, 50], spread: 20 }],
+}
+
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 
