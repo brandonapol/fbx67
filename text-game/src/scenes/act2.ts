@@ -24,11 +24,11 @@ const letterGoal = 'Write home to Mama.'
 const heardAt = { place: 'hotelBar', clock: '1967-10-07T22:30', goal: `Pack up and tell ${N.lucy} what you heard.` } as const
 
 // Eli's trip to Minto (a2_minto). What he did is the same whoever tells it; only the teller and the frame differ.
-const mintoTrip = `November. The Tanana froze while ${N.eli} was in Minto. He went down the week after the Chiefs meeting, on the last freight run of the year, with slush ice already running, and came home ten days later on the mail plane. Nobody told you he was going.
+const mintoTrip = `The Tanana froze while ${N.eli} was in Minto. He rode down the week after the Chiefs meeting on the last barge of the year, with slush ice already running, and came home ten days later on the mail plane, on wheels, off the village strip. Nobody told you he was going.
 
 ${N.lucy}'s kitchen table is covered in it: a school notebook gone soft at the corners, carbon paper, and a stack of statements she has typed out clean at night, one for each elder. Each has a signature at the bottom, or a mark with two witnesses' names beside it.`
 
-const mintoSat = 'He sat with the old people one at a time, in their kitchens, and let each of them talk until they were done: who fished the camp, which summers, where the racks stood, his grandfather\'s smokehouse, his mother as a girl cutting fish on the bank. Then he read it all back to them and asked if he had it right.'
+const mintoSat = 'He sat with the old people one at a time, in their houses, and let each of them talk until they were done: who fished the camp, which summers, where the racks stood, his grandfather\'s smokehouse, his mother as a girl cutting fish on the bank. Then he read it all back to them and asked if he had it right.'
 
 const mintoTeller: Readonly<Record<'eli' | 'lucy', Readonly<{ opening: string; who: string; whose: string; closing: string }>>> = {
   eli: {
@@ -287,7 +287,7 @@ By morning ${N.barnette} has a description: a Native woman seen leaving a squadr
     clock: '1967-11-08T13:00',
     goal: `See how ${N.curlyShort} is doing.`,
     text: (s) => `
-November. Planes are coming off floats and going onto skis, so nobody is flying anywhere for weeks. You find Curly at the bush strip lashing a tarp over a wing.
+November. Planes are coming off floats and going onto skis, so nothing will fly out of the bush strip for weeks. You find Curly there lashing a tarp over a wing.
 
 He ties it off without looking, with yellow braided line off a coil on his workbench: a bowline, backward, the tail outside the loop.${has(s, 'knot') ? '\n\nYou have seen that knot before. There\'s a piece of it in your footlocker, cut off a drowned sawhorse, in the same yellow line.' : ''}
 
@@ -328,7 +328,7 @@ ${mintoTrip}
 
 ${teller.opening} ${mintoSat}
 
-"Eleven," ${teller.who} says. "The oldest one remembers ${teller.whose} grandfather's father. They say the first application got lost. So we file a new one, with eleven names on it this time."
+"Eleven," ${teller.who} says. "The oldest one remembers ${teller.whose} grandfather's father. The land office says the first application got lost. So we file a new one, with eleven names on it this time."
 
 ${teller.closing}`
     },
