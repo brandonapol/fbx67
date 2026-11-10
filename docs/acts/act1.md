@@ -14,8 +14,13 @@ standing. *Mission*: a playable stretch with a goal and checkpoints that ends in
 
 **Spaces.** Every space below is one of the `Place` ids in [`town-map.md`](../town-map.md). Spots inside
 `floodedStreet` use the town map's coordinates and the flood tables (water one flat plane at y 1.2). Engine spaces
-today (`game/src/levels.ts`): `bar`, `room`, `camp`, `flood`. The `flood` space is a 20 × 16 m piece of Third at
-Owen's door; Act 1 builds on it and extends the flooded downtown as needed (owner decision on #93).
+today (`game/src/levels.ts`): the prologue's `bar`, `boarding`, `room`, `camp`, `flood` and `downtown`, Act 1's
+`line` (`floodedStreet`), `helpTent`, `cabin` (`floodCabin`), `office` (`landOffice`) and `jail` (`cityJail`), Act 2's
+`eielson` and the `story` backdrop. The `flood` space is a 20 × 16 m piece of Third at Owen's door; Act 1 builds on
+it and extends the flooded downtown as needed (owner decision on #93). The "Engine space" column below is the plan;
+where it says "new", the space above is the one that was built. The barfight (`silverPan`) has no Act 1 space: `bar`
+belongs to the prologue, so `a1_barfight` and `a1_tank_sat` play as menus, and there is no space for `a1_ashby` or
+`a1_letter` either.
 
 ## At a glance
 
