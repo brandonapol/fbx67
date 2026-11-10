@@ -435,7 +435,7 @@ export const prologueThreads: readonly Thread[] = [
     id: 'gravelCash',
     at: bar,
     plants: 'Someone is paying new cash for gravel leases north of town and flying over the land without landing.',
-    paysOff: 'Act 4: Breakup',
+    paysOff: 'Act 2: Freeze-up',
     lines: [
       { who: 'pilotGray', text: 'Fella at the Phillips Field counter, paying cash for gravel leases up north.' },
       { who: 'pilotYoung', text: 'Gravel? What does anybody want with gravel out there?' },
@@ -464,7 +464,7 @@ export const prologueThreads: readonly Thread[] = [
     id: 'whichRoom',
     at: nightWalk('boardingHouse porch'),
     plants: `A man who called himself ${N.owenShort}'s friend asked the landlady which room was his, and kept his cap down.`,
-    paysOff: 'Act 3: Deep Winter',
+    paysOff: 'Act 1: Flood',
     lines: [
       { who: 'landlady', text: 'Man came by after supper, asking which room was the geologist\'s.' },
       { who: 'boarder', text: 'You tell him?' },

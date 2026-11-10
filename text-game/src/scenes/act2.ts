@@ -104,7 +104,7 @@ October. Lucy wants ears in the hotel bar downtown, where ${N.councilman} drinks
     clock: '1967-10-07T20:30',
     goal: 'Play the corner and listen to the back booth.',
     text: () => `
-The hotel bar is warm and half full: contractors from Outside waiting out freeze-up, two professors from the university over a chessboard, a waitress who calls everybody "dear." ${N.tolliver} has the back booth with a man in a gray suit who sits with his back to the room.
+The hotel bar is warm and half full: contractors from Outside waiting out freeze-up, two professors from the university over a chessboard, a waitress who calls everybody "dear." ${N.tolliver} has the back booth with a man in a gray suit who sits with his back to the room. When he sends a round to the booth, he pays out of a fold of new bills, in order, like he got them from the bank that morning. A gray-haired bush pilot at the bar watches him count them out and says to his glass, "Him again."
 
 The bartender doesn't care where you play, as long as you play.`,
     choices: () => [

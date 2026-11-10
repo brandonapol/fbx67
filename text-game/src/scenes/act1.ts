@@ -56,7 +56,11 @@ The sergeant is looking the other way. For now.`,
     text: () => `
 You slip off the end of the line and wade north. Nobody stops you.
 
-A man in hip waders is carrying a mattress out of a rooming house over his head. You ask about a boat, a riverboat, a man named Eli.
+A man in hip waders is carrying a mattress out of a rooming house over his head. Upstairs, a woman leans out a window with a sardine tin for her ashes, watching the street fill.
+
+"My geologist went out in this last night," she calls down, to you or to anybody. "Friend of his came by in a skiff, hood up. Didn't ask me which room this time. Bed's not slept in."
+
+You ask the man about a boat, a riverboat, a man named Eli.
 
 "Went by twenty minutes ago with a load of kids," he says, without putting the mattress down. "Toward Lacey. Hold this end, would you?"
 
