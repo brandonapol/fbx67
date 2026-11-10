@@ -5,20 +5,27 @@ import { choicesOf, choose, render, replay } from './engine.ts'
 import { menu, mission, send, sendMission } from './story.ts'
 import { missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
+import { canonical } from './liveness.ts'
 import type { SceneId, State } from './types.ts'
 
-// Every distinct state that reaches a scene, breadth first from the start of the game.
+// Every distinct state that reaches a scene, breadth first from the start of the game, canonicalized as the sweep is
+// (liveness.ts): a dropped field no longer changes what any later scene shows or offers. Without it Act 3 is out of
+// reach of a unit test.
 const allAt = (id: SceneId): readonly State[] => {
   const seen = new Set<string>()
   const at: State[] = []
-  const queue: State[] = [initialState]
+  let queue: State[] = [initialState]
   while (queue.length > 0) {
-    const s = queue.shift() as State
-    const key = JSON.stringify(s)
-    if (seen.has(key)) continue
-    seen.add(key)
-    if (s.scene === id) at.push(s)
-    else if (sceneIndex(s.scene) < sceneIndex(id)) choicesOf(s).forEach((_, i) => queue.push(choose(s, i + 1)))
+    const next: State[] = []
+    queue.forEach((raw) => {
+      const s = canonical(raw)
+      const key = JSON.stringify(s)
+      if (seen.has(key)) return
+      seen.add(key)
+      if (s.scene === id) at.push(s)
+      else if (sceneIndex(s.scene) < sceneIndex(id)) choicesOf(s).forEach((_, i) => next.push(choose(s, i + 1)))
+    })
+    queue = next
   }
   return at
 }
@@ -111,10 +118,13 @@ test('every mission note ends at its end scene, and the notes cover every way th
 })
 
 // A refusal or a skip may land where a detail does (the hotel bar's pieces and skipped, at heat 0), so only the
-// single-detail missions without one are held to a state per note.
+// single-detail missions without one are held to a state per note. Lucy's dig keeps nothing of the spot she tried
+// first (docs/acts/act3-missions.md, section 1), so its notes share a state by design.
+const sharedState = new Set(['lucysDig'])
+
 test('the single-detail missions give every note its own state', () => {
   missions
-    .filter((m) => m.details.length === 1 && !m.or)
+    .filter((m) => m.details.length === 1 && !m.or && !sharedState.has(m.id))
     .forEach((m) =>
       allAt(m.start).forEach((start) => {
         assert.equal(new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note)))).size, m.endings.length, `${m.id}: two notes give the same state`)
@@ -342,5 +352,49 @@ test('every state reaching a2_flight has the Major\'s cabinet job set, so its "f
   atFlight.forEach((s) => {
     assert.ok(s.coJob === 'wade' || s.coJob === 'lucy')
     assert.ok(render(s).includes('She hasn\'t finished reading the Major\'s files.'))
+  })
+})
+
+// Act 3. Lucy's dig, from a3_camp, with each spot the player hid the notes in as Owen.
+const atCamp = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1]).at(-1) as State
+const spots = ['stove', 'cache', 'marker'] as const
+const campWith = (spot: (typeof spots)[number]): State => ({ ...atCamp, owenCache: spot })
+
+test('Lucy\'s dig offers first dig: stove / cache / marker at a3_camp', () => {
+  assert.equal(atCamp.scene, 'a3_camp')
+  assert.ok(atCamp.owenCache)
+  const m = mission(atCamp)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'Lucy\'s dig. First dig: stove / cache / marker')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    [...spots],
+  )
+})
+
+test('each dig note agrees with playing its scenes: the right spot straight to the cache, a wrong one by the letter', () => {
+  spots.forEach((hidden) => {
+    const s = campWith(hidden)
+    spots.forEach((first) => {
+      const played = first === hidden ? ['home'] : ['dig', 'home']
+      assert.equal(send(s, first).scene, first === hidden ? 'a3_found' : 'a3_wrong_spot')
+      assert.deepEqual(sendMission(s, first), [first, ...played].reduce(send, s))
+    })
+  })
+})
+
+test('every dig lands on a3_crash with the tapes, owenCache cleared, and nothing else moved', () => {
+  spots.forEach((hidden) => {
+    const s = campWith(hidden)
+    const outs = spots.map((n) => sendMission(s, n))
+    outs.forEach((o) => {
+      assert.equal(o.scene, 'a3_crash')
+      assert.ok(o.evidence.includes('tapes'))
+      assert.equal(o.owenCache, undefined)
+      assert.deepEqual(delta(s, o), [0, 0])
+      assert.equal(o.lucyHeat, s.lucyHeat)
+    })
+    // The wrong spot costs light and fingers inside the mission only: the story keeps no trace of it.
+    assert.equal(new Set(outs.map((o) => JSON.stringify(o))).size, 1)
   })
 })

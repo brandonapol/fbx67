@@ -6,7 +6,8 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the 
 [`missions.ts`](../../text-game/src/missions.ts) once each spec is approved and implemented. Where this file and
 [`design.md`](../../design.md) disagree, the design wins.
 
-**Status: Proposed.** Every section below is a proposal; the owner approves the specs in review.
+**Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. Section 1's menu,
+`lucysDig`, is already in `missions.ts`.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:
@@ -56,7 +57,8 @@ both are things in the world, not bars on the screen.
 
 **Status: Proposed.**
 
-From Jake's landing at `a3_camp` until Lucy has the bundle inside her parka and the plane takes off, `a3_found`.
+From Jake's landing at `a3_camp` until Lucy has the bundle inside her parka and the plane takes off: `a3_found`'s
+`home`, which lands on `a3_crash`.
 12 December, thirty-eight below, Owen's survey camp. Playing Lucy.
 
 - **Objective.** Find what Owen hid before the light goes. The `goal` line says only that. There is no marker.

@@ -38,9 +38,6 @@ a2_records:streetlight
 a2_records_log:putBack
 a2_steak:continue
 a3_arm:yell
-a3_camp:cache
-a3_camp:marker
-a3_camp:stove
 a3_confession_burn:stay
 a3_confession_burn:turn
 a3_confession_burn:walk
@@ -60,7 +57,6 @@ a3_eli:leverage
 a3_eli:quiet
 a3_eli:report
 a3_hangar:goInside
-a3_found:home
 a3_home:lie
 a3_home:police
 a3_home:tellEli
@@ -94,7 +90,9 @@ a3_turn:continue
 a3_walk:continue
 a3_wreck:keepIt
 a3_wreck:wakeJake
-a3_wrong_spot:dig
+lucysDig:cache
+lucysDig:marker
+lucysDig:stove
 searchForEli:ranIt
 searchForEli:skippedIt
 theBarfight:gotUp.bottle.leftEli.clean
