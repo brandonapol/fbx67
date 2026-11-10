@@ -49,14 +49,14 @@ Accuracy bar: plausible to someone who lived in Fairbanks then, not archival pre
 
 **Investigator Vernon Barnette.** Alaska State Trooper investigator. Fictional grandson of town founder E.T. Barnette, who was charged when his bank failed, acquitted, and left town in disgrace anyway; wants to be the law his ancestor wasn't. Rushes Owen's death through as an accident. Keeps score on Wade (heat). Honest but wrong; in the best ending he makes the arrest himself.
 
-**Dottie Vinson (placeholder name).** Counter waitress at the Northern Lights Café, former switchboard operator. Optional stop at three decision points; tells Wade in coarse tiers how much the law is watching him and Lucy. Never says whether a job is worth it.
+**Dottie Vinson.** Counter waitress at the Northern Lights Café, former switchboard operator. Optional stop at three decision points; tells Wade in coarse tiers how much the law is watching him and Lucy. Never says whether a job is worth it.
 
-**Hank Lyle (placeholder name).** Silver Pan bartender. His speech before the barfight is the in-world tutorial: the law keeps score, people remember, nothing you say stays where you said it, ask Dottie where you stand.
+**Hank Lyle.** Silver Pan bartender. His speech before the barfight is the in-world tutorial: the law keeps score, people remember, nothing you say stays where you said it, ask Dottie where you stand.
 
 **Villains.** A conspiracy of mixed guilt.
 - **Franklin Ashby, the land lawyer (hidden top villain).** Presents as a friend of the Native families; Owen mentions "a lawyer" in the prologue. Pays Wade's drunk-tank fine, wins real small claims for other families, attends the Tanana Chiefs meeting. Wants Wade for base access, a dark mirror of Lucy. Reveals himself at the offer. Never gets his hands dirty. Nothing early says "oil."
 - **Councilman Ray Tolliver.** Holds title to the fish camp. In on the land grab, not the murder. Flips if he learns his nephew's plane was sabotaged. The player's main red herring.
-- **Major Dekker (placeholder name).** Wade's CO. Trapped in his career, wants to retire to Florida with a boat; an oil job is waiting. Signed off Owen's photo access and saw his reports. Reads Wade's mail off the books and forges Wade's signature on demolition charges. Blows the ice jam himself in Act 4, because Ashby has him cornered: the Major kept the forgeries and the copied letters in his own cabinet (combination: his circled retirement date), that cabinet was robbed in October, and on the leak path his staff car was seen at the bush strip the night before the flight. Ashby's terms: finish the job, or Barnette gets a crooked officer instead of a Texas airman.
+- **Major Dekker.** Wade's CO. Trapped in his career, wants to retire to Florida with a boat; an oil job is waiting. Signed off Owen's photo access and saw his reports. Reads Wade's mail off the books and forges Wade's signature on demolition charges. Blows the ice jam himself in Act 4, because Ashby has him cornered: the Major kept the forgeries and the copied letters in his own cabinet (combination: his circled retirement date), that cabinet was robbed in October, and on the leak path his staff car was seen at the bush strip the night before the flight. Ashby's terms: finish the job, or Barnette gets a crooked officer instead of a Texas airman.
 - **Curtis "Curly" Boone.** Bush mechanic, fellow Texan, Wade's foil. Kept Owen's plane running and flew Owen's charters. Took Ashby's money, held Owen under in the flood with yellow tie-down line off a coil in his hangar, rigged Lucy's plane. Ties his bowlines backward, tail outside the loop: his own habit, nothing to do with Texas. Left-handed (a separate clue; the knot's "left-hand bowline" name is about the knot, not the man). Steals a left-handed bow "for protection" when he realizes Ashby is cleaning up loose ends.
 
 Cultural approach: Eli and Lucy are Lower Tanana, and the story's spine is land-back. The goal is respect and a story Lower Tanana people would recognize. The team is in contact with consultants and expects support; any group, place, or name can be changed later if they ask. Draft details already in the build (Minto, the fish camp's lineage, the Tanana Chiefs meeting, the Nenana elder's line) are marked for their review.
@@ -180,7 +180,7 @@ Engine direction: the 3D game talks to the narrative core only through typed sto
 
 ## Open Questions
 
-- Real names for placeholders: the Native officer, Major Dekker, Dottie, Hank.
+- Real name for the Native officer (placeholder `N.cop`, waiting on the consultants).
 - Smoking mechanics: which hooks to keep.
 - Whether the remaining text-only choices (aerial photos, the cache spot) should affect anything.
 - Act 4 action sequences: outcomes of the wire and the ice jam (issue #5).
