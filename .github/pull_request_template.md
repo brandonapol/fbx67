@@ -1,3 +1,5 @@
+<!-- Required. One `Closes #N` line per ticket this PR finishes, sub-issues included, so merging closes it.
+     Part-way only: `Part of #N` plus what remains. Never `Closes` for work not done. -->
 Closes #N
 
 ## What
