@@ -92,7 +92,8 @@ export const typeOut = (g: Game, n = 0): Game => {
 
 export const writeLetter = (room: Game): Game => press(typeOut(interact(walk(room, [[0.6, -0.4], [0.6, -1.0]]))), 'fold')
 
-export const toBed = (room: Game): Game => interact(walk(room, [[-0.6, 0.6]]))
+// Lies down and sleeps through the fade and the date card, to the morning.
+export const toBed = (room: Game): Game => wait(interact(walk(room, [[-0.6, 0.6]])), (g) => g.sleeping === undefined)
 
 // Climbs in at the float and sits through the flight north, to the camp.
 export const aboardPlane = (dock: Game): Game => press(dock, 'note:fly')

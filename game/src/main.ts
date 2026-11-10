@@ -4,6 +4,8 @@ import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, lab
 import { fade } from './skiff.ts'
 import { sweepFade } from './hazards.ts'
 import { flightFade } from './flight.ts'
+import { sleepCard, sleepFade } from './boardingHouseSleep.ts'
+import { mapSheet, mapsPanel } from './room.ts'
 import { startFrom } from './start.ts'
 import type { Letter } from './letters.ts'
 import { sheet } from './letters.ts'
@@ -85,6 +87,7 @@ const $ = <T extends HTMLElement>(id: string): T => {
 const canvas = $<HTMLCanvasElement>('scene')
 const promptEl = $<HTMLButtonElement>('prompt')
 const fadeEl = $('fade')
+const cardEl = $('card')
 const panelEl = $('panel')
 const titleEl = $('panel-title')
 const textEl = $('panel-text')
@@ -255,9 +258,13 @@ const setDevice = (d: Device): void => {
 }
 
 const renderText = (g: Game): void => {
-  const text = panelText(g)
+  const text = g.panel === mapsPanel ? 'maps' : panelText(g)
   if (live.shownText === text) return
   live.shownText = text
+  if (g.panel === mapsPanel) {
+    textEl.innerHTML = mapSheet()
+    return
+  }
   textEl.replaceChildren(...text.split(/\n\s*\n/).map((para) => Object.assign(document.createElement('p'), { textContent: para.trim() })))
 }
 
@@ -341,7 +348,9 @@ const renderHud = (g: Game): void => {
     placePrompt(target ? view.screenAt(target.x, 1.9, target.z) : undefined)
   }
   renderPanel(g)
-  fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept), flightFade(g.flight)))
+  fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept), flightFade(g.flight), sleepFade(g)))
+  const card = sleepCard(g) ?? ''
+  if (cardEl.textContent !== card) cardEl.textContent = card
 }
 
 const readPad = (): Pad | undefined => {

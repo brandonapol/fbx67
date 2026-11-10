@@ -22,6 +22,8 @@ import { knotSpot } from './knot.ts'
 import { searchSpot } from './searchEli.ts'
 import { entryFrom, walksUp } from './trail.ts'
 import { paceThrough, wash } from './hazards.ts'
+import { isRoomThing, roomThingsOpen, useRoom } from './room.ts'
+import { SLEEP_TIME } from './boardingHouseSleep.ts'
 import { POST_BOX, canMail } from './floatDock.ts'
 import { FLIGHT_TIME, OWEN_SEAT, flying, legAt, seatAt, skipSpot } from './flight.ts'
 
@@ -79,6 +81,8 @@ export type Game = Readonly<{
   mailed?: true
   // Seconds into the flight north, from the moment Owen climbs in at the float (flight.ts).
   flight?: number
+  // Seconds since Owen lay down in his room: the fade and the date card run, then the story moves to the morning.
+  sleeping?: number
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -128,6 +132,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   typed: undefined,
   letter: undefined,
   home: undefined,
+  sleeping: undefined,
   ride: undefined,
   lit: undefined,
   carrying: undefined,
@@ -182,7 +187,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'jail') return jailSpot(g.story, i.id)
     if (g.space === 'helpTent') return tentSpot(g.story, i.id)
     // In August the house is flooded: the only way is down the stair and out the front door.
-    if (g.space === 'room') return flooded(g.story) ? i.id === 'downstairs' : i.id === 'bed' ? g.letter === 'folded' : i.id !== 'downstairs' && g.letter === undefined
+    if (g.space === 'room') return flooded(g.story) ? i.id === 'downstairs' : i.id === 'bed' ? g.letter === 'folded' : i.id !== 'downstairs' && g.letter === undefined && (!isRoomThing(i.id) || roomThingsOpen(g.story))
     if (g.space === 'boarding') return (i.id === 'front') === flooded(g.story)
     if (g.space === 'office') return officeSpot(g.carrying === 'ledger', i.id)
     if (g.space === 'cabin') return knotSpot(g.story, i.id)
@@ -361,7 +366,8 @@ export const interact = (g: Game): Game => {
   }
   if (g.space === 'room') {
     if (id === 'desk') return { ...g, panel: letterPanel(g.story, false), typed: 0 }
-    if (id === 'bed' && target.note) return arrive(sendNote(g, target.note))
+    if (id === 'bed' && target.note) return { ...g, vel: zero, holding: undefined, sleeping: 0 }
+    if (isRoomThing(id)) return useRoom(g, id) ?? g
     if (id === 'downstairs') return enter(g, 'boarding', STAIR_FOOT, 0)
   }
   if (g.space === 'camp' && id === 'plane') return arrive(g)
@@ -508,8 +514,15 @@ const walk = (g: Game, input: Input, dt: number): Game => {
 // On the flooded street the water has its turn after Wade's step: the current, debris, what's under it (hazards.ts).
 const water = (g: Game, dt: number): Game => (g.space === 'line' ? wash(g, dt, standAt(spaces.line, g.pos), solids(spaces.line, g.story, g.path)) : g)
 
+// Asleep: the screen fades and holds on the date card; at the end the night's note goes and the morning begins.
+const slumber = (g: Game, dt: number): Game => {
+  const sleeping = (g.sleeping ?? 0) + dt
+  return sleeping < SLEEP_TIME ? { ...g, sleeping, vel: zero } : arrive(sendNote({ ...g, sleeping: undefined }, 'sleep'))
+}
+
 export const tick = (g: Game, input: Input, dt: number): Game => {
   const t = g.t + dt
+  if (g.sleeping !== undefined) return slumber({ ...g, t }, dt)
   if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
