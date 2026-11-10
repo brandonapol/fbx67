@@ -7,6 +7,7 @@ import { clock, goal, menu, offers, place, send, weather } from './story.ts'
 import { scenes } from './scenes/index.ts'
 import type { Scene, State } from './types.ts'
 import { prologueThreads } from './ambient/prologueTown.ts'
+import { N } from './names.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
 const spots = ['stove', 'cache', 'marker'] as const
@@ -215,4 +216,14 @@ test('each overheard prologue thread pays off in a line of its act, heard or not
     assert.equal(sc.act, t.paysOff, `${t.id} pays off in ${t.paysOff}`)
     assert.match(sc.text({ ...initialState, scene: sc.id }), line, `${t.id} in ${id}`)
   }
+})
+
+// #345: Joan stays at the tarp after Barnette leaves, not after Owen (the landlady's paragraph comes just before).
+test('Joan lingers at the tarp after Barnette has gone, on both of her branches', () => {
+  const sc = scenes.find((x) => x.id === 'a1_ruling')!
+  ;[0, 1].forEach((joanLevel) => {
+    const text = sc.text({ ...initialState, scene: sc.id, joan: joanLevel })
+    assert.match(text, new RegExp(`still at the tarp after ${N.barnette} has gone`), `joan=${joanLevel}`)
+    assert.doesNotMatch(text, /after he's gone/)
+  })
 })
