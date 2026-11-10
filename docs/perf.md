@@ -20,6 +20,14 @@ space Wade comes into: `line`, `helpTent`, `cabin`, `office`, `jail`) it capture
 moral-weather band, into `game/smoke/baselines/act1/`. It fails on an Act 1 space with no frames, not on the
 prologue's; the initial download is the prologue run's to measure.
 
+Act 2 has its own run and CI job the same way (`make test/game/smoke/act2`, `game/smoke/act2.test.ts`). It opens the
+`a2_major` start (`game/smoke/starts.ts`) and plays to Act 3's first scene, every choice after it the first, with the
+steps `game/smoke/act2Plan.test.ts` plays headless. No Act 2 scene's place has a space yet, so the act plays as panels
+over `story`, and its beats are the story's places: at the first scene at each place it captures the frame of the
+space it plays in, in each moral-weather band, into `game/smoke/baselines/act2/`. It then visits each Act 2 space
+(`eielson`, the base blockout) from the Act 2 start, samples it and captures its frame in each band. It fails on an
+Act 2 space with no frames. `make generate/baselines/act2` regenerates only its baselines.
+
 `game/smoke/budget.test.ts` fails, per act, when a space in `game/src/levels.ts` has no row below, so a new space in
 any act is budgeted before it is played.
 
