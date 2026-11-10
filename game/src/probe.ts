@@ -4,6 +4,7 @@ import type { Game } from './prologue.ts'
 import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
+import { KNOT_SHOT } from './knot.ts'
 
 // heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band; ride, when
 // set, holds a boat at that many seconds into its ride, so the frame does not depend on how fast the page ran.
@@ -38,6 +39,11 @@ export const poses: Readonly<Record<string, Pose>> = {
   // Act 1's evening at the cabin: the ride over, Wade on the thwart, Eli in the bow, the body off to starboard with the
   // yellow line down to the drowned sawhorse, the cabin sunk to its eaves beyond.
   cabin: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: { eye: [-0.4, 3.2, -2.2], at: [4.1, 0.2, -9.2] } },
+  // The knot close-up (knot.ts): Wade leaning over the gunwale at the end of the ride, the bowline's loop round the top
+  // of Owen's shirt and the tail outside it; in each moral-weather band, as the skiff is (heat 0, 2 and 4).
+  knot: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: KNOT_SHOT },
+  knot_dusk: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: KNOT_SHOT, heat: 2 },
+  knot_night: { space: 'cabin', pos: vec(1.91, -6.25), facing: 2.94, t: 0, ride: 17.1, shot: KNOT_SHOT, heat: 4 },
   base: { space: 'eielson', pos: vec(160, -7), facing: Math.PI, t: 0, shot: { eye: [175, 22, 12], at: [130, 0, -45] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }

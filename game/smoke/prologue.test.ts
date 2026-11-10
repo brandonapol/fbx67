@@ -483,6 +483,7 @@ starts.forEach((s) =>
       await page.evaluate(() => (window as any).__prologue.record(false))
       await snap(page, `start-${s.scene}`)
       await capture(page, s.scene, s.pose)
+      for (const pose of s.also ?? []) await capture(page, pose)
       assert.deepEqual(errors, [])
     } finally {
       await collect(page)

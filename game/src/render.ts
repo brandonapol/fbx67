@@ -15,6 +15,7 @@ import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './ligh
 import type { Game } from './prologue.ts'
 import { footY, inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
 import { boatIn } from './cabinRide.ts'
+import { closeUp } from './knot.ts'
 import type { Debris } from './hazards.ts'
 import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
@@ -435,8 +436,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       const y = p.y - dt * 11
       r.setLocalPosition(p.x, y < 0 ? 9 : y, p.z)
     })
-    if (state.held) {
-      place(state.held)
+    // A held shot wins; then a close-up Wade is leaning in for (the knot at the cabin); then the follow camera.
+    const shot = state.held ?? closeUp(g.look, g.space)
+    if (shot) {
+      place(shot)
       return
     }
     camera.setPosition(cam.eye[0], cam.eye[1], cam.eye[2])

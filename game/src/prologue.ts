@@ -17,6 +17,8 @@ import { choose, finish as penDown, open as openHome, turn as turnPage, write, w
 import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
 import { riding } from './skiff.ts'
 import { boatIn } from './cabinRide.ts'
+import type { Look } from './knot.ts'
+import { knotSpot } from './knot.ts'
 import { searchSpot } from './searchEli.ts'
 import { entryFrom, walksUp } from './trail.ts'
 import { paceThrough, wash } from './hazards.ts'
@@ -67,6 +69,8 @@ export type Game = Readonly<{
   lit?: true
   carrying?: 'ledger'
   doused?: true
+  // What Wade is leaning over to look at close: the knot at the cabin (knot.ts), while its menu is open.
+  look?: Look
   // Seconds since the current took Wade's feet on the search for Eli, while the screen fades (hazards.ts).
   swept?: number
 }>
@@ -122,6 +126,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   lit: undefined,
   carrying: undefined,
   doused: undefined,
+  look: undefined,
 })
 
 export const start = (): Game => ({
@@ -172,6 +177,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'room') return flooded(g.story) ? i.id === 'downstairs' : i.id === 'bed' ? g.letter === 'folded' : i.id !== 'downstairs' && g.letter === undefined
     if (g.space === 'boarding') return (i.id === 'front') === flooded(g.story)
     if (g.space === 'office') return officeSpot(g.carrying === 'ledger', i.id)
+    if (g.space === 'cabin') return knotSpot(g.story, i.id)
     return true
   })
 
@@ -224,7 +230,7 @@ const arrive = (g: Game): Game => {
   if (r.space === 'flood' && g.space !== 'flood') return g.space === 'boarding' ? enter(g, 'flood', FLOOD_AT, FLOOD_FACING) : enter(g, 'room')
   // On the search for Eli, Wade wades up to the help tent from the street: the way up waits at the end of Cushman.
   if (walksUp(g.space, r.space, g.path)) return { ...g, panel: undefined }
-  // To the cabin Wade goes by boat with Eli: in it from the first frame, the scene's menu at the end of the ride.
+  // To the cabin Wade goes by boat with Eli: in it from the first frame; at the end of the ride he leans to the knot.
   if (r.space === 'cabin' && g.space !== 'cabin') return board(enter(g, 'cabin'))
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
@@ -358,6 +364,9 @@ export const interact = (g: Game): Game => {
     if (id === 'handLedger') return { ...g, carrying: undefined }
     if (id === 'lucy') return { ...douse(g), panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note), [close('Back to the ledgers.')]) }
   }
+  // At the cabin Wade leans over the gunwale: the camera goes close on the knot and the scene's menu comes up, with no
+  // way to look away from it. Eli looking at it (a1_knot) keeps the close-up.
+  if (g.space === 'cabin' && id === 'knot') return { ...g, look: 'knot', panel: storyPanel(g.story, allNotes(g.story)) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
@@ -392,11 +401,15 @@ const seated = (g: Game, ride: number): Game => {
 const board = (g: Game): Game => ({ ...seated(g, 0), panel: undefined, holding: undefined })
 
 // The ride: the boat poles on along its course whatever the player does. At the end of the skiff's the end card comes
-// up on the black; at the end of Eli's, the cabin scene's menu.
+// up on the black; Eli's stops with the body off the bow, and Wade leans over to the knot (knot.ts).
 const ride = (g: Game, dt: number): Game => {
-  const next = seated(g, (g.ride ?? 0) + dt)
-  if ((next.ride ?? 0) < boatIn(g.space).course.time) return next
-  return g.space === 'flood' ? { ...next, panel: endCard } : menuPanel(next)
+  const course = boatIn(g.space).course
+  const t = (g.ride ?? 0) + dt
+  if (t < course.time) return seated(g, t)
+  if (g.space === 'flood') return { ...seated(g, t), panel: endCard }
+  // A link straight to a scene after the look (Eli looking at the knot) has nothing to lean to: its menu comes up.
+  const end = seated(g, course.time)
+  return available(end).length ? end : menuPanel(end)
 }
 
 const finish = (g: Game, h: Holding): Game => {

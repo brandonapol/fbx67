@@ -46,7 +46,7 @@ test("the tent's place id has a spawn point, clear of every solid and figure", (
 })
 
 test('the body comes in from the boat: sending the body mission walks Wade into the tent', () => {
-  const body = wait(startFrom(hash(TO_RULING.slice(0, -1)), ''), (g) => g.panel !== undefined)
+  const body = interact(wait(startFrom(hash(TO_RULING.slice(0, -1)), ''), (g) => focus(g)?.id === 'knot'))
   assert.equal(body.space, 'cabin')
   assert.equal(body.panel?.kind, 'story')
   const note = body.panel!.buttons.find((b) => b.id.startsWith('note:'))!
