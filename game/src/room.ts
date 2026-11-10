@@ -7,7 +7,7 @@ import type { Interactable } from './world.ts'
 
 // The things in Owen's room besides the desk and the bed (issue #47): the survey maps pinned by the window and the
 // reel-to-reel on the trunk. Neither sends a note; looking and listening never move the story. Every word comes from
-// the story layer: the tape is the reel-to-reel's `use` line in prologueThings, and the maps carry only place names.
+// the story layer: the tape is the reel-to-reel's first `use` bit in prologueThings, and the maps carry only place names.
 // The space (levels.ts) and the interact switch (prologue.ts) take these in; this file owns what they do.
 
 // Where they stand in the room's meters (levels.ts: the maps either side of the window at z -2.83, the reel-to-reel
