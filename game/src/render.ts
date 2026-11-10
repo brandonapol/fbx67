@@ -21,6 +21,7 @@ import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
 import { flightLight, flying, litGold, planeAt, planeHull, restingIn } from './flight.ts'
 import { curlyAt } from './floatDock.ts'
+import { townsfolk } from './townsfolk.ts'
 
 const FAR_CLIP = 200
 
@@ -244,6 +245,8 @@ type Built = Readonly<{
   id: Space['id']
   root: pc.Entity
   figures: ReadonlyMap<string, pc.Entity>
+  // The town's people on the street (townsfolk.ts), stood up the first time the schedule places each one here.
+  folk: Map<string, pc.Entity>
   cone?: pc.Entity
   coneMats?: readonly [pc.StandardMaterial, pc.StandardMaterial]
   rain: readonly pc.Entity[]
@@ -363,7 +366,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles }
+    return { id: space.id, root, figures, folk: new Map(), cone, coneMats, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -422,6 +425,17 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       }
       const near = Math.hypot(f.at.x - g.pos.x, f.at.z - g.pos.z) < 2.6
       cast.play(e, clipFor({ speed: 0, sneaking: false, activity: f.activity ?? 'stand', talking: g.panel !== undefined && near }), 1)
+    })
+    const folk = townsfolk(g)
+    b.folk.forEach((e) => {
+      e.enabled = false
+    })
+    folk.forEach((f) => {
+      const e = b.folk.get(f.id) ?? addFigure(b.root, f, cast)
+      b.folk.set(f.id, e)
+      e.enabled = true
+      e.setLocalPosition(f.at.x, 0, f.at.z)
+      e.setLocalEulerAngles(0, (f.facing * 180) / Math.PI, 0)
     })
     if (b.boat) {
       const craft = boatIn(g.space)

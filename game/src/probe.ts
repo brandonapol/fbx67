@@ -39,6 +39,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // The same street from the same data on a flood day and late in freeze-up (snow down, cars plugged in, smoke up).
   downtown_flood: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-08-15T12:00' } },
   downtown_freezeup: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-10-28T12:30' } },
+  // A street sign close up: the post on Second's south walk at Cushman, its two blades crossed over the corner, from
+  // out on Second Avenue, Owen behind the camera. The names on the blades are the page's type (streetSignsView.ts), hidden with the rest of the HUD.
+  sign: { space: 'downtown', pos: vec(14, 53), facing: -Math.PI / 2, t: 0, shot: { eye: [9.2, 2.1, 57.6], at: [5.2, 2.5, 61.2] } },
   // The base blockout: Wade on the gate road at the squadron lot, the squadron building and his dorm beyond.
   // Act 1's evening at the cabin: the ride over, Wade on the thwart, Eli in the bow, the body off to starboard with the
   // yellow line down to the drowned sawhorse, the cabin sunk to its eaves beyond.

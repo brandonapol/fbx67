@@ -42,6 +42,19 @@ body {
   letter-spacing: 0.06em;
 }
 
+/* What a townsperson says, over their head (main.ts, renderSubtitle). */
+#subtitle {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  max-width: min(420px, calc(100% - 32px));
+  padding: 6px 12px;
+  background: rgba(20, 18, 16, 0.78);
+  border-radius: 4px;
+  color: #f4f0e4;
+  text-align: center;
+  pointer-events: none;
+}
+
 #help {
   position: fixed;
   bottom: 16px;
