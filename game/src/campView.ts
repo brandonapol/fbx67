@@ -22,6 +22,9 @@ const rgb = (hex: string): Rgb => {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]
 }
 
+// Vertex colors go to the shader as they are, in linear light: the palette's sRGB hex is converted on the way in.
+const linear = (c: Rgb): Rgb => c.map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)) as unknown as Rgb
+
 const mix = (a: Rgb, b: Rgb, k: number): Rgb => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k]
 
 const shade = (c: Rgb, k: number): Rgb => [c[0] * k, c[1] * k, c[2] * k]
@@ -39,10 +42,11 @@ const quad = (b: Builder, m: pc.Mat4, corners: readonly (readonly [number, numbe
   const base = b.positions.length / 3
   const p = corners.map(([x, y, z]) => m.transformPoint(new pc.Vec3(x, y, z), new pc.Vec3()))
   tmpN.cross(tmpV.sub2(p[1], p[0]), new pc.Vec3().sub2(p[2], p[0])).normalize()
+  const lin = linear(color)
   p.forEach((v) => {
     b.positions.push(v.x, v.y, v.z)
     b.normals.push(tmpN.x, tmpN.y, tmpN.z)
-    b.colors.push(color[0], color[1], color[2], 1)
+    b.colors.push(lin[0], lin[1], lin[2], 1)
   })
   b.indices.push(base, base + 1, base + 2, base, base + 2, base + 3)
 }
@@ -121,8 +125,8 @@ const meshEntity = (name: string, mesh: pc.Mesh, material: pc.Material, shadows:
 // --- The ground: the heightmap as a grid, its splat weights mixed into vertex colors over a grain texture. ---
 
 const LAYER: Readonly<Record<'gravel' | 'sand' | 'moss' | 'silt', Rgb>> = {
-  gravel: rgb('#8c8170'),
-  sand: rgb('#9a8e78'),
+  gravel: rgb('#7c7262'),
+  sand: rgb('#8a7f6a'),
   moss: rgb('#5e6638'),
   silt: rgb('#7a6a52'),
 }
@@ -131,12 +135,30 @@ const grain = (device: pc.GraphicsDevice): pc.Texture => {
   const n = 128
   const tex = new pc.Texture(device, { width: n, height: n, format: pc.PIXELFORMAT_RGBA8, mipmaps: true, addressU: pc.ADDRESS_REPEAT, addressV: pc.ADDRESS_REPEAT })
   const px = tex.lock() as Uint8Array
+  // Cobbles: each texel takes the nearest of a jittered grid of stone centers (wrapping, so the texture tiles), lit on
+  // its upper side and dark in the cracks between, each stone its own shade, over a fine grit.
+  const cells = 12
+  const size = n / cells
+  const center = (ci: number, cj: number): readonly [number, number] => {
+    const [wi, wj] = [((ci % cells) + cells) % cells, ((cj % cells) + cells) % cells]
+    return [(ci + 0.2 + 0.6 * hash(wi, wj)) * size, (cj + 0.2 + 0.6 * hash(wj + 17, wi)) * size]
+  }
   for (let j = 0; j < n; j++)
     for (let i = 0; i < n; i++) {
-      // Pebbles: a few bright and dark stones over a fine grit.
-      const stone = hash(Math.floor(i / 5), Math.floor(j / 5))
-      const grit = hash(i, j)
-      const v = Math.round(255 * Math.min(1, 0.78 + 0.16 * grit + (stone > 0.86 ? 0.12 : stone < 0.1 ? -0.18 : 0)))
+      const [ci, cj] = [Math.floor(i / size), Math.floor(j / size)]
+      const near = [-1, 0, 1]
+        .flatMap((a) => [-1, 0, 1].map((b) => [ci + a, cj + b] as const))
+        .map(([a, b]) => {
+          const [cx, cy] = center(a, b)
+          return { d: Math.hypot(i - cx, j - cy), cy, a, b }
+        })
+        .sort((p, q) => p.d - q.d)
+      const edge = near[1].d - near[0].d
+      const tone = 0.8 + 0.18 * hash(((near[0].a % cells) + cells) % cells, ((near[0].b % cells) + cells) % cells)
+      const top = j < near[0].cy ? 0.06 : -0.04
+      const crack = edge < 1.2 ? 0.78 : 1
+      const grit = 0.05 * hash(i, j)
+      const v = Math.round(255 * Math.max(0, Math.min(1, (tone + top + grit) * crack)))
       const o = (j * n + i) * 4
       px[o] = v
       px[o + 1] = v
@@ -166,7 +188,7 @@ const terrain = (device: pc.GraphicsDevice): pc.Mesh => {
       const n = new pc.Vec3(-(y(i + 1, j) - y(i - 1, j)) / (2 * dx), 1, -(y(i, j + 1) - y(i, j - 1)) / (2 * dz)).normalize()
       normals.push(n.x, n.y, n.z)
       const s = splatAt(x, z)
-      const c = [0, 1, 2].map((k) => s.gravel * LAYER.gravel[k] + s.sand * LAYER.sand[k] + s.moss * LAYER.moss[k] + s.silt * LAYER.silt[k])
+      const c = linear([0, 1, 2].map((k) => s.gravel * LAYER.gravel[k] + s.sand * LAYER.sand[k] + s.moss * LAYER.moss[k] + s.silt * LAYER.silt[k]) as unknown as Rgb)
       colors.push(c[0], c[1], c[2], 1)
       uvs.push(x / 3, z / 3)
     }
@@ -252,7 +274,7 @@ const structures = (b: Builder): void => {
   box(b, MARKER_AT.x, gm + 0.45, MARKER_AT.z, 0.13, 0.04, 0.13, '#c9a640')
   box(b, MARKER_AT.x + 0.35, gm, MARKER_AT.z + 0.1, 0.04, 1.3, 0.02, '#cbb894', 0.3)
   box(b, MARKER_AT.x + 0.35, gm + 1.1, MARKER_AT.z + 0.1, 0.02, 0.18, 0.12, '#b8322a', 0.3)
-  box(b, MARKER_AT.x, gm - 0.06, MARKER_AT.z + 0.6, 0.9, 0.12, 0.6, '#5a4a36', 0.2)
+  frustum(b, at(MARKER_AT.x, gm - 0.08, MARKER_AT.z + 0.6, 0.2), 0.9, 0.14, 0.6, rgb('#5a4a36'), 0.5)
 
   // The fire ring: stones, two charred logs, a grate, and the stumps they sit on.
   const gf = groundY(FIRE_RING.x, FIRE_RING.z)
@@ -280,12 +302,12 @@ const plantMesh = (device: pc.GraphicsDevice, kind: Kind): pc.Mesh => {
     Array.from({ length: 7 }).forEach((_, i) => {
       const y = 0.6 + i * 0.62
       const r = 1.0 - i * 0.12
-      frustum(b, at(0, y, 0, i * 0.7), r, 0.7, r, mix(rgb('#22301f'), rgb('#2f3f2a'), (i % 3) / 2), 0.15)
+      frustum(b, at(0, y, 0, i * 0.7), r, 0.7, r, mix(rgb('#33432c'), rgb('#425238'), (i % 3) / 2), 0.15)
     })
-    frustum(b, at(0, 4.9, 0), 0.45, 0.6, 0.45, rgb('#26341f'), 0.2)
+    frustum(b, at(0, 4.9, 0), 0.45, 0.6, 0.45, rgb('#36452c'), 0.2)
   } else if (kind === 'willow' || kind === 'alder') {
     const tall = kind === 'alder' ? 2.6 : 1.6
-    const leaf = kind === 'alder' ? ['#3f5a30', '#4a6436'] : ['#5b7a3a', '#6e8a46']
+    const leaf = kind === 'alder' ? ['#465a34', '#50643c'] : ['#56703a', '#627a44']
     Array.from({ length: 6 }).forEach((_, i) => {
       const a = (i / 6) * Math.PI * 2
       const lean = 0.25 + 0.15 * (i % 2)
@@ -298,7 +320,7 @@ const plantMesh = (device: pc.GraphicsDevice, kind: Kind): pc.Mesh => {
       const h = 0.8 + 0.25 * (i % 2)
       box(b, Math.cos(a) * 0.12, 0, Math.sin(a) * 0.12, 0.03, h, 0.03, '#56602e', a, 0.08)
       frustum(b, at(Math.cos(a) * 0.12, h * 0.35, Math.sin(a) * 0.12, a), 0.16, h * 0.4, 0.05, rgb('#4a5a2a'), 0.6)
-      frustum(b, at(Math.cos(a) * 0.14, h * 0.82, Math.sin(a) * 0.14, a), 0.1, h * 0.28, 0.1, rgb(i % 2 ? '#a8406e' : '#b8508a'), 0.3)
+      frustum(b, at(Math.cos(a) * 0.14, h * 0.8, Math.sin(a) * 0.14, a), 0.06, h * 0.24, 0.06, rgb(i % 2 ? '#9a4a6e' : '#a85a80'), 0.3)
     })
   } else {
     frustum(b, at(0, 0, 0), 0.55, 0.22, 0.5, rgb('#6a6a3a'), 0.6)

@@ -150,6 +150,8 @@ export const plants: Readonly<Record<Kind, readonly Plant[]>> = {
     ...SPRUCE_IN_CAMP.map((p, i) => plant(p.x, p.z, 1 + 0.2 * hash(i, 1.9), i)),
     ...scatter(170, 11, (u, v) => vec(-70 + 150 * u, -60 + 46 * v), (k) => 0.8 + 0.6 * k).filter((p) => campClear(p) && p.z < -11.5),
     ...scatter(90, 12, (u, v) => vec(-70 + 150 * u, CREEK_FAR + 2.2 + 26 * v), (k) => 0.9 + 0.6 * k),
+    // Where the bar bends west, out past the plane, the spruce come down to the water.
+    ...scatter(110, 13, (u, v) => vec(-70 + 46 * u, -12 + 20 * v), (k) => 0.9 + 0.6 * k).filter((p) => p.z < CREEK_NEAR - 0.6),
   ],
   // Willow: the thickets on the bar, and a fringe along the water.
   willow: [
@@ -157,8 +159,8 @@ export const plants: Readonly<Record<Kind, readonly Plant[]>> = {
     ...scatter(40, 26, (u, v) => vec(-40 + 100 * u, CREEK_NEAR - 1.1 + 0.6 * v), (k) => 0.6 + 0.5 * k).filter((p) => !inCamp(p) || Math.abs(p.x + 9) > 4),
     ...scatter(30, 27, (u, v) => vec(-60 + 140 * u, CREEK_FAR + 1.2 + 1.2 * v), (k) => 0.7 + 0.5 * k),
   ],
-  // Alder and young poplar at the back of the bar, between the willow and the spruce.
-  alder: scatter(36, 31, (u, v) => vec(-40 + 80 * u, TUSSOCK_Z - 1 - 9 * v), (k) => 0.8 + 0.5 * k).filter(campClear),
+  // Alder and young poplar at the back of the camp, at the spruce's edge: tall, so never where Owen walks.
+  alder: scatter(40, 31, (u, v) => vec(-40 + 80 * u, -10 - 6 * v), (k) => 0.8 + 0.5 * k).filter((p) => !inCamp(p) || p.z < -10.5),
   // Fireweed in flower on the bar's edges and the cutbank's lip.
   fireweed: [
     ...scatter(110, 41, (u, v) => vec(-14 + 28 * u, TUSSOCK_Z - 0.5 + 1.8 * v), (k) => 0.7 + 0.5 * k).filter((p) => Math.abs(p.x - 6) > 2.6 && Math.abs(p.x - 1.8) > 1.8),

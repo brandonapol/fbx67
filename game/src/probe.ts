@@ -21,6 +21,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   parlor: { space: 'boarding', pos: vec(-0.8, 4.0), facing: -Math.PI / 2, t: 0, shot: { eye: [0.7, 1.9, 3.7], at: [-5.5, 1.0, 3.3] } },
   letter: { space: 'room', pos: vec(0.6, -1.0), facing: Math.PI, t: 0, shot: { eye: [-1.8, 2.4, 2.4], at: [0.8, 1.0, -2.4] } },
   hidden: { space: 'camp', pos: vec(1.8, -7.5), facing: Math.PI, t: 1, shot: { eye: [-2, 4.6, -4.4], at: [1.8, 0.6, -8.4] } },
+  // The survey camp's establishing shot, matched against docs/art/targets/survey-camp.webp: from up the bar at eye
+  // height, Owen walking in past the cache, the cook tent, Curly at the cans by the floatplane, the creek and the cutbank.
+  camp: { space: 'camp', pos: vec(13.2, 2.2), facing: -1.7, t: 1, shot: { eye: [16.2, 1.9, 1.6], at: [-6, 1.3, 5.6] } },
   // Owen at the steps of his flooded boarding house, the skiff waiting and the hooded man's back to the camera, which
   // stands over the east end of the walkway, behind his back (skiff.ts, faceSeen).
   skiff: { space: 'flood', pos: vec(135.2, 98.5), facing: 0, t: 0, shot: { eye: [147, 3.2, 98.8], at: [135.2, 0.9, 100.5] } },
@@ -95,7 +98,7 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
   const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
-  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
+  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
 }
 
 const triangles = (app: pc.AppBase): number =>
@@ -191,5 +194,10 @@ export const installProbe = (view: View, live: Live): void => {
   }
 
   const w = window as unknown as { __prologue: object }
-  w.__prologue = { ...w.__prologue, capture, release, visit, record, samples: () => rec.samples, poses: () => Object.keys(poses) }
+  // Whether an entity by that name is in the scene and drawn (the camp's sight cone, campView.ts).
+  const shown = (name: string): boolean => {
+    return app.root.findByName(name)?.enabled ?? false
+  }
+
+  w.__prologue = { ...w.__prologue, capture, release, visit, record, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
 }
