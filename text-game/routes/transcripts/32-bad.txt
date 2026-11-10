@@ -1,0 +1,743 @@
+== Prologue :: Owen: The Silver Pan, July 1967 ==
+
+You are Owen Marsh, a geologist, two summers into a contract surveying gravel and river crossings north of Fairbanks. The midnight sun is still up at eleven. The Silver Pan smells like beer and wet wool.
+
+Curly Boone, the mechanic who keeps your charter plane flying, waves you over. Beside him is a skinny kid in an Air Force haircut with a guitar case at his feet.
+
+"Owen, this here's Wade. Texan, like me. Munitions out at Eielson. Never seen snow in his life."
+
+The kid grins and shakes your hand like he means it.
+
+  1. Ask Wade about Texas.
+  2. Ask Wade what a munitions man does all day.
+  3. Buy the table a round.
+
+== Prologue :: Owen: Small Talk ==
+
+Wade lights up. He grew up on the plains outside Lubbock, water skiing behind his cousins' boat on the reservoir every summer. He misses the heat. Curly laughs at everything.
+
+When Wade asks what you do, you tell him the truth, or most of it: you map where a road could someday cross the rivers north of here, and where the gravel is to build it.
+
+"Somebody's been quietly asking who owns that land," you say. "Nobody else seems to notice." "I'm trying to do right by the Lower Tanana families out there, the Minto people with fish camps down on the lower Chatanika. There's a lawyer in town helping me with that."
+
+Curly checks his watch. "Plane's ready for the morning, Owen."
+
+  1. Say goodnight and walk back to your room.
+
+== Prologue :: Owen: A Letter to Lucy ==
+
+In your rented room at the boarding house you sit with the survey notes and a reel-to-reel recorder. The numbers say what you were afraid they'd say: whoever is paying for this survey is buying land along the route before the Native claims are settled. One parcel, on the lower Chatanika where the Minto families fish, holds the best gravel on that river and the easiest place to put a pipeline or a haul road across it. A fish camp. The family's allotment application vanished years ago.
+
+You write to Lucy, the clerk at the land office who has been asking the questions nobody else asks. Tomorrow Curly flies you to the survey camp, and you will hide the real notes and tapes out there. If anything happens to you, she should know there is something to find.
+
+  1. Seal the letter and go to sleep.
+
+== Prologue :: Owen: The Float Dock ==
+
+It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
+
+At the float dock on the Chena, Curly Boone is down on one knee on a float with a hand pump, pumping the night's seep out of the float compartments. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
+
+"You look like you didn't sleep, Owen."
+
+You hand him your duffel and keep the satchel with the notes and the tapes. It rides on your knees all the way north.
+
+  1. Climb in and fly north with Curly.
+
+== Prologue :: Owen: The Survey Camp ==
+
+Curly puts the wheels down and lands on the gravel bar below the camp. The camp is the way you left it: the cook tent, the old meat cache up on its stilts, the survey marker on the rise.
+
+While Curly refuels from the jerry cans for the trip home, you have a few minutes alone with the real notes and tapes. He whistles down on the gravel bar.
+
+Where do you hide them?
+
+  1. Hide the notes under the floorboards behind the cook-tent stove.
+  2. Hide the notes in the old meat cache up on stilts.
+  3. Hide the notes in an ammo can buried under the survey marker.
+
+== Prologue :: Owen: High Water ==
+
+You fly home. Curly never sees where you put them. Back in town you write Lucy a second, longer letter, and somewhere in it is where to look.
+
+A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to Lucy with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
+
+You climb in.
+
+  1. Continue.
+
+== Act 1: Flood :: Wade: Drowned Town ==
+
+You are Wade Pruett: nineteen, Air Force munitions, a long way from Texas. August 1967. Most of Fairbanks is underwater, and the Air Force has trucked half of Eielson into town to help.
+
+Your sergeant puts you on a sandbag line across Cushman Street, thigh-deep, passing bags hand to hand. He counts heads every quarter hour.
+
+A woman in a man's rain slicker comes down the line looking at faces until she stops at yours, maybe because you're the youngest. She's from Minto. Her mother is in a house out at the edge of town, past where the trucks can go, and the water is at her windows. "Eli has a boat that can get in there. Eli, he runs freight on the river. He's somewhere in town. I can't find him and I can't leave her."
+
+The sergeant is looking the other way. For now.
+
+  1. Go find Eli. You can take a chewing-out.
+  2. Stay on the line. Orders are orders. Send her to someone who can go.
+
+== Act 1: Flood :: Which Way He Went ==
+
+You slip off the end of the line and wade north. Nobody stops you.
+
+A man in hip waders is carrying a mattress out of a rooming house over his head. You ask about a boat, a riverboat, a man named Eli.
+
+"Went by twenty minutes ago with a load of kids," he says, without putting the mattress down. "Toward Lacey. Hold this end, would you?"
+
+You hold the end until he gets it onto a porch roof.
+
+  1. Head for Lacey Street.
+
+== Act 1: Flood :: Coffee on Second ==
+
+On Second Avenue a woman leans out of an upstairs window with a coffee pot and a stack of paper cups, lowering them on a string to anybody who looks cold.
+
+"Eli, with the riverboat? He dropped the kids at the school and went back out. Up Cushman, toward Third." She lowers you a cup. "Drink it before it floats away."
+
+  1. Drink it and keep going.
+
+== Act 1: Flood :: The Porch on Third ==
+
+An old couple sits on the top step of a porch just short of Third, their feet an inch above the water. He has a cane across his knees. She has a paper slip in her hand and keeps folding and unfolding it.
+
+"Eli? He was tied up right there on Third a few minutes ago," the man says. "Pulling the Sorensens out."
+
+His wife holds out the slip. It's a prescription, his heart pills, the bottle went under with the kitchen. "They've got a help tent up on the high ground past Fifth. The nurses from St. Joseph's. We can't get there." She doesn't ask. She just keeps holding it out.
+
+  1. Take the slip to the help tent. Eli can wait an hour.
+  2. "I'll send somebody." Go to Third while Eli's still there.
+
+== Act 1: Flood :: The Help Tent ==
+
+The help tent is three army tents and a line of cots on the high ground south of town, where the water stops. Everybody St. Joseph's could carry out is here.
+
+A nurse with her sleeves rolled to the elbow reads the slip, reads it again, and goes into a crate of bottles that came out of the hospital pharmacy in a rowboat. She's Joan Halvorsen. She counts out pills into an envelope and writes the dose on it in block letters an old man could read.
+
+"You walked up here for somebody else's prescription," she says. "In that water." She looks you over, your soaked fatigues. "Tell him one in the morning, with food. And tell him the nurse said to stay off that porch."
+
+  1. Take the envelope back down the hill.
+
+== Act 1: Flood :: A Block or Two South ==
+
+The old man takes the envelope in both hands. His wife reads Joan's block letters out loud to him twice.
+
+On Third the riverboat is gone. A boy bailing a skiff with a coffee can points with it. "Eli? Went a block or two south. Somebody was waving a sheet off a roof."
+
+You find the sheet on Fifth, and under it a family on a roof, and below them the riverboat, and the man at the tiller handing a baby down into it.
+
+  1. Wait for the baby, then tell him.
+
+== Act 1: Flood :: The Message ==
+
+"There's a woman from Minto on the sandbag line on Cushman," you say. "Her mother's stuck in a house out at the edge of town, past where the trucks can go. She says only your boat can get there."
+
+Eli doesn't ask your name. He knows whose mother it is before you've finished, and he knows the house. He tips the last of the furniture onto a porch and is turning the bow back into the current while you're still talking.
+
+"Tell her I'm going," he says. Then, over the motor: "Get back to your line before they shoot you for it, Texas. I'll come find you tonight. I could use a strong back."
+
+  1. Wade back to Cushman Street.
+
+== Act 1: Flood :: The Sergeant ==
+
+Your sergeant sees you coming a block off. By the time you reach the line he has his speech ready, and it's a long one: where you were, who you think you are, what the Air Force does to airmen who wander off, and what he'll do first.
+
+The woman from Minto is gone from the line. Nobody else there knows where you went, and he doesn't write anything down. He just puts you on the heaviest end of the line for the rest of the afternoon.
+
+  1. Pass the bags.
+
+== Act 1: Flood :: The Cabin ==
+
+That evening Eli ties the riverboat up at the end of the sandbag line and asks your sergeant for you by name. The woman's mother is out and dry, he says. He owes you one, and he says so. Eli runs freight on the river between Fairbanks and the villages. His family is Lower Tanana, out of Minto, and he grew up on these rivers. Near a half-sunk cabin on the edge of town, his pole knocks something soft.
+
+It's a man, held under by a yellow braided line tied to a drowned sawhorse. It's the geologist you met at the bar in July. Owen.
+
+The line is tied off in a bowline, but backward, the tail sitting outside the loop. You learned your knots tying up your cousins' boat on the reservoir, and every bowline you ever saw there had the tail inside. Somebody tied this one, and tied it his own way.
+
+  1. Point out the knot to Eli. Nobody tangles into a bowline.
+  2. Say nothing. Cut the line on both sides of the knot, pocket it, and get him to the help tent.
+
+== Act 1: Flood :: Eli Looks ==
+
+Eli looks at the knot for a long time.
+
+"Nobody ties himself to a sawhorse," he says quietly. "Don't untie that, Texas."
+
+You cut the line a hand's width above the knot and a hand's width below, so it stays tied, and put it in your jacket pocket.
+
+  1. Help Eli lift Owen's body into the boat.
+
+== Act 1: Flood :: An Accident ==
+
+St. Joseph's took water on the first floor and sent everyone it could carry up the hill, so that is where you and Eli bring Owen: the help tent on the high ground south of town. They put him on a cot at the back, under a tarp.
+
+Investigator Vernon Barnette of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He lifts the tarp and looks at Owen for about a minute.
+
+"Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
+
+At the tent flap an old woman with a sardine tin for her ashes is asking the nurses after her boarder, the geologist. "Never once missed breakfast. Bed's not slept in. And whoever came for him last night didn't ask me which room this time." A nurse takes her by the elbow, toward the back.
+
+Joan Halvorsen, the nurse who counted out the old man's pills this morning, is still at the tarp after he's gone. She looks up and knows you. "You again," she says, and doesn't sound sorry about it.
+
+  1. Ask Joan if anything about the body looked wrong.
+  2. Make her laugh. She looks like she needs it.
+
+== Act 1: Flood :: Joan ==
+
+Joan lowers her voice. Bruises on his left shoulder and the side of his neck, she says, like a hand held him down. A left hand, from behind. "Nobody asked me," she says. "So I didn't say."
+
+  1. Continue.
+
+== Act 1: Flood :: The Land Office ==
+
+Eli takes you to the land office, where his sister Lucy is hauling wet ledgers up a staircase. You light a cigarette. She takes it out of your mouth and drops it in a puddle without a word.
+
+She doesn't believe the accident ruling for a second. Owen was coming to see her the night he drowned. He'd written to her twice in July: he hid his real notes at his survey camp north of town, and he was bringing her copies. The copies are gone. Owen flew in and out on amphibian floats, landing on their wheels on a gravel bar the flood has scoured away, and the camp is forty miles from any river a boat can run. Until the creek freezes hard enough for a plane on skis, nobody is getting in.
+
+"He was working with a lawyer, Franklin Ashby, on our family's claim," she says. "Mr. Ashby's taken it over. But I need to know which crossings Owen meant, and his survey used Air Force aerial photographs. The base photo lab kept the only full set of prints in Alaska. I can't get onto your base."
+
+She looks at you a beat too long.
+
+  1. "I can get you Owen's aerial photos."
+  2. "I don't know. I could get in a lot of trouble."
+
+== Act 1: Flood :: Saturday at the Silver Pan ==
+
+The water goes down. The mud doesn't. Saturday night the Silver Pan is packed: Curly at the bar, Jake Bueller the bush pilot folded into a booth, Eli nursing a soda.
+
+Hank Lyle has run the Pan since statehood. He slides you a beer and gives you the speech he gives every new airman, whether they want it or not.
+
+"Three things about this town, son. One: the law keeps score. Every time a Trooper hears your name, he believes you a little less, and once he's done believing you, he's done. Two: people here remember who stood with them and who didn't. Three: nothing you say stays where you said it. Dottie down at the Northern Lights Café hears it all by morning. You ever want to know where you stand, buy a cup of her coffee and ask."
+
+He wipes the bar. "That's the speech. Drink your beer."
+
+A drunk calls Eli something ugly. Eli doesn't move. The drunk shoves him.
+
+The floor is slick with mud. There's a hot stove, a moose rack on the wall, and a lot of bottles.
+
+  1. Shove the drunk into the stove.
+  2. Grab the moose rack off the wall.
+  3. Break a bottle and hope that ends it.
+  4. Stay in your seat. Not your fight.
+
+== Act 1: Flood :: Not Your Fight ==
+
+You stay in your seat. Eli takes the first punch alone. Then Curly Boone comes off his stool yelling "Texas!" and drags you in by the collar, and it's everybody's fight.
+
+  1. Shove the drunk into the stove.
+  2. Grab the moose rack off the wall.
+  3. Break a bottle and hope that ends it.
+
+== Act 1: Flood :: Headlights ==
+
+Headlights sweep across the front window. Outside, a siren winds down to nothing. Nobody else in the Pan seems to have noticed. You're still in it, your hands full of a man's coat or the moose rack.
+
+  1. Let go and step back with your hands where they can be seen.
+  2. Hang on. He started it.
+
+== Act 1: Flood :: The Whistle ==
+
+The door bangs open and a whistle cuts through the noise. The fight stops the way a song stops when somebody pulls the jukebox plug.
+
+Eli is by the stove, his lip split, the drunk's friend sitting in the mud at his feet.
+
+  1. You are at his shoulder. Nobody got him two on one.
+  2. You are across the room, where the fight took you.
+
+== Act 1: Flood :: The Drunk Tank ==
+
+Officer Tom Peter of Fairbanks PD hauls you, Eli, and Curly out to the car. He knows Curly by name. On the way, Curly presses a folded twenty into the officer's hand, friendly as anything. The officer tucks it back into Curly's shirt pocket without looking at it and shuts the door.
+
+In the morning Investigator Vernon Barnette comes to the cell. He wants to know who started it, and why a Texan airman is running around with Curly Boone and "the river Indian."
+
+"Give me a name and you walk."
+
+  1. Cover for Eli. "I started it." Barnette won't forget your name.
+  2. Blame Eli. "He threw the first punch."
+  3. Side with Curly. "Ask Curly. He saw it."
+
+== Act 1: Flood :: A Friend in Town ==
+
+Barnette lets you both go, but he writes your name down.
+
+A man in a good coat is at the desk, talking Barnette down in a calm voice until Barnette tears up the charge sheet. Franklin Ashby, attorney. He paid your fine, and there's no record.
+
+"Owen spoke well of you," he says. You met Owen exactly once. "He spoke well of everybody. I'm finishing what he started for the Native families. With these claims, timing is everything." He gives you his card. "If you ever need anything, you come see me."
+
+  1. Thank him.
+
+== Act 1: Flood :: Letter Home ==
+
+You sit on your bunk with a pen. Mama will want to know about the flood. You are not sure how much to tell her about the dead man, the fight, or the night in jail.
+
+You write: "Dear Mama,"
+
+  1. Tell her all of it. The body, the fight, the jail.
+  2. Tell her about the flood and that you made some friends.
+  3. Tell her it's boring up here and you're fine.
+
+== Act 2: Freeze-up :: The Major ==
+
+September. Ice in the puddles by morning. Major Dekker, your squadron commander, calls you into his office. He's friendly. There's a photo of a boat on his desk and a Florida retirement brochure under his coffee cup.
+
+"Heard you spent a night in the Fairbanks drunk tank, Pruett." You freeze. Ashby made sure there was no record of that. The only place you ever wrote it down was a letter to your mother.
+
+"Keep your nose clean," he says. "Two years and I'm fishing in the Keys."
+
+  1. "Yes, sir."
+
+== Act 2: Freeze-up :: The Photo Lab ==
+
+Lucy needs the aerial photographs Owen worked from, and they are in a records room behind the base photo lab.
+
+You know the lab clerk takes a long lunch. You also know the duty sergeant locks up at 1700 sharp.
+
+  1. Go in during the clerk's lunch.
+  2. Go in after lockup with a borrowed key.
+  3. Refuse. It isn't worth a court-martial for some old pictures.
+
+== Act 2: Freeze-up :: Flight Lines ==
+
+The records room is floor-to-ceiling drawers. The photos are filed by flight line and frame number, and the index card for the river north of town lists three drawers.
+
+  1. Cross-check the frame numbers against the map grid first. You only pull what you need, but it takes time you might not have.
+  2. Pull all three drawers fast and sort it out later. It'll leave a mess somebody notices.
+
+== Act 2: Freeze-up :: The Hotel Bar ==
+
+Lucy spreads the photos across her kitchen table next to Owen's survey grid. The best gravel on the lower Chatanika, and the easiest place to put a pipe or a haul road across it, are both on her family's fish camp. She goes quiet for a long time.
+
+October. Lucy wants ears in the hotel bar downtown, where Councilman Ray Tolliver drinks with men from Outside. A uniform with a guitar can sit in the corner. A Native woman asking questions cannot.
+
+  1. Bring your guitar. Play in the corner and listen.
+  2. Skip it. You've been seen too much lately.
+
+== Act 2: Freeze-up :: The Corner ==
+
+The hotel bar is warm and half full: contractors from Outside waiting out freeze-up, two professors from the university over a chessboard, a waitress who calls everybody "dear." Ray Tolliver has the back booth with a man in a gray suit who sits with his back to the room. He pays for each round out of a fold of new bills, in order, like he got them from the bank that morning. A gray-haired bush pilot at the bar watches him count them out and says to his glass, "Seen that kind of money before."
+
+The bartender doesn't care where you play, as long as you play.
+
+  1. Take the stool by their booth and play the quiet ones.
+  2. Set up by the door and play what the room wants.
+
+== Act 2: Freeze-up :: Half a Conversation ==
+
+Under the music you catch half of it. Tolliver, the councilman, red in the face: "...my land, my title, been my land since '52..." The other man is quieter, with his back to you, and you never see his face. "...after the claims settle it won't matter whose title it is. Before is what counts."
+
+Tolliver sounds like a man with a lot to lose. You can't tell if any of it means anything.
+
+  1. Pack up and go tell Lucy.
+
+== Act 2: Freeze-up :: The Chiefs ==
+
+Lucy brings you to a meeting in a community hall on the edge of town. "Stand in the back," she says. "Listen."
+
+It's the Tanana Chiefs: village chiefs and delegates from up and down the Tanana and the Yukon, folding chairs, a coffee urn, a map of the Interior taped to the wall with colored pins in it. The talk is about the land freeze, the claims, and how many families have fish camps and trapline cabins on land some white man in town holds the title to. You are the only uniform in the room.
+
+An old man from Nenana reminds everyone that the Tanana chiefs sat down with Judge Wickersham in this same town in 1915, about this same land. "He told us to take allotments and become citizens," he says. "We have been filling out his papers for fifty years."
+
+Then Eli stands up. In town, you've never heard him say more than ten words in a row. Here he speaks for his family: the fish camp, the application that vanished, the councilman's title, the night of the flood. People nod. A woman writes it all down.
+
+Franklin Ashby is in the back row too, in his good coat, handing out cards. He catches your eye and nods, one friend of the families to another.
+
+  1. Stay in the back and listen.
+  2. Stand up and offer to help. You're the one with base access.
+  3. Slip out early. This isn't your room.
+
+== Act 2: Freeze-up :: The Chiefs ==
+
+Afterward, Eli finds you by the coffee urn. He doesn't say anything about the meeting. He just hands you a cup.
+
+Lucy watches the door Ashby went out. "He's been good to us," she says, to nobody in particular.
+
+  1. Continue.
+
+== Act 2: Freeze-up :: The Major's Office ==
+
+Lucy makes you repeat the quiet man's words twice. "Before is what counts. Somebody knows the timing of the claims better than Tolliver does."
+
+Lucy has been going through Owen's paperwork. His access to the Air Force photographs was signed off by your squadron commander, and every survey report Owen filed went across that same desk. Somebody on the base knew exactly what Owen had found.
+
+She wants the files in your commander's office. Major Dekker keeps a locked cabinet he never lets the clerk touch.
+
+"I'm not asking you to steal," she says. "I'm asking you to look."
+
+  1. Search the Major's cabinet tonight.
+  2. Refuse. That's your own CO. You'd hang for it.
+  3. Stop by the café first and hear what Dottie has heard.
+
+== Act 2: Freeze-up :: After Hours ==
+
+The squadron building is dark except for the duty desk. The Major's cabinet has a combination lock. On his desk: the boat photo, the Florida brochure, and a desk calendar with a date two years out circled in red and marked RETIRE.
+
+  1. Try the circled retirement date as the combination.
+  2. Force the cabinet with a screwdriver. It'll leave marks.
+
+== Act 2: Freeze-up :: What's in the Cabinet ==
+
+The cabinet opens. Munitions sign-out sheets, flight schedules, typed pages that look like copies of letters, carbon copies of nothing in particular. There's too much to read by flashlight. You photograph all of it with Lucy's camera and put everything back.
+
+You can't tell what any of it means. Lucy will have to read it.
+
+  1. Wait in the dark for the duty airman to finish his rounds, then get out.
+  2. Don't wait. Go now, while he's still on his rounds.
+
+== Act 2: Freeze-up :: The Duty Desk ==
+
+The duty airman looks up from his comic book as a shape crosses the end of the hall. "Hey!" By the time he's around the desk you're out the side door and into the dark between the buildings.
+
+He never saw your face. He'll write it in the duty log all the same: somebody in the squadron building after hours, headed for the side door.
+
+  1. Continue.
+
+== Act 2: Freeze-up :: The Airstrip ==
+
+November. Planes are coming off floats and going onto skis, so nobody is flying anywhere for weeks. You find Curly at the bush strip lashing a tarp over a wing.
+
+He ties it off without looking, with yellow braided line off a coil on his workbench: a bowline, backward, the tail outside the loop.
+
+You have seen that knot before. There's a piece of it in your footlocker, cut off a drowned sawhorse, in the same yellow line.
+
+"Wade! Come by Saturday, we'll get a steak. My treat. Money's good this year."
+
+  1. Take Curly up on the steak.
+  2. Make an excuse.
+
+== Act 2: Freeze-up :: Steak at the Pan ==
+
+Saturday, Curly pays for two T-bones out of a roll of twenties thick enough to choke a dog. He talks about Texas, about a boat he's going to buy, about getting out before the next winter.
+
+Hank brings the plates himself. He sets Curly's down first, then yours, and stands there a second. "You're the airman who stayed on his stool," he says, and goes back behind the bar.
+
+Curly only mentions Owen once. "Good man. Shame what the water did." He says it the way you'd say it about weather, and changes the subject.
+
+  1. Continue.
+
+== Act 2: Freeze-up :: Jake ==
+
+Jake Bueller catches you outside the hangar where he does contract maintenance for the base. He's six foot seven and has to duck under the door. Bush pilot, mechanic, straight arrow. His uncle is Ray Tolliver, the councilman, and he'll tell you himself that they don't talk.
+
+"Curly got drunk with me Thursday," he says. "Said he's got money coming, enough to get out of Alaska for good. Said some people in this town are going to be real sorry they know his name. I don't like it."
+
+He rubs the back of his neck. "A man in over his head like that, whoever's paying him won't want him around long. Somebody ought to tell somebody who can keep an eye on him. Not me. I fix airplanes."
+
+  1. Tell Lucy everything Jake said.
+  2. Go confront Curly yourself.
+  3. Let it go. Curly talks big when he drinks.
+
+== Act 2: Freeze-up :: The Flight ==
+
+The skis are on. Jake will fly Lucy up to Owen's camp the first clear week: December 12th. She'll dig up what Owen hid and fly it home.
+
+She tells three people: Eli, Jake, and you.
+
+She hasn't finished reading the Major's files. There is a lot of it.
+
+  1. Go home and write to Mama.
+
+== Act 2: Freeze-up :: Letter Home: Work ==
+
+You start another letter: "Dear Mama,"
+
+First, the base. You've had a strange fall.
+
+  1. Tell her you've been doing things you shouldn't, for a good reason.
+  2. Tell her the work is cold and dull.
+  3. Tell her you might make Airman First Class early.
+
+== Act 2: Freeze-up :: Letter Home: Friends ==
+
+Then your friends. Mama always asks if you're eating and who you eat with.
+
+  1. Tell her about Eli and Lucy, and that Lucy's flying north on the 12th to finish what Owen started.
+  2. Tell her about Eli and Lucy, but nothing about the flight.
+  3. Tell her you mostly keep to yourself.
+
+== Act 2: Freeze-up :: Before the Dark ==
+
+Investigator Vernon Barnette pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and that land office girl," he says. "I'm watching all three of you." He leans in the window. "Next time you tell me something, Pruett, I won't believe a word of it."
+
+December is coming. The sun is barely up for four hours. You could keep your head down for a while.
+
+  1. Lie low until Lucy's flight. Play some gigs, be seen being boring.
+  2. Keep digging. There isn't time to be careful.
+  3. Stop by the café first and hear what Dottie has heard.
+
+== Act 3: Deep Winter :: Lucy: The Survey Camp ==
+
+You are Lucy. December 12th, thirty-eight below. Jake sets the plane down on the frozen creek below Owen's camp, and you have three hours of grey light.
+
+The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. Owen's second letter told you where to look.
+
+  1. Under the floorboards behind the cook-tent stove.
+  2. The old meat cache up on stilts.
+  3. Under the survey marker.
+
+== Act 3: Deep Winter :: Lucy: The Cache ==
+
+An oilcloth bundle: field notebooks, a folder of claim maps, and four reels of tape labeled in Owen's tidy hand. You stuff them inside your parka.
+
+Jake has the engine warm. You take off into the last of the light.
+
+  1. Head home.
+
+== Act 3: Deep Winter :: Lucy: Engine Out ==
+
+Forty minutes out, the engine coughs. Then again. Jake swears and works the primer. "Fuel's icing," he says. "I drained the sumps, Lucy, I swear to God. Nothing came out but a little gas."
+
+The engine quits. He puts the plane into a stand of black spruce on a hillside, and the world turns over.
+
+When you come to, Jake is pinned and bleeding, the cabin is on its side, and it's getting dark for the next eighteen hours.
+
+  1. Build a fire first.
+  2. Get Jake free and stop the bleeding first.
+
+== Act 3: Deep Winter :: Lucy: The Long Night ==
+
+You get a fire going in the lee of the fuselage first. By the time you get back to Jake, his lips are blue, but the fire is what saves him: you warm your hands and work the seat frame off his leg, and pack spruce boughs under him. The cold doesn't care how smart you are. It only cares what you do next.
+
+  1. Burn oil-soaked rags in a cowling panel for a smoke signal at first light.
+  2. Stamp a big X in the snow on the open slope.
+  3. Save everything for the fire and wait.
+
+== Act 3: Deep Winter :: Wade: The Search ==
+
+You are Wade again. When Jake's plane doesn't come back, the Rescue Coordination Center at Elmendorf calls Eielson for people to put on a ground team, and the team needs a munitions man for flares and signal charges. Your sergeant sends you.
+
+They hand you cross-country skis. You grew up water skiing. How hard can it be?
+
+Near the last known heading, the team splits up to cover more ground. You're on your own.
+
+Then a column of black smoke stands up over the spruce to the north, oily and straight, the kind nothing in the woods makes. Somebody is feeding it on purpose, and has been since first light. On the radio the team leader turns everyone toward it, each from wherever he is.
+
+  1. Take the long downhill run along the ridge. Balance is balance.
+  2. Climb straight up the creek drainage.
+
+== Act 3: Deep Winter :: Kick and Glide ==
+
+The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
+
+The black column is close now, and somebody down there is still feeding it. Then you smell it.
+
+  1. Follow it.
+
+== Act 3: Deep Winter :: The Wreck ==
+
+The plane is on its side in a stand of black spruce, one wing folded under it. A thread of smoke from a fire in the lee of the fuselage. Lucy is alive, waving you off the slope.
+
+You don't listen. You plant your skis and reach down into the cabin to haul her up by the arm, and the snow under your skis gives way. You go down hard against the fuselage with your right arm under you.
+
+You hear it before you feel it: a crack like green wood. Then you feel it.
+
+  1. Yell. Then let Lucy deal with it.
+
+== Act 3: Deep Winter :: The Wreck ==
+
+Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
+
+Jake lies by the fire with his left foot wrapped in a wool shirt, and Lucy keeps that foot back from the heat on purpose: thawed out here, it would only freeze again before a hospital. The toes are white and hard as candle wax. They froze while he lay pinned and she got the fire going. He drifts in and out, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
+
+You wander over to the engine to get away from her look. You know hardware. The fuel cap gasket has been cut, and the sump bowl is solid ice. And the sump drain is jammed with a sliver of wood, wired so it looks clean: when Jake drained it on preflight, nothing could come out but the little gas above the plug. Somebody poured water in this tank and made sure Jake couldn't find it.
+
+  1. Wake Jake and show him. It wasn't his fault. And if Jake knew, he might make his uncle Ray listen.
+  2. Keep it to yourself until you know who.
+
+== Act 3: Deep Winter :: Back in Town ==
+
+The rest of the team reaches the wreck three hours after it set out, straight up the slope under the last of Lucy's smoke. A helicopter out of Fort Wainwright comes in after them, and by nine that night the three of you are in Fairbanks.
+
+Eli meets you at the hospital. He doesn't sit down.
+
+"I was running fuel out to the bush strip the night before they flew. There was an Air Force staff car parked by Jake's plane. Your Major's car." He watches your face. "Four people knew that date, Wade. Me, Lucy, Jake, and you."
+
+You feel sick. The only other place that date exists is the letter you wrote to your mother.
+
+  1. Tell Eli the truth: you put the date in a letter to your mother.
+  2. Lie. "I never told a soul."
+
+== Act 3: Deep Winter :: The Bow ==
+
+Lucy took Jake's tip straight to Officer Tom Peter, the officer who handed Curly back his twenty the night of the barfight. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.
+
+He'd stolen a brand-new hunting bow. A left-handed one. He tells the officer it was for protection. From who, he won't say.
+
+A left-handed man. Joan said the bruises were from a left hand. And Curly ties his bowlines backward, tail outside, like the one on Owen's sawhorse.
+
+You give Officer Tom Peter the piece of line you cut off Owen's sawhorse. He takes it out to Curly's hangar and comes back with a coil of yellow tie-down line off Curly's workbench: the same braid, the same blue tracer thread running through it.
+
+Curly is in a cell now, behind a door only the officer has the key to. Curly knows exactly what that means, and for the first time since August he sleeps.
+
+A letter from Mama is waiting at the hospital desk. Mama has read every word you sent twice, you can tell. She doesn't scold. She just has a story.
+
+"Wanda Pruitt at the church office, no relation, found out the Hendersons were about to lose the farm. She told the pastor's wife so they could take up a collection. She meant well. Mostly.
+
+"The Hendersons kept the farm. They haven't set foot in that church in six years, and Lila Henderson crosses the street when she sees Wanda coming. I think about that more than I ought to."
+
+  1. Continue.
+
+== Act 3: Deep Winter :: What Eli Saw ==
+
+Eli finds you in the hospital parking lot, smoking one-handed in the cold. He's been carrying something since August.
+
+"The night of the flood, I was out on the fish camp. Our fish camp. My grandfather's, and his mother's before him. Tolliver's had me banned off it for two years, says he'll have me arrested if I set foot there. I went back for my father's things before the water took them.
+
+"Coming back, I saw a skiff tied up at the cabin where we found Owen. I didn't say anything, because then I'd have to say what I was doing out there."
+
+He's telling you something that could put him in jail.
+
+  1. Keep it between you. "Nobody hears this from me."
+  2. Tell Barnette. A witness is a witness.
+  3. Hold onto it. If it comes to it, it's a card you can play.
+
+== Act 3: Deep Winter :: Enough ==
+
+Lucy nearly died. Jake can't walk. Your arm is in a cast. And you heard Tolliver yourself in that hotel bar: "my land, my title."
+
+Tolliver holds the fish camp. Lucy has always said the family's original application was never lost, just pulled from the files, and Tolliver is the one who'd want it kept. As far as you can see, Tolliver did this.
+
+You tell Lucy you're going to do something about it. She lets you talk.
+
+  1. Blow the safe in Tolliver's office and take the stolen allotment file.
+  2. Burn down his hunting cabin.
+  3. Find him and put a gun in his face until he talks.
+  4. Don't go after Tolliver. Not like this.
+  5. Stop by the café first and hear what Dottie has heard.
+
+== Act 3: Deep Winter :: One-Handed ==
+
+You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.
+
+  1. Go.
+
+== Act 3: Deep Winter :: Lucy ==
+
+Lucy steps out of the dark before you get there. She must have followed you.
+
+"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."
+
+She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, going back to October. Every one is signed Wade Pruett. You didn't sign any of them. Under those, the igloo count sheets from the summer, before the first sheet with your name forged on it: the demolition count short week after week, and every short sheet initialed up the line as if it added up. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August. Your letter with the date of Lucy's flight went out in November, right across his desk.
+
+"They've been building you for weeks. You're the fall guy."
+
+She doesn't look at you for a long moment. When she does, her voice is flat, the way people talk when they've rehearsed something and it still won't come out right.
+
+"Why you, Wade? Out of every airman on that base. I've been asking myself since I opened this folder, and I know why." She holds up her hand before you can speak. "In August I told everybody about you. The girls at the office. Mr. Ashby, every time he came by about the claim. People at the Chiefs' meeting. A good-hearted Texas boy from munitions who'd do anything I asked. I was proud of myself. I thought I'd finally found a way in."
+
+Her voice breaks on the next part, and she makes it keep going.
+
+"Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."
+
+  1. Stay. "Then we finish this. Together."
+  2. Walk away. You're done being anybody's tool.
+  3. Turn on her. If she used you, you can use her.
+
+== Act 3: Deep Winter :: Letter Home, Dictated ==
+
+You can't write with your arm in a cast. Joan Halvorsen comes by on her break and offers to take down a letter for you. She has nice handwriting and she laughs at your spelling when you spell things out loud.
+
+Before you start, Joan reads you the letter from Mama that came Tuesday.
+
+Mama writes back fast, the way she does when something you told her scared her. She doesn't lecture. She tells you about home.
+
+"You remember Earl Dobbs from the feed store. Somebody said he'd been taking from the co-op till, and the county had him in front of a judge. Half the Baptist men's group drove to Lubbock to stand up for him. Turns out Earl had driven every one of them to the hospital some night or other, and never said a word about it. They let him go.
+
+"The Tate boy got accused of near the same thing that spring. Kept to himself, that boy. Nobody went. He's in Huntsville now. I don't know which of them did it. I'm not sure the judge did either."
+
+Joan uncaps her pen. "Dear Mama," she says. "Go on."
+
+  1. Tell Mama the truth: the crash, the arm, the danger.
+  2. Tell her you slipped on the ice and broke your arm.
+  3. Ask Joan to leave the arm out of it entirely.
+
+== Act 4: Breakup :: Prudhoe Bay ==
+
+March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on the Arctic coast. Nobody knows how big yet.
+
+Everybody in Fairbanks suddenly knows why a road north matters, and a pipeline after it, and why the gravel and the river crossings on the way matter. The best of both on the lower Chatanika are on Eli and Lucy's fish camp.
+
+You sit with Lucy at her kitchen table and listen to the last of Owen's tapes. The final reel cracked in the crash. The surgeon took three toes off Jake's left foot in February, once the line between dead and living showed, and Jake spliced the reel on crutches anyway. On the reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
+
+Lucy plays it three times. She doesn't say who she thinks "he" is.
+
+Mama writes that she's been praying on what you told her. And then, out of nowhere:
+
+"I never told you this. In '49 a land man from Midland came out and offered your daddy a lease on the back pasture. Good money, a signing bonus, and all he had to do was sign and let them be. Your daddy signed.
+
+"They drilled two dry holes and left. The windmill well has pumped salt ever since, and we haul water for the cattle to this day. Your daddy never talks about that money. I'm not sure we ever spent it. I think it's still in the coffee can."
+
+  1. Continue.
+
+== Act 4: Breakup :: The Offer ==
+
+Franklin Ashby invites you to lunch at the hotel. He orders for both of you. When he leans in and lowers his voice, you know it. The quiet man at the bar in October. "Before is what counts."
+
+"Wade, I'm going to be honest, because I like you. There's going to be a lot of money in this country now. The Air Force is going to court-martial somebody for those missing charges, and every page has your name on it. I can make those pages go away.
+
+"There's a parcel on the river with your name on it, too, if you want it. A future. That nice nurse. All you have to do is nothing."
+
+It was him. The lawyer helping the families. The man Owen trusted.
+
+  1. Take the money.
+  2. Refuse. Walk out.
+  3. Say you need a day to think. Then come back wired and get him talking. You'll need Lucy and Eli to back you.
+
+== Act 4: Breakup :: Visiting Hours ==
+
+Curly asks for you by name. In the visiting room he looks ten years older.
+
+"You kept me alive, Wade. Your friend's tip did. So here it is. Ashby paid me. For Owen, and for the plane. I held Owen under myself. I'm going to hell for that and I know it. But I'm not going there alone."
+
+  1. Continue.
+
+== Act 4: Breakup :: Family ==
+
+Jake is up on crutches. Because you showed him the sump drain on that hillside, he knows the crash wasn't his fault. He went to see his uncle, Ray Tolliver.
+
+"I told him somebody put water in my fuel, Wade. I told him I almost died. He didn't know. He knew about the land. He didn't know about the plane." Jake looks out the window. "He's going to talk to the Trooper."
+
+  1. Continue.
+
+== Act 4: Breakup :: Breakup ==
+
+May. The river ice is groaning. In July a land examiner from the BLM flies out to look at the fish camp for the family's claim. If the ice jam above the camp is blown, the water will take the smokehouse, the drying racks, the cabin, the graves: every sign of use the examiner would see from the air or on the ground. It wouldn't end the claim. The elders can still swear to fifty years of fishing that bend. But a claim with nothing left to look at can sit in a file for years, and years are all Ashby needs.
+
+In the middle of the night the jam goes up with a sound like artillery. From the bluff, too late, you see a man in an Air Force parka running for a car with base plates. By morning the fish camp is under the river.
+
+By noon, Investigator Vernon Barnette has the demolition sign-outs. Every page says Wade Pruett.
+
+  1. Continue.
+
+== Act 4: Breakup :: On the Record ==
+
+Investigator Vernon Barnette comes to see you himself. He hates this, and he says so. The Air Force's investigators are running their own inquiry into the missing charges, and he's taken a case to a state grand jury. He has the piece of line you cut off Owen's sawhorse and the coil it matches from Curly's hangar. He has the Major's files, and in them a land-office memo Lucy gave to exactly one person outside her office: Franklin Ashby. He has Curly's statement. He has Tolliver.
+
+For the first time since August, he seems to believe you.
+
+He wants you. Testifying against your commander, with your own name on every sign-out sheet, could get you court-martialed.
+
+Ashby's money is already in a bank in Seattle.
+
+  1. Say nothing. You've been paid.
+  2. Testify anyway, with his money in your account.
+
+== Epilogue :: Second Rush ==
+
+ENDING: BAD
+
+Ashby keeps his word. Within a week the sign-out sheets vanish from the evidence room, and the Air Force inquiry closes without a name. A parcel on the river is deeded to Wade Pruett. Ashby wins.
+
+ELI: Ashby's money finds a witness who puts Eli on the banished land the night Owen died. He serves two years for something he only witnessed.
+LUCY: Loses her job at the land office. Keeps the case files in a trunk for the rest of her life.
+CURLY: His statement goes missing from the evidence room. Convicted of burglary only. He dies in prison two years later of "pneumonia."
+JAKE: Flies again by fall, knowing it wasn't his fault.
+TOLLIVER: Tried to come clean after Jake told him about the plane. It wasn't enough. Keeps his seat, and the family's claim stalls.
+MAJOR DEKKER: Retires to Florida with a boat.
+BARNETTE: Asked you once to stand up in front of a grand jury. You didn't. Without you, he never got to arrest Ashby.
+JOAN: Marries you in the fall. You build a house on Ashby's parcel. She never asks where it came from.
+
+A letter from Texas: "Dear Wade, you always told me the truth, so I know what you've done. I'm praying for you. Come home when you can look at me. Love, Mama"
+
+  [THE END]

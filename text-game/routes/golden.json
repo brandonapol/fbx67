@@ -489,5 +489,473 @@
     ],
     "path": "1,1,1,1,1,1,2,2,1,1,1,3,1,2,1,1,1,2,2,2,1,1,2,1,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1",
     "transcript": "transcripts/20-good.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/21-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 5 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/22-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/23-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/24-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/25-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/26-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/27-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/28-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/29-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/30-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/31-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/32-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/33-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/34-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/35-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "cool",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/36-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/37-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/38-bad.txt"
+  },
+  {
+    "decisions": {
+      "barfight": "coverEli",
+      "coJob": "wade",
+      "leakedFlightDate": true,
+      "curlyPlan": "warn",
+      "eliTrespass": "quiet",
+      "rashPlan": "safe",
+      "afterConfession": "stay",
+      "offer": "take",
+      "testified": false,
+      "sharedWreck": true
+    },
+    "heat": "hot",
+    "ending": "bad",
+    "missingForBest": [
+      "ending is bad",
+      "decision 6 was not refuse or fake",
+      "decision 7 did not testify",
+      "heat 4 above 3",
+      "told Mama the flight date"
+    ],
+    "path": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,3,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+    "transcript": "transcripts/39-bad.txt"
   }
 ]

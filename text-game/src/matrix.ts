@@ -6,6 +6,7 @@ import { initialState } from './state.ts'
 import { canonical } from './liveness.ts'
 import { HEAT_LIMIT, ending, missingForBest, pendingHeat } from './logic.ts'
 import { flag, int, orExit, value } from './args.ts'
+import { coverRoutes } from './missionCover.ts'
 import type { State } from './types.ts'
 
 const sigFields = ['barfight', 'coJob', 'leakedFlightDate', 'curlyPlan', 'eliTrespass', 'rashPlan', 'afterConfession', 'offer', 'testified', 'sharedWreck'] as const
@@ -97,6 +98,19 @@ const fieldOf = (r: Row, k: string): string =>
 
 const transcript = (path: string): string => replay(path.split(',').map(Number)).map(render).join('\n\n')
 
+// A route outside the matrix's samples, such as one added to reach a mission note, as a row.
+const rowOf = (path: string): Row => {
+  const states = replay(path.split(',').map(Number))
+  const last = states[states.length - 1]
+  return {
+    decisions: states.reduce<Sig>((sig, s) => sigOf(sig, s), sigOf({ leakedFlightDate: false, sharedWreck: false }, initialState)),
+    heat: last.heat > HEAT_LIMIT ? 'hot' : 'cool',
+    ending: ending(last),
+    missingForBest: missingForBest(last),
+    path,
+  }
+}
+
 const golden = (): readonly Row[] => {
   const firstOf = (pred: (r: Row) => boolean) => rows.find(pred)
   const perEnding = (['best', 'good', 'middle', 'bad'] as const).map((e) => firstOf((r) => r.ending === e))
@@ -104,7 +118,8 @@ const golden = (): readonly Row[] => {
     [...new Set(rows.map((r) => String(r.decisions[f])))].map((v) => firstOf((r) => String(r.decisions[f]) === v && r.ending !== 'bad') ?? firstOf((r) => String(r.decisions[f]) === v)),
   )
   const hot = firstOf((r) => r.heat === 'hot' && r.missingForBest.length === 1)
-  return [...new Map([...perEnding, ...perValue, hot].filter((r): r is Row => !!r).map((r) => [r.path, r])).values()]
+  const base = [...new Map([...perEnding, ...perValue, hot].filter((r): r is Row => !!r).map((r) => [r.path, r])).values()]
+  return [...base, ...coverRoutes(base.map((r) => r.path)).map(rowOf)]
 }
 
 const writeGolden = (file: string, gs: readonly Row[]): void => {
