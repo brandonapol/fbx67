@@ -10,6 +10,8 @@ page records one sample per frame. `story`, the backdrop for scenes with no spac
 each act's start from a path (`game/smoke/starts.ts`) while its menu is open (see `game/src/probe.ts`). The first 5 frames after recording starts or the player
 enters a space are dropped, so a space's first build and shader compiles do not count. Every space in
 `game/src/levels.ts` must have a row below, and a space that was sampled but has no row fails. 1 MB is 10^6 bytes.
+A close-up is a camera in its space, not a space: the knot at the cabin (`game/src/knot.ts`) is props of the cabin,
+counted in the `cabin` row, and its close-up frames are captured from the cabin's start in each moral-weather band.
 
 - **Draw calls:** `app.stats.drawCallCount`, every draw call the device issued in the frame, shadow passes included.
 - **Triangles:** the index count over three of every visible mesh instance in the scene, for one pass. The release

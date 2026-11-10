@@ -11,6 +11,7 @@ test('each smoke start reaches its scene, every act has one, in a space its pose
     assert.equal(g.story.scene, s.scene, s.path)
     assert.equal(g.panel?.kind === 'error', false, s.scene)
     assert.equal(poses[s.pose]?.space, g.space, `${s.scene} starts in ${g.space}, pose ${s.pose} is not for it`)
+    ;(s.also ?? []).forEach((p) => assert.equal(poses[p]?.space, g.space, `${s.scene}: pose ${p} is not for ${g.space}`))
   })
   assert.deepEqual(
     [...new Set(starts.map((s) => menu(startFrom(`#path=${s.path}`, '').story).act))],

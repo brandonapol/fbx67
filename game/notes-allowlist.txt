@@ -115,8 +115,6 @@ theBarfight:stayedSeated.shove.leftEli.clean
 theBarfight:stayedSeated.shove.leftEli.redHanded
 theBarfight:stayedSeated.shove.stoodWithEli.clean
 theBarfight:stayedSeated.shove.stoodWithEli.redHanded
-theBody:cutItSilently
-theBody:pointedItOut
 theHotelBar:heardMost
 theHotelBar:heardPieces
 theHotelBar:skipped

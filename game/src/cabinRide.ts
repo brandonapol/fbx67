@@ -4,6 +4,7 @@ import { vec } from './world.ts'
 import type { Boat } from './boat.ts'
 import { ELI_AHEAD, RIVERBOAT_DECK, course, riverboatHull } from './boat.ts'
 import { skiff } from './skiff.ts'
+import { BODY_AT, KNOT_SPOT, SAWHORSE_AT, knotProps } from './knot.ts'
 
 // The cabin (a1_body, place `floodCabin`): the evening of 15 August, Eli's riverboat out of town along a flooded
 // slough to a half-sunk cabin on the edge of town, where his pole finds Owen. docs/town-map.md keeps the cabin off the
@@ -32,10 +33,8 @@ export const riverboat: Boat = { course: cabinRide, hull: riverboatHull, man: 'e
 // The boat a space's ride is in: Eli's riverboat to the cabin, else the skiff on Third.
 export const boatIn = (space: SpaceId): Boat => (space === 'cabin' ? riverboat : skiff)
 
-// Where the body is, and the drowned sawhorse it is tied to, north of it under the water.
-// BODY_AT is the north end of the body, where the line is tied on.
-export const BODY_AT = vec(4.1, -9.4)
-export const SAWHORSE_AT = vec(4.1, -11.0)
+// Where the body is, and the drowned sawhorse it is tied to (knot.ts, where the line and its knot are).
+export { BODY_AT, SAWHORSE_AT }
 const BODY_D = 1.0
 
 const flood = '#4f4a3c'
@@ -44,7 +43,6 @@ const logs = '#5e4a34'
 const roof = '#4a3e30'
 const spruce = '#2f4433'
 const birch = '#cfc8b4'
-const braid = '#d9b52a'
 
 const CABIN = vec(8.0, -13.5)
 
@@ -96,8 +94,8 @@ const props: readonly Prop[] = [
   { box: { x: -4.6, z: -10.5, w: 0.5, d: 0.5 }, h: 0.4, color: '#5a3f2a' },
   // The sawhorse, drowned: a darker shape under the surface at the corner of the cabin's yard.
   { box: { x: SAWHORSE_AT.x, z: SAWHORSE_AT.z, w: 1.4, d: 0.5 }, h: 0.01, color: under, flat: true },
-  // The yellow braided line from the sawhorse to the body, taut along the surface.
-  { box: { x: BODY_AT.x, z: (BODY_AT.z + SAWHORSE_AT.z) / 2, w: 0.04, d: BODY_AT.z - SAWHORSE_AT.z }, h: 0.03, y: 0.01, color: braid },
+  // The yellow braided line from the sawhorse to the body, taut along the surface, and its backward bowline.
+  ...knotProps,
   // Owen: the back of a dark shirt just breaking the surface, nothing more.
   { box: { x: BODY_AT.x, z: BODY_AT.z + BODY_D / 2, w: 0.55, d: BODY_D }, h: 0.05, color: '#34322e' },
 ]
@@ -115,5 +113,5 @@ export const cabin: Space = {
   spawn: start.seat,
   props,
   figures: [{ id: 'eli', at: start.bow, facing: start.heading, coat: '#4a4f3a', skin: '#a8754f', hair: '#1e1a17', height: 1.76 }],
-  spots: [],
+  spots: [KNOT_SPOT],
 }

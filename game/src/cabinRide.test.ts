@@ -1,9 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replay } from '../../text-game/src/engine.ts'
-import { menu, place, sendMission } from '../../text-game/src/story.ts'
+import { place, sendMission } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
-import { available, canLight, footY, heldBehind, inWorld, interact, playerBody, press, still, tick } from './prologue.ts'
+import { canLight, footY, heldBehind, inWorld, interact, playerBody, still, tick } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { posed, poses } from './probe.ts'
 import { DT } from './drive.ts'
@@ -16,7 +16,8 @@ import { BODY_AT, CABIN_PATH, CABIN_SPEED, SAWHORSE_AT, boatIn, cabin, cabinRide
 import { add, blocked, distance, scale, vec } from './world.ts'
 
 // The boat ride with Eli to the flooded cabin (#167): from wherever the search for Eli ends, the story is at a1_body
-// and Wade is in the riverboat; it poles out to the cabin and stops beside the body, where the scene's menu comes up.
+// and Wade is in the riverboat; it poles out to the cabin and stops beside the body, where Wade leans over to the knot
+// (knot.test.ts).
 // Played headless in the engine build's logic and checked against the text build on the same `--choices` path.
 
 const hash = (path: readonly number[]): string => `#path=${path.join(',')}`
@@ -31,10 +32,11 @@ const ENDS = {
   stayed: [1, 1, 1, 1, 1, 1, 2],
 } as const
 
-// Rides on with the player's hands off, one tick at a time, until something comes up; every tick is kept.
+// Rides on with the player's hands off, one tick at a time, until the boat stops or something comes up; every tick is
+// kept.
 const rideOut = (g: Game): readonly Game[] => {
   const go = (cur: Game, seen: Game[]): readonly Game[] => {
-    if (cur.panel || seen.length > 30 * 60) return seen
+    if (cur.panel || (cur.ride ?? 0) >= cabinRide.time || seen.length > 30 * 60) return seen
     const next = tick(cur, still, DT)
     return go(next, [...seen, next])
   }
@@ -79,8 +81,9 @@ test('the ride poles on with no teleport: the seat never moves faster than the b
     assert.deepEqual(g.story, boarded.story)
     assert.deepEqual(g.path, boarded.path)
   })
-  assert.ok(ride.slice(0, -1).every((g) => g.panel === undefined && inWorld(g)))
-  assert.ok(Math.abs(there.ride! - cabinRide.time) < DT + 1e-9, 'the menu comes up when the boat stops')
+  assert.ok(ride.every((g) => g.panel === undefined && inWorld(g)), 'no menu on the way: the knot comes first (knot.test.ts)')
+  assert.equal(there.ride, cabinRide.time, 'the boat stops at the end of its course')
+  assert.deepEqual(tick(there, still, 5).pos, there.pos, 'and stays there')
 })
 
 test('the player is Wade on the thwart, the camera held behind the heading, with Eli standing in the bow', () => {
@@ -125,40 +128,6 @@ test('the ride ends at the cabin, the body off the bow to starboard, and the hul
     })
   })
 })
-
-test("at the cabin the scene's own menu comes up, with every note the story offers and no way to walk off", () => {
-  assert.equal(there.panel?.kind, 'story')
-  assert.equal(there.panel?.title, menu(there.story).title)
-  assert.equal(there.panel?.text, menu(there.story).text, "the scene's own text")
-  assert.deepEqual(there.panel?.buttons.map((b) => b.id), menu(there.story).options.map((o) => `note:${o.note}`))
-  assert.deepEqual(available(there), [])
-  assert.deepEqual(tick(there, still, 5), { ...there, t: there.t + 5 }, 'nothing moves under the menu')
-})
-
-// Each answer, pressed as the panel offers it, until the story leaves the cabin for the help tent: pointing out the
-// knot stays a beat at the cabin while Eli looks (a1_knot), still in the boat; cutting it goes straight on.
-const ashore = (g: Game, n = 0): Game => {
-  if (g.space !== 'cabin' || n > 4) return g
-  const note = g.panel?.buttons[0]?.id ?? ''
-  assert.ok(note.startsWith('note:'), `${g.story.scene} at the cabin offers a note`)
-  const next = press(g, note)
-  assert.deepEqual(next.story, textBuild(next), next.story.scene)
-  assert.ok(next.space !== 'cabin' || next.ride === g.ride, 'still in the boat')
-  return ashore(next, n + 1)
-}
-
-menu(there.story).options.forEach((o) =>
-  test(`${o.note} at the cabin: parity with the text build, on to the help tent`, () => {
-    const next = press(there, `note:${o.note}`)
-    assert.deepEqual(next.path, [...ENDS.skipped, o.n], 'the same --choices path as the text build')
-    assert.deepEqual(next.story, textBuild(next))
-    assert.deepEqual(next.story, startFrom(hash(next.path), '').story)
-    const tent = ashore(next)
-    assert.equal(place(tent.story), 'helpTent')
-    assert.equal(tent.space, 'helpTent')
-    assert.equal(tent.ride, undefined, 'out of the boat')
-  }),
-)
 
 test('the cabin is lit as the outdoors on a flood evening, with no streetlight out there', () => {
   const l = lighting('cabin', 'flood', 'dusk', '1967-08-15T18:00')
