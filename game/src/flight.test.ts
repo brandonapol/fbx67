@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { FLIGHT_TIME, LEG_FADE, MOORED, MOORED_HEADING, OWEN_SEAT, PARKED, PILOT_SEAT, TOWN_TIME, flightFade, flightLight, legAt, litGold, onBoard, planeAt, seatAt } from './flight.ts'
-import { lighting } from './lighting.ts'
+import { lighting, summerExposure } from './lighting.ts'
 import { posed, poses } from './probe.ts'
 import { start } from './prologue.ts'
 import { FLOAT } from './downtown.ts'
@@ -84,4 +84,13 @@ test('the flight capture pose holds the plane mid-turn over town, in the gold li
   assert.ok(litGold(g.flight))
   assert.equal(flightFade(g.flight), 0)
   assert.ok(planeAt(g.flight).y > 10, 'in the air')
+})
+
+test('the gold light over town is exposed for its own low sun, not the camp clock\'s high one', () => {
+  const tenAm = lighting('downtown', 'summer', 'clear', '1967-07-15T10:00')
+  assert.ok((tenAm.exposure ?? 1) < 0.6, 'the story clock alone would expose the town leg down')
+  const gold = flightLight(tenAm, 5)
+  assert.equal(gold.sunElevation, 8)
+  assert.equal(gold.exposure, summerExposure(gold.sunElevation))
+  assert.equal(gold.exposure, 1)
 })
