@@ -227,3 +227,22 @@ test('Joan lingers at the tarp after Barnette has gone, on both of her branches'
     assert.doesNotMatch(text, /after he's gone/)
   })
 })
+
+// The issue paths: the Chiefs meeting, and the photo lab's two ways in (#338, #343).
+const toChiefs = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+const toPhotoLab = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1]
+
+test('Eli\'s speech at the Chiefs keeps the flood night he tells nobody until Act 3', () => {
+  const s = replay(toChiefs).at(-1) as State
+  assert.equal(s.scene, 'a2_chiefs')
+  assert.doesNotMatch(menu(s).text, /flood/)
+})
+
+test('the records room is at lunch on the clerk\'s lunch and after lockup on the borrowed key', () => {
+  const [lunch, key] = [1, 2].map((way) => replay([...toPhotoLab, way]).at(-1) as State)
+  assert.equal(place(lunch), 'photoRecords')
+  assert.equal(place(key), 'photoRecords')
+  assert.ok((clock(lunch) ?? '') < '1967-09-14T13:00', `lunch clock ${clock(lunch)}`)
+  assert.ok((clock(key) ?? '') > '1967-09-14T17:00', `key clock ${clock(key)}`)
+  assert.equal(menu(lunch).text, menu(key).text)
+})
