@@ -5,7 +5,7 @@ import { replay } from '../../text-game/src/engine.ts'
 import { sceneIds } from '../../text-game/src/sceneIds.ts'
 import { menu, pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
-import { available, focus, handedOff, inWorld, interact, playerBody, press } from './prologue.ts'
+import { available, focus, handedOff, inWorld, interact, playerBody, press, still, tick } from './prologue.ts'
 import { jailTalk, prologueSteps, walk } from './drive.ts'
 import { bodies } from './cast.ts'
 import { spaces } from './levels.ts'
@@ -52,6 +52,13 @@ test('hearing her out opens the scene menu; going after Eli matches the text bui
   assert.equal(stay.panel?.title, menu(stay.story).title)
 })
 
+// A letter home is written through the letter view (letters.ts): pick its first line and let the pen finish it.
+const writeHome = (g: Game): Game => {
+  let at = press(g, `note:${g.home!.choices[0].note}`)
+  for (let i = 0; at.home?.writing && i < 10_000; i++) at = tick(at, still, 1 / 30)
+  return at
+}
+
 test('from the line, every Act 1 menu moves on until Act 2 hands off to the text build, in step with it', () => {
   const play = (g: Game, n: number): Game => {
     if (handedOff(g)) return g
@@ -62,6 +69,11 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
     if (g.space === 'helpTent' && !g.panel) {
       const spot = available(g)[0]!
       return play(interact(walk(g, [[spot.x, spot.z + (spot.z > 0 ? -0.9 : 0.9)]])), n + 1)
+    }
+    if (g.home) {
+      const next = writeHome(g)
+      assert.deepEqual(next.story, textBuild(next), next.story.scene)
+      return play(next, n + 1)
     }
     assert.equal(g.panel?.kind, 'story', `${g.story.scene} in ${g.space} has no menu`)
     const note = g.panel.buttons.find((b) => b.id.startsWith('note:'))

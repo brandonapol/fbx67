@@ -1,0 +1,59 @@
+/* Letters home: one view, two hands. */
+
+.letter-said {
+  margin: 0 0 12px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.letter-page {
+  min-height: 2.4em;
+  margin: 4px 0 14px;
+  padding: 10px 14px;
+  background: repeating-linear-gradient(transparent 0 1.55em, var(--paper-edge) 1.55em calc(1.55em + 1px));
+  font-size: 20px;
+  line-height: 1.55em;
+}
+
+.letter-page p {
+  margin: 0;
+}
+
+/* Wade: a quick, heavy, slanting hand. */
+.hand-wade {
+  font-family: 'Bradley Hand', 'Marker Felt', 'Comic Neue', cursive;
+  font-weight: 600;
+  color: #1d2a3a;
+  transform: skewX(-6deg);
+}
+
+/* Joan: a nurse's round, even hand. */
+.hand-joan {
+  font-family: 'Segoe Script', 'Snell Roundhand', 'Brush Script MT', cursive;
+  color: #263b5e;
+  letter-spacing: 0.02em;
+}
+
+.letter-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.letter-lines button {
+  padding: 10px 14px;
+  text-align: left;
+  background: transparent;
+  border: 1px solid var(--ink);
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.letter-lines button:hover,
+.letter-lines button:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  outline: none;
+}

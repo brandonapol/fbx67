@@ -11,6 +11,8 @@ import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, curlyFacing, occluders, solids
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 import { jailSpot, letOut } from './jail.ts'
 import { tentSpot } from './hospital.ts'
+import type { Letter as Home } from './letters.ts'
+import { choose, finish as penDown, open as openHome, turn as turnPage, write, written } from './letters.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED, bodies } from './cast.ts'
@@ -28,7 +30,7 @@ export const TURN_GO = 0.5
 
 export type Button = Readonly<{ id: string; label: string }>
 
-export type Panel = Readonly<{ kind: 'story' | 'talk' | 'letter' | 'busted' | 'end' | 'error' | 'locked'; title: string; text: string; buttons: readonly Button[] }>
+export type Panel = Readonly<{ kind: 'story' | 'talk' | 'letter' | 'home' | 'busted' | 'end' | 'error' | 'locked'; title: string; text: string; buttons: readonly Button[] }>
 
 export type Holding = Readonly<{ id: string; note?: string; progress: number; time: number }>
 
@@ -49,6 +51,8 @@ export type Game = Readonly<{
   // The letter at the desk: characters typed so far while its panel is open, and folded once it is by the door.
   typed?: number
   letter?: 'folded'
+  // A letter home (letters.ts) while one is open: the view draws it, and its lines are the only choices.
+  home?: Home
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -97,6 +101,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   holding: undefined,
   typed: undefined,
   letter: undefined,
+  home: undefined,
 })
 
 export const start = (): Game => ({
@@ -171,19 +176,33 @@ const walkFrom = (g: Game): Game | undefined => {
 
 const locked = (title: string): Panel => ({ kind: 'locked', title, text: 'The door is locked.', buttons: [close('Step back.')] })
 
+// A letter home has no buttons of its own: the letter view offers its lines, so no key can pick one by default.
+const homePanel = (l: Home): Panel => ({ kind: 'home', title: l.title, text: l.said, buttons: [] })
+
+// The scene's whole menu: through the letter view where the story is writing home, else as its story panel.
+const menuPanel = (g: Game, extra: readonly Button[] = []): Game => {
+  const l = openHome(g.story)
+  return l ? { ...g, home: l, panel: homePanel(l) } : { ...g, panel: storyPanel(g.story, allNotes(g.story), extra) }
+}
+
+// The pen moves on the picked line; once it is written the letter turns to the next topic or is done.
+const pen = (g: Game, l: Home, dt: number): Game => {
+  const at = write(l, dt)
+  if (!written(at)) return { ...g, home: at }
+  const next = turnPage(at, g.story)
+  return next ? { ...g, home: next, panel: homePanel(next) } : arrive({ ...g, home: undefined, panel: undefined })
+}
+
 const arrive = (g: Game): Game => {
   const walking = walkFrom(g)
   if (walking) return walking
   const r = route(g.story, g.space)
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
-  if (r.to === 'menu') {
-    const notes = allNotes(g.story)
-    return { ...g, panel: storyPanel(g.story, notes, notes.length ? [] : [restart]) }
-  }
+  if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to (the line, after the errand at the tent), the scene plays as its menu.
     const into = enter(g, r.space)
-    return available(into).length ? into : { ...into, panel: storyPanel(g.story, allNotes(g.story)) }
+    return available(into).length ? into : menuPanel(into)
   }
   const out = letOut(g.story, g.pos)
   if (r.space === 'jail' && out) return enter(g, 'jail', out.at, out.facing)
@@ -191,7 +210,7 @@ const arrive = (g: Game): Game => {
   if (r.space === 'helpTent' && !tentSpot(g.story, 'joan')) return { ...g, panel: undefined }
   const back = spaces[r.space].back
   if (back) return { ...g, panel: storyPanel(g.story, [], [close(back)]) }
-  return { ...g, panel: storyPanel(g.story, allNotes(g.story)) }
+  return menuPanel(g)
 }
 
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
@@ -296,6 +315,12 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'retry') return enter(g, g.space)
   if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
+  if (g.home) {
+    if (button === 'finish') return { ...g, home: penDown(g.home) }
+    if (!button.startsWith('note:') || g.home.writing) return g
+    const note = button.slice(5)
+    return { ...sendNote(g, note), home: choose(g.home, note) }
+  }
   if (button === 'finish') return typed(g, letterLength(g))
   if (button === 'fold') return { ...g, panel: undefined, typed: undefined, letter: 'folded' }
   if (button.startsWith('note:')) {
@@ -356,6 +381,7 @@ const walk = (g: Game, input: Input, dt: number): Game => {
 
 export const tick = (g: Game, input: Input, dt: number): Game => {
   const t = g.t + dt
+  if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   const walked = walk({ ...g, t }, input, dt)
