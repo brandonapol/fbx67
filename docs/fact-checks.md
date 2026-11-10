@@ -1574,7 +1574,7 @@ period; and whether the fish camp should be on the Chatanika at all (item 3).
 
 **For consultant review.**
 
-**Claim.** In November, a riverboat deckhand beached at the Silver Pan says Eli ran the last freight down to Minto
+**Claim.** In November, a riverboat deckhand beached at the Silver Pan says Eli rode the last barge down to Minto
 before the ice and "said he had people to sit with, and didn't say more" (`winterTown`, the man at the stove).
 
 **Verdict.** Plausible. The details are ours.

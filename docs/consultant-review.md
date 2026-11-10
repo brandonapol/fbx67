@@ -267,11 +267,12 @@ Is the coffee-cup beat respectful, or does it make Eli a gesture for the airman?
 
 Scene: winter ambient (`winterTown.ts`), the Silver Pan, November. No golden route reaches this line.
 
-> **The man at the stove**, the riverboat deckhand: "Eli ran the last freight down to Minto before the ice. Said he
+> **The man at the stove**, the riverboat deckhand: "Eli rode the last barge down to Minto before the ice. Said he
 > had people to sit with, and didn't say more."
 
 **Questions.** Does "people to sit with" read as a funeral, a visit, or something unintended? Is a bar patron speaking
-of Eli this way respectful? Should it stay?
+of Eli this way respectful? Should it stay? (Passage 14, `a2_minto`, shows what the sitting was: the elders'
+testimony.)
 
 **Fact-check.** [Item 81](fact-checks.md#81-elis-last-freight-to-minto-before-the-ice).
 
