@@ -75,6 +75,11 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 75 | A smoke signal fed through a December morning (issue #208) | Act 3 | Plausible; unchecked | Low-medium. Oil, rags and green boughs keep a column going; at -38 F under an inversion it may spread flat. |
 | 76 | A night helicopter pickup at -38 F (issue #208) | Act 3 | Plausible; unchecked | Medium. Army helicopters at Fort Wainwright in 1967; a dark landing by flares and fire is the soft spot. |
 | 77 | Frostbite care and surgery timing, 1967-68 (issue #208) | Act 3, Act 4 | Plausible | Low. No thaw in the field if it may refreeze; amputation waits weeks for demarcation. |
+| 78 | Eli's boat and a Minto woman's mother in the flood (issue #77) | Act 1 | Plausible; consultant review | Low-medium. Item 11 says Minto people were evacuated to Fairbanks; the rescue itself is ours. |
+| 79 | Eli and Lucy as siblings from a Minto family (issue #77) | Acts 1-3 | Plausible; consultant review | Medium. Names, work and family shape are ours. |
+| 80 | A councilman holds title to a family fish camp; Eli banned from it (issue #77) | Act 3 | Plausible; consultant review | Medium. Items 1, 2 and 3 cover the law; the ban is ours. |
+| 81 | Eli's last freight to Minto before the ice (issue #77) | Act 2 | Plausible; consultant review | Low. |
+| 82 | "A Native woman seen" on the base, and Wade naming Lucy (issue #77) | Acts 2-3 | Plausible; consultant review | Medium. A description that identifies by race, then a betrayal. |
 
 ## High priority
 
@@ -1495,3 +1500,108 @@ amputation for weeks to months until demarcation was the accepted practice, and 
 waiting. Blisters within a day of rewarming fit superficial frostbite.
 
 **Recommended change.** None.
+
+## Consultant review packet (issue #77)
+
+[`consultant-review.md`](consultant-review.md) gathers every Lower Tanana passage in Acts 1-3 with the text as a player
+reads it and a question for the consultants. Each passage points at an item here, so verdicts land in one place. The
+passages with no item of their own before are covered below. None of these was researched for this pass; each is
+general knowledge, unchecked, and every one is **for consultant review**.
+
+### 78. Eli's boat and a Minto woman's mother in the flood
+
+**For consultant review.**
+
+**Claim.** On 15 August a woman from Minto, in a man's rain slicker, asks Wade on the Cushman Street sandbag line to
+find Eli: he runs freight on the river, his boat can reach her mother's house at the edge of town past where trucks can
+go, and the water is at its windows. Eli goes at once, before Wade has finished speaking, and later asks the sergeant
+for Wade by name if Wade helped (`a1_flood`, `a1_eli`, `a1_delivered`, `a1_body`).
+
+**Verdict.** Plausible. The rescue is ours.
+
+**Evidence.** Item 11 notes Minto was flooded and evacuated to Fairbanks, so Minto people in town that day are
+historical. Private boats doing much of the rescue downtown is general knowledge, unchecked. Eli acts at once, on his
+own judgment, and the woman asks for Eli, not for help from Wade: the Eli and Lucy rule applies.
+
+**Recommended change.** None until consultants review. Ask: whether a Minto woman would look for a boatman on a
+sandbag line or go to a relative first; whether "Eli, he runs freight on the river" reads right; and whether Eli
+owing Wade "one" makes Eli a debtor to the airman in a way the family would not want.
+
+### 79. Eli and Lucy as siblings from a Minto family
+
+**For consultant review.**
+
+**Claim.** Eli's family is "Lower Tanana, out of Minto", and "he grew up on these rivers". Lucy is his sister, a
+land-office clerk, who "went down for the Native allotment books" (item 72). Eli speaks little in town ("never heard
+him say more than ten words in a row") and at length at the Chiefs meeting. In Act 3 Eli confides in Wade in a
+hospital parking lot. The family has a fish camp on the lower Chatanika, "my grandfather's, and his mother's before
+him" (`a1_body`, `a1_lucy`, `a2_chiefs`, `a3_eli`).
+
+**Verdict.** Plausible. The names, jobs and family shape are ours; Minto is real (item 17).
+
+**Evidence.** Minto is a Lower Tanana community on the Tolovana and Tanana (item 17). A Native woman working in a
+federal land office in 1967 is plausible but unchecked (items 36 and 45). Fish camps on the lower Chatanika within
+Minto families' use is the design's premise; locations are family knowledge (item 3).
+
+**Recommended change.** None until consultants review. Ask: whether the names Eli and Lucy are right or should be
+replaced; whether "Lower Tanana, out of Minto" is how the family would be placed; whether Eli's silence in town and
+speech at the meeting reads as character or as a stereotype of the quiet Native man; and whether a sister-and-brother
+pair would be named and addressed this way.
+
+### 80. A councilman holds title to a family fish camp; Eli banned from it
+
+**For consultant review.**
+
+**Claim.** Councilman Tolliver holds the fish camp; the family's original allotment application "was never lost, just
+pulled from the files"; Tolliver has "banned" Eli from the camp for two years and threatens arrest. Eli went back the
+night of the flood "for my father's things before the water took them" and saw a skiff at the cabin where Owen was
+found. Eli says it could put him in jail (`a3_eli`, `a3_rash`).
+
+**Verdict.** Plausible. Whether a non-Native holder of title on land under a pending allotment could bar the
+applicant, and whether entering would be trespass, is ours and unchecked.
+
+**Evidence.** Items 1 and 2 cover the freeze and the 1906 Act's proof of use and occupancy: a family's fish camp is the
+kind of use that supported an allotment, and applications were lost or stalled. Item 3 covers the fish camp's
+geography. Whether a title could lawfully pass over land with an earlier application is the plot's premise, not a
+checked fact.
+
+**Recommended change.** None until consultants review. Ask: whether the family's grief for the camp and for "my
+father's things" is respectful; whether Eli's fear of arrest for entering his own family's camp is right for the
+period; and whether the fish camp should be on the Chatanika at all (item 3).
+
+### 81. Eli's last freight to Minto before the ice
+
+**For consultant review.**
+
+**Claim.** In November, a riverboat deckhand beached at the Silver Pan says Eli ran the last freight down to Minto
+before the ice and "said he had people to sit with, and didn't say more" (`winterTown`, the man at the stove).
+
+**Verdict.** Plausible. The details are ours.
+
+**Evidence.** Freight on the Chena and Tanana ends at freeze-up in late October or early November (general
+knowledge, unchecked). A Native man's reasons are kept private by the line: Eli does not explain.
+
+**Recommended change.** None until consultants review. Ask: whether "people to sit with" reads as a funeral, a
+visit or something unintended; whether it is right for a bar patron to speak of Eli this way; and whether it implies
+a death the story has not given Eli.
+
+### 82. "A Native woman seen" on the base, and Wade naming Lucy
+
+**For consultant review.**
+
+**Claim.** After Lucy breaks into a squadron building on her cousin's janitorial crew, Barnette "has a description: a
+Native woman seen leaving a squadron building on an Air Force base at night. He doesn't have a name yet." A gossip
+line repeats it ("Barnette's been asking about a Native woman seen on the base at night"). In Act 2 the narration
+says "A Native woman asking questions cannot" do what a uniform with a guitar can, in the hotel bar. In Act 3, on one path, Wade tells Barnette "who
+the Native woman on the base was", and Lucy is suspended from the land office (`a2_co_lucy`, `gossip`, `a2_hotel`,
+`a3_turn`).
+
+**Verdict.** Plausible. A description of this kind is how it would be recorded; the betrayal is a story choice.
+
+**Evidence.** Item 47 covers the janitorial crew. That an investigator in 1967 would use "Native woman" as the
+identifying description is unchecked but consistent with the period; the line is written to show how narrow the
+description is, not to endorse it. The hotel-bar narration names the same constraint from Lucy's side.
+
+**Recommended change.** None until consultants review. Ask: whether the narration should repeat the phrase "Native
+woman" or let the investigator say it only in dialogue; whether Lucy's suspension and the evidence locker read as the
+period's treatment; and whether Wade informing is handled with enough weight on Lucy's side.
