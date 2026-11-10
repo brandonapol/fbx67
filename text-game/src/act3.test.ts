@@ -1,13 +1,22 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { render, replay } from './engine.ts'
+import { choose, render, replay } from './engine.ts'
+import { initialState } from './state.ts'
 import { clock, place } from './story.ts'
 import type { State } from './types.ts'
 
-// From the prologue to a3_rash. Choice 26 is a2_co_ask: 1 searches the Major's cabinet (coJob 'wade', then the heist
-// and what's in it), 2 refuses and Lucy goes herself (coJob 'lucy', one scene).
-const toRash = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-const lucyToRash = [...toRash.slice(0, 25), 2, 1, ...toRash.slice(28)]
+// Walks to a3_rash taking the first choice everywhere except the cabinet (a2_co_ask): 1 searches it (coJob 'wade'),
+// 2 refuses and Lucy goes herself (coJob 'lucy'). Returns the choice numbers, so a path can be extended.
+const pathToRash = (coChoice: number): readonly number[] => {
+  const go = (s: State, path: readonly number[]): readonly number[] => {
+    if (s.scene === 'a3_rash') return path
+    const n = s.scene === 'a2_co_ask' ? coChoice : 1
+    return go(choose(s, n), [...path, n])
+  }
+  return go(initialState, [])
+}
+const toRash = pathToRash(1)
+const lucyToRash = pathToRash(2)
 const plans = ['safe', 'burn', 'gunpoint', 'none'] as const
 
 const last = (path: readonly number[]): State => replay(path).at(-1) as State
