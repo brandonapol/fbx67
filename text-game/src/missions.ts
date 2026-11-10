@@ -202,4 +202,46 @@ const theRashPlan: Mission = {
   ],
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet, lucysDig, theRashPlan]
+// docs/acts/act3-missions.md, section 3. The route is color (design.md, choices that carry state): ridge applies
+// downhill and creek applies climb, both follow the smoke to a3_arm, and both land on the same state. How soon there is
+// smoke to follow is Lucy's signal from the night (nightSignal), which the menu does not carry.
+const skiRoutes = [
+  { note: 'ridge', choice: 'downhill' },
+  { note: 'creek', choice: 'climb' },
+] as const
+
+const theSkiSearch: Mission = {
+  id: 'theSkiSearch',
+  title: 'The ski search',
+  details: [{ name: 'Route', labels: skiRoutes.map((r) => r.note) }],
+  start: 'a3_search',
+  end: 'a3_arm',
+  endings: skiRoutes.map((r) => ({ note: r.note, label: r.note, applies: [r.choice, 'follow'] })),
+}
+
+// docs/acts/act3-missions.md, section 4. The fall always happens (a3_arm's yell), then the choice at the engine: both
+// give the wreckProof evidence, and showing Jake adds sharedWreck, which councilmanFlips reads.
+const theWreck: Mission = {
+  id: 'theWreck',
+  title: 'The wreck',
+  details: [{ name: 'Jake', labels: ['shown', 'not shown'] }],
+  start: 'a3_arm',
+  end: 'a3_home',
+  endings: [
+    { note: 'shown', label: 'shown', applies: ['yell', 'wakeJake'] },
+    { note: 'notShown', label: 'not shown', applies: ['yell', 'keepIt'] },
+  ],
+}
+
+export const missions: readonly Mission[] = [
+  searchForEli,
+  theBody,
+  theBarfight,
+  thePhotoLab,
+  theHotelBar,
+  theMajorsCabinet,
+  lucysDig,
+  theSkiSearch,
+  theWreck,
+  theRashPlan,
+]

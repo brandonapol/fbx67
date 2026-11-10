@@ -2,16 +2,20 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
 import { choicesOf, choose, render, replay, sceneOf } from './engine.ts'
-import { menu, mission, send, sendMission } from './story.ts'
+import { menu, mission, oneHanded, send, sendMission } from './story.ts'
 import { endsOf, missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
 import { canonical } from './liveness.ts'
+import { councilmanFlips } from './logic.ts'
 import type { SceneId, State } from './types.ts'
 
 // Every distinct state that reaches a scene, breadth first from the start of the game, canonicalized as the sweep is
 // (liveness.ts): a dropped field no longer changes what any later scene shows or offers. Without it Act 3 is out of
-// reach of a unit test.
+// reach of a unit test. Each scene is walked once.
+const walked = new Map<SceneId, readonly State[]>()
 const allAt = (id: SceneId): readonly State[] => {
+  const known = walked.get(id)
+  if (known) return known
   const seen = new Set<string>()
   const at: State[] = []
   let queue: State[] = [initialState]
@@ -27,6 +31,7 @@ const allAt = (id: SceneId): readonly State[] => {
     })
     queue = next
   }
+  walked.set(id, at)
   return at
 }
 
@@ -119,8 +124,9 @@ test('every mission note ends at its end scene, and the notes cover every way th
 
 // A refusal or a skip may land where a detail does (the hotel bar's pieces and skipped, at heat 0), so only the
 // single-detail missions without one are held to a state per note. Lucy's dig keeps nothing of the spot she tried
-// first (docs/acts/act3-missions.md, section 1), so its notes share a state by design.
-const sharedState = new Set(['lucysDig'])
+// first (docs/acts/act3-missions.md, section 1), and the ski search's route is color (section 3), so their notes share a
+// state by design.
+const sharedState = new Set(['lucysDig', 'theSkiSearch'])
 
 test('the single-detail missions give every note its own state', () => {
   missions
@@ -477,4 +483,111 @@ test('the lead-ins stage what the arm rules out: no climb, no stick shift driven
   assert.match(lead('burn'), /stalls/)
   assert.match(lead('gunpoint'), /won't come to your shoulder/)
   ;['safe', 'burn', 'gunpoint'].forEach((n) => assert.doesNotMatch(lead(n), /oil rush/i))
+})
+
+// Act 3. The ski search, from a3_search after each of Lucy's signals and both orders of the night.
+const searchPath = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1]
+const atSearch = allAt('a3_search')
+const skiNotes = ['ridge', 'creek']
+
+test('the ski search offers route: ridge / creek at a3_search', () => {
+  const s = replay(searchPath).at(-1) as State
+  assert.equal(s.scene, 'a3_search')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The ski search. Route: ridge / creek')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    skiNotes,
+  )
+})
+
+test('each ski note agrees with playing its scenes: the ridge downhill, the creek climbing', () => {
+  atSearch.forEach((s) => {
+    assert.equal(send(s, 'downhill').scene, 'a3_ski_down')
+    assert.equal(send(s, 'climb').scene, 'a3_ski_up')
+    assert.deepEqual(sendMission(s, 'ridge'), ['downhill', 'follow'].reduce(send, s))
+    assert.deepEqual(sendMission(s, 'creek'), ['climb', 'follow'].reduce(send, s))
+  })
+})
+
+// The route is color (#87): it moves nothing, and both reach the wreck the same way. The signal is the night's, not
+// the route's.
+test('both routes reach a3_arm on the same state, with nothing moved and the night\'s signal kept', () => {
+  atSearch.forEach((s) => {
+    const [ridge, creek] = skiNotes.map((n) => sendMission(s, n))
+    assert.equal(ridge.scene, 'a3_arm')
+    assert.deepEqual(ridge, creek)
+    assert.deepEqual({ ...ridge, scene: s.scene }, s)
+  })
+})
+
+test('every signal shows the search something to follow on both routes, and the fall comes after', () => {
+  const signals = new Set(atSearch.map((s) => s.nightSignal))
+  assert.deepEqual([...signals].sort(), ['saveFire', 'smoke', 'stampX'])
+  atSearch.forEach((s) => {
+    ;['downhill', 'climb'].forEach((n) => {
+      const out = send(s, n)
+      assert.match(render(out), /smell smoke|smell it/)
+      assert.equal(oneHanded(out), false, `${out.scene} is before the fall`)
+    })
+  })
+  assert.match(render(atSearch[0]), /cable bindings/)
+})
+
+// Act 3. The wreck, from a3_arm after every way through the search.
+const atArm = allAt('a3_arm')
+
+test('the wreck offers Jake: shown / not shown at a3_arm', () => {
+  const s = replay([...searchPath, 1, 1]).at(-1) as State
+  assert.equal(s.scene, 'a3_arm')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The wreck. Jake: shown / not shown')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    ['shown', 'notShown'],
+  )
+})
+
+test('each wreck note agrees with playing its scenes, through the fall', () => {
+  atArm.forEach((s) => {
+    assert.deepEqual(sendMission(s, 'shown'), ['yell', 'wakeJake'].reduce(send, s))
+    assert.deepEqual(sendMission(s, 'notShown'), ['yell', 'keepIt'].reduce(send, s))
+  })
+})
+
+test('both wreck notes give the wreck proof; only showing Jake shares it, which the councilman reads', () => {
+  atArm.forEach((s) => {
+    const [shown, notShown] = ['shown', 'notShown'].map((n) => sendMission(s, n))
+    ;[shown, notShown].forEach((o) => {
+      assert.equal(o.scene, 'a3_home')
+      assert.ok(o.evidence.includes('wreckProof'))
+      assert.deepEqual([o.heat, o.eliTrust, o.lucyHeat], [s.heat, s.eliTrust, s.lucyHeat])
+    })
+    assert.deepEqual([shown.sharedWreck, notShown.sharedWreck], [true, false])
+    assert.deepEqual([councilmanFlips(shown), councilmanFlips(notShown)], [true, false])
+  })
+})
+
+// The arm (#88): one-handed from the fall at a3_arm on, the upper arm in a sling.
+test('Wade is one-handed from a3_arm on, and the wreck puts the upper arm in a sling', () => {
+  const s = atArm[0]
+  assert.equal(oneHanded(s), true)
+  const wreck = send(s, 'yell')
+  assert.equal(wreck.scene, 'a3_wreck')
+  assert.equal(oneHanded(wreck), true)
+  assert.match(render(wreck), /upper arm/)
+  assert.match(render(wreck), /sling/)
+  ;['shown', 'notShown'].forEach((n) => assert.equal(oneHanded(sendMission(s, n)), true))
+})
+
+// Busted is a retry only (#86): neither menu has a note for getting caught, and no ending moves heat.
+test('the search and the wreck have no caught note and add no heat', () => {
+  ;[...atSearch, ...atArm].forEach((s) => {
+    const m = mission(s) as Mission
+    assert.deepEqual(m.endings.filter((e) => /caught|busted|froze|lost/i.test(e.note)), [])
+    m.endings.forEach((e) => assert.equal(sendMission(s, e.note).heat, s.heat))
+  })
+  ;[...atSearch, ...atArm].forEach((s) => assert.doesNotMatch(render(s), /oil rush/i))
 })

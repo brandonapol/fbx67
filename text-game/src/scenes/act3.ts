@@ -209,7 +209,7 @@ You work the bent seat frame off Jake's leg with your bare hands and tie off the
     text: (s) => `
 You are Wade again. When Jake's plane doesn't come back, the Rescue Coordination Center at Elmendorf calls Eielson for people to put on a ground team, and the team needs a munitions man for flares and signal charges. Your sergeant sends you.
 
-They hand you cross-country skis. You grew up water skiing. How hard can it be?
+They hand you army-surplus cross-country skis with cable bindings. You grew up water skiing. How hard can it be? The soldier from Fort Wainwright on the team watches you clip in backward and fixes it without a word.
 
 Near the last known heading, the team splits up to cover more ground. You're on your own.
 
@@ -268,7 +268,7 @@ You hear it before you feel it: a crack like green wood. Then you feel it.`,
     clock: '1967-12-13T12:30',
     goal: `Decide whether to show ${jakeFirst} the sump.`,
     text: (s) => `
-Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut and pulls off your boots. Your toes are numb but not frozen; she warms them against her stomach under her parka until they ache and you swear at her. Then she makes you eat and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
+Lucy climbs out on her own, which is what she was trying to tell you. She splints your upper arm with a strip of aluminum off the wing strut, straps it across your chest in a sling, and pulls off your boots. Your toes are numb but not frozen; she warms them against her stomach under her parka until they ache and you swear at her. Then she makes you eat and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
 
 ${jakeAtFire(s)} He drifts in and out, muttering that he drained those sumps, he swears he did. "Uncle ${N.tolliverFirst}'ll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
