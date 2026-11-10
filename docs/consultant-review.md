@@ -38,11 +38,12 @@ Acts 4 and the epilogues also touch the fish camp; they are out of scope for thi
 | 11 | `a2_chiefs_spoke`, `a2_chiefs_after` | Wade in the room; Eli after | 52 |
 | 12 | winter ambient | Eli's last freight to Minto before the ice | 81 |
 | 13 | `a2_co_lucy` | A Native woman seen on the base | 82, 47 |
-| 14 | `a3_home` | Eli at the hospital | 79 |
-| 15 | `a3_eli` | The fish camp, Tolliver's ban and Eli's confession | 80, 3, 2 |
-| 16 | `a3_rash` | Tolliver holds the fish camp | 80, 2 |
-| 17 | `a3_confession` | Lucy on the Chiefs and the people she told | 52, 79 |
-| 18 | `a3_turn` | Naming the Native woman to Barnette | 82 |
+| 14 | `a2_minto` | Eli's trip to Minto: the elders' testimony | — |
+| 15 | `a3_home` | Eli at the hospital | 79 |
+| 16 | `a3_eli` | The fish camp, Tolliver's ban and Eli's confession | 80, 3, 2 |
+| 17 | `a3_rash` | Tolliver holds the fish camp | 80, 2 |
+| 18 | `a3_confession` | Lucy on the Chiefs and the people she told | 52, 79 |
+| 19 | `a3_turn` | Naming the Native woman to Barnette | 82 |
 
 ## Prologue (July 1967)
 
@@ -293,9 +294,65 @@ janitorial crew a plausible way in?
 
 **Fact-check.** [Item 82](fact-checks.md#82-a-native-woman-seen-on-the-base-and-wade-naming-lucy), [item 47](fact-checks.md#47-civilian-janitorial-crews-on-base).
 
+### 14. Eli's trip to Minto
+
+Eli's own scene: at freeze-up he goes to Minto to take the elders' testimony for the refiled allotment. Wade isn't
+there; he hears it afterward in Lucy's kitchen, from Eli if Eli trusts him, otherwise from Lucy. The trip is the
+same either way. Play it with `node src/cli.ts --choices <path> --last` from `text-game/`: Eli tells it on
+`1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1`, Lucy on
+`1,1,1,1,1,1,2,2,1,1,1,3,1,2,1,1,1,3,2,1,1,1,1,1,1,1`.
+
+Shared opening:
+
+> November. The Tanana froze while Eli was in Minto. He went down the week after the Chiefs meeting, on the last
+> freight run of the year, with slush ice already running, and came home ten days later on the mail plane. Nobody
+> told you he was going.
+>
+> Lucy's kitchen table is covered in it: a school notebook gone soft at the corners, carbon paper, and a stack of
+> statements she has typed out clean at night, one for each elder. Each has a signature at the bottom, or a mark with
+> two witnesses' names beside it.
+
+When Eli tells it:
+
+> Eli tells it himself, at more length than you have ever heard from him outside the Chiefs meeting. He sat with the
+> old people one at a time, in their kitchens, and let each of them talk until they were done: who fished the camp,
+> which summers, where the racks stood, his grandfather's smokehouse, his mother as a girl cutting fish on the bank.
+> Then he read it all back to them and asked if he had it right.
+>
+> "Eleven," he says. "The oldest one remembers my grandfather's father. They say the first application got lost. So
+> we file a new one, with eleven names on it this time."
+>
+> He squares the stack against the table and slides it back inside the notebook. Lucy is already reading the next
+> page.
+
+When Lucy tells it:
+
+> Eli doesn't look up from the notebook. Lucy tells it, while he checks her typing line by line against his own
+> handwriting. He sat with the old people one at a time, [...the same as above...]
+>
+> "Eleven," she says. "The oldest one remembers our grandfather's father. They say the first application got lost. So
+> we file a new one, with eleven names on it this time."
+>
+> Eli finds a word she typed wrong and hands the page back to her. He hasn't said a word to you.
+
+**Questions.**
+
+1. In 1967 the village was at Old Minto on the Tanana, reached by river until freeze-up and by mail plane after. Is
+   a late-October freight run down, and a mail plane home once the river closed, how a Minto man in Fairbanks would
+   have made that trip?
+2. Is sitting with elders one at a time, in their homes, and reading their words back to them a respectful way to
+   show a family gathering testimony for a land claim? Would he have brought something (food, groceries) that the
+   scene should show?
+3. Elders who did not write signing with a mark and two witnesses: is that accurate for allotment statements of the
+   period, and is it respectful to show?
+4. What the elders remember: who fished the camp, which summers, the racks, the grandfather's smokehouse, the mother
+   cutting fish as a girl. Are these the details a family would bring forward, and is any of it family knowledge a
+   game should not put in an elder's mouth?
+5. "Eleven" witnesses, the oldest remembering the great-grandfather: plausible for one family's camp?
+
 ## Act 3: Deep Winter (December 1967)
 
-### 14. Eli at the hospital
+### 15. Eli at the hospital
 
 Scene `a3_home`, `05-middle.txt`. The text depends on whether Wade leaked the flight date; the other path is in `01-best.txt`.
 
@@ -316,7 +373,7 @@ shown as angry? Is "running fuel out to the bush strip" a plausible job for him?
 
 **Fact-check.** [Item 79](fact-checks.md#79-eli-and-lucy-as-siblings-from-a-minto-family).
 
-### 15. The fish camp and Eli's confession
+### 16. The fish camp and Eli's confession
 
 Scene `a3_eli`, `01-best.txt`.
 
@@ -343,7 +400,7 @@ risk a Native man runs?
 
 **Fact-check.** [Item 80](fact-checks.md#80-a-councilman-holds-title-to-a-family-fish-camp-eli-banned-from-it), [item 3](fact-checks.md#3-route-geography-river-crossings-and-gravel), [item 2](fact-checks.md#2-1906-native-allotment-act-and-proof-of-use-and-occupancy).
 
-### 16. Tolliver holds the fish camp
+### 17. Tolliver holds the fish camp
 
 Scene `a3_rash` (titled "Enough"), `01-best.txt`. The first line varies by the choice at `a3_eli`: `03-middle.txt` and `04-bad.txt` (the "went to Barnette" line is quoted from `act3.ts`).
 
@@ -365,7 +422,7 @@ what Lucy would want, or is it the airman taking over? Does "She lets you talk" 
 
 **Fact-check.** [Item 80](fact-checks.md#80-a-councilman-holds-title-to-a-family-fish-camp-eli-banned-from-it), [item 2](fact-checks.md#2-1906-native-allotment-act-and-proof-of-use-and-occupancy).
 
-### 17. Lucy on the people she told
+### 18. Lucy on the people she told
 
 Scene `a3_confession`, `03-middle.txt`.
 
@@ -385,7 +442,7 @@ a fair self-judgment, or does it put the blame on her? Does "a way in" show her 
 
 **Fact-check.** [Item 52](fact-checks.md#52-a-community-hall-for-the-chiefs-meeting), [item 79](fact-checks.md#79-eli-and-lucy-as-siblings-from-a-minto-family).
 
-### 18. Naming the Native woman to Barnette
+### 19. Naming the Native woman to Barnette
 
 Scene `a3_turn`, `16-bad.txt` (only the worst path reaches it).
 

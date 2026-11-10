@@ -23,6 +23,28 @@ const lucyNext = `See what ${N.lucy} needs next.`
 const letterGoal = 'Write home to Mama.'
 const heardAt = { place: 'hotelBar', clock: '1967-10-07T22:30', goal: `Pack up and tell ${N.lucy} what you heard.` } as const
 
+// Eli's trip to Minto (a2_minto). What he did is the same whoever tells it; only the teller and the frame differ.
+const mintoTrip = `November. The Tanana froze while ${N.eli} was in Minto. He went down the week after the Chiefs meeting, on the last freight run of the year, with slush ice already running, and came home ten days later on the mail plane. Nobody told you he was going.
+
+${N.lucy}'s kitchen table is covered in it: a school notebook gone soft at the corners, carbon paper, and a stack of statements she has typed out clean at night, one for each elder. Each has a signature at the bottom, or a mark with two witnesses' names beside it.`
+
+const mintoSat = 'He sat with the old people one at a time, in their kitchens, and let each of them talk until they were done: who fished the camp, which summers, where the racks stood, his grandfather\'s smokehouse, his mother as a girl cutting fish on the bank. Then he read it all back to them and asked if he had it right.'
+
+const mintoTeller: Readonly<Record<'eli' | 'lucy', Readonly<{ opening: string; who: string; whose: string; closing: string }>>> = {
+  eli: {
+    opening: `${N.eli} tells it himself, at more length than you have ever heard from him outside the Chiefs meeting.`,
+    who: 'he',
+    whose: 'my',
+    closing: `He squares the stack against the table and slides it back inside the notebook. ${N.lucy} is already reading the next page.`,
+  },
+  lucy: {
+    opening: `${N.eli} doesn't look up from the notebook. ${N.lucy} tells it, while he checks her typing line by line against his own handwriting.`,
+    who: 'she',
+    whose: 'our',
+    closing: `${N.eli} finds a word she typed wrong and hands the page back to her. He hasn't said a word to you.`,
+  },
+}
+
 const coChoices = (_: State): readonly Choice[] => [
   { label: 'Search the Major\'s cabinet tonight.', note: 'search', next: 'a2_co_heist' },
   { label: 'Refuse. That\'s your own CO. You\'d hang for it.', note: 'refuse', apply: set({ coJob: 'lucy' }), next: 'a2_co_lucy' },
@@ -272,7 +294,7 @@ He ties it off without looking, with yellow braided line off a coil on his workb
 "Wade! Come by Saturday, we'll get a steak. My treat. Money's good this year."`,
     choices: () => [
       { label: 'Take Curly up on the steak.', note: 'steak', apply: addEvidence('curlyKnot'), next: 'a2_steak' },
-      { label: 'Make an excuse.', note: 'excuse', apply: addEvidence('curlyKnot'), next: 'a2_jake' },
+      { label: 'Make an excuse.', note: 'excuse', apply: addEvidence('curlyKnot'), next: 'a2_minto' },
     ],
   },
   {
@@ -288,7 +310,29 @@ Saturday, Curly pays for two T-bones out of a roll of twenties thick enough to c
 ${hank} brings the plates himself. ${hankAtTable[hankRemembers(s)]}
 
 ${N.curlyShort} only mentions Owen once. "Good man. Shame what the water did." He says it the way you'd say it about weather, and changes the subject.`,
-    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_jake' }],
+    choices: () => [{ label: 'Continue.', note: 'continue', next: 'a2_minto' }],
+  },
+  {
+    // Eli's own trip (design: Eli's cast entry, Act 2). Wade isn't there; he hears it afterward, from Eli if Eli
+    // trusts him, else from Lucy. It moves no gate, so it carries no state of its own.
+    id: 'a2_minto',
+    act,
+    title: 'Minto',
+    place: 'lucysKitchen',
+    clock: '1967-11-13T19:00',
+    goal: `Hear where ${N.eli} has been.`,
+    text: (s) => {
+      const teller = mintoTeller[s.eliTrust > 0 ? 'eli' : 'lucy']
+      return `
+${mintoTrip}
+
+${teller.opening} ${mintoSat}
+
+"Eleven," ${teller.who} says. "The oldest one remembers ${teller.whose} grandfather's father. They say the first application got lost. So we file a new one, with eleven names on it this time."
+
+${teller.closing}`
+    },
+    choices: () => [{ label: 'Leave them to their work.', note: 'leave', next: 'a2_jake' }],
   },
   {
     id: 'a2_jake',
