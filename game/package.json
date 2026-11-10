@@ -10,7 +10,7 @@
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
-    "test": "node --test --test-reporter=dot src/*.test.ts tools/*.test.ts smoke/budget.test.ts smoke/frames.test.ts smoke/look.test.ts smoke/starts.test.ts smoke/act1Plan.test.ts smoke/act2Plan.test.ts smoke/act3Plan.test.ts",
+    "test": "node --test --test-reporter=dot src/*.test.ts tools/*.test.ts smoke/budget.test.ts smoke/frames.test.ts smoke/look.test.ts smoke/starts.test.ts smoke/act1Plan.test.ts smoke/act2Plan.test.ts smoke/act3Plan.test.ts smoke/pace.test.ts",
     "smoke": "node --test --test-reporter=spec smoke/prologue.test.ts",
     "smoke:act1": "node --test --test-reporter=spec smoke/act1.test.ts",
     "smoke:act2": "node --test --test-reporter=spec smoke/act2.test.ts",
