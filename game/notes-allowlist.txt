@@ -30,6 +30,7 @@ a2_letter_work:honest
 a2_letter_work:lie
 a2_letter_work:soft
 a2_major:yesSir
+a2_minto:leave
 a2_steak:continue
 a3_arm:yell
 a3_camp:cache
