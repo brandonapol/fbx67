@@ -77,7 +77,15 @@ const walkBack = (s: State): string =>
   s.rashPlan === 'burn'
     ? 'You leave the borrowed truck on the cabin road, its gears too much for one hand, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn\'t ask about the cast.'
     : 'A cab off Second Avenue takes the last of your pay to drop you at the main gate.'
-const confessionBody = (s: State): string => `She has a folder. It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, all through October. Every one is signed Wade Pruett. You didn't sign any of them. Under those, the igloo count sheets from the summer, before the first sheet with your name forged on it: the demolition count short week after week, and every short sheet initialed up the line as if it added up. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Your letter with the date of Lucy\'s flight went out in November, right across his desk.' : ''}
+// Where the folder comes from, and her one plain line about the job, if she was let go before Act 3 (design: Lucy's
+// Confession, variant). The talk between is the same either way.
+const folderFrom = (s: State): string =>
+  lucyLetGo(s)
+    ? 'She has a folder from the cedar trunk at the foot of her bed, from under the cardigan and the jar of hard candy she carried home from the land office.'
+    : 'She has a folder, out of the bottom drawer of her desk at the land office, the one she keeps locked.'
+const jobLine = (s: State): string =>
+  lucyLetGo(s) ? `\n\nShe closes the folder and keeps her hand flat on it. "The land office let me go over that cabinet," she says. "I'd go in again."` : ''
+const confessionBody = (s: State): string => `${folderFrom(s)} It's the Major's files, finally read through. Munitions sign-out sheets: demolition charges, dozens of them, all through October. Every one is signed Wade Pruett. You didn't sign any of them. Under those, the igloo count sheets from the summer, before the first sheet with your name forged on it: the demolition count short week after week, and every short sheet initialed up the line as if it added up. Behind them, typed copies of your letters to your mother. The Major has been reading your mail since August.${s.leakedFlightDate ? ' Your letter with the date of Lucy\'s flight went out in November, right across his desk.' : ''}
 
 "They've been building you for weeks. You're the fall guy."
 
@@ -87,7 +95,7 @@ She doesn't look at you for a long moment. When she does, her voice is flat, the
 
 Her voice breaks on the next part, and she makes it keep going.
 
-"Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."`
+"Somebody I talked to passed your name along. Your name was in their hands because I put it there. I picked you because you were useful, and that's how they picked you too."${jobLine(s)}`
 const confessionChoices: readonly Choice[] = [
   { label: 'Stay. "Then we finish this. Together."', note: 'stay', apply: set({ afterConfession: 'stay' }), next: 'a3_joan' },
   { label: 'Walk away. You\'re done being anybody\'s tool.', note: 'walk', apply: set({ afterConfession: 'walk' }), next: 'a3_walk' },
