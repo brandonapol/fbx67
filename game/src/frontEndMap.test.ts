@@ -2,7 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from '../../text-game/src/state.ts'
 import { goal, menu, place, send } from '../../text-game/src/story.ts'
-import { SEEN_WITHIN, ahead, placeNames, pocketMap, seenAt, spots, visited } from './frontEndMap.ts'
+import { SEEN_WITHIN, ahead, chartFor, placeNames, pocketMap, seenAt, spots, visited } from './frontEndMap.ts'
+import { baseChart, chartOf, townChart } from './pocketMapCharts.ts'
 import { start } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { titleScene } from './frontEnd.ts'
@@ -70,4 +71,50 @@ test('downtown the player is a point and a heading, and buildings passed close g
   const seen = seenAt([], near)
   assert.equal(seenAt(seen, near), seen, 'nothing new keeps the same list')
   assert.deepEqual(seenAt([], start()), [], 'only downtown counts')
+})
+
+const major = '#path=1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1'
+
+test('at Eielson the map unfolds the base sheet: its buildings, no river, the town in the margin', () => {
+  const g = startFrom(major, '')
+  assert.equal(place(g.story), 'majorsOffice')
+  const m = pocketMap(g, [])
+  assert.equal(m.title, baseChart.title)
+  assert.equal(m.water, undefined, 'no river on the base')
+  assert.deepEqual(m.play, baseChart.play)
+  assert.deepEqual(m.spots.map((s) => s.id), baseChart.spots.map((s) => s.id))
+  assert.deepEqual(m.spots.filter((s) => s.here).map((s) => s.id), ['baseSquadron'], "the Major's office is in the squadron building")
+  next(m, g)
+  assert.ok(m.streets.some((s) => s.name === 'Flight Line Road'))
+  assert.ok(m.margin.some((x) => x.name === placeNames.silverPan), 'downtown places Wade has been are off this sheet')
+  assert.ok(!m.margin.some((x) => x.name === placeNames.majorsOffice))
+})
+
+const next = (m: ReturnType<typeof pocketMap>, g: ReturnType<typeof startFrom>) =>
+  ahead(g.story).forEach((p) => {
+    const s = m.spots.find((x) => baseChart.spots.find((y) => y.id === x.id)?.places.includes(p))
+    if (s) assert.ok(s.next && s.known, p)
+  })
+
+test('downtown the map is the town sheet with the Chena along its top', () => {
+  const m = pocketMap(titleScene(), [])
+  assert.equal(m.title, townChart.title)
+  assert.equal(m.water, townChart.water)
+})
+
+test('walking the base, the player is a point on the base sheet and its buildings go on the map when passed', () => {
+  const g = { ...titleScene(), space: 'eielson' as const, pos: vec(160, -30), facing: 0 }
+  assert.equal(chartFor(g), baseChart)
+  const m = pocketMap(g, [])
+  assert.deepEqual(m.you, { at: g.pos, facing: 0 })
+  assert.deepEqual(seenAt([], g), ['baseSquadron'])
+  assert.ok(pocketMap(g, seenAt([], g)).spots.find((s) => s.id === 'baseSquadron')?.known)
+})
+
+test('every base sheet building with a story place holds the base places, and every base place is on the sheet', () => {
+  const basePlaces = ['eielsonBarracks', 'majorsOffice', 'squadronBuilding', 'photoLab', 'photoRecords', 'baseHangar'] as const
+  basePlaces.forEach((p) => assert.equal(chartOf(p), baseChart, p))
+  baseChart.spots.flatMap((s) => s.places).forEach((p) => assert.ok((basePlaces as readonly string[]).includes(p), p))
+  assert.equal(chartOf('silverPan'), townChart)
+  assert.equal(chartOf('helpTent'), undefined)
 })

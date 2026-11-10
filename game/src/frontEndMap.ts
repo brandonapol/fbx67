@@ -4,73 +4,32 @@ import { goal, menu, place, send } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { spaces } from './levels.ts'
 import type { Rect } from './downtown.ts'
-import { FLOAT, PLAY, WATER_EDGE, avenues, buildings, streets } from './downtown.ts'
+import type { Chart, Spot } from './pocketMapCharts.ts'
+import { baseChart, chartOf, placeNames, spotOn, townChart } from './pocketMapCharts.ts'
 import type { Vec } from './world.ts'
-import { distance, vec } from './world.ts'
+import { distance } from './world.ts'
 
-// The pocket map (issue #303): Wade's folded street map of downtown, from docs/town-map.md through downtown.ts. It marks
-// only the places the player has been, been near, or been pointed to, and where the player stands. The places come from
-// the story's place(state); nothing here reads a gate. Pure: frontEndMapView.ts draws it.
+// The pocket map (issue #303): Wade's folded street map, the downtown sheet off docs/town-map.md and, at Eielson, the
+// base sheet off docs/base-map.md (pocketMapCharts.ts). It marks only the places the player has been, been near, or
+// been pointed to, and where the player stands. The places come from the story's place(state); nothing here reads a
+// gate. Pure: frontEndMapView.ts draws it.
 
-// The map's name for each of the story's places. Places on the walkable map are drawn where they stand; the rest are
-// listed in the margin with how to get there.
-export const placeNames: Readonly<Record<Place, string>> = {
-  silverPan: 'The Silver Pan',
-  owensRoom: "Owen's boarding house",
-  boardingHouse: "Owen's boarding house",
-  floatDock: "The float dock (Curly's plane)",
-  surveyCamp: 'The survey camp, up the river by plane',
-  floodedStreet: 'The flooded streets',
-  floodCabin: 'The cabin on the slough, by boat',
-  helpTent: 'The help tent, south on Cushman past Fifth',
-  landOffice: 'The land office',
-  cityJail: 'The city jail',
-  eielsonBarracks: 'Eielson AFB, 26 miles southeast',
-  majorsOffice: "The Major's office, Eielson",
-  squadronBuilding: 'The squadron building, Eielson',
-  photoLab: 'The photo lab, Eielson',
-  photoRecords: 'The photo lab records room, Eielson',
-  baseHangar: 'The hangar, Eielson',
-  lucysKitchen: "Lucy's kitchen",
-  hotelBar: 'The hotel bar',
-  communityHall: 'The community hall, edge of town',
-  nlCafe: 'Northern Lights Café',
-  bushStrip: 'Phillips Field, north across the river',
-  richardsonHighway: 'The Richardson Highway, toward the base',
-  crashSite: 'The wreck',
-  searchRidge: 'The search ridge',
-  hospital: "St. Joseph's Hospital, north bank",
-  hospitalLot: "St. Joseph's parking lot, north bank",
-  tolliversHouse: "Tolliver's house",
-  tolliversOffice: "Tolliver's office",
-  tolliversCabin: "Tolliver's cabin, out the road",
-  troopersPost: 'The State Troopers',
-}
+export { placeNames } from './pocketMapCharts.ts'
+export type { Spot } from './pocketMapCharts.ts'
 
-export type Spot = Readonly<{ id: string; name: string; rect: Rect; door: Vec; places: readonly Place[] }>
+// The town sheet's buildings, and the float dock, with the story places inside each.
+export const spots: readonly Spot[] = townChart.spots
 
-const center = (r: Rect): Vec => vec((r[0] + r[1]) / 2, (r[2] + r[3]) / 2)
-
-// Every named building, and the float dock, with the story places inside it.
-export const spots: readonly Spot[] = [
-  ...buildings.map((b) => ({
-    id: b.id,
-    name: b.name,
-    rect: b.rect,
-    door: b.door ?? center(b.rect),
-    places: b.place === 'owensRoom' ? (['owensRoom', 'boardingHouse'] as const) : b.place ? [b.place] : [],
-  })),
-  { id: 'floatDock', name: placeNames.floatDock, rect: FLOAT, door: center(FLOAT), places: ['floatDock'] },
-]
-
-const spotOf = (p: Place): Spot | undefined => spots.find((s) => s.places.includes(p))
-
-// How close the player must pass to a building's door, downtown, for it to go on the map.
+// How close the player must pass to a building's door, downtown or on the base, for it to go on the map.
 export const SEEN_WITHIN = 14
 
+// The sheet a walkable space is drawn on.
+export const walkedChart = (g: Game): Chart | undefined => (g.space === 'downtown' ? townChart : g.space === 'eielson' ? baseChart : undefined)
+
 export const seenAt = (seen: readonly string[], g: Game): readonly string[] => {
-  if (g.space !== 'downtown') return seen
-  const near = spots.filter((s) => !seen.includes(s.id) && distance(s.door, g.pos) <= SEEN_WITHIN).map((s) => s.id)
+  const c = walkedChart(g)
+  if (!c) return seen
+  const near = c.spots.filter((s) => !seen.includes(s.id) && distance(s.door, g.pos) <= SEEN_WITHIN).map((s) => s.id)
   return near.length ? [...seen, ...near] : seen
 }
 
@@ -95,7 +54,7 @@ export const ahead = (s: State): readonly Place[] => {
 export type Here = Readonly<{ at: Vec; facing: number }> | Readonly<{ place: Place }> | undefined
 
 export const hereOf = (g: Game): Here => {
-  if (g.space === 'downtown') return { at: g.pos, facing: g.facing }
+  if (walkedChart(g)) return { at: g.pos, facing: g.facing }
   const p = spaces[g.space].place ?? place(g.story)
   return p ? { place: p } : undefined
 }
@@ -105,42 +64,48 @@ export type Marked = Readonly<{ id: string; name: string; rect: Rect; known: boo
 export type Margin = Readonly<{ name: string; here: boolean; next: boolean }>
 
 export type PocketMap = Readonly<{
+  title: string
   goal?: string
   spots: readonly Marked[]
   margin: readonly Margin[]
   you?: Readonly<{ at: Vec; facing: number }>
   streets: readonly Readonly<{ name: string; rect: Rect }>[]
   play: Rect
-  water: number
+  water?: number
 }>
+
+// The sheet unfolded: the one the player walks, else the one the place they are at is drawn on, else downtown.
+export const chartFor = (g: Game): Chart => {
+  const here = hereOf(g)
+  return walkedChart(g) ?? (here && 'place' in here ? chartOf(here.place) : undefined) ?? townChart
+}
 
 export const pocketMap = (g: Game, seen: readonly string[]): PocketMap => {
   const been = visited(g.path)
   const next = ahead(g.story)
   const here = hereOf(g)
   const herePlace = here && 'place' in here ? here.place : undefined
-  const marked = spots.map((s) => {
+  const chart = chartFor(g)
+  const marked = chart.spots.map((s) => {
     const has = (ps: readonly Place[]) => s.places.some((p) => ps.includes(p))
     const isNext = has(next)
     const isHere = herePlace !== undefined && s.places.includes(herePlace)
     return { id: s.id, name: s.name, rect: s.rect, known: isNext || isHere || has(been) || seen.includes(s.id), here: isHere, next: isNext }
   })
-  const offMap = [...new Set([...been, ...next, ...(herePlace ? [herePlace] : [])])].filter((p) => !spotOf(p))
+  const offMap = [...new Set([...been, ...next, ...(herePlace ? [herePlace] : [])])].filter((p) => !spotOn(chart, p))
   const margin = [...new Set(offMap.map((p) => placeNames[p]))].map((name) => ({
     name,
     here: herePlace !== undefined && placeNames[herePlace] === name,
     next: next.some((p) => placeNames[p] === name),
   }))
   return {
+    title: chart.title,
     goal: goal(g.story),
     spots: marked,
     margin,
     you: here && 'at' in here ? here : undefined,
-    streets: [
-      ...avenues.map((a) => ({ name: a.name, rect: [a.x[0], a.x[1], a.road[0], a.road[1]] as Rect })),
-      ...streets.map((s) => ({ name: s.name, rect: [s.road[0], s.road[1], s.z[0], s.z[1]] as Rect })),
-    ],
-    play: PLAY,
-    water: WATER_EDGE,
+    streets: chart.ways.map((w) => ({ name: w.name, rect: w.road })),
+    play: chart.play,
+    ...(chart.water === undefined ? {} : { water: chart.water }),
   }
 }

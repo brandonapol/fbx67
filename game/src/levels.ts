@@ -7,6 +7,7 @@ import { season } from '../../text-game/src/story.ts'
 import { N } from '../../text-game/src/names.ts'
 import { CENTER, SIZE, doorSpots, gaps, pieces, spawnAt } from './downtown.ts'
 import { standing, townLayer } from './freezeup.ts'
+import { streetSigns } from './streetSigns.ts'
 import { jail } from './jail.ts'
 import { helpTent, tentProps } from './hospital.ts'
 import { FLOOD_AT, highWater, indoors } from './highwater.ts'
@@ -376,7 +377,7 @@ export const flood: Space = {
   center: CENTER,
   ground: '#4a4234',
   spawn: FLOOD_AT,
-  props: [...pieces, ...standing, ...highWater],
+  props: [...pieces, ...standing, ...streetSigns, ...highWater],
   figures: [{ id: 'hooded', at: SKIFF.bow, facing: SKIFF.heading, coat: '#c9a73a', skin: '#c9a73a', hair: '#c9a73a', height: 1.8, hood: true }],
   spots: [{ id: 'skiff', x: BOARD_AT.x, z: BOARD_AT.z, r: 1.4, prompt: 'Get in the skiff' }],
 }
@@ -395,7 +396,7 @@ export const downtown: Space = {
   center: CENTER,
   ground: '#6c665a',
   spawn: vec(secondAve.x, secondAve.z),
-  props: [...pieces, ...standing, ...dockProps],
+  props: [...pieces, ...standing, ...streetSigns, ...dockProps],
   figures: dockFigures,
   spots: [...doorSpots, postBoxSpot],
 }

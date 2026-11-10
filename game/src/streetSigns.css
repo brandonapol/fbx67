@@ -1,0 +1,25 @@
+/* The street signs' names, over their blades: white capitals on the blades' green, small and plain. */
+#street-signs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.street-sign {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1px 5px;
+  background: #3d5a48;
+  border: 1px solid #e9e4d6;
+  border-radius: 2px;
+  color: #f4f0e4;
+  font: 600 11px/1.2 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+body[data-text='large'] .street-sign {
+  font-size: 14px;
+}
