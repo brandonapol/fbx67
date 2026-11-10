@@ -246,3 +246,14 @@ test('the records room is at lunch on the clerk\'s lunch and after lockup on the
   assert.ok((clock(key) ?? '') > '1967-09-14T17:00', `key clock ${clock(key)}`)
   assert.equal(menu(lunch).text, menu(key).text)
 })
+
+// #346: the Major's files were copied in late October, so the forged sign-outs cannot run on past it.
+test('the forged sign-outs end by the date the files were copied', () => {
+  const ids = scenes.filter((x) => x.id.startsWith('a3_confession_'))
+  assert.ok(ids.length >= 3)
+  for (const sc of ids) {
+    const text = sc.text({ ...initialState, scene: sc.id })
+    assert.match(text, /dozens of them, all through October/, sc.id)
+    assert.doesNotMatch(text, /going back to October/, sc.id)
+  }
+})
