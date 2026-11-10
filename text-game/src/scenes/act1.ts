@@ -210,6 +210,8 @@ ${N.barnette} of the State Troopers has six drownings and a town underwater. He'
 
 "Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
 
+At the tent flap an old woman with a sardine tin for her ashes is asking the nurses after her boarder, the geologist. "Never once missed breakfast. Bed's not slept in. And whoever came for him last night didn't ask me which room this time." A nurse takes her by the elbow, toward the back.
+
 ${s.joan > 0 ? `${N.joan}, the nurse who counted out the old man's pills this morning, is still at the tarp after he's gone. She looks up and knows you. "You again," she says, and doesn't sound sorry about it.` : `A nurse named ${N.joan} is still at the tarp after he's gone, sleeves rolled to the elbow, looking at the dead man's neck longer than she needs to.`}`,
     choices: () => [
       { label: 'Ask Joan if anything about the body looked wrong.', note: 'askJoan', apply: pipe(addEvidence('bruising'), joan(1)), next: 'a1_joan_ask' },

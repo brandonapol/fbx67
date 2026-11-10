@@ -6,6 +6,7 @@ import { canonicalKey } from './liveness.ts'
 import { clock, goal, menu, offers, place, send, weather } from './story.ts'
 import { scenes } from './scenes/index.ts'
 import type { Scene, State } from './types.ts'
+import { prologueThreads } from './ambient/prologueTown.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
 const spots = ['stove', 'cache', 'marker'] as const
@@ -199,4 +200,19 @@ test('the signal changes how long the search takes, and the night locks nobody o
   assert.match(homes[2], /seven hours after it set out/)
   const ends = [1, 2].flatMap((o) => [1, 2, 3].map((sig) => nightRun(o, sig).at(-1) as State))
   assert.equal(new Set(ends.map(canonicalKey)).size, 1)
+})
+
+test('each overheard prologue thread pays off in a line of its act, heard or not', () => {
+  const payoffs: Readonly<Record<string, readonly [string, RegExp]>> = {
+    whichRoom: ['a1_ruling', /didn't ask me which room this time/],
+    gravelCash: ['a2_hotel_set', /new bills, in order[\s\S]*"Seen that kind of money before\."/],
+    shortCount: ['a3_confession', /count short week after week, and every short sheet initialed/],
+  }
+  assert.deepEqual(Object.keys(payoffs).sort(), prologueThreads.map((t) => t.id).sort())
+  for (const t of prologueThreads) {
+    const [id, line] = payoffs[t.id]
+    const sc = scenes.find((x) => x.id === id)!
+    assert.equal(sc.act, t.paysOff, `${t.id} pays off in ${t.paysOff}`)
+    assert.match(sc.text({ ...initialState, scene: sc.id }), line, `${t.id} in ${id}`)
+  }
 })
