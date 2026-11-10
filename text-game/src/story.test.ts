@@ -8,6 +8,7 @@ import { scenes } from './scenes/index.ts'
 import type { Scene, State } from './types.ts'
 import { prologueThreads } from './ambient/prologueTown.ts'
 import { N } from './names.ts'
+import { officerTier } from './scenes/act2.ts'
 
 const talks = ['texas', 'munitions', 'round'] as const
 const spots = ['stove', 'cache', 'marker'] as const
@@ -173,9 +174,9 @@ test('the barfight move colors and locks nobody out: only the bottle adds heat',
 
 // #208: the survival night's order and signal carry state. The best route (Lucy goes in herself and is let go), with
 // the night's two choices swapped in.
-const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-const atCrash = best.slice(0, 33)
-const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(35)])
+const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+const atCrash = best.slice(0, 34)
+const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(36)])
 const reach = (order: number, signal: number, id: State['scene']): State =>
   nightRun(order, signal).find((s) => s.scene === id) as State
 
@@ -342,4 +343,53 @@ test('Lucy\'s confession changes weight when she has lost her job, and only ther
     assert.equal(talk(lost), talk(kept), sc.id)
     assert.equal(sc.text({ ...initialState, scene: sc.id, lucyHeat: 1 }), kept, `${sc.id} at Lucy heat 1`)
   }
+})
+
+// #215: the officer stops Wade on Second Avenue and reads his heat back, one tier per band. Each path is the one in the
+// PR: first choice everywhere but the overrides noted.
+const officerPaths = {
+  // stays on the line, stays in his seat at the Pan, sides with Curly, refuses the photo lab, skips the hotel: heat 1
+  curious: [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 4, 1, 1, 1, 2, 1, 1, 1, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  // first choice everywhere after staying on the line: heat 3
+  counting: [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  // pulls all the drawers, forces the cabinet and goes while the duty airman is on his rounds: heat 6
+  hanging: [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1],
+} as const
+
+test('the officer reads Wade\'s heat back in three tiers, each reached by a path', () => {
+  const stops = Object.entries(officerPaths).map(([tier, path]) => {
+    const s = replay(path).at(-1) as State
+    assert.equal(s.scene, 'a2_officer', tier)
+    assert.equal(officerTier(s), tier)
+    return [tier, s] as const
+  })
+  const text = Object.fromEntries(stops.map(([tier, s]) => [tier, menu(s).text]))
+  assert.match(text.curious, /I'm curious, is all/)
+  assert.match(text.counting, /The Silver Pan in August\.[\s\S]*somebody can count/)
+  assert.match(text.hanging, /easy to hang[\s\S]*A case Barnette can't bury needs[\s\S]*Standing up\./)
+  assert.doesNotMatch(text.curious + text.hanging, /somebody can count/)
+  assert.doesNotMatch(text.curious + text.counting, /easy to hang/)
+  for (const t of Object.values(text)) {
+    assert.match(t, new RegExp(N.cop))
+    assert.equal(t.match(/cut on both sides of something/g)?.length, 1)
+    assert.match(t, /I gave Curly his twenty back\. I'd give you yours\./)
+    assert.doesNotMatch(t, /\boil\b|Ashby|deal/i)
+  }
+})
+
+test('the officer\'s tiers cut at 2 and above the heat limit', () => {
+  const at = (heat: number): State => ({ ...initialState, scene: 'a2_officer', heat })
+  assert.deepEqual([0, 1, 2, 3, 4, 5, 6].map((h) => officerTier(at(h))), ['curious', 'curious', 'counting', 'counting', 'hanging', 'hanging', 'hanging'])
+})
+
+test('the officer\'s stop moves nothing but the scene, and every branch after Jake comes to it', () => {
+  const s: State = { ...initialState, scene: 'a2_officer', heat: 4, evidence: ['knot', 'hotelTalk'], curlyPlan: 'confront' }
+  assert.deepEqual({ ...send(s, 'walkOn'), scene: s.scene }, s)
+  assert.equal(send(s, 'walkOn').scene, 'a2_flight')
+  const jake: State = { ...initialState, scene: 'a2_jake', evidence: ['knot'] }
+  assert.equal(send(jake, 'warn').scene, 'a2_officer')
+  assert.equal(send(jake, 'ignore').scene, 'a2_officer')
+  assert.equal(send(send(jake, 'confront'), 'letDrop').scene, 'a2_officer')
+  assert.equal(send(send(send(jake, 'confront'), 'leanOnHim'), 'continue').scene, 'a2_officer')
+  assert.match(menu({ ...s, heat: 2 }).text, /asking Curly where his money comes from/)
 })
