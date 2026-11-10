@@ -41,9 +41,9 @@ test('the jukebox plays the picked record; the room groans at the polka and danc
   const polka = pickSong(steel, 'C3')
   assert.match(texts(polka).at(-1)!, /polka/)
   assert.equal(reaction(polka), 'groan')
-  const quiet = pickSong(at, 'A1')
-  assert.equal(quiet.visit.talk.log.length, 0, 'a record with no line just plays')
-  assert.equal(reaction(later(quiet, DANCE + 1)), undefined, 'the dancing stops')
+  const fiddle = pickSong(at, 'A1')
+  assert.match(texts(fiddle).at(-1)!, /A1/, "the story's own line for A1")
+  assert.equal(reaction(later(fiddle, DANCE + 1)), undefined, 'the dancing stops')
   assert.equal(pickSong(atBar, 'B7'), atBar, 'out of reach, nothing')
   assert.deepEqual(polka.visit.game.story, atBar.visit.game.story)
 })
@@ -120,4 +120,17 @@ test('new lines in play: a card-game line over the cards, and a record aside for
   }
   const guitarBarks = ['hank', 'airmanJukebox', 'pilotGray'].filter((id) => prologueTown.find((a) => a.id === id)!.lines.bark!.some((b) => b.id.startsWith('guitar') || b.id === 'quiet'))
   assert.equal(guitarBarks.length, 3, 'the room reacts to the guitar')
+})
+
+test('every jukebox record in the story has a game-side song that plays its aside', () => {
+  const juke = prologueThings.find((a) => a.id === 'jukebox')!
+  // The records are the jukebox's use asides; the coin return is the machine failing, not a record.
+  const records = juke.lines.use!.filter((b) => b.id !== 'coinReturn')
+  assert.ok(records.length >= 5)
+  for (const record of records) {
+    const song = songs.find((s) => s.bit === record.id)
+    assert.ok(song, `record ${record.id} has no song in barTalk.ts`)
+    const at = to(atBar, [[4.6, -2.2], [4.6, -1.4]])
+    assert.equal(texts(pickSong(at, song.key)).at(-1), record.lines.at(-1)!.text, `${song.key} plays the story's aside`)
+  }
 })
