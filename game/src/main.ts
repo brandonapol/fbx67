@@ -149,6 +149,7 @@ const live: {
   saved?: string
   began?: number
   interactive?: number
+  shownAt: number
 } = {
   g: first,
   rig: rigFor(first.facing, armFor(spaces[first.space])),
@@ -163,6 +164,7 @@ const live: {
   pace: 1,
   screen: firstShown,
   now: 0,
+  shownAt: 0,
   log: firstShown === 'play' ? parseLog(store.read(JOURNAL_KEY), savePath(first.path)) : emptyLog,
   prefs: parsePrefs(store.read(PREFS_KEY)),
 }
@@ -202,9 +204,13 @@ const audio = createAudio(localStore())
 const soundPanel = mountSoundPanel(audio).querySelector<HTMLElement>('#sound-panel')
 // An Esc that closes the sound panel is spent on it: note before the panel's own handler runs that it was open.
 const escClosing = { panel: false }
-window.addEventListener('keydown', (e) => {
-  escClosing.panel = e.code === 'Escape' && soundPanel?.hidden === false
-}, { capture: true })
+window.addEventListener(
+  'keydown',
+  (e) => {
+    escClosing.panel = e.code === 'Escape' && soundPanel?.hidden === false
+  },
+  { capture: true },
+)
 ;['pointerdown', 'touchend', 'keydown'].forEach((type) => window.addEventListener(type, audio.unlock, { capture: true }))
 
 const textBuild = (g: Game): string => new URL(`../${textBuildHash(g)}`, window.location.href).toString()
@@ -362,9 +368,10 @@ const padFrame = (pad: Pad | undefined): void => {
   if (!pad) return
   if (padActive(pad)) setDevice(padKind(pad.id))
   if (settings.open()) return
-  if (pressedNow(prev, now, PAD_START)) return go(runs(live.screen) ? 'pause' : live.screen === 'title' ? 'title' : 'resume')
+  const pick = (): void => (document.activeElement instanceof HTMLButtonElement ? document.activeElement : front.buttons()[0])?.click()
+  if (pressedNow(prev, now, PAD_START)) return live.screen === 'title' ? pick() : go(runs(live.screen) ? 'pause' : 'resume')
   if (!runs(live.screen)) {
-    if (pressedNow(prev, now, PAD.a)) (document.activeElement instanceof HTMLButtonElement ? document.activeElement : front.buttons()[0])?.click()
+    if (pressedNow(prev, now, PAD.a)) pick()
     if (pressedNow(prev, now, PAD.down)) menuFocus(1)
     if (pressedNow(prev, now, PAD.up)) menuFocus(-1)
     if (pressedNow(prev, now, PAD.b)) go('back')
@@ -416,7 +423,8 @@ window.addEventListener('keydown', (e) => {
   setDevice('keyboard')
   if (e.repeat) return
   if (!runs(live.screen)) {
-    if (e.code === 'Escape') go('back')
+    // The Esc that let go of the mouse already paused (pointerlockchange); it does not also resume.
+    if (e.code === 'Escape' && performance.now() - live.shownAt > 250) go('back')
     if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
       e.preventDefault()
       menuFocus(e.code === 'ArrowDown' ? 1 : -1)
@@ -588,6 +596,7 @@ const begin = (g: Game, log: Log): void => {
 }
 
 const show = (screen: Screen): void => {
+  if (screen !== live.screen) live.shownAt = performance.now()
   live.screen = screen
   live.keys.clear()
   if (!runs(screen) && document.pointerLockElement) document.exitPointerLock()
