@@ -15,6 +15,9 @@ import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './ligh
 import type { Game } from './prologue.ts'
 import { footY, inWorld, playerBody, playerMotion, seen, shows, watcher } from './prologue.ts'
 import { DECK_Y, hull, rideAt } from './skiff.ts'
+import type { Debris } from './hazards.ts'
+import { DEBRIS, afloat, debrisAt } from './hazards.ts'
+import { WATER_Y } from './highwater.ts'
 
 const FAR_CLIP = 200
 
@@ -75,6 +78,14 @@ const primitive = (
   e.setLocalPosition(pos[0], pos[1], pos[2])
   e.setLocalScale(size[0], size[1], size[2])
   parent.addChild(e)
+  return e
+}
+
+// A piece of debris, drawn about its own center so it can be moved along its lane each frame.
+const floating = (root: pc.Entity, d: Debris): pc.Entity => {
+  const e = new pc.Entity(d.id)
+  addProp(e, { box: { x: 0, z: 0, w: d.w, d: d.d }, h: d.h, y: -d.h / 2, color: d.color, shape: d.shape })
+  root.addChild(e)
   return e
 }
 
@@ -237,6 +248,8 @@ type Built = Readonly<{
   rainRoot: pc.Entity
   // The skiff in the flood, which carries the hooded man and, once he climbs in, Owen.
   boat?: pc.Entity
+  // What comes down the flooded town's streets on the water (hazards.ts).
+  debris: readonly (readonly [pc.Entity, Debris])[]
   weather: string
   time: Time
   toggles: readonly (readonly [pc.Entity, Prop['while']])[]
@@ -324,6 +337,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       hull.forEach((p) => addProp(boat, p))
       root.addChild(boat)
     }
+    const debris = space.id === 'line' ? DEBRIS.map((d) => [floating(root, d), d] as const) : []
     const l = lighting(space.id, t.season, weather(g.story), t.clock)
     const rainRoot = new pc.Entity('rain')
     root.addChild(rainRoot)
@@ -337,7 +351,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, weather: weather(g.story), time: t, toggles }
+    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, debris, weather: weather(g.story), time: t, toggles }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -394,6 +408,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       man?.setLocalPosition(r.bow.x, DECK_Y, r.bow.z)
       man?.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
     }
+    b.debris.forEach(([e, d]) => {
+      const at = debrisAt(d, g.t)
+      e.setLocalPosition(at.x, WATER_Y - d.h * 0.1 - (1 - afloat(d, g.t)) * (d.h + 0.1), at.z)
+    })
     b.rainRoot.setLocalPosition(g.pos.x, 0, g.pos.z)
     if (player) {
       player.setLocalPosition(g.pos.x, footY(g), g.pos.z)

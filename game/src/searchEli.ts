@@ -9,6 +9,7 @@ import { streetWater } from './highwater.ts'
 import type { Interactable } from './world.ts'
 import { vec } from './world.ts'
 import { TENT_WAY, before } from './trail.ts'
+import { swirls } from './hazards.ts'
 
 // Act 1 opens on the flooded town: the same July downtown under the August water as the prologue's last night
 // (highwater.ts), the morning after, and Wade wades it. The sandbag line runs across Cushman just south of Second,
@@ -172,7 +173,7 @@ export const line: Space = {
   center: CENTER,
   ground: '#4a4234',
   spawn: LINE_SPAWN,
-  props: [...pieces, ...standing, ...streetWater, ...props],
+  props: [...pieces, ...standing, ...streetWater, ...swirls, ...props],
   figures,
   spots,
 }

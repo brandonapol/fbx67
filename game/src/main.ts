@@ -2,6 +2,7 @@ import './style.css'
 import type { Game, Input } from './prologue.ts'
 import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { fade } from './skiff.ts'
+import { sweepFade } from './hazards.ts'
 import { startFrom } from './start.ts'
 import type { Letter } from './letters.ts'
 import { sheet } from './letters.ts'
@@ -245,7 +246,7 @@ const renderHud = (g: Game): void => {
     placePrompt(target ? view.screenAt(target.x, 1.9, target.z) : undefined)
   }
   renderPanel(g)
-  fadeEl.style.opacity = String(fade(g.ride))
+  fadeEl.style.opacity = String(Math.max(fade(g.ride), sweepFade(g.swept)))
 }
 
 const readPad = (): Pad | undefined => {
