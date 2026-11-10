@@ -6,7 +6,7 @@ import { sceneIds } from '../../text-game/src/sceneIds.ts'
 import { menu, pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, handedOff, inWorld, interact, playerBody, press, still, tick } from './prologue.ts'
-import { jailTalk, prologueSteps, walk } from './drive.ts'
+import { jailTalk, officeReach, prologueSteps, walk } from './drive.ts'
 import { bodies } from './cast.ts'
 import { spaces } from './levels.ts'
 
@@ -75,6 +75,8 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
       assert.deepEqual(next.story, textBuild(next), next.story.scene)
       return play(next, n + 1)
     }
+    // In the land office Wade walks over to Lucy at the foot of the stair to talk.
+    if (g.space === 'office' && !g.panel) return play(officeReach(g, 'lucy'), n + 1)
     assert.equal(g.panel?.kind, 'story', `${g.story.scene} in ${g.space} has no menu`)
     const note = g.panel.buttons.find((b) => b.id.startsWith('note:'))
     assert.ok(note, `${g.story.scene} offers no note`)

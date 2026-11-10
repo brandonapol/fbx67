@@ -27,6 +27,8 @@ export const poses: Readonly<Record<string, Pose>> = {
   cell: { space: 'jail', pos: vec(-3.6, 1.4), facing: Math.PI / 2, t: 0, shot: { eye: [-4.6, 2.4, 3.6], at: [-0.5, 1.1, -0.5] } },
   // Act 1's night at the help tent: Wade in from the flap, Joan at the tarp on the last cot, Eli at its foot.
   tent: { space: 'helpTent', pos: vec(0, 3.4), facing: Math.PI, t: 0, shot: { eye: [-2.6, 2.5, 3.9], at: [3.2, 0.8, -2.6] } },
+  // Act 1's land office: Wade in the water inside the door, Eli by him, Lucy at the foot of the stair with the ledgers.
+  office: { space: 'office', pos: vec(0, -4.1), facing: 0, t: 0, shot: { eye: [-2.5, 2.6, -4.6], at: [3.5, 1.2, -1] } },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
   // The same street from the same data on a flood day and late in freeze-up (snow down, cars plugged in, smoke up).
   downtown_flood: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53], clock: '1967-08-15T12:00' } },

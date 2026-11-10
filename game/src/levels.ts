@@ -11,8 +11,9 @@ import { jail } from './jail.ts'
 import { helpTent, tentProps } from './hospital.ts'
 import { FLOOD_AT, highWater, indoors } from './highwater.ts'
 import { BOARD_AT, SKIFF } from './skiff.ts'
+import { office } from './landoffice.ts'
 
-export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'story'
+export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -24,13 +25,16 @@ export type Prop = Readonly<{
   glow?: boolean
   flat?: boolean
   shape?: 'box' | 'cylinder' | 'cone'
-  // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door.
-  while?: Letter
+  // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door; or only once
+  // Lucy has dropped Wade's cigarette in the water.
+  while?: Mark
   // A floor the player stands on, at its top, while over it (the flood's porch and walkway).
   deck?: true
 }>
 
 export type Letter = 'unfolded' | 'folded'
+
+export type Mark = Letter | 'doused'
 
 export type Figure = Readonly<{
   id: string
@@ -441,7 +445,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, office, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded street that is built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the

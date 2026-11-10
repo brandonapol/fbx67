@@ -1,6 +1,6 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { fade } from './skiff.ts'
 import { startFrom } from './start.ts'
 import type { Letter } from './letters.ts'
@@ -216,14 +216,20 @@ const placePrompt = (at: Readonly<{ x: number; y: number }> | undefined): void =
   promptEl.style.top = `${y}px`
 }
 
+// With nothing in front of him, Wade can hold interact to light a cigarette: the prompt sits low and centered.
+const lighting = (g: Game): boolean => canLight(g) || g.holding?.id === CIGARETTE
+
+const smoke = { id: CIGARETTE, hold: 1 } as const
+
 const renderHud = (g: Game): void => {
-  const f = focus(g)
+  const target = focus(g)
+  const f = target ?? (lighting(g) ? smoke : undefined)
   promptEl.hidden = !f
   placeEl.textContent = spaces[g.space].name
   if (f) {
     const hold = f.hold !== undefined
     const key = glyph(live.device, live.controls)
-    const text = label(g, f)
+    const text = target ? label(g, target) : 'Light a cigarette'
     const said = hold ? `Hold: ${text}` : text
     const id = `${f.id}|${key}|${said}`
     if (live.promptKey !== id) {
@@ -236,7 +242,7 @@ const renderHud = (g: Game): void => {
     const fill = promptEl.querySelector<SVGCircleElement>('.fill')
     const k = g.holding && g.holding.id === f.id ? g.holding.progress / g.holding.time : 0
     fill?.setAttribute('stroke-dashoffset', String(RING * (1 - Math.min(1, k))))
-    placePrompt(view.screenAt(f.x, 1.9, f.z))
+    placePrompt(target ? view.screenAt(target.x, 1.9, target.z) : undefined)
   }
   renderPanel(g)
   fadeEl.style.opacity = String(fade(g.ride))

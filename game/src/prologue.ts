@@ -6,11 +6,12 @@ import { say, within } from '../../text-game/src/ambient/select.ts'
 import { route } from './router.ts'
 import type { Interactable, Vec } from './world.ts'
 import { add, angleBetween, angleTo, distance, length, move, normalize, pick, scale, sees, sub, vec } from './world.ts'
-import type { Letter, SpaceId } from './levels.ts'
+import type { Mark, SpaceId } from './levels.ts'
 import { CURLY_AT, CURLY_HALF_ANGLE, CURLY_RANGE, STAIR_FOOT, curlyFacing, flooded, occluders, solids, spaces, standAt } from './levels.ts'
 import { doors, legs, spawnAt, yawOf } from './downtown.ts'
 import { jailSpot, letOut } from './jail.ts'
 import { tentSpot } from './hospital.ts'
+import { officeSpot, takesIt } from './landoffice.ts'
 import type { Letter as Home } from './letters.ts'
 import { choose, finish as penDown, open as openHome, turn as turnPage, write, written } from './letters.ts'
 import { FLOOD_AT, FLOOD_FACING } from './highwater.ts'
@@ -58,6 +59,10 @@ export type Game = Readonly<{
   home?: Home
   // Seconds into the skiff ride, from the moment Owen climbs in (skiff.ts).
   ride?: number
+  // What Wade has in his hands: a lit cigarette, a ledger. Lucy dropped the last cigarette in the water.
+  lit?: true
+  carrying?: 'ledger'
+  doused?: true
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -108,6 +113,9 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   letter: undefined,
   home: undefined,
   ride: undefined,
+  lit: undefined,
+  carrying: undefined,
+  doused: undefined,
 })
 
 export const start = (): Game => ({
@@ -160,6 +168,7 @@ export const available = (g: Game): readonly Interactable[] =>
     // In August the house is flooded: the only way is down the stair and out the front door.
     if (g.space === 'room') return flooded(g.story) ? i.id === 'downstairs' : i.id === 'bed' ? g.letter === 'folded' : i.id !== 'downstairs' && g.letter === undefined
     if (g.space === 'boarding') return (i.id === 'front') === flooded(g.story)
+    if (g.space === 'office') return officeSpot(g.carrying === 'ledger', i.id)
     return true
   })
 
@@ -226,6 +235,15 @@ const arrive = (g: Game): Game => {
 
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
 
+// Smoking is a held action anywhere Wade is in the world: hold interact with nothing in front of him to light one.
+export const CIGARETTE = 'cigarette'
+export const LIGHT_TIME = 1.5
+
+export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
+
+// Lucy takes a lit cigarette out of Wade's mouth as soon as he is near her, and drops it in the water.
+const douse = (g: Game): Game => (g.space === 'office' && g.lit && takesIt(g.pos) ? { ...g, lit: undefined, doused: true } : g)
+
 const busted = (g: Game): Game => ({
   ...g,
   holding: undefined,
@@ -285,12 +303,13 @@ const typed = (g: Game, n: number): Game => {
 export const panelText = (g: Game): string =>
   g.panel?.kind === 'letter' ? g.panel.text.slice(0, Math.floor(g.typed ?? 0)) : (g.panel?.text ?? '')
 
-// Whether a prop that shows the letter's state is drawn.
-export const shows = (g: Game, w: Letter | undefined): boolean => w === undefined || (w === 'folded') === (g.letter === 'folded')
+// Whether a prop that shows the letter's state, or the cigarette Lucy dropped, is drawn.
+export const shows = (g: Game, w: Mark | undefined): boolean =>
+  w === undefined || (w === 'doused' ? g.doused === true : (w === 'folded') === (g.letter === 'folded'))
 
 export const interact = (g: Game): Game => {
   const target = focus(g)
-  if (!target) return g
+  if (!target) return canLight(g) ? { ...g, vel: zero, holding: { id: CIGARETTE, progress: 0, time: LIGHT_TIME } } : g
   const id = target.id
   if (target.hold) return { ...g, vel: zero, holding: { id, note: target.note, progress: 0, time: target.hold } }
   if (g.space === 'bar') {
@@ -319,6 +338,11 @@ export const interact = (g: Game): Game => {
   if (g.space === 'jail') return { ...g, panel: storyPanel(g.story, allNotes(g.story), id === 'ashby' ? [close('Step back.')] : []) }
   // At the help tent the story's own menu opens at Joan, or at the flap where she catches Wade's sleeve.
   if (g.space === 'helpTent') return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  if (g.space === 'office') {
+    if (id === 'ledgers') return { ...g, carrying: 'ledger' }
+    if (id === 'handLedger') return { ...g, carrying: undefined }
+    if (id === 'lucy') return { ...douse(g), panel: storyPanel(g.story, menu(g.story).options.map((o) => o.note), [close('Back to the ledgers.')]) }
+  }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
@@ -360,6 +384,7 @@ const ride = (g: Game, dt: number): Game => {
 
 const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
+  if (h.id === CIGARETTE) return { ...done, lit: true }
   if (!h.note) return done
   if (isSpot(h.id)) return { ...sendNote(done, h.note), hidden: h.id }
   return press(done, `note:${h.note}`)
@@ -373,7 +398,7 @@ export const inReach = (g: Game, id: string): boolean => {
 const hold = (g: Game, input: Input, dt: number): Game => {
   const h = g.holding
   if (!h) return g
-  if (!input.hold || !inReach(g, h.id)) return { ...g, holding: undefined }
+  if (!input.hold || (h.id !== CIGARETTE && !inReach(g, h.id))) return { ...g, holding: undefined }
   if (seen(g)) return busted(g)
   const progress = h.progress + dt
   return progress < h.time ? { ...g, holding: { ...h, progress } } : finish(g, h)
@@ -414,7 +439,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   if (riding(g.ride)) return ride({ ...g, t }, dt)
   const walked = walk({ ...g, t }, input, dt)
-  return hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
+  return douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt))
 }
 
 // The player is whoever the story's pov(state) says (pov.ts).

@@ -287,6 +287,19 @@ const cell: Soundscape = {
   ],
 }
 
+// The land office: the river standing in the ground floor, the drip off the ceiling, the street through the open door.
+const office: Soundscape = {
+  ground: { surface: 'water', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 140, gain: 0.26 },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 700, q: 0.8, gain: 0.04, at: vec(0, -5), wobble: { rate: 0.11, depth: 0.5, on: 'gain' } },
+  ],
+  events: [
+    ...[vec(-2.5, -1), vec(1.5, 2), vec(3.8, -3)].map((at): Event => ({ spot: 'drip', bus: 'ambience', every: [0.8, 3], at, spread: 0.05 })),
+    { spot: 'door', bus: 'ambience', every: [30, 70], at: vec(0, -6), spread: 2 },
+  ],
+}
+
 export const act1Soundscapes: Readonly<Record<Act1Space, Soundscape>> = { line, hospital, barfight, cell }
 
 // Act 3, deep winter: the town at forty below, the flight home, Lucy's night at the wreck, and Wade's search on skis.
@@ -353,7 +366,7 @@ const slope: Soundscape = {
 export const act3Soundscapes: Readonly<Record<Act3Space, Soundscape>> = { icefog, cockpit, crash, slope }
 
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, story }
 
 export const refueling = (t: number): boolean => ((t % CURLY_PERIOD) + CURLY_PERIOD) % CURLY_PERIOD < WORK
 
