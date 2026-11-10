@@ -3,6 +3,7 @@ import { place } from '../../text-game/src/story.ts'
 import { HIDE_TIME, interact, press, start, still, tick } from './prologue.ts'
 import { CURLY_PERIOD } from './levels.ts'
 import { legs } from './downtown.ts'
+import { flying } from './flight.ts'
 import type { Vec } from './world.ts'
 import { distance, sub, vec } from './world.ts'
 
@@ -93,6 +94,13 @@ export const writeLetter = (room: Game): Game => press(typeOut(interact(walk(roo
 
 export const toBed = (room: Game): Game => interact(walk(room, [[-0.6, 0.6]]))
 
+// Climbs in at the float and sits through the flight north, to the camp.
+export const aboardPlane = (dock: Game): Game => press(dock, 'note:fly')
+
+export const landAtCamp = (aloft: Game): Game => wait(aloft, (cur) => !flying(cur.flight))
+
+export const flyNorth = (dock: Game): Game => landAtCamp(aboardPlane(dock))
+
 export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof typeof routes): readonly Game[] => {
   const bar = talk(start(), who)
   const night = leaveBar(bar)
@@ -102,7 +110,8 @@ export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof 
   const folded = writeLetter(room)
   const morning = toBed(folded)
   const dock = walkLeg(morning)
-  const camp = press(dock, 'note:fly')
+  const aloft = aboardPlane(dock)
+  const camp = landAtCamp(aloft)
   const hidden = holdWhenSafe(walk(camp, routes[spot]))
   const home = interact(walk(hidden, back(spot)))
   const below = downstairs(home)
@@ -110,7 +119,7 @@ export const prologueSteps = (who: 'texas' | 'munitions' | 'round', spot: keyof 
   const skiff = toSkiff(street)
   const aboard = press(skiff, 'note:continue')
   const end = rideOut(aboard)
-  return [bar, night, hall, room, desk, folded, morning, dock, camp, hidden, home, below, street, skiff, aboard, end]
+  return [bar, night, hall, room, desk, folded, morning, dock, aloft, camp, hidden, home, below, street, skiff, aboard, end]
 }
 
 // August: from his room down the stair, along the knee-deep hall and out of the front door onto the porch; along the

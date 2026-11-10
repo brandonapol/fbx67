@@ -369,6 +369,11 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   assert.equal((await game(page)).panel?.title, 'Owen: The Float Dock')
   await snap(page, '07-dock')
   await page.keyboard.press('1')
+  // Climbing in takes off: the flight north plays from the float, and interact skips it to the camp (flight.ts).
+  const aloft = await game(page)
+  assert.equal(aloft.space, 'downtown')
+  assert.equal(typeof aloft.flight, 'number')
+  await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'camp')
   await snap(page, '08-camp', 10)
 

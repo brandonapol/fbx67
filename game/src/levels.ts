@@ -15,6 +15,7 @@ import { office } from './landoffice.ts'
 import { line } from './searchEli.ts'
 import { eielson } from './eielson.ts'
 import { cabin } from './cabinRide.ts'
+import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 
 export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'story'
 
@@ -29,7 +30,8 @@ export type Prop = Readonly<{
   flat?: boolean
   shape?: 'box' | 'cylinder' | 'cone'
   // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door; or only once
-  // Lucy has dropped Wade's cigarette in the water.
+  // Lucy has dropped Wade's cigarette in the water; or only while Owen holds the letter in the post box's slot; or
+  // only while the plane at the camp is parked, not landing (flight.ts).
   while?: Mark
   // A floor the player stands on, at its top, while over it (the flood's porch and walkway).
   deck?: true
@@ -37,7 +39,7 @@ export type Prop = Readonly<{
 
 export type Letter = 'unfolded' | 'folded'
 
-export type Mark = Letter | 'doused'
+export type Mark = Letter | 'doused' | 'posting' | 'parked'
 
 export type Figure = Readonly<{
   id: string
@@ -308,8 +310,8 @@ export const camp: Space = {
   props: [
     ...edges(28, 24),
     { box: { x: 0, z: 10, w: 28, d: 4 }, h: 0.05, color: '#4f6f78', solid: true },
-    { box: { x: -9, z: 7.2, w: 1.1, d: 5.2 }, h: 1.2, y: 0.5, color: '#c9c2b0', solid: true, occludes: true },
-    { box: { x: -9, z: 7.2, w: 7, d: 0.9 }, h: 0.12, y: 1.6, color: '#b13d2a' },
+    { box: { x: -9, z: 7.2, w: 1.1, d: 5.2 }, h: 1.2, y: 0.5, color: '#c9c2b0', solid: true, occludes: true, while: 'parked' },
+    { box: { x: -9, z: 7.2, w: 7, d: 0.9 }, h: 0.12, y: 1.6, color: '#b13d2a', while: 'parked' },
     { box: { x: -6.8, z: 6.6, w: 0.9, d: 0.9 }, h: 1.0, color: '#7a2a1c', solid: true, shape: 'cylinder' },
     { box: { x: 6, z: -2.4, w: 3.6, d: 3.0 }, h: 2.2, color: '#d8ceb0', solid: true, occludes: true, shape: 'box' },
     { box: { x: 6.9, z: -2.9, w: 0.25, d: 0.25 }, h: 1.6, y: 2.2, color: '#4a4a4a' },
@@ -380,7 +382,8 @@ export const flood: Space = {
 }
 
 // Downtown in world coordinates off docs/town-map.md (see downtown.ts). No story place routes here: the prologue's
-// walks start here when the story moves to a place downtown reaches on foot, and end at its door.
+// walks start here when the story moves to a place downtown reaches on foot, and end at its door. On the morning walk
+// the post box takes the letter, and Curly is out on the float by his plane (floatDock.ts).
 const secondAve = spawnAt('secondAve')
 
 export const downtown: Space = {
@@ -392,9 +395,9 @@ export const downtown: Space = {
   center: CENTER,
   ground: '#6c665a',
   spawn: vec(secondAve.x, secondAve.z),
-  props: [...pieces, ...standing],
-  figures: [],
-  spots: doorSpots,
+  props: [...pieces, ...standing, ...dockProps],
+  figures: dockFigures,
+  spots: [...doorSpots, postBoxSpot],
 }
 
 // The backdrop for a scene that has no space yet, outside any act: its menu plays as a panel here, with no player in

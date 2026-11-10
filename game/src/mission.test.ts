@@ -4,7 +4,7 @@ import { replay } from '../../text-game/src/engine.ts'
 import type { Visit } from './talk.ts'
 import { near, perform, reply, showing, step, verbs, visit } from './talk.ts'
 import { ended, interact, press, start, still } from './prologue.ts'
-import { back, downstairs, holdWhenSafe, leaveBar, playPrologue, rideOut, routes, toBed, toSkiff, upstairs, wadeOut, walk, walkLeg, writeLetter } from './drive.ts'
+import { back, downstairs, flyNorth, holdWhenSafe, leaveBar, playPrologue, rideOut, routes, toBed, toSkiff, upstairs, wadeOut, walk, walkLeg, writeLetter } from './drive.ts'
 
 // The headless mission test (#42): play the prologue in the engine build's logic with no renderer, using every small
 // interaction on the way (greet, talk with a reply, ask about, use, buy), and prove the mission still completes on
@@ -50,7 +50,7 @@ test('the prologue completes headless with greet, talk, ask, use and buy along t
   const taped = perform(reel, 'reelToReel', 'use')
 
   const end = then(taped, (g) => {
-    const camp = press(walkLeg(toBed(writeLetter(g))), 'note:fly')
+    const camp = flyNorth(walkLeg(toBed(writeLetter(g))))
     const hidden = holdWhenSafe(walk(camp, routes.stove))
     const skiff = toSkiff(wadeOut(downstairs(interact(walk(hidden, back('stove'))))))
     return rideOut(press(skiff, 'note:continue'))

@@ -19,6 +19,7 @@ import { closeUp } from './knot.ts'
 import type { Debris } from './hazards.ts'
 import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
+import { PILOT_SEAT, flying, planeAt, planeHull, restingIn, seatAt } from './flight.ts'
 
 const FAR_CLIP = 200
 
@@ -249,6 +250,8 @@ type Built = Readonly<{
   rainRoot: pc.Entity
   // The skiff in the flood, which carries the hooded man and, once he climbs in, Owen; Eli's riverboat to the cabin.
   boat?: pc.Entity
+  // Curly's floatplane: moored at the float downtown, and on the flight north over town and down at the camp.
+  plane?: pc.Entity
   // What comes down the flooded town's streets on the water (hazards.ts).
   debris: readonly (readonly [pc.Entity, Debris])[]
   weather: string
@@ -338,6 +341,11 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       boatIn(space.id).hull.forEach((p) => addProp(boat, p))
       root.addChild(boat)
     }
+    const plane = space.id === 'downtown' || space.id === 'camp' ? new pc.Entity('plane') : undefined
+    if (plane) {
+      planeHull.forEach((p) => addProp(plane, p))
+      root.addChild(plane)
+    }
     const debris = space.id === 'line' ? DEBRIS.map((d) => [floating(root, d), d] as const) : []
     const l = lighting(space.id, t.season, weather(g.story), t.clock)
     const rainRoot = new pc.Entity('rain')
@@ -352,7 +360,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, debris, weather: weather(g.story), time: t, toggles }
+    return { id: space.id, root, figures, cone, coneMats, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, toggles }
   }
 
   const state: { built?: Built; held?: Shot } = {}
@@ -409,6 +417,24 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       const man = b.figures.get(craft.man)
       man?.setLocalPosition(r.bow.x, craft.deck, r.bow.z)
       man?.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
+    }
+    if (b.plane) {
+      // At the camp the plane is drawn only while it comes in; parked, the camp's own plane stands there.
+      const air = flying(g.flight)
+      const p = air ? planeAt(g.flight) : restingIn(g.space === 'camp' ? 'camp' : 'downtown')
+      b.plane.enabled = air || g.space === 'downtown'
+      b.plane.setLocalPosition(p.at.x, p.y, p.at.z)
+      b.plane.setLocalEulerAngles(0, (p.heading * 180) / Math.PI, 0)
+      // Curly flies it from the left seat; on the ground he is where his figure stands.
+      const curly = b.figures.get('curly')
+      const f = spaces[g.space].figures.find((x) => x.id === 'curly')
+      if (curly && f) {
+        const seat = air ? seatAt(g.flight, PILOT_SEAT) : { at: f.at, y: 0, heading: f.facing }
+        if (air) curly.enabled = true
+        curly.setLocalPosition(seat.at.x, seat.y, seat.at.z)
+        curly.setLocalEulerAngles(0, (seat.heading * 180) / Math.PI, 0)
+        if (air) cast.play(curly, clipFor({ speed: 0, sneaking: false, activity: 'sit', talking: false }), 1)
+      }
     }
     b.debris.forEach(([e, d]) => {
       const at = debrisAt(d, g.t)

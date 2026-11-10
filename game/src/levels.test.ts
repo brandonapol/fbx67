@@ -35,7 +35,7 @@ test('the same town data renders July, the flood and freeze-up', () => {
     assert.deepEqual(props.slice(0, town.props.length), town.props, s)
     assert.deepEqual(props.slice(town.props.length), townLayer(s, c), s)
   })
-  assert.deepEqual(solids(town), town.props.filter((p) => p.solid).map((p) => p.box), 'collision is the town alone')
+  assert.deepEqual(solids(town, initialState), town.props.filter((p) => p.solid).map((p) => p.box), 'collision is the town alone')
 })
 
 test('only the town, in July or under either flood, and the help tent take a season layer', () => {

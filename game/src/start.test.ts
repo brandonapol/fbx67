@@ -7,7 +7,7 @@ import { menu } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { handedOff, press, start, textBuildHash } from './prologue.ts'
 import { pathParam, replayPath, startFrom } from './start.ts'
-import { playPrologue } from './drive.ts'
+import { flyNorth, playPrologue } from './drive.ts'
 
 const best = (
   JSON.parse(readFileSync(new URL('../../text-game/routes/golden.json', import.meta.url), 'utf8')) as readonly { ending: string; path: string }[]
@@ -57,7 +57,9 @@ test('a spaceless prologue scene shows its menu over the backdrop, and its note 
   const dock = from([1, 1, 1])
   assert.equal(dock.story.scene, 'p_dock')
   assert.equal(dock.space, 'story')
-  assert.equal(press(dock, 'note:fly').space, 'camp')
+  const aloft = press(dock, 'note:fly')
+  assert.equal(aloft.space, 'downtown', 'the flight north takes off from the float')
+  assert.equal(flyNorth(dock).space, 'camp')
 })
 
 test('no path, or an empty one, starts the prologue as before', () => {
