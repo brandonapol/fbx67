@@ -335,3 +335,12 @@ test('seen plays the duty desk: the duty log, never Wade\'s face', () => {
   assert.equal(s.scene, 'a2_co_seen')
   assert.match(render(s), /never saw your face/)
 })
+
+test('every state reaching a2_flight has the Major\'s cabinet job set, so its "files" line always shows', () => {
+  const atFlight = allAt('a2_flight')
+  assert.ok(atFlight.length > 0)
+  atFlight.forEach((s) => {
+    assert.ok(s.coJob === 'wade' || s.coJob === 'lucy')
+    assert.ok(render(s).includes('She hasn\'t finished reading the Major\'s files.'))
+  })
+})
