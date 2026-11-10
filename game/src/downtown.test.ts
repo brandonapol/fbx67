@@ -182,7 +182,7 @@ test('the morning walk runs from the boarding house past the post box and over F
   const s = spawnAt('boardingHouse')
   assert.deepEqual(morning.pos, vec(s.x, s.z))
   assert.equal(morning.space, 'downtown')
-  assert.deepEqual(available(morning).map((i) => i.id).sort(), ['floatDock', 'landOffice'])
+  assert.deepEqual(available(morning).map((i) => i.id).sort(), ['floatDock', 'landOffice', 'postBox'])
   const atBox = walk(morning, legs[1]!.route.slice(0, 3))
   assert.ok(distance(atBox.pos, spawnAt('postBox')) < 1)
   const dock = walkLeg(morning)

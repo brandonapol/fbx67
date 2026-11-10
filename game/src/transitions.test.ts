@@ -9,9 +9,9 @@ const talks = ['texas', 'munitions', 'round'] as const
 
 const where = (g: Game): string => `${g.story.scene} in ${g.space}`
 
-// On the skiff ride nothing is offered: the ride itself moves on, to the end card.
+// On the skiff ride and the flight nothing is offered: the ride itself moves on, to the end card or the camp.
 const stuck = (g: Game): boolean =>
-  !handedOff(g) && g.ride === undefined && (g.panel ? g.panel.buttons.length === 0 : available(g).length === 0)
+  !handedOff(g) && g.ride === undefined && g.flight === undefined && (g.panel ? g.panel.buttons.length === 0 : available(g).length === 0)
 
 talks.forEach((who) =>
   (Object.keys(routes) as (keyof typeof routes)[]).forEach((spot) =>

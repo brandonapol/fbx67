@@ -22,6 +22,8 @@ import { knotSpot } from './knot.ts'
 import { searchSpot } from './searchEli.ts'
 import { entryFrom, walksUp } from './trail.ts'
 import { paceThrough, wash } from './hazards.ts'
+import { POST_BOX, canMail } from './floatDock.ts'
+import { FLIGHT_TIME, OWEN_SEAT, flying, legAt, seatAt, skipSpot } from './flight.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -73,6 +75,10 @@ export type Game = Readonly<{
   look?: Look
   // Seconds since the current took Wade's feet on the search for Eli, while the screen fades (hazards.ts).
   swept?: number
+  // The letter to Lucy is in the post box on Cushman: ambient, the story already sent it (floatDock.ts).
+  mailed?: true
+  // Seconds into the flight north, from the moment Owen climbs in at the float (flight.ts).
+  flight?: number
 }>
 
 export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
@@ -127,6 +133,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   carrying: undefined,
   doused: undefined,
   look: undefined,
+  flight: undefined,
 })
 
 export const start = (): Game => ({
@@ -165,10 +172,11 @@ const doorOpen = (g: Game, id: string): boolean => doors.some((d) => d.id === id
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
-  spaces[g.space].spots.filter((i) => {
+  flying(g.flight) ? [] : spaces[g.space].spots.filter((i) => {
     if (g.space === 'bar') return i.id === 'door' ? talked(g) : i.id === 'hank' ? g.story.scene === 'p_bar' : true
     if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
     if (g.space === 'flood') return g.story.scene === 'p_end'
+    if (g.space === 'downtown' && i.id === POST_BOX) return canMail(g.story, g.mailed === true)
     if (g.space === 'downtown') return doorOpen(g, i.id) || doors.some((d) => d.id === i.id && d.locked)
     if (g.space === 'line') return searchSpot(g.story, i.id)
     if (g.space === 'jail') return jailSpot(g.story, i.id)
@@ -181,7 +189,9 @@ export const available = (g: Game): readonly Interactable[] =>
     return true
   })
 
-export const focus = (g: Game): Interactable | undefined => (g.panel ? undefined : pick(g.pos, g.view, g.facing, available(g)))
+// In the air the one thing to do is skip to the camp.
+export const focus = (g: Game): Interactable | undefined =>
+  g.panel ? undefined : flying(g.flight) ? skipSpot(g.pos) : pick(g.pos, g.view, g.facing, available(g))
 
 export const label = (g: Game, i: Interactable): string =>
   (i.note ? menu(g.story).options.find((o) => o.note === i.note)?.label : i.prompt) ?? i.id
@@ -324,9 +334,17 @@ export const panelText = (g: Game): string =>
 
 // Whether a prop that shows the letter's state, or the cigarette Lucy dropped, is drawn.
 export const shows = (g: Game, w: Mark | undefined): boolean =>
-  w === undefined || (w === 'doused' ? g.doused === true : (w === 'folded') === (g.letter === 'folded'))
+  w === undefined ||
+  (w === 'doused'
+    ? g.doused === true
+    : w === 'posting'
+      ? g.holding?.id === POST_BOX
+      : w === 'parked'
+        ? !flying(g.flight)
+        : (w === 'folded') === (g.letter === 'folded'))
 
 export const interact = (g: Game): Game => {
+  if (flying(g.flight)) return touchDown(g)
   const target = focus(g)
   if (!target) return canLight(g) ? { ...g, vel: zero, holding: { id: CIGARETTE, progress: 0, time: LIGHT_TIME } } : g
   const id = target.id
@@ -386,6 +404,8 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'fold') return { ...g, panel: undefined, typed: undefined, letter: 'folded' }
   if (button.startsWith('note:')) {
     const next = sendNote(g, button.slice(5))
+    // Climbing into the plane at the float sends the story to the camp; the flight plays out before Owen is there.
+    if (takesOff(g.story, next.story)) return takeOff(next)
     if (!leftPrologue(g.story, next.story)) return arrive(next)
     // Climbing into the skiff sends the story on; the ride plays out before the end card comes up.
     return g.space === 'flood' ? board(next) : { ...next, panel: endCard }
@@ -412,9 +432,30 @@ const ride = (g: Game, dt: number): Game => {
   return available(end).length ? end : menuPanel(end)
 }
 
+// The flight north: the plane goes on along its course whatever the player does, over town and then down at the camp,
+// and interact skips it. Owen steps out at the camp where the walk there always starts.
+const takesOff = (from: State, to: State): boolean => place(from) === 'floatDock' && place(to) === 'surveyCamp'
+
+const inFlight = (g: Game, t: number): Game => {
+  const seat = seatAt(t, OWEN_SEAT)
+  const leg = legAt(t)
+  const here = leg === g.space ? g : enter(g, leg)
+  return { ...here, flight: t, pos: seat.at, facing: seat.heading, view: seat.heading, vel: zero }
+}
+
+const takeOff = (g: Game): Game => inFlight({ ...g, panel: undefined, holding: undefined }, 0)
+
+const touchDown = (g: Game): Game => enter(g, 'camp')
+
+const fly = (g: Game, dt: number): Game => {
+  const t = (g.flight ?? 0) + dt
+  return t >= FLIGHT_TIME ? touchDown(g) : inFlight(g, t)
+}
+
 const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
   if (h.id === CIGARETTE) return { ...done, lit: true }
+  if (h.id === POST_BOX) return { ...done, mailed: true }
   if (!h.note) return done
   if (isSpot(h.id)) return { ...sendNote(done, h.note), hidden: h.id }
   return press(done, `note:${h.note}`)
@@ -472,6 +513,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
+  if (flying(g.flight)) return fly({ ...g, t }, dt)
   if (riding(g.ride)) return ride({ ...g, t }, dt)
   if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
   const walked = water(walk({ ...g, t }, input, dt), dt)
@@ -485,14 +527,15 @@ export const playerBody = (g: Game): Body => bodyFor(g.story, g.space === 'flood
 // prologue's flood under the end card, where the story has already moved on to Wade.
 export const inWorld = (g: Game): boolean => (riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act)
 
-export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: riding(g.ride) ? 'sit' : 'stand', talking: false })
+export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: riding(g.ride) || flying(g.flight) ? 'sit' : 'stand', talking: false })
 
-// How high Owen's feet are: on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
+// How high Owen's feet are: on the plane's cabin floor in the air, on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
-export const footY = (g: Game): number => (riding(g.ride) ? boatIn(g.space).deck : standAt(spaces[g.space], g.pos))
+export const footY = (g: Game): number =>
+  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : standAt(spaces[g.space], g.pos)
 
-// The heading the camera is held behind on the ride (skiff.ts, keepBehind); none on foot.
-export const heldBehind = (g: Game): number | undefined => (riding(g.ride) ? g.facing : undefined)
+// The heading the camera is held behind on the ride and the flight (skiff.ts, keepBehind); none on foot.
+export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) ? g.facing : undefined)
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
 

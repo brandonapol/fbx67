@@ -6,7 +6,7 @@ import { initialState } from '../../text-game/src/state.ts'
 import { menu } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
 import { INDOOR_PACE, JOG, ROUND_TIME, TURN_GO, WALK, available, inWorld, playerBody, playerMotion, ended, focus, handedOff, inReach, interact, label, press, seen, start, still, textBuildHash, tick } from './prologue.ts'
-import { DT, back, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toBed, toRoom, walk, walkLeg, writeLetter } from './drive.ts'
+import { DT, back, flyNorth, hold, holdWhenSafe, holdWhenWatched, leaveBar, playPrologue, routes, talk, toBed, toRoom, walk, walkLeg, writeLetter } from './drive.ts'
 import { angleBetween, length, vec } from './world.ts'
 import { bodies, clipFor } from './cast.ts'
 import { spaces } from './levels.ts'
@@ -32,7 +32,7 @@ talks.forEach((who, ti) =>
 const atCamp = () => {
   const bar = talk(start(), 'texas')
   const room = toRoom(bar)
-  return press(walkLeg(toBed(writeLetter(room))), 'note:fly')
+  return flyNorth(walkLeg(toBed(writeLetter(room))))
 }
 
 test('the door only opens after a conversation, and Hank only sells the round before one', () => {
@@ -57,7 +57,7 @@ test('the letter is read in the room, the walk to the dock follows, and no hidin
   assert.equal(dock.story.scene, 'p_dock')
   assert.equal(dock.panel?.title, 'Owen: The Float Dock')
   assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
-  const camp = press(dock, 'note:fly')
+  const camp = flyNorth(dock)
   assert.equal(camp.space, 'camp')
   assert.equal(camp.panel, undefined)
   assert.equal(camp.story.scene, 'p_camp')
@@ -292,7 +292,7 @@ test('the float dock, a prologue scene with no space, is the end of the morning 
   assert.equal(dock.space, 'downtown')
   assert.equal(handedOff(dock), false)
   assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
-  const camp = press(dock, 'note:fly')
+  const camp = flyNorth(dock)
   assert.equal(camp.space, 'camp')
   assert.equal(handedOff(camp), false)
 })

@@ -8,6 +8,7 @@ import { available, ended, focus, inWorld, playerBody, press, resume, start, tic
 import { DT, downstairs, rideOut, talk, toHall, toRoom, toSkiff, wadeOut } from './drive.ts'
 import { RIDE_TIME, rideAt } from './skiff.ts'
 import { bodies } from './cast.ts'
+import { dockProps } from './floatDock.ts'
 import { blocked, vec } from './world.ts'
 
 // The text build's path to the prologue's last scene, p_end, and through it: `node src/cli.ts --choices 1,1,1,1,1,1`.
@@ -17,7 +18,8 @@ const THROUGH = [...TO_END, 1]
 const atEnd = () => resume(replay(TO_END).at(-1)!, TO_END)
 
 test('the flooded street is the July town with the flood laid over it, not a level of its own', () => {
-  const town = spaces.downtown.props
+  // The July town without the float-dock morning's dressing: in August the plane and Curly are gone (floatDock.ts).
+  const town = spaces.downtown.props.filter((p) => !dockProps.includes(p))
   const flood = spaces.flood.props
   assert.deepEqual(flood.slice(0, town.length), town, 'every July piece, in order')
   assert.deepEqual(flood.slice(town.length), highWater, 'and the high-water layer after them')
