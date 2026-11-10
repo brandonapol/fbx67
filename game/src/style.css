@@ -314,3 +314,11 @@ body[data-panel='open'] #help {
   opacity: 0;
   pointer-events: none;
 }
+
+#settings select {
+  font: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  padding: 2px 4px;
+}

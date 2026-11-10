@@ -58,9 +58,21 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
 - **Touch:** a touch that starts on the left 40% of the screen becomes a stick centered where the finger landed
   (60 px to full tilt). A touch on the rest of the screen looks around when dragged, and walks to the ground point
   when tapped. Prompts are buttons: tap to talk, press and hold to hold.
-- **Controls panel** (top right): rebind every key above, invert the camera's up and down, camera sensitivity.
-  Saved in `localStorage`; the help line is written from the current bindings. Camera bob is off under
-  `prefers-reduced-motion`.
+- **Settings panel** (top right, and from the title and pause menus): text size, reduced motion (as the system
+  says, on or off), then rebind every key above, invert the camera's up and down, camera sensitivity. Saved in
+  `localStorage` and applied at once; the help line is written from the current bindings. Camera bob and the title's
+  turning camera are off under reduced motion.
+- **Title, pause and journal** (`src/frontEnd.ts`, drawn by `src/frontEndView.ts`): a plain visit opens on the title,
+  Owen on Second Avenue with the camera turning slowly round him; Continue (when a save exists), New game, Settings. A
+  `#path=` or `?from=` link, and the smoke test's `?test=1`, start in the game. Esc or P (when not bound), the Menu
+  button, Start on a pad, or losing the mouse lock pauses: Resume, Journal, Map, Settings, Return to title. Nothing
+  ticks while paused, so the story clock holds. The journal is Owen's notebook: the titles of the scenes played,
+  the scene now and its `goal(state)`, `notebook(state)`, the people interacted with and the lines heard in talk
+  panels. Nothing is in it the player did not do or hear.
+- **Objective:** a line from `goal(state)` at the top, shown for six seconds when the goal changes, and again on O
+  (or Back on a pad). No arrow, no minimap.
+- **Saving:** the path played so far, in the text build's format, is saved per scene (`second-rush.path`), with the
+  journal's people and lines; Continue replays it through `src/start.ts` like a link.
 - The prompt targets what is in view: within 65 degrees of where the camera looks, nearest first.
 - Number keys or Enter pick a panel option.
 - Sound opens a volume slider per bus. Audio starts on the first key press or tap.
@@ -77,7 +89,9 @@ src/start.ts      reads a #path= or ?from= link and replays it through the story
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   sun, sky, fog and grade per space, season and moral-weather band; pure
 src/render.ts     PlayCanvas: draws the game state, owns nothing
-src/settings.ts   the controls panel
+src/settings.ts   the settings panel: text size, reduced motion, controls
+src/frontEnd.ts   the front end: screens, the objective line, the journal, the save, load progress; pure
+src/frontEndView.ts  the title, pause menu, journal, loading bar and objective line in the DOM
 src/mixer.ts      buses, slider gain, ducking and saved volumes; pure
 src/footsteps.ts  stride cadence from distance walked and surface lookup; pure
 src/soundscape.ts ambience beds, spot effects and surfaces per space as data, and their conditions
