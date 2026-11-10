@@ -400,6 +400,13 @@ export type CampView = Readonly<{
 
 const HEAD_BONE = 'Head'
 
+const heads = new WeakMap<pc.Entity, pc.GraphNode | null>()
+
+const headOf = (e: pc.Entity): pc.GraphNode | null => {
+  if (!heads.has(e)) heads.set(e, e.findByName(HEAD_BONE))
+  return heads.get(e) ?? null
+}
+
 export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): CampView => {
   const device = app.graphicsDevice
   const materials: pc.Material[] = []
@@ -504,7 +511,7 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): C
       curly.setLocalEulerAngles(0, (pose.heading * 180) / Math.PI, 0)
       cast.play(curly, pose.clip, playbackRate(pose.clip, pose.speed))
       // His head turns ahead of his body: applied over the clip's pose, after the animation has run this frame.
-      const head = curly.findByName(HEAD_BONE)
+      const head = headOf(curly)
       if (head && Math.abs(pose.head) > 1e-3) {
         turn.setFromEulerAngles(0, (pose.head * 180) / Math.PI, 0)
         head.setRotation(turn.mul(head.getRotation()))

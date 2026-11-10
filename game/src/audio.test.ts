@@ -5,11 +5,11 @@ import { DEFAULT_VOLUMES, DUCK, busGain, busGains, parseVolumes, serializeVolume
 import type { Gait } from './footsteps.ts'
 import { pace, standing, strideFor, surfaceAt } from './footsteps.ts'
 import { spaces } from './levels.ts'
-import { BEATS, CURLY_PERIOD } from './curly.ts'
+import { BEATS, CURLY_PERIOD, beatStart } from './curly.ts'
 import { INDOOR_PACE, JOG, WALK, interact, press, start, still, tick } from './prologue.ts'
 import { DT, talk, toRoom, walk } from './drive.ts'
 import { legs } from './downtown.ts'
-import { arrivals, ducked, holds, refueling, soundscapes, sourceAt, walked } from './soundscape.ts'
+import { arrivals, cues, ducked, holds, refueling, soundscapes, sourceAt, walked } from './soundscape.ts'
 import { beatAt, midiHz, noiseSamples } from './synth.ts'
 import { createAudio } from './audio.ts'
 import { vec } from './world.ts'
@@ -191,4 +191,14 @@ test('saved volumes are read back on start', () => {
   createAudio(store).setVolume('voice', 0.1)
   assert.equal(createAudio(store).volumes().voice, 0.1)
   assert.equal(createAudio(undefined).volumes().voice, DEFAULT_VOLUMES.voice)
+})
+
+test('Curly\'s lighter clicks as he finishes his work and turns to look, at the camp only, and never under a panel', () => {
+  const camp = { ...press(start(), 'close'), space: 'camp' as const, pos: spaces.camp.spawn }
+  const at = beatStart('glance')
+  assert.deepEqual(cues({ ...camp, t: at - 0.02 }, { ...camp, t: at + 0.01 }), ['snap'])
+  assert.deepEqual(cues({ ...camp, t: at + 0.01 }, { ...camp, t: at + 0.05 }), [])
+  assert.deepEqual(cues({ ...camp, t: at - 0.02, space: 'bar' }, { ...camp, t: at + 0.01 }), [])
+  assert.deepEqual(cues({ ...camp, t: at - 0.02 }, { ...camp, t: at + 0.01, panel: { kind: 'busted', title: '', text: '', buttons: [] } }), [])
+  assert.deepEqual(cues({ ...camp, t: at + 1, watch: { lost: 1.03, aware: 0 } }, { ...camp, t: at + 1.04, watch: { lost: 1.03, aware: 0 } }), ['snap'], 'by his own clock')
 })
