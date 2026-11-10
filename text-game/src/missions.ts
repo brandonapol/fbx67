@@ -1,4 +1,5 @@
 import type { SceneId } from './sceneIds.ts'
+import type { CacheSpot } from './types.ts'
 
 // A mission is a stretch of scenes the engine build plays as one piece and reports with one note (docs/story-api.md,
 // Rules 1 and 2). Each ending lists the choice notes it applies, in order; single-option beats between them are
@@ -154,16 +155,18 @@ const theMajorsCabinet: Mission = {
   ],
 }
 
-// docs/acts/act3-missions.md, section 1. The note is the spot Lucy dug first. The story checks it against owenCache:
-// a wrong spot plays a3_wrong_spot and its one dig before a3_found, then home. The wrong dig costs light and fingers inside the
-// mission only, so all three notes land on the same state: the tapes, and owenCache cleared.
+// docs/acts/act3-missions.md, section 1. The note is the spot Lucy dug first. The story checks it against owenCache: a
+// wrong spot plays a3_wrong_spot and its one dig before a3_found, then home. The wrong dig costs light and fingers
+// inside the mission only, so all three notes land on the same state: the tapes, and owenCache cleared.
+const digSpots: readonly CacheSpot[] = ['stove', 'cache', 'marker']
+
 const lucysDig: Mission = {
   id: 'lucysDig',
   title: 'Lucy\'s dig',
-  details: [{ name: 'First dig', labels: ['stove', 'cache', 'marker'] }],
+  details: [{ name: 'First dig', labels: digSpots }],
   start: 'a3_camp',
   end: 'a3_crash',
-  endings: ['stove', 'cache', 'marker'].map((spot) => ({ note: spot, label: spot, applies: [spot, 'home'] })),
+  endings: digSpots.map((spot) => ({ note: spot, label: spot, applies: [spot, 'home'] })),
 }
 
 export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet, lucysDig]

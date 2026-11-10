@@ -60,6 +60,11 @@ const shortestTo = (s: State, to: State['scene']): readonly number[] | undefined
   return walk([{ s, up: [] }])
 }
 
+// Choice 1 until the scene `to`, as finish() plays, so a route keeps the first-choice beats between missions (the
+// steak at a2_curly) where a shorter way exists; undefined if choice 1 passes `to` by.
+const firstTo = (s: State, to: State['scene'], up: readonly number[] = []): readonly number[] | undefined =>
+  s.scene === to ? up : isEnd(s) || sceneIndex(s.scene) > sceneIndex(to) ? undefined : firstTo(choose(s, 1), to, [...up, 1])
+
 // Choice 1 until the game ends.
 const finish = (s: State, up: readonly number[]): readonly number[] => (isEnd(s) ? up : finish(choose(s, 1), [...up, 1]))
 
@@ -68,7 +73,7 @@ const routeFor = (todo: ReadonlySet<string>): string => {
   const step = (s: State, up: readonly number[], rest: typeof missions): readonly number[] => {
     const [m, ...later] = rest
     if (!m) return finish(s, up)
-    const lead = shortestTo(s, m.start)
+    const lead = firstTo(s, m.start) ?? shortestTo(s, m.start)
     if (!lead) return step(s, up, later)
     const at = lead.reduce(choose, s)
     const ending = m.endings.find((e) => todo.has(`${m.id}/${e.note}`)) ?? m.endings[0]
