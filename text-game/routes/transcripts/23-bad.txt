@@ -665,7 +665,9 @@ You tell Lucy you're going to do something about it. She lets you talk.
 
 == Act 3: Deep Winter :: One-Handed ==
 
-You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.
+You lift a demolition kit from the munitions bunker on a night shift and build the charge on your bunk with your teeth and your good hand. It takes three tries to crimp the cap, the wire pinned under the lunchbox lid. You case Tolliver's office twice: ground floor, a back door off the alley at street level.
+
+Thursday at eleven you walk down Cushman Street with it in a lunchbox. Every time headlights come up behind you, you step into a doorway and wait for them to pass.
 
   1. Go.
 

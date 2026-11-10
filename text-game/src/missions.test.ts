@@ -1,9 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialState } from './state.ts'
-import { choicesOf, choose, render, replay } from './engine.ts'
+import { choicesOf, choose, render, replay, sceneOf } from './engine.ts'
 import { menu, mission, send, sendMission } from './story.ts'
-import { missionMenu, missions, type Mission } from './missions.ts'
+import { endsOf, missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
 import { canonical } from './liveness.ts'
 import type { SceneId, State } from './types.ts'
@@ -30,9 +30,9 @@ const allAt = (id: SceneId): readonly State[] => {
   return at
 }
 
-// Every state at the end scene that playing the scenes one choice at a time can produce from s.
-const playedThrough = (s: State, end: SceneId): readonly State[] =>
-  s.scene === end ? [s] : choicesOf(s).flatMap((_, i) => playedThrough(choose(s, i + 1), end))
+// Every state at an end scene that playing the scenes one choice at a time can produce from s.
+const playedThrough = (s: State, ends: readonly SceneId[]): readonly State[] =>
+  ends.includes(s.scene) ? [s] : choicesOf(s).flatMap((_, i) => playedThrough(choose(s, i + 1), ends))
 
 // Prologue, then "Go find Eli" at a1_flood.
 const atTrack = replay([1, 1, 1, 1, 1, 1, 1]).at(-1) as State
@@ -110,8 +110,8 @@ test('every mission note ends at its end scene, and the notes cover every way th
     assert.ok(starts.length > 0, `${m.id}: nothing reaches ${m.start}`)
     starts.forEach((start) => {
       const byNote = new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note))))
-      const played = new Set(playedThrough(start, m.end).map((p) => JSON.stringify(p)))
-      assert.deepEqual([...played].filter((p) => !byNote.has(p)), [], `${m.id}: a path to ${m.end} matches no note`)
+      const played = new Set(playedThrough(start, endsOf(m)).map((p) => JSON.stringify(p)))
+      assert.deepEqual([...played].filter((p) => !byNote.has(p)), [], `${m.id}: a path to ${endsOf(m).join(' or ')} matches no note`)
       assert.deepEqual([...byNote].filter((n) => !played.has(n)), [], `${m.id}: a note lands where no path does`)
     })
   })
@@ -128,7 +128,7 @@ test('the single-detail missions give every note its own state', () => {
     .forEach((m) =>
       allAt(m.start).forEach((start) => {
         assert.equal(new Set(m.endings.map((e) => JSON.stringify(sendMission(start, e.note)))).size, m.endings.length, `${m.id}: two notes give the same state`)
-        assert.equal(playedThrough(start, m.end).length, m.endings.length, `${m.id}: paths through and notes differ`)
+        assert.equal(playedThrough(start, endsOf(m)).length, m.endings.length, `${m.id}: paths through and notes differ`)
       }),
     )
 })
@@ -397,4 +397,84 @@ test('every dig lands on a3_crash with the tapes, owenCache cleared, and nothing
     // The wrong spot costs light and fingers inside the mission only: the story keeps no trace of it.
     assert.equal(new Set(outs.map((o) => JSON.stringify(o))).size, 1)
   })
+})
+
+// Act 3. The rash plans, from a3_rash after every answer to Eli.
+const atRash = allAt('a3_rash')
+const rashNotes = ['safe', 'burn', 'gunpoint', 'stayedOut']
+const confessionOf: Readonly<Record<string, SceneId>> = {
+  safe: 'a3_confession_safe',
+  burn: 'a3_confession_burn',
+  gunpoint: 'a3_confession_gun',
+  stayedOut: 'a3_confession_none',
+}
+
+test('the rash plan offers plan: safe / burn / gunpoint, or stayed out at a3_rash', () => {
+  const s = replay([1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]).at(-1) as State
+  assert.equal(s.scene, 'a3_rash')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The rash plan. Plan: safe / burn / gunpoint; or stayed out')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    rashNotes,
+  )
+})
+
+test('each rash plan note agrees with playing its scenes, the café first or not', () => {
+  atRash.forEach((s) => {
+    const viaCafe = send(s, 'gossip')
+    assert.equal(viaCafe.scene, 'a3_rash_gossip')
+    ;[
+      ['safe', ['safe', 'go']],
+      ['burn', ['burn', 'go']],
+      ['gunpoint', ['gunpoint', 'go']],
+      ['stayedOut', ['none', 'letHerIn']],
+    ].forEach(([n, played]) => {
+      assert.deepEqual(sendMission(s, n as string), (played as string[]).reduce(send, s))
+      assert.deepEqual(sendMission(s, n as string), (played as string[]).reduce(send, viaCafe))
+    })
+  })
+})
+
+test('a plan is +1 heat and its rashPlan; staying out is neither', () => {
+  const s = { ...atRash[0], heat: 0 }
+  const out = rashNotes.map((n) => sendMission(s, n))
+  assert.deepEqual(out.map((o) => o.heat), [1, 1, 1, 0])
+  assert.deepEqual(out.map((o) => o.rashPlan), ['safe', 'burn', 'gunpoint', 'none'])
+  out.forEach((o, i) => {
+    assert.deepEqual([o.eliTrust, o.lucyHeat, o.evidence], [s.eliTrust, s.lucyHeat, s.evidence])
+    assert.equal(o.scene, confessionOf[rashNotes[i]])
+  })
+})
+
+// The story side of the acceptance criterion (the engine's interception line and timer are its own): nothing in a
+// lead-in gets past Lucy. Every way out of a3_rash, café or not, reaches its plan's confession, Lucy stepping out of
+// the dark, before any other scene, and no lead-in offers more than walking into her.
+test('every way through a rash plan is intercepted by Lucy at its own confession', () => {
+  const confessions = Object.values(confessionOf)
+  const leadIns: Readonly<Record<string, SceneId>> = { a3_rash_safe: 'a3_confession_safe', a3_rash_burn: 'a3_confession_burn', a3_rash_gun: 'a3_confession_gun', a3_rash_none: 'a3_confession_none' }
+  atRash.forEach((s) => {
+    const visit = (c: State, lead?: SceneId): void => {
+      if (confessions.includes(c.scene)) {
+        assert.ok(lead, `${c.scene} reached without a lead-in`)
+        assert.equal(c.scene, leadIns[lead])
+        assert.match(sceneOf(c).text(c), /She must have followed you|beside you in the dark|She drives/)
+        return
+      }
+      assert.ok(['a3_rash', 'a3_rash_gossip', ...Object.keys(leadIns)].includes(c.scene), `${c.scene} reached before Lucy`)
+      if (c.scene in leadIns) assert.equal(choicesOf(c).length, 1, `${c.scene} offers a way around her`)
+      choicesOf(c).forEach((_, i) => visit(choose(c, i + 1), c.scene in leadIns ? c.scene : lead))
+    }
+    visit(s)
+  })
+})
+
+test('the lead-ins stage what the arm rules out: no climb, no stick shift driven, no shot fired', () => {
+  const s = atRash[0]
+  const lead = (n: string) => render(send(s, n))
+  assert.match(lead('safe'), /ground floor/)
+  assert.match(lead('burn'), /stalls/)
+  assert.match(lead('gunpoint'), /won't come to your shoulder/)
+  ;['safe', 'burn', 'gunpoint'].forEach((n) => assert.doesNotMatch(lead(n), /oil rush/i))
 })

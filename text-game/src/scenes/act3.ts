@@ -75,7 +75,7 @@ const stopped = `Lucy steps out of the dark before you get there. She must have 
 // liveness keeps only as burn or not by now).
 const walkBack = (s: State): string =>
   s.rashPlan === 'burn'
-    ? 'You leave the borrowed truck on the cabin road, its gears too much for one hand, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn\'t ask about the cast.'
+    ? 'You leave the borrowed truck where it died on the cabin road, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn\'t ask about the cast.'
     : 'A cab off Second Avenue takes the last of your pay to drop you at the main gate.'
 // Where the folder comes from, and her one plain line about the job, if she was let go before Act 3 (design: Lucy's
 // Confession, variant). The talk between is the same either way.
@@ -402,7 +402,9 @@ You tell Lucy you're going to do something about it. She lets you talk.`,
     clock: '1967-12-28T23:00',
     goal: `Blow ${N.tolliverLast}'s safe.`,
     text: () => `
-You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
+You lift a demolition kit from the munitions bunker on a night shift and build the charge on your bunk with your teeth and your good hand. It takes three tries to crimp the cap, the wire pinned under the lunchbox lid. You case ${N.tolliverLast}'s office twice: ground floor, a back door off the alley at street level.
+
+Thursday at eleven you walk down Cushman Street with it in a lunchbox. Every time headlights come up behind you, you step into a doorway and wait for them to pass.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_safe' }],
   },
   {
@@ -413,7 +415,9 @@ You lift a demolition kit from the munitions bunker on a night shift, one-handed
     clock: '1967-12-29T01:50',
     goal: `Burn ${N.tolliverLast}'s cabin.`,
     text: () => `
-You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and drive out the road to Tolliver's hunting cabin at two in the morning.`,
+You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and head out the road to Tolliver's hunting cabin at two in the morning.
+
+The truck is a stick shift. You steer with your knee and reach across for the gearshift with your good hand, and the gears grind every time. On the cabin road it bucks in the ruts and stalls, and it won't catch again. You get out. One can at a time in your good hand: you leave the second by the truck and walk on into the dark with the first.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_burn' }],
   },
   {
@@ -424,7 +428,9 @@ You borrow a truck, buy two cans of kerosene at a gas station where nobody knows
     clock: '1967-12-28T21:30',
     goal: `Make ${N.tolliverLast} talk.`,
     text: () => `
-You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.`,
+You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.
+
+The rifle hangs off your good shoulder. Behind a spruce at the edge of ${N.tolliverLast}'s lot you try bringing it up once, to see. The strap catches on the cast, the stock won't come to your shoulder, and you let it hang again, the butt knocking against your hip. You stay out of the streetlight and watch the road for headlights.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_gun' }],
   },
   {

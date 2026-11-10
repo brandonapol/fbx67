@@ -1,7 +1,7 @@
 import { choicesOf, choose, isEnd, replay } from './engine.ts'
 import { menu, send } from './story.ts'
 import { initialState } from './state.ts'
-import { missions } from './missions.ts'
+import { endOf, missions } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
 import type { MissionEnding } from './missions.ts'
 import type { State } from './types.ts'
@@ -29,10 +29,11 @@ export const reachedNotes = (path: string): ReadonlySet<string> => {
   const reached = new Set<string>()
   missions.forEach((m) => {
     const from = states.findIndex((s) => s.scene === m.start)
-    const to = states.findIndex((s) => s.scene === m.end)
-    if (from < 0 || to < 0) return
-    const taken = noted.slice(from, to)
+    if (from < 0) return
     m.endings.forEach((e: MissionEnding) => {
+      const to = states.findIndex((s, i) => i > from && s.scene === endOf(m, e))
+      if (to < 0) return
+      const taken = noted.slice(from, to)
       if (sameNotes(playedNotes(states[from], e.applies), taken)) reached.add(`${m.id}/${e.note}`)
     })
   })
@@ -92,7 +93,7 @@ const routeFor = (todo: ReadonlySet<string>): string => {
     )
     // A mission's end scene is reached through single-option beats after its last choice.
     const settle = (c: State, acc: readonly number[]): readonly [State, readonly number[]] =>
-      c.scene === m.end || choicesOf(c).length !== 1 ? [c, acc] : settle(choose(c, 1), [...acc, 1])
+      c.scene === endOf(m, ending) || choicesOf(c).length !== 1 ? [c, acc] : settle(choose(c, 1), [...acc, 1])
     const [out, ns] = settle(...played)
     return step(out, [...up, ...lead, ...ns], later)
   }

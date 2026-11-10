@@ -515,7 +515,9 @@ You tell Lucy you're going to do something about it. She lets you talk.
 
 == Act 3: Deep Winter :: Kerosene ==
 
-You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and drive out the road to Tolliver's hunting cabin at two in the morning.
+You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and head out the road to Tolliver's hunting cabin at two in the morning.
+
+The truck is a stick shift. You steer with your knee and reach across for the gearshift with your good hand, and the gears grind every time. On the cabin road it bucks in the ruts and stalls, and it won't catch again. You get out. One can at a time in your good hand: you leave the second by the truck and walk on into the dark with the first.
 
   1. Go.
 
@@ -545,7 +547,7 @@ She closes the folder and keeps her hand flat on it. "The land office let me go 
 
 == Act 3: Deep Winter :: Done ==
 
-You hand her the folder back and walk out into the dark. She doesn't call after you. You leave the borrowed truck on the cabin road, its gears too much for one hand, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn't ask about the cast.
+You hand her the folder back and walk out into the dark. She doesn't call after you. You leave the borrowed truck where it died on the cabin road, walk out to the highway, and ride back to base in the cab of a fuel truck whose driver doesn't ask about the cast.
 
 For the rest of the winter you work your shifts, keep your head down, and stay away from Lucy's street.
 
