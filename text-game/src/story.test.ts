@@ -171,9 +171,9 @@ test('the barfight move colors and locks nobody out: only the bottle adds heat',
 })
 
 // #208: the survival night's order and signal carry state. The best route, with the night's two choices swapped in.
-const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-const atCrash = best.slice(0, 31)
-const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(33)])
+const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+const atCrash = best.slice(0, 32)
+const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(34)])
 const reach = (order: number, signal: number, id: State['scene']): State =>
   nightRun(order, signal).find((s) => s.scene === id) as State
 
