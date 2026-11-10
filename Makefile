@@ -70,9 +70,11 @@ test/game/smoke: build/game ## Play the prologue in headless Chromium; compare f
 test/game/smoke/act1: build/game ## Play Act 1 from its path to Act 2 in headless Chromium; compare its frames and budgets
 	cd $(GAME) && npm run -s smoke:act1
 
-.PHONY: generate/baselines
-generate/baselines: build/game ## Replay the smoke tests (prologue and Act 1) and overwrite game/smoke/baselines with their frames
+.PHONY: generate/baselines generate/baselines/act1
+generate/baselines: build/game generate/baselines/act1 ## Replay the smoke tests (prologue and Act 1) and overwrite game/smoke/baselines with their frames
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke
+
+generate/baselines/act1: build/game ## Replay only the Act 1 smoke test and overwrite game/smoke/baselines/act1
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke:act1
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
