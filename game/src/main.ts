@@ -88,6 +88,9 @@ const live: {
   stick?: Drag
   orbit?: Drag & Readonly<{ moved: boolean }>
   turn: { x: number; y: number }
+  // Game ticks per drawn frame: 1 in play. The smoke test raises it so software rendering's few frames a second
+  // don't stretch its walks and the skiff ride into real minutes; each tick is still at most 0.1 s.
+  pace: number
 } = {
   g: first,
   rig: rigFor(first.facing, armFor(spaces[first.space])),
@@ -99,6 +102,7 @@ const live: {
   pad: [],
   run: false,
   turn: { x: 0, y: 0 },
+  pace: 1,
 }
 
 const settings = mountSettings(
@@ -441,6 +445,12 @@ view.app.on('update', (dtRaw: number) => {
   padFrame(pad)
   const frame = input(pad, dt)
   live.g = tick(live.g, frame.input, dt)
+  const more = (n: number): void => {
+    if (n <= 0 || live.g.panel) return
+    live.g = tick(live.g, input(pad, dt).input, dt)
+    more(n - 1)
+  }
+  more(live.pace - 1)
   placeRig(live.g)
   const g = live.g
   const sway = bob(g.t, length(g.vel), topSpeed(frame.input, spaces[g.space].interior), reducedMotion.matches)
@@ -467,6 +477,9 @@ Object.assign(window, {
       live.rig = { ...live.rig, yaw, pitch, idle: 0 }
     },
     audio: () => audio.status(),
+    pace: (n: number) => {
+      live.pace = Math.max(1, Math.round(n))
+    },
   },
 })
 

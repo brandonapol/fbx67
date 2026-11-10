@@ -106,7 +106,8 @@ jobs:
     needs: changes
     if: needs.changes.outputs.game == 'true' || (github.event_name != 'pull_request' && github.event_name != 'merge_group')
     runs-on: ubuntu-latest
-    # The smoke test walks the prologue's two legs downtown in real time under software rendering.
+    # The smoke test walks the prologue's two legs downtown and rides the skiff under software rendering, several game
+    # ticks a frame (main.ts, pace); its keyboard case fails past its own budget (KEYBOARD_BUDGET_S) inside this limit.
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

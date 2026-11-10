@@ -116,6 +116,11 @@ const tour = async (p: Page, home: Point, away: Point, ms = 10000): Promise<void
 
 const game = (p: Page) => p.evaluate(() => (window as any).__prologue.game())
 
+// Game ticks per drawn frame (main.ts). Software rendering draws a few frames a second and each tick is capped at
+// 0.1 s, so at 1 the walks downtown and the skiff ride take several times their game time; FAST keeps them short.
+const FAST = 4
+const pace = (p: Page, n: number) => p.evaluate((n) => (window as any).__prologue.pace(n), n)
+
 const camera = (p: Page) => p.evaluate(() => (window as any).__prologue.camera())
 
 const aim = (p: Page, yaw: number, pitch: number) =>
@@ -247,7 +252,18 @@ const open = async (opts: Readonly<{ touch?: boolean; pad?: boolean; path?: stri
   return { page, errors, initial, close: () => context.close() }
 }
 
+// Seconds each stretch of the keyboard run took, logged as it goes so a slow or cancelled run shows where the time went.
+const laps = () => {
+  const at = { t: Date.now(), start: Date.now() }
+  return (name: string): void => {
+    const now = Date.now()
+    console.log(`  lap ${name}: ${((now - at.t) / 1000).toFixed(1)} s (${((now - at.start) / 1000).toFixed(1)} s in)`)
+    at.t = now
+  }
+}
+
 const play = async ({ page, errors, initial }: Opened): Promise<void> => {
+  const lap = laps()
   run.downloadBytes = await fetched(initial)
   await snap(page, '01-bar')
   await capture(page, 'bar')
@@ -302,25 +318,34 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await capture(page, 'round')
   await page.keyboard.press('1')
 
+  lap('bar')
+  await pace(page, FAST)
   await walk(page, [[0, 4.2]], true)
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'downtown')
   await capture(page, 'downtown')
   await capture(page, 'downtown_flood')
   await capture(page, 'downtown_freezeup')
+  lap('door and downtown captures')
   await tour(page, [33, 50.5], [40, 50.5])
+  lap('downtown tour')
   await walkRoute(page, legs[0]!.route)
   await aim(page, Math.PI, 0)
+  await frames(page, 3)
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'boarding')
+  lap('leg 1 to the boarding house')
   await snap(page, '05-hall', 10)
   await capture(page, 'parlor')
   await tour(page, [0, 6.2], [0, 1.5])
+  lap('parlor')
   await walk(page, HALL)
   await aim(page, Math.PI, 0)
+  await frames(page, 3)
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'room')
   await snap(page, '05-room', 10)
+  lap('hall')
   await tour(page, [0, 1.2], [0.6, -1.0])
   await page.keyboard.press('e')
   assert.equal((await game(page)).panel?.kind, 'letter')
@@ -332,11 +357,14 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   assert.equal((await game(page)).letter, 'folded')
   await walk(page, [[-0.6, 0.6]])
   await aim(page, -Math.PI / 2, 0)
+  await frames(page, 3)
   await page.keyboard.press('e')
   assert.equal((await game(page)).story.scene, 'p_dock')
   assert.equal((await game(page)).space, 'downtown')
+  lap('room and letter')
   await walkRoute(page, legs[1]!.route)
   await aim(page, Math.PI, 0)
+  lap('leg 2 to the dock')
   await page.keyboard.press('e')
   assert.equal((await game(page)).panel?.title, 'Owen: The Float Dock')
   await snap(page, '07-dock')
@@ -344,8 +372,11 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   assert.equal((await game(page)).space, 'camp')
   await snap(page, '08-camp', 10)
 
+  lap('dock')
   await tour(page, [-8.2, 3.6], [-6, 2])
   await walk(page, [[-2, -1.5], [0, -6], [1.8, -7.5]], true)
+  // Hiding waits for a window a tenth of a second wide in Curly's beat: one tick a frame, so no frame steps over it.
+  await pace(page, 1)
   await page.waitForFunction(
     () => {
       const g = (window as any).__prologue.game()
@@ -360,6 +391,8 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await snap(page, '09-hidden')
   await capture(page, 'hidden')
 
+  await pace(page, FAST)
+  lap('camp and hiding')
   await walk(page, [[0, -6], [-2, -1.5], [-6, 2], [-7.4, 3.8]], true)
   await page.keyboard.press('e')
   // August: his room, then down the stair (the view follows the camera on the next frame, so each aim waits a few), the flooded hall and out of the front door.
@@ -375,8 +408,10 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'flood')
   // The camera-volume check: on the porch and in the skiff the live camera never stands ahead of the hooded man's back.
+  lap('flood house')
   const watch = faceWatch(page)
   await tour(page, [135.4, 97.5], [140, 97.5])
+  lap('porch tour')
   await walk(page, FLOOD_WALK.porch)
   await aim(page, 0, 0)
   await frames(page, 3)
@@ -385,12 +420,14 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   await capture(page, 'skiff')
   await capture(page, 'skiff_dusk')
   await capture(page, 'skiff_night')
+  lap('porch and skiff captures')
   await page.keyboard.press('1')
   const aboard = await game(page)
   assert.equal(aboard.panel, undefined, 'climbing in starts the ride, not the end card')
   assert.deepEqual(aboard.path, [3, 1, 1, 1, 3, 1], 'continue is sent as Owen climbs in')
   await aim(page, Math.PI, 0)
   await page.waitForFunction(() => (window as any).__prologue.game().panel?.kind === 'end', null, { timeout: 180000 })
+  lap('ride')
   const looked = await watch.stop()
   assert.ok(looked.samples > 20, `${looked.samples} camera samples`)
   assert.deepEqual(looked.seen, [], 'the hooded man’s face was in view')
@@ -402,13 +439,24 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   const href = await page.evaluate(() => (window as any).__prologue.textBuild())
   assert.match(href, /\/fbx67\/#path=3,1,1,1,3,1$/)
   assert.equal(await page.evaluate(() => (window as any).__prologue.audio()), 'running')
+  lap('end')
   assert.deepEqual(errors, [])
 }
 
-test('the prologue plays end to end with the keyboard', { timeout: 2700000 }, async () => {
+// The keyboard run's budget in seconds, under software rendering. It took about 1,030 s locally and 1,650 s on a
+// GitHub runner before the walks and the ride were paced, about 510 s locally after; a runner is about 1.6 times
+// slower, so about 830 s there. CI's check-game job has 30 minutes for this, the other cases (about 4 minutes) and the
+// build; past the budget the case fails here, naming it, rather than the job being cancelled. The laps it logs show
+// which stretch grew.
+const KEYBOARD_BUDGET_S = 1080
+
+test('the prologue plays end to end with the keyboard', { timeout: KEYBOARD_BUDGET_S * 1000 }, async () => {
   const opened = await open()
+  const started = Date.now()
   try {
     await play(opened)
+    const took = (Date.now() - started) / 1000
+    assert.ok(took <= KEYBOARD_BUDGET_S, `the keyboard prologue took ${took.toFixed(0)} s, over its ${KEYBOARD_BUDGET_S} s budget`)
   } finally {
     await collect(opened.page)
     await opened.close()
