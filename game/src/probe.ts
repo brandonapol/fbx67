@@ -147,9 +147,11 @@ export const installProbe = (view: View, live: Live): void => {
     if (rec.age >= WARMUP_FRAMES) rec.pending = { space, triangles: triangles(app), cpuMs }
   })
 
-  const capture = async (name: string, at: string = name): Promise<void> => {
-    const pose = poses[at]
-    if (!pose) throw new Error(`no capture pose named ${at}`)
+  // heat, when given, takes the frame in that moral-weather band whatever the pose says (the Act 1 run's bands).
+  const capture = async (name: string, at: string = name, heat?: number): Promise<void> => {
+    const found = poses[at]
+    if (!found) throw new Error(`no capture pose named ${at}`)
+    const pose = heat === undefined ? found : { ...found, heat }
     const saved = hold.saved ?? live.get()
     hold.saved = saved
     live.set(posed(saved, pose))

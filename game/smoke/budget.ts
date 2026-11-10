@@ -102,11 +102,18 @@ export const summarize = (samples: readonly Sample[], known: readonly string[]):
     }
   })
 
-export const breaches = (report: Report, budgets: Budgets): readonly string[] => [
+// The spaces of levels.ts (or of one act's) that have no row in docs/perf.md. Each act's smoke run checks its own, so
+// a new space fails before it is ever sampled.
+export const unbudgeted = (budgets: Budgets, ids: readonly string[]): readonly string[] =>
+  ids.filter((id) => budgets.spaces[id] === undefined).map((id) => `${id}: no budget row in docs/perf.md`)
+
+// A run fails on the download, on a space it played that has no frames (every budgeted space, unless the run plays
+// only some), on a sampled space with no row, and on a peak over a limit.
+export const breaches = (report: Report, budgets: Budgets, played: readonly string[] = Object.keys(budgets.spaces)): readonly string[] => [
   ...(report.downloadMB > budgets.downloadMB
     ? [`initial download is ${report.downloadMB.toFixed(2)} MB, budget ${budgets.downloadMB} MB`]
     : []),
-  ...Object.keys(budgets.spaces)
+  ...played
     .filter((id) => !report.spaces.some((s) => s.space === id && s.frames > 0))
     .map((id) => `${id}: no frames recorded`),
   ...report.spaces.flatMap((s) => {
@@ -124,13 +131,13 @@ export const breaches = (report: Report, budgets: Budgets): readonly string[] =>
 
 const fixed = (n: number, d = 1): string => n.toFixed(d)
 
-export const perfMarkdown = (report: Report, budgets: Budgets): string => {
-  const failed = breaches(report, budgets)
+export const perfMarkdown = (report: Report, budgets: Budgets, played?: readonly string[]): string => {
+  const failed = breaches(report, budgets, played)
   const head = [
     '### Frame budget',
     '',
-    `Initial download: ${fixed(report.downloadMB, 2)} MB of ${budgets.downloadMB} MB (1 MB = 10^6 bytes).`,
-    '',
+    // A run that plays only some spaces opens at a path, not cold: the prologue's run measures the download.
+    ...(played ? [] : [`Initial download: ${fixed(report.downloadMB, 2)} MB of ${budgets.downloadMB} MB (1 MB = 10^6 bytes).`, '']),
     '| Space | Frames | Draw calls (max) | Triangles (max) | Texture MB (max) | VRAM MB (max) | CPU ms (median / p95 / max) |',
     '| ----- | -----: | ---------------: | --------------: | ---------------: | ------------: | --------------------------: |',
   ]

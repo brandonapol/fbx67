@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { spaces } from '../src/levels.ts'
 import type { Sample } from '../src/probe.ts'
-import { breaches, parseBudgets, spread, summarize } from './budget.ts'
+import type { Act } from '../../text-game/src/types.ts'
+import { breaches, parseBudgets, spread, summarize, unbudgeted } from './budget.ts'
 
 const docs = readFileSync(new URL('../../docs/perf.md', import.meta.url), 'utf8')
 
@@ -91,4 +92,32 @@ test('a budgeted space with no frames fails, and so does a sampled space with no
   const b = parseBudgets(docs)
   const failed = breaches({ downloadMB: 1, spaces: summarize([...order.slice(1).map((s) => sample(s)), sample('dock')], order) }, b)
   assert.deepEqual(failed, [`${order[0]}: no frames recorded`, 'dock: no budget row in docs/perf.md'])
+})
+
+// One check per act: a space that act adds to levels.ts fails here, naming the act, until docs/perf.md budgets it.
+const acts: readonly Act[] = ['Prologue', 'Act 1: Flood', 'Act 2: Freeze-up', 'Act 3: Deep Winter', 'Act 4: Breakup', 'Epilogue']
+
+acts.forEach((act) =>
+  test(`every ${act} space in levels.ts has a row in docs/perf.md`, () => {
+    const ids = Object.values(spaces)
+      .filter((s) => s.act === act)
+      .map((s) => s.id)
+    assert.deepEqual(unbudgeted(parseBudgets(docs), ids), [])
+  }),
+)
+
+test('every space in levels.ts has a row in docs/perf.md, the story backdrop with no act too', () => {
+  assert.deepEqual(unbudgeted(parseBudgets(docs), order), [])
+})
+
+test('a space with no row is named', () => {
+  const b = parseBudgets(docs.replace(/^\| `office` .*\n/m, ''))
+  assert.deepEqual(unbudgeted(b, ['line', 'office', 'jail']), ['office: no budget row in docs/perf.md'])
+})
+
+test('a run that plays only some spaces fails only on those with no frames', () => {
+  const b = parseBudgets(docs)
+  const act1 = ['line', 'helpTent', 'cabin', 'office', 'jail']
+  const some = summarize(act1.slice(1).map((s) => sample(s)), act1)
+  assert.deepEqual(breaches({ downloadMB: 1, spaces: some }, b, act1), ['line: no frames recorded'])
 })

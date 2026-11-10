@@ -54,7 +54,7 @@ check/web: ## Typecheck web
 
 check/game: check/game/typecheck check/game/main test/game/unit build/game ## Typecheck, unit-test and build the engine build
 
-.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke
+.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke test/game/smoke/act1
 check/game/main: ## Fetch origin/main if missing (a shallow CI checkout): the notes ratchet's allowlist only shrinks against it
 	@git rev-parse -q --verify origin/main >/dev/null || git fetch -q --depth=1 origin +main:refs/remotes/origin/main
 
@@ -67,9 +67,13 @@ test/game/unit: ## Mission logic and story parity tests, and the notes ratchet (
 test/game/smoke: build/game ## Play the prologue in headless Chromium; compare frames, check docs/perf.md budgets
 	cd $(GAME) && npm run -s smoke
 
+test/game/smoke/act1: build/game ## Play Act 1 from its path to Act 2 in headless Chromium; compare its frames and budgets
+	cd $(GAME) && npm run -s smoke:act1
+
 .PHONY: generate/baselines
-generate/baselines: build/game ## Replay the smoke test and overwrite game/smoke/baselines with its frames
+generate/baselines: build/game ## Replay the smoke tests (prologue and Act 1) and overwrite game/smoke/baselines with their frames
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke
+	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke:act1
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden
