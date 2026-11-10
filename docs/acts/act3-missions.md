@@ -2,7 +2,7 @@
 
 How Act 3's five playable missions play in the engine build, the survival rules the night and the search share, and
 the one note each mission sends the story ([`story-api.md`](../story-api.md), Rules 1 to 4). Issue #97. The scene text
-is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the menus will be in
+is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the other menus will be in
 [`missions.ts`](../../text-game/src/missions.ts) once each spec is approved and implemented. Where this file and
 [`design.md`](../../design.md) disagree, the design wins.
 

@@ -16,9 +16,13 @@ counted in the `cabin` row, and its close-up frames are captured from the cabin'
 Act 1 has its own run and its own CI job (`make test/game/smoke/act1`, `game/smoke/act1.test.ts`), so a failure names
 the act. It opens the Act 1 path (`#path=1,1,1,1,1,1`) and plays to Act 2's first scene, every choice the first, while
 recording; the steps are the ones `game/smoke/act1Plan.test.ts` plays headless against the text build. At each beat (each
-space Wade comes into: `line`, `helpTent`, `cabin`, `office`, `jail`) it captures that space's frame in each
+space Wade comes into: `line`, `helpTent`, `cabin`, `office`, `jail`; the scenes `a1_flood`, `a1_errand`, `a1_trail`,
+`a1_body`, `a1_ruling`, `a1_lucy`, `a1_tank`) it captures that space's frame in each
 moral-weather band, into `game/smoke/baselines/act1/`. It fails on an Act 1 space with no frames, not on the
-prologue's; the initial download is the prologue run's to measure.
+prologue's; the initial download is the prologue run's to measure. `make generate/baselines/act1` regenerates only
+its baselines.
+
+Act 3 has no run of its own yet: its `a3_camp` start (`game/smoke/starts.ts`) is sampled in the prologue run, over `story`.
 
 Act 2 has its own run and CI job the same way (`make test/game/smoke/act2`, `game/smoke/act2.test.ts`). It opens `a2_major`
 where the Act 1 run reaches it (every choice the first, so Eli still trusts Wade and the heat alone sets the band) and

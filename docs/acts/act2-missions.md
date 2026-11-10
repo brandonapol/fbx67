@@ -8,7 +8,8 @@ note each sends the story ([`story-api.md`](../story-api.md), Rules 1 to 4). Iss
 design wins.
 
 **Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. The first three
-sections' menus are already in `missions.ts`; the land office search has no scene yet (#104).
+sections' menus are already in `missions.ts`; the land office search's scenes (`a2_records`, `a2_records_log`) are in
+the text build, but its menu is not.
 
 **Ground rules for all four.** The ones in [`act1-missions.md`](act1-missions.md) hold, plus:
 
@@ -139,8 +140,8 @@ squadron building on base.
 
 Lucy's after-hours search of the land office for the family's allotment application (`design.md`, Systems > Lucy,
 #84). Night, freeze-up, after the Major's cabinet; the land office interior from Act 1 (#172), place `landOffice`.
-Playing Lucy: `pov(state)` is `'lucy'` here (#217). The scene, its id and its clock are #104's; this spec names what
-the mission needs from them.
+Playing Lucy: `pov(state)` is `'lucy'` here (#217). The scenes are `a2_records` and `a2_records_log`, already in the text build; this spec names what the mission needs
+from them.
 
 - **When it runs.** Only while Lucy still has the job: at `lucyHeat` >= 2 she was let go after the cabinet (#211) and
   there is no mission and no note. No prompt asks the player to refuse it: it is her work, and she goes.

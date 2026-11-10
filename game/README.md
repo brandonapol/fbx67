@@ -5,11 +5,14 @@ copies its text or re-implements its gates: each mission ends by sending the sto
 offers (see [`docs/story-api.md`](../docs/story-api.md)).
 
 Today it plays the prologue as Owen: the Silver Pan, the walk home, the boarding house (the landlady in her parlor,
-then the letter to Lucy typed out at the desk upstairs), hiding the notes at the survey camp while Curly works (he
-looks over the camp after he lights a cigarette, and turns to a run on the gravel; the eye at the top of the screen
-says when he is looking), and the skiff in the flood. "Continue as Wade" on the end card puts the player on the
-sandbag line on Cushman as Wade, where Act 1 opens; its later scenes play as menus there until their spaces exist, and
-Act 2 goes on in the text build at the path played so far.
+then the letter to Lucy typed out at the desk upstairs), the float dock and the flight north, hiding the notes at the
+survey camp while Curly works (he looks over the camp after he lights a cigarette, and turns to a run on the gravel; the
+eye at the top of the screen says when he is looking), and the skiff in the flood. "Continue as Wade" on the end card
+puts the player on the sandbag line on Cushman as Wade, where Act 1 opens. Act 1 has a space for the line (the flooded
+street), the help tent, the flooded cabin (the boat ride and the knot), the land office and the jail; the barfight and
+the scenes between spaces play as menus. Act 2 plays as menus over the `story` backdrop (`eielson`, the base
+blockout, is built and sampled but no scene routes to it yet), and so does Act 3, including Lucy's dig, which is one
+menu of three notes (`lucysDig`). The text build is where the rest of each act is read in full.
 
 The player is whoever the story's `pov(state)` says, never a scene id: `bodies` in `src/cast.ts` gives each point of
 view its model and clip set, the camera's eye height (Wade's is 1.8 m, Owen's 1.7 m) and its footstep voice. Owen's
@@ -17,8 +20,9 @@ figure leaves the world with the prologue.
 
 `src/router.ts` decides where each scene plays from the story's `place(state)` and the act it belongs to: a place with
 a space puts the player in it. A scene with no space in the act the player is in (the float dock) shows its menu as a
-panel over the current space, each option a note button. A scene with no space in another act (every scene after
-Act 1 today) hands off to the text build at the path, so a later act never plays as panels over an earlier act's space. A new space
+panel over the current space, each option a note button. A scene with no space in another act (Act 2's first scene,
+reached from an Act 1 space) hands off to the text build at the path, so a later act never plays as panels over an
+earlier act's space. A new space
 declares its `act` and `place` in `src/levels.ts` and takes over its scenes.
 
 ### Start at any scene
@@ -89,7 +93,14 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
 src/world.ts      vectors, collision, line of sight, the watcher cone, target picking; pure
 src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, interior and exterior arms; pure
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
-src/levels.ts     the spaces as data (the prologue's, the boarding house's hall among them, Act 1's sandbag line, the story backdrop)
+src/levels.ts     the spaces as data: the `SpaceId` list, the prologue's (the boarding house's hall among them), the story backdrop
+src/searchEli.ts  Act 1's line: the flooded street and the search for Eli
+src/hospital.ts   Act 1's help tent
+src/cabinRide.ts  Act 1's flooded cabin: the boat ride to the knot
+src/landoffice.ts Act 1's land office
+src/jail.ts       Act 1's cell and front desk
+src/eielson.ts    Eielson Air Force Base as a blockout (docs/base-map.md); no scene routes to it yet
+src/downtown.ts   downtown Fairbanks as data (docs/town-map.md)
 src/camp.ts       the survey camp as data: its props, the three hiding spots and how Owen looks hiding at each
 src/campGround.ts the camp's heightmap, surfaces underfoot, splat weights and where every plant grows; pure
 src/curly.ts      Curly at the camp: his routine, the look that is the danger, noise, the awareness meter; pure
@@ -133,9 +144,10 @@ a story panel ducks voices and music. The hotel mission's eavesdrop drives the g
 is clear. The mission sets it back to 0 when the eavesdrop ends. Spot effects and some beds are positional through
 Web Audio panners with the listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m
 at a walk, 1.2 m at a jog), on the surface under Owen; snow goes from a soft crunch near freezing to a squeak in
-deep cold, from the space's temperature; the hospital hallway and the cell are concrete. The Act 1 beds (the sandbag
-line, the hospital, the barfight and the cell) wait in `act1Soundscapes` and the Act 2 beds in `act2Soundscapes`
-until those spaces land in `levels.ts`. Escape closes the sound panel.
+deep cold, from the space's temperature; the hospital hallway and the cell are concrete. `soundscapes` has one entry
+per space in `levels.ts`. The Act 1 line, help tent (`hospital`) and cell are in it; the barfight bed in
+`act1Soundscapes`, the town, hotel and hall beds in `act2Soundscapes` and the four Act 3 beds in `act3Soundscapes` wait
+until their spaces land. Escape closes the sound panel.
 
 ## Tests
 
@@ -150,14 +162,20 @@ until those spaces land in `levels.ts`. Escape closes the sound panel.
     `smoke/baselines/` (pixelmatch; a frame fails past 0.2% changed pixels);
   - walks back and forth in each space for 10 s, recording draw calls, triangles, texture memory and CPU frame time,
     and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md);
-  - opens one start per act from a path (`smoke/starts.ts`: `a1_flood`, `a2_major`, `a3_camp`, `a4_news`), checks
-    the scene and its menu panel, records its perf samples and captures frame `<scene>.png` from the start's pose. A
-    later act ticket adds its start as one entry there, with a pose in `src/probe.ts` for the space it starts in.
+  - opens one start from a path per act, and per Act 1 space past the line (`smoke/starts.ts`: `a1_flood`, `a1_body`,
+    `a1_ruling`, `a1_lucy`, `a1_tank`, `a2_major`, `a3_camp`, `a4_news`), checks the scene and its menu panel, records
+    its perf samples and captures frame `<scene>.png` from the start's pose. A later act ticket adds its start as one
+    entry there, with a pose in `src/probe.ts` for the space it starts in.
+
+  Acts 1 and 2 each play through in their own run and CI job, with frames per beat in each moral-weather band:
+  `make test/game/smoke/act1` (baselines in `smoke/baselines/act1/`) and `make test/game/smoke/act2` (`act2/`); see
+  [`docs/perf.md`](../docs/perf.md). Act 3 has no run of its own yet, only its `a3_camp` start above.
 
   It refuses a port that serves another build, so parallel worktrees need their own `SMOKE_PORT`. Everything lands
   in `smoke-report/` (`SMOKE_REPORT=<dir>` moves it): `frames/`, `diff/` for changed frames,
   `perf.json` and `summary.md`. Set `CHROMIUM_PATH` to use a browser other than Playwright's.
-- `make generate/baselines`: the same run, but it overwrites `smoke/baselines/` with the new frames. Run it when a
+- `make generate/baselines`: the prologue, Act 1 and Act 2 runs, overwriting `smoke/baselines/` with the new frames
+  (`make generate/baselines/act1` and `make generate/baselines/act2` replay only that act). Run it when a
   change to the look is meant, read the new images, and commit them. Baselines are rendered by Playwright's
   headless Chromium in software (SwiftShader), the same as CI, so generate them without `CHROMIUM_PATH`. If a
   local run and CI ever disagree past the tolerance, take the frames from CI instead: download the
