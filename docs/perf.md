@@ -13,6 +13,16 @@ enters a space are dropped, so a space's first build and shader compiles do not 
 A close-up is a camera in its space, not a space: the knot at the cabin (`game/src/knot.ts`) is props of the cabin,
 counted in the `cabin` row, and its close-up frames are captured from the cabin's start in each moral-weather band.
 
+Act 1 has its own run and its own CI job (`make test/game/smoke/act1`, `game/smoke/act1.test.ts`), so a failure names
+the act. It opens the Act 1 path (`#path=1,1,1,1,1,1`) and plays to Act 2's first scene, every choice the first, while
+recording; the steps are the ones `game/smoke/act1Plan.test.ts` plays headless against the text build. At each beat (each
+space Wade comes into: `line`, `helpTent`, `cabin`, `office`, `jail`) it captures that space's frame in each
+moral-weather band, into `game/smoke/baselines/act1/`. It fails on an Act 1 space with no frames, not on the
+prologue's; the initial download is the prologue run's to measure.
+
+`game/smoke/budget.test.ts` fails, per act, when a space in `game/src/levels.ts` has no row below, so a new space in
+any act is budgeted before it is played.
+
 - **Draw calls:** `app.stats.drawCallCount`, every draw call the device issued in the frame, shadow passes included.
 - **Triangles:** the index count over three of every visible mesh instance in the scene, for one pass. The release
   build of PlayCanvas does not count primitives itself.
