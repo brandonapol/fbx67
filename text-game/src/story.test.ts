@@ -65,10 +65,10 @@ test('weather follows heat and trust', () => {
   assert.equal(weather(at({ eliTrust: -3 })), 'night')
 })
 
-const placedActs: readonly Scene['act'][] = ['Prologue', 'Act 1: Flood', 'Act 2: Freeze-up']
+const placedActs: readonly Scene['act'][] = ['Prologue', 'Act 1: Flood', 'Act 2: Freeze-up', 'Act 3: Deep Winter']
 const placed = scenes.filter((sc) => placedActs.includes(sc.act))
 
-test('every scene from the prologue through Act 2 says where, when and what next', () => {
+test('every scene from the prologue through Act 3 says where, when and what next', () => {
   placedActs.forEach((act) => assert.ok(placed.some((sc) => sc.act === act), `no ${act} scenes`))
   placed.forEach((sc) => {
     assert.ok(sc.place, `${sc.id} has no place`)
@@ -77,9 +77,9 @@ test('every scene from the prologue through Act 2 says where, when and what next
   })
 })
 
-test('an Act 2 café visit is at the café, keeps the goal of the decision it puts off, and comes after it', () => {
+test('a café visit is at the café, keeps the goal of the decision it puts off, and comes after it', () => {
   const byId = (id: string) => scenes.find((sc) => sc.id === id)!
-  ;[['a2_co_ask', 'a2_co_gossip'], ['a2_heat', 'a2_heat_gossip']].forEach(([from, cafe]) => {
+  ;[['a2_co_ask', 'a2_co_gossip'], ['a2_heat', 'a2_heat_gossip'], ['a3_rash', 'a3_rash_gossip']].forEach(([from, cafe]) => {
     assert.equal(byId(cafe).place, 'nlCafe')
     assert.equal(byId(cafe).goal, byId(from).goal)
     assert.ok(byId(cafe).clock! > byId(from).clock!, `${cafe} runs before ${from}`)

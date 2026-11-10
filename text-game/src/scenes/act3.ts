@@ -19,14 +19,24 @@ const rashChoices = (_: State): readonly Choice[] => [
   { label: 'Don\'t go after Tolliver. Not like this.', note: 'none', apply: set({ rashPlan: 'none' }), next: 'a3_rash_none' },
 ]
 
-const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
+// Where, when and what next (docs/story-api.md). Goals shared by a scene pair, or by a scene and its café visit.
+const jakeFirst = N.jake.split(' ')[0]
+const cacheGoal = `Find what ${N.owenShort} hid.`
+const nightGoal = 'Get through the night, and get seen.'
+const smokeGoal = 'Follow the smoke.'
+const rashGoal = `Decide what to do about ${N.tolliverLast}.`
+const winterGoal = 'Get through the winter.'
 
+const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
 
 export const act3: readonly Scene[] = [
   {
     id: 'a3_camp',
     act,
     title: 'Lucy: The Survey Camp',
+    place: 'surveyCamp',
+    clock: '1967-12-12T11:00',
+    goal: cacheGoal,
     text: () => `
 You are ${N.lucy}. December 12th, thirty-eight below. Jake sets the plane down on the frozen creek below Owen's camp, and you have three hours of grey light.
 
@@ -41,6 +51,9 @@ The camp has been torn apart: tent slashed, crates emptied, stove kicked over. W
     id: 'a3_wrong_spot',
     act,
     title: 'Lucy: Not Here',
+    place: 'surveyCamp',
+    clock: '1967-12-12T11:20',
+    goal: cacheGoal,
     text: () => `
 Nothing. Your fingers are going white. You reread the second letter with your mitts off and find the line, buried halfway down a page about the weather, and it costs you twenty minutes you didn't have.`,
     choices: () => [{ label: 'Dig in the right place.', note: 'dig', next: 'a3_found' }],
@@ -49,6 +62,9 @@ Nothing. Your fingers are going white. You reread the second letter with your mi
     id: 'a3_found',
     act,
     title: 'Lucy: The Cache',
+    place: 'surveyCamp',
+    clock: '1967-12-12T13:30',
+    goal: 'Fly home with the cache.',
     text: () => `
 An oilcloth bundle: field notebooks, a folder of claim maps, and four reels of tape labeled in Owen's tidy hand. You stuff them inside your parka.
 
@@ -59,6 +75,9 @@ Jake has the engine warm. You take off into the last of the light.`,
     id: 'a3_crash',
     act,
     title: 'Lucy: Engine Out',
+    place: 'crashSite',
+    clock: '1967-12-12T14:15',
+    goal: `Keep ${jakeFirst} and yourself alive.`,
     text: () => `
 Forty minutes out, the engine coughs. Then again. Jake swears and works the primer. "Fuel's icing," he says. "I drained the sumps, Lucy, I swear to God. Nothing came out but a little gas."
 
@@ -74,6 +93,9 @@ When you come to, Jake is pinned and bleeding, the cabin is on its side, and it'
     id: 'a3_survive_fire',
     act,
     title: 'Lucy: The Long Night',
+    place: 'crashSite',
+    clock: '1967-12-12T17:00',
+    goal: nightGoal,
     text: () => `
 You get a fire going in the lee of the fuselage first. By the time you get back to Jake, his lips are blue, but the fire is what saves him: you warm your hands and work the seat frame off his leg, and pack spruce boughs under him. The cold doesn't care how smart you are. It only cares what you do next.`,
     choices: (s) => survivalChoices(s),
@@ -82,6 +104,9 @@ You get a fire going in the lee of the fuselage first. By the time you get back 
     id: 'a3_survive_jake',
     act,
     title: 'Lucy: The Long Night',
+    place: 'crashSite',
+    clock: '1967-12-12T17:00',
+    goal: nightGoal,
     text: () => `
 You work the bent seat frame off Jake's leg with your bare hands and tie off the bleeding with your scarf. By the time you get a fire going in the lee of the fuselage, you can't feel your fingers. The cold doesn't care how smart you are. It only cares what you do next.`,
     choices: (s) => survivalChoices(s),
@@ -90,6 +115,9 @@ You work the bent seat frame off Jake's leg with your bare hands and tie off the
     id: 'a3_search',
     act,
     title: 'Wade: The Search',
+    place: 'searchRidge',
+    clock: '1967-12-13T10:00',
+    goal: `Find ${N.lucy}'s plane.`,
     text: () => `
 You are Wade again. When Jake's plane doesn't come back, the Rescue Coordination Center at Elmendorf calls Eielson for people to put on a ground team, and the team needs a munitions man for flares and signal charges. Your sergeant sends you.
 
@@ -105,6 +133,9 @@ Near the last known heading, the team splits up to cover more ground. You're on 
     id: 'a3_ski_down',
     act,
     title: 'Kick and Glide',
+    place: 'searchRidge',
+    clock: '1967-12-13T11:00',
+    goal: smokeGoal,
     text: () => `
 The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
 
@@ -115,6 +146,9 @@ Then you smell smoke.`,
     id: 'a3_ski_up',
     act,
     title: 'Kick and Glide',
+    place: 'searchRidge',
+    clock: '1967-12-13T11:00',
+    goal: smokeGoal,
     text: () => `
 Climbing on skis is nothing like water skiing. You sweat through your layers, and then the sweat starts to freeze. Your toes go numb and stay that way.
 
@@ -125,6 +159,9 @@ Then you smell smoke.`,
     id: 'a3_arm',
     act,
     title: 'The Wreck',
+    place: 'crashSite',
+    clock: '1967-12-13T11:30',
+    goal: `Let ${N.lucy} deal with it.`,
     text: () => `
 The plane is on its side in a stand of black spruce, one wing folded under it. A thread of smoke from a fire in the lee of the fuselage. Lucy is alive, waving you off the slope.
 
@@ -137,6 +174,9 @@ You hear it before you feel it: a crack like green wood. Then you feel it.`,
     id: 'a3_wreck',
     act,
     title: 'The Wreck',
+    place: 'crashSite',
+    clock: '1967-12-13T12:30',
+    goal: `Decide whether to show ${jakeFirst} the sump.`,
     text: () => `
 Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
 
@@ -152,6 +192,9 @@ You wander over to the engine to get away from her look. You know hardware. The 
     id: 'a3_home',
     act,
     title: 'Back in Town',
+    place: 'hospital',
+    clock: '1967-12-13T21:00',
+    goal: 'Tell Eli where you stand.',
     text: (s) =>
       s.leakedFlightDate
         ? `
@@ -180,6 +223,9 @@ Eli meets you at the hospital. He's been asking around the strip.
     id: 'a3_curly',
     act,
     title: 'The Bow',
+    place: 'hospital',
+    clock: '1967-12-26T11:00',
+    goal: 'Get some air.',
     text: (s) => `
 ${s.curlyPlan === 'warn' ? `Lucy took Jake's tip straight to ${N.cop}, the officer who handed Curly back his twenty the night of the barfight. He's been watching Curly for weeks. When Curly breaks into a hunting cabin up the Chena Hot Springs road, the officer is waiting for him. Nobody gets hurt. Curly is shaking.` : s.curlyPlan === 'confront' ? `Curly bolts the week after the crash. ${N.cop} runs him down at a hunting cabin he's broken into. Curly fights the whole way to the car and spits at your name.` : `Nobody was watching Curly. Two weeks after the crash, ${N.cop} finds him in a hunting cabin up the Chena Hot Springs road that he'd broken into. He's been dead for days, shot through the chest with his own rifle. ${N.barnette} calls it a hunting accident inside of an hour. It's the second accident this year.`}
 
@@ -194,6 +240,9 @@ A letter from Mama is waiting at the hospital desk. ${mamaReply(1)(s)}`,
     id: 'a3_eli',
     act,
     title: 'What Eli Saw',
+    place: 'hospitalLot',
+    clock: '1967-12-26T15:30',
+    goal: 'Decide what to do with what Eli told you.',
     text: (s) => `
 Eli finds you in the hospital parking lot, smoking one-handed in the cold. ${s.eliTrust > 0 ? 'He\'s been carrying something since August.' : 'You are the last person he wants to tell. But Lucy nearly died, and you were on that hill, and there is nobody else.'}
 
@@ -212,6 +261,9 @@ He's telling you something that could put him in jail.`,
     id: 'a3_rash',
     act,
     title: 'Enough',
+    place: 'lucysKitchen',
+    clock: '1967-12-27T19:00',
+    goal: rashGoal,
     text: (s) => `
 ${s.eliTrespass === 'leverage' ? 'Eli reads your face before you say a word, and goes cold. He knows exactly what you just decided.\n\n' : s.eliTrespass === 'report' ? 'Eli finds out by evening that you went to Barnette. He doesn\'t come looking for you. That\'s worse.\n\n' : ''}Lucy nearly died. Jake can't walk. Your arm is in a cast.${has(s, 'hotelTalk') ? ' And you heard Tolliver yourself in that hotel bar: "my land, my title."' : ''}
 
@@ -220,11 +272,14 @@ Tolliver holds the fish camp. Lucy has always said the family's original applica
 You tell Lucy you're going to do something about it. She lets you talk.`,
     choices: (s) => [...rashChoices(s), askGossip('a3_rash_gossip')],
   },
-  gossip('a3_rash_gossip', act, (s) => rashChoices(s)),
+  { ...gossip('a3_rash_gossip', act, (s) => rashChoices(s)), place: 'nlCafe', clock: '1967-12-28T08:00', goal: rashGoal },
   {
     id: 'a3_rash_safe',
     act,
     title: 'One-Handed',
+    place: 'tolliversOffice',
+    clock: '1967-12-28T23:00',
+    goal: `Blow ${N.tolliverLast}'s safe.`,
     text: () => `
 You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
@@ -233,6 +288,9 @@ You lift a demolition kit from the munitions bunker on a night shift, one-handed
     id: 'a3_rash_burn',
     act,
     title: 'Kerosene',
+    place: 'tolliversCabin',
+    clock: '1967-12-29T01:50',
+    goal: `Burn ${N.tolliverLast}'s cabin.`,
     text: () => `
 You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and drive out the road to Tolliver's hunting cabin at two in the morning.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
@@ -241,6 +299,9 @@ You borrow a truck, buy two cans of kerosene at a gas station where nobody knows
     id: 'a3_rash_gun',
     act,
     title: 'Borrowed Rifle',
+    place: 'tolliversHouse',
+    clock: '1967-12-28T21:30',
+    goal: `Make ${N.tolliverLast} talk.`,
     text: () => `
 You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession' }],
@@ -249,6 +310,9 @@ You borrow a rifle from a guy in the barracks who doesn't ask questions, and you
     id: 'a3_rash_none',
     act,
     title: 'Barracks',
+    place: 'eielsonBarracks',
+    clock: '1967-12-29T00:00',
+    goal: `Let ${N.lucy} in.`,
     text: () => `
 You go back to the barracks and lie on your bunk and tell yourself it isn't your business. At midnight somebody knocks on the window. It's Lucy, and she's been running.`,
     choices: () => [{ label: 'Let her in.', note: 'letHerIn', next: 'a3_confession' }],
@@ -257,6 +321,9 @@ You go back to the barracks and lie on your bunk and tell yourself it isn't your
     id: 'a3_confession',
     act,
     title: 'Lucy',
+    place: 'eielsonBarracks',
+    clock: '1967-12-29T02:00',
+    goal: `Decide where you stand with ${N.lucy}.`,
     text: (s) => `
 ${s.rashPlan === 'none' ? '"Barnette is building a case on you," she says. "Not tomorrow. But he\'s building it."' : 'Lucy steps out of the dark before you get there. She must have followed you.\n\n"Stop. Wade, stop. If you do this, they win. Anything you do tonight is exactly what they need."'}
 
@@ -281,6 +348,9 @@ Her voice breaks on the next part, and she makes it keep going.
     id: 'a3_walk',
     act,
     title: 'Done',
+    place: 'eielsonBarracks',
+    clock: '1967-12-29T02:20',
+    goal: winterGoal,
     text: () => `
 You hand her the folder back and walk out into the dark. She doesn't call after you. For the rest of the winter you work your shifts, keep your head down, and stay away from the land office.`,
     choices: () => [{ label: 'Continue.', note: 'continue', next: 'a3_joan' }],
@@ -289,6 +359,9 @@ You hand her the folder back and walk out into the dark. She doesn't call after 
     id: 'a3_turn',
     act,
     title: 'Trade',
+    place: 'troopersPost',
+    clock: '1967-12-29T10:00',
+    goal: winterGoal,
     text: () => `
 The next morning you go to ${N.barnette}. You tell him who the Native woman on the base was, and that she's been running a private investigation with stolen Air Force files. You tell him the forged sign-outs were her idea of a frame.
 
@@ -299,6 +372,9 @@ Barnette writes it all down. He doesn't thank you. By noon Lucy is suspended fro
     id: 'a3_joan',
     act,
     title: 'Letter Home, Dictated',
+    place: 'hospital',
+    clock: '1968-01-03T12:30',
+    goal: 'Dictate your letter to Mama.',
     text: (s) => `
 You can't write with your arm in a cast. ${N.joan} comes by on her break and offers to take down a letter for you. She has nice handwriting and she laughs at your spelling when you spell things out loud.
 

@@ -62,11 +62,11 @@ test('each space is lit at its scene: the bar at eleven, the flood on 14 August,
   assert.deepEqual(timeOf(spaces.bar, at('p_bar')), { season: 'summer', clock: '1967-07-14T23:00' })
   assert.deepEqual(timeOf(spaces.flood, at('p_end')), { season: 'flood', clock: '1967-08-14T21:00' })
   assert.deepEqual(timeOf(spaces.story, at('a1_flood')), { season: 'summer' })
-  // A scene with no clock is in the season of the last dated scene before it, with the default sun.
-  const before = sceneIds.slice(0, sceneIds.indexOf('a3_camp')).map(at).findLast((x) => clock(x) !== undefined)!
+  // A scene with no clock (Act 4 has none yet) is in the season of the last dated scene before it, with the default sun.
+  const before = sceneIds.slice(0, sceneIds.indexOf('a4_news')).map(at).findLast((x) => clock(x) !== undefined)!
   const was = season(before)!
-  assert.notEqual(was, 'summer', 'the story is past July by Act 3')
-  assert.deepEqual(lightingFor(spaces.downtown, at('a3_camp')), of('downtown', 'clear', undefined, was === 'breakup' ? 'winter' : was))
+  assert.notEqual(was, 'summer', 'the story is past July by Act 4')
+  assert.deepEqual(lightingFor(spaces.downtown, at('a4_news')), of('downtown', 'clear', undefined, was === 'breakup' ? 'winter' : was))
 })
 
 test('summer fog is 30-220 m outdoors and 2-60 m indoors', () => {

@@ -70,7 +70,7 @@ The base sits on flat gravel outwash. Grade is **y 0 everywhere**; there is no s
 
 ### Snow and cold by beat
 
-Acts 2 and 3 run from September 1967 to December 1967. The map is the same; what lies on it changes.
+Acts 2 and 3 run from September 1967 to early January 1968. The base beats end in December; Joan's letter (`a3_joan`, 3 January) is in town. The map is the same; what lies on it changes.
 
 | Month | Beats on base | Ground | Light and air |
 |---|---|---|---|
@@ -78,7 +78,7 @@ Acts 2 and 3 run from September 1967 to December 1967. The map is the same; what
 | September | the Major (`a2_major`), the photo lab (`a2_photos`) | frost, ice in the puddles by morning (the scene's own line) | daylight about 12 hours |
 | October | the Major's cabinet (`a2_co_heist`, `a2_co_lucy`) | first snow, 5 to 10 cm, plowed off the roads | dark by early evening |
 | November | Jake at the hangar (`a2_jake`) | 20 to 30 cm; plow berms 1 m along the roads | about six hours of daylight |
-| December | the munitions plan (`a3_rash_safe`), Lucy at the window (`a3_rash_none`), the search call (`a3_search`) | 40 to 50 cm; berms 1.5 m; packed snow on the walks | about four hours of sun (item 54); ice fog over the flight line below −30 |
+| December | the munitions plan (`a3_rash_safe` opens with it; the scene is placed at Tolliver's office), Lucy at the window (`a3_rash_none`, `a3_confession`, `a3_walk`), the search call (`a3_search` opens with it; the scene is placed on the search ridge) | 40 to 50 cm; berms 1.5 m; packed snow on the walks | about four hours of sun (item 54); ice fog over the flight line below −30 |
 
 The berms matter for play: from November on, a 1.5 m berm along each road hides a crouching figure from the road and
 shows them to anyone on a walk. Plug-in posts stand along the head of every parking lot, one per stall, with cords
@@ -106,7 +106,7 @@ All buildings are ours. Building types follow [Building types](#building-types).
 | `munitionsFence` | The munitions storage area, from outside its gate | gate across the munitions road at x 290, z 96..104 | | | igloos: low earth mounds, 4 m, inside at x 300..340, z 70..140 |
 
 `eielsonBarracks` (the Act 1 letter), `majorsOffice`, `squadronBuilding`, `photoLab`, `photoRecords` and `baseHangar`
-(Act 2, #90) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
+(Act 2, #90; Act 3's knock, confession and walk out, #91) are in the `Place` type (`text-game/src/types.ts`). `eielsonGate` and `munitionsFence` are still
 proposals: they enter the type when a scene sets them.
 
 ### Interiors
