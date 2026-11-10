@@ -6,7 +6,7 @@ import { menu, mission, oneHanded, send, sendMission } from './story.ts'
 import { endsOf, missionMenu, missions, type Mission } from './missions.ts'
 import { sceneIndex } from './sceneIds.ts'
 import { canonical } from './liveness.ts'
-import { councilmanFlips } from './logic.ts'
+import { councilmanFlips, jakeFrostbitten, searchHours } from './logic.ts'
 import type { SceneId, State } from './types.ts'
 
 // Every distinct state that reaches a scene, breadth first from the start of the game, canonicalized as the sweep is
@@ -590,4 +590,70 @@ test('the search and the wreck have no caught note and add no heat', () => {
     m.endings.forEach((e) => assert.equal(sendMission(s, e.note).heat, s.heat))
   })
   ;[...atSearch, ...atArm].forEach((s) => assert.doesNotMatch(render(s), /oil rush/i))
+})
+
+// Act 3. The long night, from a3_crash after every way through Lucy's dig.
+const crashPath = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1]
+const atCrash = allAt('a3_crash')
+const orders = [
+  { note: 'fire', survive: 'a3_survive_fire' },
+  { note: 'jake', survive: 'a3_survive_jake' },
+] as const
+const signals = ['smoke', 'stampX', 'saveFire'] as const
+const nightNotes = orders.flatMap((o) => signals.map((sig) => `${o.note}.${sig}`))
+
+test('the long night offers order: fire first / Jake first and signal: smoke / X / saved the fire at a3_crash', () => {
+  const s = replay(crashPath).at(-1) as State
+  assert.equal(s.scene, 'a3_crash')
+  const m = mission(s)
+  assert.ok(m)
+  assert.equal(missionMenu(m), 'The long night. Order: fire first / Jake first. Signal: smoke / X / saved the fire')
+  assert.deepEqual(
+    m.endings.map((e) => e.note),
+    nightNotes,
+  )
+  assert.equal(mission(send(s, 'fire')), undefined, 'the a3_survive_* scenes are inside the mission')
+})
+
+test('each night note agrees with playing its scenes: the order, then the signal', () => {
+  assert.ok(atCrash.length > 0)
+  atCrash.forEach((s) =>
+    orders.forEach((o) => {
+      assert.equal(send(s, o.note).scene, o.survive)
+      signals.forEach((sig) => assert.deepEqual(sendMission(s, `${o.note}.${sig}`), [o.note, sig].reduce(send, s)))
+    }),
+  )
+})
+
+// design.md, choices that carry state: the order is nightOrder (fire first leaves Jake frostbitten), the signal is
+// nightSignal (how long the search takes). Both carry, so the six notes land on six states.
+test('every night note lands on a3_search with its order and signal kept, each on its own state', () => {
+  atCrash.forEach((s) => {
+    const outs = nightNotes.map((n) => sendMission(s, n))
+    outs.forEach((o, i) => {
+      const [ord, sig] = nightNotes[i].split('.')
+      assert.equal(o.scene, 'a3_search')
+      assert.deepEqual([o.nightOrder, o.nightSignal], [ord, sig])
+      assert.equal(jakeFrostbitten(o), ord === 'fire')
+    })
+    assert.equal(new Set(outs.map((o) => JSON.stringify(o))).size, nightNotes.length)
+    assert.deepEqual(
+      signals.map((sig) => searchHours(sendMission(s, `jake.${sig}`))),
+      [3, 5, 7],
+    )
+  })
+})
+
+// Busted, freezing or the fire going out is a retry only (#86): no note for it, and the night moves nothing else.
+test('the long night has no fail note and moves no heat, trust or evidence', () => {
+  atCrash.forEach((s) => {
+    const m = mission(s) as Mission
+    assert.deepEqual(m.endings.filter((e) => /caught|busted|froze|freez|died|dead/i.test(e.note)), [])
+    m.endings.forEach((e) => {
+      const { nightOrder: _o, nightSignal: _s, ...rest } = sendMission(s, e.note)
+      assert.deepEqual({ ...rest, scene: s.scene }, s, e.note)
+    })
+    assert.doesNotMatch(render(s), /oil rush/i)
+    orders.forEach((o) => assert.doesNotMatch(render(send(s, o.note)), /oil rush/i))
+  })
 })

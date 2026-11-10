@@ -181,6 +181,29 @@ const lucysDig: Mission = {
   endings: digSpots.map((spot) => ({ note: spot, label: spot, applies: [spot, 'home'] })),
 }
 
+// docs/acts/act3-missions.md, section 2. Every order and signal is a note, order.signal, applying the order at
+// a3_crash and the signal at the a3_survive_* scene it leads to; all six land on a3_search. The order is nightOrder
+// (fire first leaves Jake frostbitten, jakeFrostbitten) and the signal is nightSignal (how long the search takes,
+// searchHours), so each note lands on its own state. Freezing or the fire going out is a retry, never a note.
+const order: Detail = { name: 'Order', picks: [{ note: 'fire', label: 'fire first', choice: 'fire' }, { note: 'jake', label: 'Jake first', choice: 'jake' }] }
+const signal: Detail = {
+  name: 'Signal',
+  picks: [
+    { note: 'smoke', label: 'smoke', choice: 'smoke' },
+    { note: 'stampX', label: 'X', choice: 'stampX' },
+    { note: 'saveFire', label: 'saved the fire', choice: 'saveFire' },
+  ],
+}
+
+const theLongNight: Mission = {
+  id: 'theLongNight',
+  title: 'The long night',
+  details: [order, signal].map((d) => ({ name: d.name, labels: d.picks.map((p) => p.label) })),
+  start: 'a3_crash',
+  end: 'a3_search',
+  endings: combos(order, signal),
+}
+
 // docs/acts/act3-missions.md, section 5. Each plan applies its choice and the lead-in's one beat, +1 heat, and lands on
 // its own confession, where Lucy steps out of the dark: no note carries a plan out. Stayed out takes Lucy's call from
 // the gate. The café visit first is Dottie's read on the heat and changes nothing the notes carry.
@@ -241,6 +264,7 @@ export const missions: readonly Mission[] = [
   theHotelBar,
   theMajorsCabinet,
   lucysDig,
+  theLongNight,
   theSkiSearch,
   theWreck,
   theRashPlan,
