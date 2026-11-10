@@ -3,11 +3,14 @@ import { vec } from './world.ts'
 import type { Activity, CastId } from './cast.ts'
 import type { Act, Clock, Place, State } from '../../text-game/src/types.ts'
 import type { Season } from '../../text-game/src/story.ts'
+import { season } from '../../text-game/src/story.ts'
 import { N } from '../../text-game/src/names.ts'
 import { CENTER, SIZE, doorSpots, gaps, pieces, spawnAt } from './downtown.ts'
 import { standing, townLayer } from './freezeup.ts'
 import { jail } from './jail.ts'
 import { helpTent, tentProps } from './hospital.ts'
+import { FLOOD_AT, highWater, indoors } from './highwater.ts'
+import { BOARD_AT, SKIFF } from './skiff.ts'
 
 export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'story'
 
@@ -23,6 +26,8 @@ export type Prop = Readonly<{
   shape?: 'box' | 'cylinder' | 'cone'
   // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door.
   while?: Letter
+  // A floor the player stands on, at its top, while over it (the flood's porch and walkway).
+  deck?: true
 }>
 
 export type Letter = 'unfolded' | 'folded'
@@ -139,6 +144,14 @@ const wallZ = (x: number, z0: number, z1: number, color: string, doors: readonly
 const shutX = (x: number, z: number, color = '#3a2a1e'): Prop => ({ box: { x, z, w: 0.9, d: 0.24 }, h: 2.1, color })
 const shutZ = (x: number, z: number, color = '#3a2a1e'): Prop => ({ box: { x, z, w: 0.24, d: 0.9 }, h: 2.1, color })
 
+// In August the house is under the flood: the landlady and the boarder are upstairs out of the water, and Owen comes
+// down from his room and out the front door (highwater.ts).
+export const flooded = (s: State): boolean => season(s) === 'flood'
+const dry = (s: State): boolean => !flooded(s)
+
+// Where Owen comes off the stair in the hall, facing the front door.
+export const STAIR_FOOT = vec(0.4, -0.6)
+
 const plaster = '#9a8a70'
 const papered = '#8f7b66'
 
@@ -202,12 +215,13 @@ export const boarding: Space = {
     { box: { x: -7.9, z: 1.6, w: 0.08, d: 1.2 }, h: 1.0, y: 1.0, color: '#ffd9a0', glow: true },
   ],
   figures: [
-    { id: 'landlady', at: vec(-4.5, 3.4), facing: Math.PI / 2, coat: '#7b5e78', skin: '#e2b994', hair: '#b8b2a8', height: 1.6, during: 'owensRoom' },
-    { id: 'boarder', at: vec(-3.0, 1.1), facing: -Math.PI / 2, coat: '#3e4a5a', skin: '#d8a880', hair: '#3a2c20', height: 1.78, during: 'owensRoom' },
+    { id: 'landlady', at: vec(-4.5, 3.4), facing: Math.PI / 2, coat: '#7b5e78', skin: '#e2b994', hair: '#b8b2a8', height: 1.6, during: 'owensRoom', when: dry },
+    { id: 'boarder', at: vec(-3.0, 1.1), facing: -Math.PI / 2, coat: '#3e4a5a', skin: '#d8a880', hair: '#3a2c20', height: 1.78, during: 'owensRoom', when: dry },
   ],
   spots: [
     { id: 'landlady', x: -4.5, z: 3.4, r: 2.4, prompt: 'Say good evening' },
     { id: 'stair', x: 0.4, z: -0.6, r: 1.1, prompt: 'Go up to your room' },
+    { id: 'front', x: 0, z: 6.3, r: 1.0, prompt: 'Wade out the front door' },
   ],
 }
 
@@ -269,6 +283,7 @@ export const room: Space = {
   spots: [
     { id: 'desk', x: DESK_AT.x, z: DESK_AT.z, r: 1.2, prompt: `Write to ${N.lucy}` },
     { id: 'bed', x: BED_AT.x, z: BED_AT.z, r: 1.3, note: 'sleep' },
+    { id: 'downstairs', x: 0, z: 2.4, r: 1.0, prompt: 'Go downstairs' },
   ],
 }
 
@@ -340,29 +355,21 @@ export const camp: Space = {
   ],
 }
 
+// The August flood on the same streets as July: downtown's own data with the high water laid over it (highwater.ts),
+// in world coordinates. Owen comes out on his porch on Third; the skiff waits at the steps (skiff.ts).
 export const flood: Space = {
   id: 'flood',
   act: 'Prologue',
   place: 'boardingHouse',
   name: 'High water',
   interior: false,
-  size: { w: 20, d: 16 },
-  ground: '#5b4a33',
-  spawn: vec(0, 6.4),
-  props: [
-    ...edges(20, 16),
-    { box: { x: 0, z: -1.5, w: 20, d: 13 }, h: 0.35, color: '#6b5a3c', solid: true },
-    { box: { x: 0, z: 7.6, w: 6, d: 0.6 }, h: 0.9, color: '#8b7a62', solid: true, occludes: true },
-    { box: { x: 1.4, z: 7.25, w: 1.1, d: 0.1 }, h: 0.5, y: 0.9, color: '#ffc27a', glow: true },
-    { box: { x: -5, z: -1, w: 2, d: 4.2 }, h: 0.8, color: '#3e5a6e' },
-    { box: { x: 6.5, z: -4.5, w: 0.3, d: 0.3 }, h: 4, color: '#3a3a3a' },
-    { box: { x: 6.5, z: -4.5, w: 0.5, d: 0.3 }, h: 0.3, y: 4, color: '#ffd28a', glow: true },
-    { box: { x: 0.2, z: 3.4, w: 1.4, d: 3.4 }, h: 0.45, y: 0.3, color: '#6a6f72' },
-  ],
-  figures: [
-    { id: 'hooded', at: vec(0.2, 2.4), facing: Math.PI, coat: '#c9a73a', skin: '#c9a73a', hair: '#c9a73a', height: 1.8, hood: true },
-  ],
-  spots: [{ id: 'skiff', x: 0.2, z: 4.6, r: 1.4, prompt: 'Get in the skiff' }],
+  size: SIZE,
+  center: CENTER,
+  ground: '#4a4234',
+  spawn: FLOOD_AT,
+  props: [...pieces, ...standing, ...highWater],
+  figures: [{ id: 'hooded', at: SKIFF.bow, facing: SKIFF.heading, coat: '#c9a73a', skin: '#c9a73a', hair: '#c9a73a', height: 1.8, hood: true }],
+  spots: [{ id: 'skiff', x: BOARD_AT.x, z: BOARD_AT.z, r: 1.4, prompt: 'Get in the skiff' }],
 }
 
 // Act 1 opens here as Wade: the sandbag line across Cushman, a piece of the flooded street like `flood`, laid out on
@@ -436,11 +443,25 @@ export const story: Space = {
 
 export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, story }
 
-// What a space shows in a season: its own props, downtown's seasonal layer (freezeup.ts) and the help tent's dressing
-// (hospital.ts). The season is the story's, never the space's (timeOf in lighting.ts). Season layers add nothing
-// solid, so collision reads s.props.
-export const propsIn = (s: Space, season: Season, clock?: Clock): readonly Prop[] =>
-  s.id === 'downtown' ? [...s.props, ...townLayer(season, clock)] : s.id === 'helpTent' ? tentProps(s.props, season, clock) : s.props
+// What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
+// flooded street that is built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the
+// boarding house (highwater.ts). The season is the story's, never the space's (timeOf in lighting.ts). Season layers
+// add nothing solid, so collision reads s.props.
+export const propsIn = (s: Space, season: Season, clock?: Clock): readonly Prop[] => {
+  if (s.id === 'helpTent') return tentProps(s.props, season, clock)
+  if (s.id === 'downtown' || s.id === 'flood') return [...s.props, ...townLayer(season, clock)]
+  if (season === 'flood' && (s.id === 'room' || s.id === 'boarding')) return [...s.props, ...(indoors[s.id] ?? [])]
+  return s.props
+}
+
+// The height the player stands at: the top of the highest deck under them, or the ground.
+export const standAt = (s: Space, p: Vec): number =>
+  Math.max(
+    0,
+    ...s.props
+      .filter((d) => d.deck && Math.abs(p.x - d.box.x) <= d.box.w / 2 && Math.abs(p.z - d.box.z) <= d.box.d / 2)
+      .map((d) => (d.y ?? 0) + d.h),
+  )
 
 export const centerOf = (s: Space): Vec => s.center ?? vec(0, 0)
 

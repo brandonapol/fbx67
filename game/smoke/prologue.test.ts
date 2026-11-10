@@ -14,7 +14,8 @@ import type { FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
 import { starts } from './starts.ts'
 import { legs } from '../src/downtown.ts'
-import { HALL } from '../src/drive.ts'
+import { FLOOD_WALK, HALL } from '../src/drive.ts'
+import { faceSeen, manAt } from '../src/skiff.ts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright') as typeof import('playwright')
@@ -129,6 +130,27 @@ const frames = (p: Page, n: number) =>
       }),
     n,
   )
+
+// Polls the live camera and the man's place until stopped, and keeps every sample that could see his face.
+const faceWatch = (p: Page) => {
+  const out = { on: true, samples: 0, seen: [] as string[] }
+  const poll = async (): Promise<void> => {
+    if (!out.on) return
+    const [eye, ride] = await p.evaluate(() => [(window as any).__prologue.eye(), (window as any).__prologue.game().ride])
+    out.samples += 1
+    if (faceSeen(eye, manAt(ride))) out.seen.push(`${eye.map((n: number) => n.toFixed(2))} at ride ${ride}`)
+    await sleep(100)
+    return poll()
+  }
+  const running = poll()
+  return {
+    stop: async () => {
+      out.on = false
+      await running
+      return out
+    },
+  }
+}
 
 const snap = async (p: Page, name: string, settle = 0): Promise<void> => {
   if (!shots) return
@@ -340,14 +362,38 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
 
   await walk(page, [[0, -6], [-2, -1.5], [-6, 2], [-7.4, 3.8]], true)
   await page.keyboard.press('e')
+  // August: his room, then down the stair (the view follows the camera on the next frame, so each aim waits a few), the flooded hall and out of the front door.
+  assert.equal((await game(page)).space, 'room')
+  await walk(page, FLOOD_WALK.room)
+  await aim(page, 0, 0)
+  await frames(page, 3)
+  await page.keyboard.press('e')
+  assert.equal((await game(page)).space, 'boarding')
+  await walk(page, FLOOD_WALK.hall)
+  await aim(page, 0, 0)
+  await frames(page, 3)
+  await page.keyboard.press('e')
   assert.equal((await game(page)).space, 'flood')
-  await tour(page, [0, 6.4], [0.2, 5.4])
+  // The camera-volume check: on the porch and in the skiff the live camera never stands ahead of the hooded man's back.
+  const watch = faceWatch(page)
+  await tour(page, [135.4, 97.5], [140, 97.5])
+  await walk(page, FLOOD_WALK.porch)
+  await aim(page, 0, 0)
+  await frames(page, 3)
   await page.keyboard.press('e')
   await snap(page, '10-skiff')
   await capture(page, 'skiff')
   await capture(page, 'skiff_dusk')
   await capture(page, 'skiff_night')
   await page.keyboard.press('1')
+  const aboard = await game(page)
+  assert.equal(aboard.panel, undefined, 'climbing in starts the ride, not the end card')
+  assert.deepEqual(aboard.path, [3, 1, 1, 1, 3, 1], 'continue is sent as Owen climbs in')
+  await aim(page, Math.PI, 0)
+  await page.waitForFunction(() => (window as any).__prologue.game().panel?.kind === 'end', null, { timeout: 180000 })
+  const looked = await watch.stop()
+  assert.ok(looked.samples > 20, `${looked.samples} camera samples`)
+  assert.deepEqual(looked.seen, [], 'the hooded man’s face was in view')
   const end = await game(page)
   assert.equal(end.panel?.kind, 'end')
   assert.deepEqual(end.path, [3, 1, 1, 1, 3, 1])

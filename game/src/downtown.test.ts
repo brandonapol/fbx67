@@ -97,11 +97,12 @@ test('a street spawn stands clear of every solid inside the play area; an interi
 })
 
 test('the interiors sit on the map where the town map says: their spawns land on the matching spawn points', () => {
-  const placed = (space: 'bar' | 'room' | 'flood') => toWorld(placements.find((p) => p.space === space)!, spaces[space].spawn)
+  const placed = (space: 'bar' | 'room') => toWorld(placements.find((p) => p.space === space)!, spaces[space].spawn)
   const same = (a: { x: number; z: number }, id: string) => assert.ok(distance(a, spawnAt(id)) < 1e-9, `${id}: ${a.x},${a.z}`)
   same(placed('bar'), 'silverPan')
   same(placed('room'), 'owensRoom')
-  same(placed('flood'), 'floodedStreet')
+  // The flooded street is downtown itself, in world coordinates: its spawn is the spawn point.
+  same(spaces.flood.spawn, 'floodedStreet')
   const barDoor = spaces.bar.spots.find((s) => s.id === 'door')!
   const door = toWorld(placements[0]!, barDoor)
   assert.equal(door.x, buildings.find((b) => b.id === 'silverPan')!.door!.x)

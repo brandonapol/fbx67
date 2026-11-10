@@ -2,6 +2,7 @@ import type { Space } from './levels.ts'
 import { figureBox } from './levels.ts'
 import type { Box, Vec } from './world.ts'
 import { vec } from './world.ts'
+import { keepBehind } from './skiff.ts'
 
 export type V3 = readonly [number, number, number]
 
@@ -120,9 +121,11 @@ export const reach = (from: V3, to: V3, s: Space, bs: readonly Block[] = blocks(
 
 export type Frame = Readonly<{ rig: Rig; pose: Pose }>
 
-// eye is the player's eye height: the pivot the arm hangs from (bodies in cast.ts).
-export const follow = (rig: Rig, s: Space, pos: Vec, facing: number, look: Look, dt: number, bob = 0, height = EYE): Frame => {
-  const turned = settle(rig, facing, look, dt)
+// eye is the player's eye height: the pivot the arm hangs from (bodies in cast.ts). behind, when set, is a heading the
+// camera may not turn more than RIDE_LOOK from (the skiff ride, where the hooded man stands ahead).
+export const follow = (rig: Rig, s: Space, pos: Vec, facing: number, look: Look, dt: number, bob = 0, height = EYE, behind?: number): Frame => {
+  const settled = settle(rig, facing, look, dt)
+  const turned = behind === undefined ? settled : { ...settled, yaw: keepBehind(settled.yaw, behind) }
   const step = ((ARM.exterior - ARM.interior) / BLEND_TIME) * dt
   const base = turned.base + clamp(armFor(s) - turned.base, -step, step)
   const from = pivot(pos, bob, height)

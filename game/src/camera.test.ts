@@ -23,6 +23,8 @@ import { solids, spaces } from './levels.ts'
 import { bodies } from './cast.ts'
 import type { Space } from './levels.ts'
 import { blocked, vec } from './world.ts'
+import type { Rect } from './downtown.ts'
+import { PORCH, WALKWAY } from './highwater.ts'
 import type { Vec } from './world.ts'
 
 const near = (a: number, b: number, eps = 1e-9): boolean => Math.abs(a - b) < eps
@@ -106,10 +108,16 @@ test('the camera recenters behind Owen after a short idle, and not while the pla
   assert.ok(busy.rig.yaw > turned.yaw)
 })
 
-const sample = (s: Space, step: number): readonly Vec[] =>
-  Array.from({ length: Math.floor(s.size.w / step) + 1 }).flatMap((_, i) =>
-    Array.from({ length: Math.floor(s.size.d / step) + 1 }).map((__, j) => vec(-s.size.w / 2 + i * step, -s.size.d / 2 + j * step)),
+// A room's whole floor; in the flooded street, the porch and walkway Owen can reach (highwater.ts).
+const areaOf = (s: Space): Rect =>
+  s.id === 'flood' ? [WALKWAY[0], WALKWAY[1], PORCH[2], WALKWAY[3]] : [-s.size.w / 2, s.size.w / 2, -s.size.d / 2, s.size.d / 2]
+
+const sample = (s: Space, step: number): readonly Vec[] => {
+  const [x0, x1, z0, z1] = areaOf(s)
+  return Array.from({ length: Math.floor((x1 - x0) / step) + 1 }).flatMap((_, i) =>
+    Array.from({ length: Math.floor((z1 - z0) / step) + 1 }).map((__, j) => vec(x0 + i * step, z0 + j * step)),
   )
+}
 
 const sweeps = [
   [spaces.bar, 0.5],

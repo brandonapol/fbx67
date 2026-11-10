@@ -212,7 +212,7 @@ position on this map yet, and `story` is the backdrop for a scene that has no sp
 | `room` (6 × 6) | (134, 85), 0° | 4.16 | spans x 131..137, z 82..88, inside the house; its window wall (local z −2.9) is the house's north wall at z 82, over the alley; the desk faces it |
 | `camp` | off the map | | |
 | `downtown` (250 × 200) | (70, 40), 0° | 0 for now (see below) | the play area itself, x −55..195, z −60..140, in world coordinates: a local coordinate is a map coordinate. Built by `game/src/downtown.ts`; see [In the engine](#in-the-engine-pass-1-gray-box) |
-| `flood` (20 × 16) | (135.4, 103.9), 180° | street grade 0.87; water 1.2 | spans x 125.4..145.4, z 95.9..111.9. The house wall (local z 7.3..7.9) lands at z 96.0..96.6, back face flush with the boarding house's front at z 96. The door glow (local x 1.4) lands at x 134, Owen's door. The skiff (local (0.2, 3.4)) lands at (135.2, 100.5) |
+| `flood` (250 × 200) | (70, 40), 0° | street grade 0.87; water 1.2 | `downtown` itself under the August flood: the same pieces in world coordinates, with the high-water layer of `game/src/highwater.ts` over them. Owen comes out of his door onto the porch at `floodedStreet`; the plank walkway runs along Third's north walk, x 118..154. The skiff (`game/src/skiff.ts`) lies across the street at the steps, its stern at (135.2, 99.4) and the hooded man in the bow at (135.2, 102.4) with his back to the house |
 
 ## The prologue route
 
@@ -238,7 +238,7 @@ Facing is a unit vector (x, z); (0, −1) faces north. y is grade or floor from 
 | `boardingHouse` | (134, 0.87, 98.5) | (0, −1) | Third's north walk, facing the door; the morning walk starts here |
 | `owensRoom` | (134, 4.16, 86.2) | (0, −1) | the same spot as `room.spawn` (0, 1.2) |
 | `floatDock` | (118.5, −0.30, 1) | (0, −1) | top of the gangway, looking down at the float and the plane |
-| `floodedStreet` | (135.4, 0.87, 97.5) | (0, −1) | the `flood` space's spawn, (0, 6.4) turned 180°; at Owen's door, water 0.33 m deep (see the note under the flood tables) |
+| `floodedStreet` | (135.4, 0.87, 97.5) | (0, −1) | the `flood` space's spawn, on the porch at Owen's door (the engine turns him to face the street); water 0.33 m deep below it |
 | `postBox` | (−6, 0.63, 66) | (1, 0) | Cushman's west walk, facing the box at the curb, (−4.5, 66) |
 | `landOffice` | (107, 0.57, 62) | (0, 1) | Second's south walk at Lucy's door |
 | `nlCafe` | (12, 0.57, 62) | (0, 1) | Second's south walk at Dottie's door |
@@ -317,9 +317,11 @@ What changes on these blocks:
   People pole and motor skiffs up the streets.
 - At Owen's door on Third the water is a shin-deep 0.33 m: enough to float a flat-bottomed skiff, poled, with the
   motor tilted up.
-- **Engine note:** the `flood` space in `game/src/levels.ts` draws its water slab over local z −8..5 only, so the
-  strip at the door (world z 96..98.9, where `floodedStreet` stands) is currently dry. This doc keeps the physical
-  truth (0.33 m, one plane at y 1.2); issue #58 extends the slab to the wall.
+- **Engine note:** the engine's ground is flat (pass 1), so `game/src/highwater.ts` draws one water sheet at the
+  depth at Owen's door, 0.33 m, over the whole town, up to the house walls; depth elsewhere shows in what is sunk in
+  it. Owen walks on the porch and a plank walkway above it. Inside the boarding house the engine draws the ground
+  floor knee-deep (0.45 m) with furniture afloat, as issue #50 asks, though the floor table above gives 0.04 m at
+  the sill: an open question for this doc.
 - The bridge is an island: both approaches are under water, and the crown stands just clear.
 - Across the river, St. Joseph's is being evacuated and the church stands in water. The displaced patients and the nurses who stayed work from a help tent on high ground south of town (`helpTent`; fact-checks item 42). Owen's body is taken there.
 

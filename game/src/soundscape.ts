@@ -6,6 +6,8 @@ import { CURLY_PERIOD, REEL_AT, TYPEWRITER_AT, WORK } from './levels.ts'
 import type { Game } from './prologue.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
+import { PORCH, WALKWAY } from './highwater.ts'
+import type { Rect } from './downtown.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
 
@@ -135,10 +137,13 @@ const camp: Soundscape = {
   ],
 }
 
+const boxOf = (r: Rect) => ({ x: (r[0] + r[1]) / 2, z: (r[2] + r[3]) / 2, w: r[1] - r[0], d: r[3] - r[2] })
+
+// The flooded street: water everywhere but the porch and the plank walkway along the block (highwater.ts).
 const flood: Soundscape = {
   ground: {
     surface: 'water',
-    regions: [{ box: { x: 0, z: 7.0, w: 6, d: 0.8 }, surface: 'wood' }],
+    regions: [PORCH, WALKWAY].map((r) => ({ box: boxOf(r), surface: 'wood' as const })),
   },
   layers: [
     { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain: 0.55, wobble: { rate: 0.09, depth: 0.6, on: 'gain' } },

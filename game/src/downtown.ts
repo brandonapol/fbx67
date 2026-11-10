@@ -299,7 +299,6 @@ export const placements: readonly Placement[] = [
   { space: 'bar', at: vec(33, 43), yaw: 0 },
   { space: 'boarding', at: vec(134, 89), yaw: 0 },
   { space: 'room', at: vec(134, 85), yaw: 0 },
-  { space: 'flood', at: vec(135.4, 103.9), yaw: 180 },
 ]
 
 export const toWorld = (p: Placement, local: Vec): Vec =>

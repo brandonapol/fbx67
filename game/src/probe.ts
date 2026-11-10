@@ -15,10 +15,12 @@ export const poses: Readonly<Record<string, Pose>> = {
   parlor: { space: 'boarding', pos: vec(-0.8, 4.0), facing: -Math.PI / 2, t: 0, shot: { eye: [0.7, 1.9, 3.7], at: [-5.5, 1.0, 3.3] } },
   letter: { space: 'room', pos: vec(0.6, -1.0), facing: Math.PI, t: 0, shot: { eye: [-1.8, 2.4, 2.4], at: [0.8, 1.0, -2.4] } },
   hidden: { space: 'camp', pos: vec(1.8, -7.5), facing: Math.PI, t: 1, shot: { eye: [-2, 4.6, -4.4], at: [1.8, 0.6, -8.4] } },
-  skiff: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] } },
+  // Owen at the steps of his flooded boarding house, the skiff waiting and the hooded man's back to the camera, which
+  // stands over the east end of the walkway, behind his back (skiff.ts, faceSeen).
+  skiff: { space: 'flood', pos: vec(135.2, 98.5), facing: 0, t: 0, shot: { eye: [147, 3.2, 98.8], at: [135.2, 0.9, 100.5] } },
   // The skiff shot at blue hour and at danger (heat at and past HEAT_LIMIT); 'skiff' itself is alpenglow.
-  skiff_dusk: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 2 },
-  skiff_night: { space: 'flood', pos: vec(0.2, 5.4), facing: 0, t: 0, shot: { eye: [5, 7, 13], at: [0, 1, 3] }, heat: 4 },
+  skiff_dusk: { space: 'flood', pos: vec(135.2, 98.5), facing: 0, t: 0, shot: { eye: [147, 3.2, 98.8], at: [135.2, 0.9, 100.5] }, heat: 2 },
+  skiff_night: { space: 'flood', pos: vec(135.2, 98.5), facing: 0, t: 0, shot: { eye: [147, 3.2, 98.8], at: [135.2, 0.9, 100.5] }, heat: 4 },
   // Act 1's first frame: Wade on the sandbag line, the woman from Minto at his shoulder, the river past the bags.
   line: { space: 'line', pos: vec(0.7, -1.2), facing: Math.PI, t: 0, shot: { eye: [3.2, 2.6, 3.6], at: [0, 1.1, -3] } },
   // Act 1's morning in the drunk tank: Wade in the cell, Barnette at the bars, the desk beyond.

@@ -7,6 +7,7 @@ import { initialState } from '../../text-game/src/state.ts'
 import { sceneIds, sceneIndex } from '../../text-game/src/sceneIds.ts'
 import type { Space, SpaceId } from './levels.ts'
 import { sunAt } from './sun.ts'
+import { LAMP_AT, LAMP_HEAD } from './highwater.ts'
 
 // Light, sky, fog and grade per space, season and moral weather, from docs/art/README.md ("Light", "Summer, the
 // Prologue" and "Moral weather"). Pure data: render.ts applies it, and lighting.test.ts holds it to the art rules.
@@ -158,8 +159,8 @@ const streetKey: Readonly<Record<Band, Pick<Lamp, 'color' | 'intensity'> | undef
 }
 const STREETLIGHT_RANGE = 16
 
-// The one streetlight each flooded space has today, at its lamp head.
-const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [6.5, 3.85, -4.5], line: [-6.6, 3.85, 2.5] }
+// The one streetlight each flooded space has today, at its lamp head: across Third from Owen's door, and by the line.
+const streetlight: Readonly<Partial<Record<SpaceId, Lamp['at']>>> = { flood: [LAMP_AT.x, LAMP_HEAD - 0.15, LAMP_AT.z], line: [-6.6, 3.85, 2.5] }
 
 // Interiors are lit by their practicals: bulbs at about 2700 K (#ffb877) and the window, with warm bounce in the shade.
 const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
