@@ -24,6 +24,8 @@ const morningWalk = (spot: string) => win('floatDock', '1967-07-15T06:00', '1967
 const notYet = (s: State): boolean => !boughtRound(s)
 const morning = (s: State): boolean => s.scene === 'p_dock'
 const night = (s: State): boolean => !morning(s)
+// After the talk with Wade he plays, and the room goes quieter for it (guitar in game/src/barTalk.ts).
+const guitar = (s: State): boolean => s.scene.startsWith('p_talk_')
 
 const talk = talker('owen')
 
@@ -44,7 +46,10 @@ export const prologueTown: readonly Townsperson[] = [
       ],
       'askAbout:curly': [line('curly', `${curly} pays his tab. Fights on paydays. I keep him down the end where the glasses are cheap.`)],
       'askAbout:weather': [line('weather', "Sun don't go down, so nobody goes home. Good for business.")],
-      bark: [line('lastCall', "Last call's when I say it is, and I haven't said it.")],
+      bark: [
+        line('guitar', 'Let him play. These walls have heard worse.', guitar),
+        line('lastCall', "Last call's when I say it is, and I haven't said it."),
+      ],
       'react:bump': [line('bump', "Easy. That one's paid for.")],
     },
   }),
@@ -79,7 +84,10 @@ export const prologueTown: readonly Townsperson[] = [
         line('play', `You bought ${wade} a beer. Now he'll play till ${hank} throws him out.`, boughtRound),
       ],
       'askAbout:weather': [line('weather', "It's a hundred and four back home. I wrote my mother it's snowing here. She believed me.")],
-      bark: [line('polka', "Who keeps playing the polka? That's my dime next.")],
+      bark: [
+        line('guitar', `That's ${wade}. Three songs he knows, and he's never once rushed the second.`, guitar),
+        line('polka', "Who keeps playing the polka? That's my dime next."),
+      ],
       'react:stare': [line('stare', 'Something on my face, mister?')],
     },
   }),
@@ -125,7 +133,11 @@ export const prologueTown: readonly Townsperson[] = [
       'askAbout:curly': [line('hands', `Best hands on Phillips Field. Writes nothing down, and he don't like you reading his logbook.`)],
       'askAbout:weather': [line('wind', "Ceilings are fine. It's the wind off the Tanana that eats you.")],
       talk: [talk('buried', ["I've buried better pilots than me.", 'Not one of them was careless.'], 'Then what were they?', 'Hurried.')],
-      bark: [line('toast', "Here's to the man who pays. Rarer than a dry August.", boughtRound)],
+      bark: [
+        line('toast', "Here's to the man who pays. Rarer than a dry August.", boughtRound),
+        line('booth', 'He eats half my pretzels and calls it navigation. I let him.'),
+        line('quiet', `Easy. ${wade} has the floor.`, guitar),
+      ],
     },
   }),
   person({
@@ -139,7 +151,10 @@ export const prologueTown: readonly Townsperson[] = [
       greet: [line('hey', 'Hey.')],
       'askAbout:curly': [line('mag', `${curly} fixed my mag in an hour when nobody else would. Cash. Didn't ask what I was hauling.`)],
       'askAbout:survey': [line('flagging', 'Saw your stakes from the air. Orange flagging, like somebody spilled matches on the river.')],
-      bark: [line('chart', "Anybody got a chart of the Tolovana that ain't from 1950?")],
+      bark: [
+        line('chart', "Anybody got a chart of the Tolovana that ain't from 1950?"),
+        line('coat', 'He lent me his coat last January. I have not been asked for it back.'),
+      ],
       'react:bump': [line('bump', "Careful, that's my chart.")],
     },
   }),
@@ -166,6 +181,10 @@ export const prologueTown: readonly Townsperson[] = [
     habit: 'writes notes on the backs of matchbooks',
     at: [bar, morningWalk('cushman')],
     lines: {
+      bark: [
+        line('cardDeal', "Deal them slow, Foreman. I'm counting.", night),
+        line('cardShow', "Pair of treys. Don't laugh. A pair is a pair.", night),
+      ],
       greet: [
         line('inch', `${mister}. Anything up north worth an inch of column?`, night),
         line('slept', `Morning, ${mister}. You look like you slept in the Silver Pan.`, morning),
@@ -185,6 +204,8 @@ export const prologueTown: readonly Townsperson[] = [
     lines: {
       greet: [line('silt', "You the gravel man? Find me some that ain't half silt.")],
       bark: [
+        line('cardBet', "Two bits says your treys fold. Put it in the middle or put it away.", night),
+        line('cardRake', "Pot's yours. Rake it in before I change my mind.", night),
         line('five', "State crew knocks off at five. Five! Sun's up till midnight and they knock off at five.", night),
         line('late', "Third cup. Crew's late. Again.", morning),
       ],

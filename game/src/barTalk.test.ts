@@ -4,7 +4,7 @@ import { prologueThreads, prologueTown } from '../../text-game/src/ambient/prolo
 import { prologueThings } from '../../text-game/src/ambient/prologueThings.ts'
 import type { Pan } from './barTalk.ts'
 import { DANCE, HAND, HUSH, cardPlayers, guitar, hand, overheard, pan, pickSong, reaction, roomLevel, sitAndOrder, songs, watchCards } from './barTalk.ts'
-import { visit } from './talk.ts'
+import { queue, visit } from './talk.ts'
 import { interact, press, start } from './prologue.ts'
 import { talk, walk } from './drive.ts'
 import { BOOTH, CARD_TABLE, ORDER_STOOL, POOL_TABLE } from './silverPan.ts'
@@ -99,4 +99,25 @@ test("Wade plays after the talk and the room quiets; the door says goodnight ont
   const out = interact(walk(after, [[0, 4.2]]))
   assert.equal(out.space, 'downtown', 'out the door onto the street, not a cut')
   assert.equal(out.panel, undefined)
+})
+
+test('new lines in play: a card-game line over the cards, and a record aside for each record the story now has', () => {
+  const near = to(atBar, [[-3.2, 3.0]])
+  const cardBarks = ['reporter', 'foreman'].flatMap((id) => prologueTown.find((a) => a.id === id)!.lines.bark!.filter((b) => b.id.startsWith('card')))
+  assert.ok(cardBarks.length >= 4, 'the deal, a bet, a show, the rake')
+  const cardText = new Set(cardBarks.flatMap((b) => b.lines.map((l) => l.text)))
+  const watched = watchCards(near)
+  assert.ok(cardText.has(texts(watched)[0]), `the first thing overheard is a card line: ${texts(watched)[0]}`)
+  assert.deepEqual(watched.visit.game.story, atBar.visit.game.story, 'no plot effect')
+
+  const juke = prologueThings.find((a) => a.id === 'jukebox')!
+  for (const id of ['fiddle', 'ballad', 'rockabilly']) {
+    const bit = juke.lines.use!.find((b) => b.id === id)
+    assert.ok(bit, `${id} has an aside`)
+    const t = queue(atBar.visit.talk, juke, bit.lines, atBar.visit.clock)
+    assert.equal(t.log.at(-1)!.text, bit.lines[0].text)
+    assert.equal(t.log.at(-1)!.with, 'jukebox')
+  }
+  const guitarBarks = ['hank', 'airmanJukebox', 'pilotGray'].filter((id) => prologueTown.find((a) => a.id === id)!.lines.bark!.some((b) => b.id.startsWith('guitar') || b.id === 'quiet'))
+  assert.equal(guitarBarks.length, 3, 'the room reacts to the guitar')
 })
