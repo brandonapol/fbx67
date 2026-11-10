@@ -1,15 +1,16 @@
 import { mamaReply } from './mama.ts'
-import type { CacheSpot, Choice, Scene, SceneId, State } from '../types.ts'
+import type { CacheSpot, Choice, NightSignal, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
+import { jakeFrostbitten, nightSignal, searchHours } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, joan, lucyHeat, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
 
 const survivalChoices = (_: State): readonly Choice[] => [
-  { label: 'Burn oil-soaked rags in a cowling panel for a smoke signal at first light.', note: 'smoke', next: 'a3_search' },
-  { label: 'Stamp a big X in the snow on the open slope.', note: 'stampX', next: 'a3_search' },
-  { label: 'Save everything for the fire and wait.', note: 'saveFire', next: 'a3_search' },
+  { label: 'Burn oil-soaked rags in a cowling panel for a smoke signal at first light.', note: 'smoke', apply: set({ nightSignal: 'smoke' }), next: 'a3_search' },
+  { label: 'Stamp a big X in the snow on the open slope.', note: 'stampX', apply: set({ nightSignal: 'stampX' }), next: 'a3_search' },
+  { label: 'Save everything for the fire and wait.', note: 'saveFire', apply: set({ nightSignal: 'saveFire' }), next: 'a3_search' },
 ]
 
 const rashChoices = (_: State): readonly Choice[] => [
@@ -26,6 +27,35 @@ const nightGoal = 'Get through the night, and get seen.'
 const smokeGoal = 'Follow the smoke.'
 const rashGoal = `Decide what to do about ${N.tolliverLast}.`
 const winterGoal = 'Get through the winter.'
+
+// What Lucy's signal shows the search (design: survival-night signal): from the team splitting up, on the way in,
+// and when the rest of the team reaches the wreck, searchHours after it set out.
+const bySignal = (s: State, lines: Readonly<Record<NightSignal, string>>): string => lines[nightSignal(s)]
+const hoursWord = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']
+const searchSign = (s: State): string =>
+  bySignal(s, {
+    smoke: 'Then a column of black smoke stands up over the spruce to the north, oily and straight, the kind nothing in the woods makes. Somebody is feeding it on purpose, and has been since first light. On the radio the team leader turns everyone toward it, each from wherever he is.',
+    stampX: 'Overhead a spotter plane works the drainages, back and forth, and finds nothing yet.',
+    saveFire: 'No smoke, no sign. Just spruce and grey light, and every creek bed looks like the last one.',
+  })
+const smokeAhead = (s: State): string =>
+  bySignal(s, {
+    smoke: 'The black column is close now, and somebody down there is still feeding it. Then you smell it.',
+    stampX: 'Then the spotter plane banks, comes back, and circles one slope, around and around. Under it, you smell smoke.',
+    saveFire: 'Then, when you have about given up, you smell smoke. Just a thread of it, close.',
+  })
+const teamArrives = (s: State): string =>
+  `The rest of the team reaches the wreck ${hoursWord[searchHours(s)]} hours after it set out, ${bySignal(s, {
+    smoke: 'straight up the slope under the last of Lucy\'s smoke',
+    stampX: 'at dusk, on the bearing the spotter plane radioed off her X in the snow',
+    saveFire: 'in the dark, toward the flares you fire one-handed off the hill',
+  })}. A helicopter out of Fort Wainwright comes in after them, and by nine that night the three of you are in Fairbanks.`
+
+// Jake's frostbite (design: survival-night order), first seen at the wreck and carried into Act 4 by jakeFrostbitten.
+const jakeAtFire = (s: State): string =>
+  jakeFrostbitten(s)
+    ? 'Jake lies by the fire with his left foot wrapped in a wool shirt, and Lucy keeps that foot back from the heat on purpose: thawed out here, it would only freeze again before a hospital. The toes are white and hard as candle wax. They froze while he lay pinned and she got the fire going.'
+    : 'Jake lies by the fire under the sleeping bag, his leg splinted, both boots on. Lucy\'s fingertips are swollen and blistered from working the seat frame off his leg bare-handed before she ever struck a match. She splinted your arm with them anyway.'
 
 const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
 
@@ -85,8 +115,8 @@ The engine quits. He puts the plane into a stand of black spruce on a hillside, 
 
 When you come to, Jake is pinned and bleeding, the cabin is on its side, and it's getting dark for the next eighteen hours.`,
     choices: () => [
-      { label: 'Build a fire first.', note: 'fire', next: 'a3_survive_fire' },
-      { label: 'Get Jake free and stop the bleeding first.', note: 'jake', next: 'a3_survive_jake' },
+      { label: 'Build a fire first.', note: 'fire', apply: set({ nightOrder: 'fire' }), next: 'a3_survive_fire' },
+      { label: 'Get Jake free and stop the bleeding first.', note: 'jake', apply: set({ nightOrder: 'jake' }), next: 'a3_survive_jake' },
     ],
   },
   {
@@ -118,12 +148,14 @@ You work the bent seat frame off Jake's leg with your bare hands and tie off the
     place: 'searchRidge',
     clock: '1967-12-13T10:00',
     goal: `Find ${N.lucy}'s plane.`,
-    text: () => `
+    text: (s) => `
 You are Wade again. When Jake's plane doesn't come back, the Rescue Coordination Center at Elmendorf calls Eielson for people to put on a ground team, and the team needs a munitions man for flares and signal charges. Your sergeant sends you.
 
 They hand you cross-country skis. You grew up water skiing. How hard can it be?
 
-Near the last known heading, the team splits up to cover more ground. You're on your own.`,
+Near the last known heading, the team splits up to cover more ground. You're on your own.
+
+${searchSign(s)}`,
     choices: () => [
       { label: 'Take the long downhill run along the ridge. Balance is balance.', note: 'downhill', next: 'a3_ski_down' },
       { label: 'Climb straight up the creek drainage.', note: 'climb', next: 'a3_ski_up' },
@@ -136,10 +168,10 @@ Near the last known heading, the team splits up to cover more ground. You're on 
     place: 'searchRidge',
     clock: '1967-12-13T11:00',
     goal: smokeGoal,
-    text: () => `
+    text: (s) => `
 The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
 
-Then you smell smoke.`,
+${smokeAhead(s)}`,
     choices: () => [{ label: 'Follow it.', note: 'follow', next: 'a3_arm' }],
   },
   {
@@ -149,10 +181,10 @@ Then you smell smoke.`,
     place: 'searchRidge',
     clock: '1967-12-13T11:00',
     goal: smokeGoal,
-    text: () => `
+    text: (s) => `
 Climbing on skis is nothing like water skiing. You sweat through your layers, and then the sweat starts to freeze. Your toes go numb and stay that way.
 
-Then you smell smoke.`,
+${smokeAhead(s)}`,
     choices: () => [{ label: 'Follow it.', note: 'follow', next: 'a3_arm' }],
   },
   {
@@ -177,10 +209,10 @@ You hear it before you feel it: a crack like green wood. Then you feel it.`,
     place: 'crashSite',
     clock: '1967-12-13T12:30',
     goal: `Decide whether to show ${jakeFirst} the sump.`,
-    text: () => `
-Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
+    text: (s) => `
+Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
 
-Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle ${N.tolliverFirst}'ll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
+${jakeAtFire(s)} He drifts in and out, muttering that he drained those sumps, he swears he did. "Uncle ${N.tolliverFirst}'ll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
 You wander over to the engine to get away from her look. You know hardware. The fuel cap gasket has been cut, and the sump bowl is solid ice. And the sump drain is jammed with a sliver of wood, wired so it looks clean: when Jake drained it on preflight, nothing could come out but the little gas above the plug. Somebody poured water in this tank and made sure Jake couldn't find it.`,
     choices: () => [
@@ -195,18 +227,20 @@ You wander over to the engine to get away from her look. You know hardware. The 
     place: 'hospital',
     clock: '1967-12-13T21:00',
     goal: 'Tell Eli where you stand.',
-    text: (s) =>
+    text: (s) => `
+${teamArrives(s)}
+
+Eli meets you at the hospital. ${
       s.leakedFlightDate
-        ? `
-Eli meets you at the hospital. He doesn't sit down.
+        ? `He doesn't sit down.
 
 "I was running fuel out to the bush strip the night before they flew. There was an Air Force staff car parked by Jake's plane. Your Major's car." He watches your face. "Four people knew that date, Wade. Me, Lucy, Jake, and you."
 
 You feel sick. The only other place that date exists is the letter you wrote to your mother.`
-        : `
-Eli meets you at the hospital. He's been asking around the strip.
+        : `He's been asking around the strip.
 
-"Curly was hanging around Jake's plane the whole week before they flew, watching him fuel up and load it. He knew when it was going. Nobody had to tell him."`,
+"Curly was hanging around Jake's plane the whole week before they flew, watching him fuel up and load it. He knew when it was going. Nobody had to tell him."`
+    }`,
     choices: (s) => [
       {
         label: s.leakedFlightDate ? 'Tell Eli the truth: you put the date in a letter to your mother.' : 'Tell Eli you\'ll back whatever he wants to do.',

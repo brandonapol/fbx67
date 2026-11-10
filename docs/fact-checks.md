@@ -72,6 +72,9 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 68 | A civilian bush mechanic in a base hangar | Base map | Plausible; aircraft unknown | Low-medium. An aero club or light-aircraft contract fits; a mechanic on jet aircraft would not. |
 | 69 | A 19-year-old airman's room in 1967 | Base map | Plausible | Low. Two- to four-man rooms in concrete dorms; open bays are the other answer. |
 | 70 | The duty desk at night in a squadron building | Base map | Plausible | None. A charge of quarters on a desk with a log and a phone. |
+| 75 | A smoke signal fed through a December morning (issue #208) | Act 3 | Plausible; unchecked | Low-medium. Oil, rags and green boughs keep a column going; at -38 F under an inversion it may spread flat. |
+| 76 | A night helicopter pickup at -38 F (issue #208) | Act 3 | Plausible; unchecked | Medium. Army helicopters at Fort Wainwright in 1967; a dark landing by flares and fire is the soft spot. |
+| 77 | Frostbite care and surgery timing, 1967-68 (issue #208) | Act 3, Act 4 | Plausible | Low. No thaw in the field if it may refreeze; amputation waits weeks for demarcation. |
 
 ## High priority
 
@@ -1455,3 +1458,40 @@ unchecked per site. The Chena's temperature is unchecked.
 
 **Recommended change.** None. Check Phillips Field and the depot against item 34's high-water marks if a local
 objects.
+
+## The survival night carries state (issue #208)
+
+### 75. A smoke signal fed through a December morning
+
+**Claim.** Lucy lights oil-soaked rags in a cowling panel at first light (about 08:20 civil twilight, item 54) and keeps
+the column going until the ground team, which set out at 10:00, sees it and reaches the wreck about 13:00. She feeds it
+engine oil, rags and green spruce boughs.
+
+**Verdict.** Plausible, unchecked. Rags alone burn for minutes; a fed fire with green boughs and oil smokes for hours.
+At -38 F an inversion may hold smoke low and flat over the valley rather than standing straight up.
+
+**Recommended change.** If a local says the smoke would lie flat, have the team see it from the ridge above the
+inversion.
+
+### 76. A night helicopter pickup at -38 F
+
+**Claim.** After the ground team reaches the wreck (13:00, 15:00 or 17:00 by the signal), a helicopter out of Fort
+Wainwright comes in and has Lucy, Jake and Wade in Fairbanks by 21:00. On the saved-fire path that is in full dark,
+landing by flares and the fire.
+
+**Verdict.** Plausible, unchecked. Fort Wainwright had Army helicopters in 1967 and the RCC could call on them. Night
+landings in the bush at that temperature were possible but risky; a pilot might wait for light.
+
+**Recommended change.** If it does not hold, the saved-fire path waits for morning and `a3_home`'s clock needs a pass.
+
+### 77. Frostbite care and surgery timing, 1967-68
+
+**Claim.** Lucy keeps Jake's frozen foot back from the fire because thawing it in the field before it can refreeze is
+worse than leaving it frozen. The surgeon waits until February, once the line between dead and living tissue shows,
+to take three toes. On the other path her fingertips are swollen and blistered the next day.
+
+**Verdict.** Plausible. Do not thaw if refreezing is possible is standard field advice of the period; delaying
+amputation for weeks to months until demarcation was the accepted practice, and Alaska's frostbite care was known for
+waiting. Blisters within a day of rewarming fit superficial frostbite.
+
+**Recommended change.** None.

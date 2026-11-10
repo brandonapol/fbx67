@@ -370,6 +370,8 @@ They hand you cross-country skis. You grew up water skiing. How hard can it be?
 
 Near the last known heading, the team splits up to cover more ground. You're on your own.
 
+Then a column of black smoke stands up over the spruce to the north, oily and straight, the kind nothing in the woods makes. Somebody is feeding it on purpose, and has been since first light. On the radio the team leader turns everyone toward it, each from wherever he is.
+
   1. Take the long downhill run along the ridge. Balance is balance.
   2. Climb straight up the creek drainage.
 
@@ -377,7 +379,7 @@ Near the last known heading, the team splits up to cover more ground. You're on 
 
 The downhill is the easy part. Then the flats, where you can't figure out the kick and glide and fall on your face every ten yards.
 
-Then you smell smoke.
+The black column is close now, and somebody down there is still feeding it. Then you smell it.
 
   1. Follow it.
 
@@ -393,9 +395,9 @@ You hear it before you feel it: a crack like green wood. Then you feel it.
 
 == Act 3: Deep Winter :: The Wreck ==
 
-Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the team finds the smoke. She was doing fine before you got here.
+Lucy climbs out on her own, which is what she was trying to tell you. She splints your arm with a strip of aluminum off the wing strut, pulls off your boots and works the feeling back into your frozen toes until you swear at her, makes you eat, and tells you exactly what to do to stay alive until the rest of the team gets here. Your radio cracked under you in the fall, along with the arm. You still have the flares, but a flare in daylight over the spruce is gone before anybody turns his head; she tells you to save them for dark. She was doing fine before you got here.
 
-Jake drifts in and out by the fire, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
+Jake lies by the fire with his left foot wrapped in a wool shirt, and Lucy keeps that foot back from the heat on purpose: thawed out here, it would only freeze again before a hospital. The toes are white and hard as candle wax. They froze while he lay pinned and she got the fire going. He drifts in and out, muttering that he drained those sumps, he swears he did. "Uncle Ray'll never let me forget it," he says to nobody. "Always said I'd kill myself in one of these." You light a cigarette one-handed. Lucy, who hates the things, looks at you like you're something she stepped in.
 
 You wander over to the engine to get away from her look. You know hardware. The fuel cap gasket has been cut, and the sump bowl is solid ice. And the sump drain is jammed with a sliver of wood, wired so it looks clean: when Jake drained it on preflight, nothing could come out but the little gas above the plug. Somebody poured water in this tank and made sure Jake couldn't find it.
 
@@ -403,6 +405,8 @@ You wander over to the engine to get away from her look. You know hardware. The 
   2. Keep it to yourself until you know who.
 
 == Act 3: Deep Winter :: Back in Town ==
+
+The rest of the team reaches the wreck three hours after it set out, straight up the slope under the last of Lucy's smoke. A helicopter out of Fort Wainwright comes in after them, and by nine that night the three of you are in Fairbanks.
 
 Eli meets you at the hospital. He doesn't sit down.
 
@@ -513,7 +517,7 @@ March 1968. The radio says it before anybody believes it: oil at Prudhoe Bay, on
 
 Everybody in Fairbanks suddenly knows why a road north matters, and a pipeline after it, and why the gravel and the river crossings on the way matter. The best of both on the lower Chatanika are on Eli and Lucy's fish camp.
 
-You sit with Lucy at her kitchen table and listen to the last of Owen's tapes. The final reel cracked in the crash, and it took Jake all winter on crutches to splice it. On it, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
+You sit with Lucy at her kitchen table and listen to the last of Owen's tapes. The final reel cracked in the crash. The surgeon took three toes off Jake's left foot in February, once the line between dead and living showed, and Jake spliced the reel on crutches anyway. On the reel, recorded a week before he died, Owen sounds tired: "He wants the data early. Before the claims settle. I keep asking myself why a man helping the families needs it early. I'm starting to wonder who he's really working for."
 
 Lucy plays it three times. She doesn't say who she thinks "he" is.
 

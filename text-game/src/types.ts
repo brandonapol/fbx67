@@ -24,6 +24,11 @@ export type MomLine = 'honest' | 'soft' | 'lie'
 
 export type CacheSpot = 'stove' | 'cache' | 'marker'
 
+// Lucy's long night (docs/acts/act3-missions.md, section 2): what she did first, and how she signaled.
+export type NightOrder = 'fire' | 'jake'
+
+export type NightSignal = 'smoke' | 'stampX' | 'saveFire'
+
 export type Place =
   | 'silverPan'
   | 'owensRoom'
@@ -67,6 +72,8 @@ export type State = Readonly<{
   leakedFlightDate: boolean
   photoLab?: 'lunch' | 'key'
   coJob?: 'wade' | 'lucy'
+  nightOrder?: NightOrder
+  nightSignal?: NightSignal
   curlyPlan?: 'warn' | 'confront' | 'ignore'
   eliTrespass?: 'quiet' | 'report' | 'leverage'
   rashPlan?: 'safe' | 'burn' | 'gunpoint' | 'none'
