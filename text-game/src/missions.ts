@@ -3,8 +3,9 @@ import type { CacheSpot } from './types.ts'
 
 // A mission is a stretch of scenes the engine build plays as one piece and reports with one note (docs/story-api.md,
 // Rules 1 and 2). Each ending lists the choice notes it applies, in order; single-option beats between them are
-// followed on the way, so only the choices the spec names are written down.
-export type MissionEnding = Readonly<{ note: string; label: string; applies: readonly string[] }>
+// followed on the way, so only the choices the spec names are written down. An ending lands on the mission's end scene,
+// or on its own where the notes part ways (the rash plan's confession is one scene per plan).
+export type MissionEnding = Readonly<{ note: string; label: string; applies: readonly string[]; end?: SceneId }>
 
 // One detail of the note and the labels it can take, as the menu reads (docs/story-api.md, Rule 2 table).
 export type MissionDetail = Readonly<{ name: string; labels: readonly string[] }>
@@ -16,9 +17,20 @@ export type Mission = Readonly<{
   // An ending outside the details' combinations (refused, skipped), as the menu reads after "or".
   or?: string
   start: SceneId
-  end: SceneId
+  // Where every ending lands that does not name its own; a mission whose endings each name one has none.
+  end?: SceneId
   endings: readonly MissionEnding[]
 }>
+
+// The scene an ending lands on.
+export const endOf = (m: Mission, e: MissionEnding): SceneId => {
+  const end = e.end ?? m.end
+  if (!end) throw new Error(`Mission ${m.id} note ${e.note} has no end scene`)
+  return end
+}
+
+// Every scene the mission's endings land on.
+export const endsOf = (m: Mission): readonly SceneId[] => [...new Set(m.endings.map((e) => endOf(m, e)))]
 
 // The note's menu as docs/story-api.md writes it: "Title. Detail: a / b. Detail: c / d; or e".
 export const missionMenu = (m: Mission): string =>
@@ -169,4 +181,25 @@ const lucysDig: Mission = {
   endings: digSpots.map((spot) => ({ note: spot, label: spot, applies: [spot, 'home'] })),
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet, lucysDig]
+// docs/acts/act3-missions.md, section 5. Each plan applies its choice and the lead-in's one beat, +1 heat, and lands on
+// its own confession, where Lucy steps out of the dark: no note carries a plan out. Stayed out takes Lucy's call from
+// the gate. The café visit first is Dottie's read on the heat and changes nothing the notes carry.
+const rashPlans = [
+  { note: 'safe', confession: 'a3_confession_safe' },
+  { note: 'burn', confession: 'a3_confession_burn' },
+  { note: 'gunpoint', confession: 'a3_confession_gun' },
+] as const satisfies readonly Readonly<{ note: string; confession: SceneId }>[]
+
+const theRashPlan: Mission = {
+  id: 'theRashPlan',
+  title: 'The rash plan',
+  details: [{ name: 'Plan', labels: rashPlans.map((p) => p.note) }],
+  or: 'stayed out',
+  start: 'a3_rash',
+  endings: [
+    ...rashPlans.map((p) => ({ note: p.note, label: p.note, applies: [p.note, 'go'], end: p.confession })),
+    { note: 'stayedOut', label: 'stayed out', applies: ['none', 'letHerIn'], end: 'a3_confession_none' },
+  ],
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet, lucysDig, theRashPlan]

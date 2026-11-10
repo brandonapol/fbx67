@@ -402,7 +402,9 @@ You tell Lucy you're going to do something about it. She lets you talk.`,
     clock: '1967-12-28T23:00',
     goal: `Blow ${N.tolliverLast}'s safe.`,
     text: () => `
-You lift a demolition kit from the munitions bunker on a night shift, one-handed, and build a shaped charge on your bunk with your teeth and your good hand. You case Tolliver's office twice. Thursday night you walk down Cushman Street with it in a lunchbox.`,
+You lift a demolition kit from the munitions bunker on a night shift and build the charge on your bunk with your teeth and your good hand. It takes three tries to crimp the cap, the wire held down with your cast. You case Tolliver's office twice: ground floor, a back door off the alley, nothing to climb.
+
+Thursday at eleven you walk down Cushman Street with it in a lunchbox. Every time headlights come up behind you, you step into a doorway and wait for them to pass.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_safe' }],
   },
   {
@@ -413,7 +415,9 @@ You lift a demolition kit from the munitions bunker on a night shift, one-handed
     clock: '1967-12-29T01:50',
     goal: `Burn ${N.tolliverLast}'s cabin.`,
     text: () => `
-You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and drive out the road to Tolliver's hunting cabin at two in the morning.`,
+You borrow a truck, buy two cans of kerosene at a gas station where nobody knows you, and head out the road to Tolliver's hunting cabin at two in the morning.
+
+The truck is a stick shift. You steer with your knee and reach across for the gearshift with your good hand, and the gears grind every time. On the cabin road it bucks in the ruts and stalls, and it won't catch again. You get out. One can at a time in your good hand: you leave the second by the truck and walk on into the dark with the first.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_burn' }],
   },
   {
@@ -424,7 +428,9 @@ You borrow a truck, buy two cans of kerosene at a gas station where nobody knows
     clock: '1967-12-28T21:30',
     goal: `Make ${N.tolliverLast} talk.`,
     text: () => `
-You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.`,
+You borrow a rifle from a guy in the barracks who doesn't ask questions, and you wait in the dark outside Tolliver's house for him to come home from the council meeting.
+
+The rifle is slung on your good side. Behind a spruce at the edge of his lot you try bringing it up once, to see. The sling catches on the cast, the stock won't come to your shoulder, and you end up holding it by the barrel like a walking stick. You stay out of the streetlight and watch the road for headlights.`,
     choices: () => [{ label: 'Go.', note: 'go', apply: heat(1), next: 'a3_confession_gun' }],
   },
   {

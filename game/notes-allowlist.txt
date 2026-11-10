@@ -63,19 +63,6 @@ a3_home:tellEli
 a3_joan:honest
 a3_joan:lie
 a3_joan:soft
-a3_rash:burn
-a3_rash:gossip
-a3_rash:gunpoint
-a3_rash:none
-a3_rash:safe
-a3_rash_burn:go
-a3_rash_gossip:burn
-a3_rash_gossip:gunpoint
-a3_rash_gossip:none
-a3_rash_gossip:safe
-a3_rash_gun:go
-a3_rash_none:letHerIn
-a3_rash_safe:go
 a3_search:climb
 a3_search:downhill
 a3_ski_down:follow
@@ -132,3 +119,7 @@ thePhotoLab:key.pulledAll
 thePhotoLab:lunch.crossChecked
 thePhotoLab:lunch.pulledAll
 thePhotoLab:refused
+theRashPlan:burn
+theRashPlan:gunpoint
+theRashPlan:safe
+theRashPlan:stayedOut

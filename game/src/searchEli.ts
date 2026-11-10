@@ -88,7 +88,8 @@ const townsman = { skin: '#d8ad88', hair: '#4a3626', height: 1.75 } as const
 
 // The search, from the story's mission data: it runs to the mission's end scene, where no one is left on the street.
 const search = missions.find((m) => m.id === 'searchForEli')
-if (!search) throw new Error('no searchForEli mission')
+const searchEnd = search?.end
+if (!searchEnd) throw new Error('no searchForEli mission with an end scene')
 
 // Who comes onto the street in each scene and stays there through the search; who is gone from it by a scene; and
 // where Eli's riverboat is, by the scene that finds it. He stays at the boat through the scene right after (the
@@ -115,7 +116,7 @@ export const onStreet = (id: string, s: State, path?: readonly number[]): boolea
     const prior = path === undefined ? undefined : before(path)
     return boats[s.scene] === id || (prior !== undefined && boats[prior.scene] === id)
   }
-  return at(s, sceneWhere(arrives, id), sceneWhere(leaves, id) ?? search.end)
+  return at(s, sceneWhere(arrives, id), sceneWhere(leaves, id) ?? searchEnd)
 }
 
 const townsperson = (f: Figure): Figure => ({ ...f, when: (s, path) => onStreet(f.id, s, path) })

@@ -2,7 +2,7 @@ import type { Act, Clock, Place, State } from './types.ts'
 import { choicesOf, follow, sceneOf } from './engine.ts'
 import { HEAT_LIMIT } from './logic.ts'
 import { BOUNDS } from './state.ts'
-import { missions, type Mission } from './missions.ts'
+import { endOf, missions, type Mission } from './missions.ts'
 
 export type Weather = 'clear' | 'dusk' | 'night'
 
@@ -48,14 +48,15 @@ const reach = (s: State, note: string): State => {
 }
 
 // Applies a mission's ending note from its start scene: the ending's choices in order, following the single-option
-// beats between them, and lands on the mission's end scene.
+// beats between them, and lands on the ending's end scene.
 export const sendMission = (s: State, note: string): State => {
   const m = mission(s)
   if (!m) throw new Error(`No mission starts at ${s.scene}`)
   const ending = m.endings.find((e) => e.note === note)
   if (!ending) throw new Error(`Mission ${m.id} does not accept note ${note} (${m.endings.map((e) => e.note).join(', ')})`)
   const out = ending.applies.reduce(reach, s)
-  if (out.scene !== m.end) throw new Error(`Mission ${m.id} note ${note} ends at ${out.scene}, not ${m.end}`)
+  const end = endOf(m, ending)
+  if (out.scene !== end) throw new Error(`Mission ${m.id} note ${note} ends at ${out.scene}, not ${end}`)
   return out
 }
 
