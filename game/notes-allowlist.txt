@@ -1,7 +1,6 @@
 # Act 1-3 story notes the engine build cannot send yet, one per line: `scene:note` for a scene's menu, `missionId:note`
 # for a mission's ending. game/src/notesRatchet.test.ts checks this list against the story and the engine. It may only
 # shrink: when the engine starts sending a note, delete its line; a pull request that adds a line fails.
-a1_ashby:thankHim
 a1_joan_ask:continue
 a1_joan_laugh:continue
 a1_letter:honest
@@ -11,9 +10,6 @@ a1_lucy:noIdea
 a1_lucy:offerPhotos
 a1_ruling:askJoan
 a1_ruling:makeLaugh
-a1_tank:blameEli
-a1_tank:coverEli
-a1_tank:sideCurly
 a2_chiefs:listen
 a2_chiefs:offerHelp
 a2_chiefs:slipOut
