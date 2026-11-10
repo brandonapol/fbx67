@@ -943,7 +943,7 @@ was itself hit by the flood, and was helping in the cleanup, is right. Its stree
 ### 46. The Eielson photo lab and its records, beyond item 6
 
 **Claim.** The prints are in a records room behind the base photo lab. The clerk takes a long lunch; the duty sergeant
-locks up at 1700. Refusing is "not worth a court-martial for some old pictures" (`a2_photos`, `a2_photos_files`).
+locks up at 1700. Refusing is "not worth a court-martial for some old pictures" (`a2_photos`, `a2_photos_files`, `a2_photos_night`).
 
 **Verdict.** Plausible.
 

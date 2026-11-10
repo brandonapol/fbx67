@@ -32,6 +32,7 @@ export const sceneIds = [
   'a2_major',
   'a2_photos',
   'a2_photos_files',
+  'a2_photos_night',
   'a2_hotel',
   'a2_hotel_set',
   'a2_hotel_heard',

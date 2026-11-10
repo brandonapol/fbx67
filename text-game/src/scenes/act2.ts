@@ -45,6 +45,21 @@ const mintoTeller: Readonly<Record<'eli' | 'lucy', Readonly<{ opening: string; w
   },
 }
 
+// The records room, by the clerk's lunch (a2_photos_files) or after the 1700 lockup (a2_photos_night). Same room,
+// same drawers; only the clock differs, because each scene's clock is fixed (docs/story-api.md).
+const photoFiles = {
+  act,
+  title: 'Flight Lines',
+  place: 'photoRecords',
+  goal: 'Find the frames of the river north of town.',
+  text: () => `
+The records room is floor-to-ceiling drawers. The photos are filed by flight line and frame number, and the index card for the river north of town lists three drawers.`,
+  choices: () => [
+    { label: 'Cross-check the frame numbers against the map grid first. You only pull what you need, but it takes time you might not have.', note: 'crossCheck', apply: pipe(addEvidence('aerialPhotos'), heat(1)), next: 'a2_hotel' },
+    { label: 'Pull all three drawers fast and sort it out later. It\'ll leave a mess somebody notices.', note: 'pullAll', apply: pipe(addEvidence('aerialPhotos'), heat(2)), next: 'a2_hotel' },
+  ],
+} as const satisfies Omit<Scene, 'id' | 'clock'>
+
 const coChoices = (_: State): readonly Choice[] => [
   { label: 'Search the Major\'s cabinet tonight.', note: 'search', next: 'a2_co_heist' },
   { label: 'Refuse. That\'s your own CO. You\'d hang for it.', note: 'refuse', apply: set({ coJob: 'lucy' }), next: 'a2_co_lucy' },
@@ -84,24 +99,12 @@ Lucy needs the aerial photographs Owen worked from, and they are in a records ro
 You know the lab clerk takes a long lunch. You also know the duty sergeant locks up at 1700 sharp.`,
     choices: () => [
       { label: 'Go in during the clerk\'s lunch.', note: 'lunch', apply: set({ photoLab: 'lunch' }), next: 'a2_photos_files' },
-      { label: 'Go in after lockup with a borrowed key.', note: 'afterLockup', apply: set({ photoLab: 'key' }), next: 'a2_photos_files' },
+      { label: 'Go in after lockup with a borrowed key.', note: 'afterLockup', apply: set({ photoLab: 'key' }), next: 'a2_photos_night' },
       { label: 'Refuse. It isn\'t worth a court-martial for some old pictures.', note: 'refuse', apply: eliTrust(-1), next: 'a2_hotel' },
     ],
   },
-  {
-    id: 'a2_photos_files',
-    act,
-    title: 'Flight Lines',
-    place: 'photoRecords',
-    clock: '1967-09-14T12:10',
-    goal: 'Find the frames of the river north of town.',
-    text: () => `
-The records room is floor-to-ceiling drawers. The photos are filed by flight line and frame number, and the index card for the river north of town lists three drawers.`,
-    choices: () => [
-      { label: 'Cross-check the frame numbers against the map grid first. You only pull what you need, but it takes time you might not have.', note: 'crossCheck', apply: pipe(addEvidence('aerialPhotos'), heat(1)), next: 'a2_hotel' },
-      { label: 'Pull all three drawers fast and sort it out later. It\'ll leave a mess somebody notices.', note: 'pullAll', apply: pipe(addEvidence('aerialPhotos'), heat(2)), next: 'a2_hotel' },
-    ],
-  },
+  { id: 'a2_photos_files', ...photoFiles, clock: '1967-09-14T12:10' },
+  { id: 'a2_photos_night', ...photoFiles, clock: '1967-09-14T21:00' },
   {
     id: 'a2_hotel',
     act,

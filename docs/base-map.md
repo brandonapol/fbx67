@@ -135,7 +135,7 @@ The cabinet is a four-drawer steel file cabinet with a combination lock-bar, not
 | Counter | x 150..170, z 30..40 | the clerk's counter, the sign-in book, print orders |
 | Darkrooms and print room | x 130..160, z 40..70 | red safelights, trays, the dryers' hum |
 | Lab hall | x 160..190, z 40..52 | the way back; the records room's door at (170, 52) |
-| Records room | x 160..190, z 52..70 | floor-to-ceiling flat drawers, filed by flight line and frame number; the index card cabinet by the door (`a2_photos_files`) |
+| Records room | x 160..190, z 52..70 | floor-to-ceiling flat drawers, filed by flight line and frame number; the index card cabinet by the door (`a2_photos_files`, `a2_photos_night`) |
 | Back door | (190, 62) | onto the service lane; the door the duty sergeant checks at lockup |
 
 **The hangar:** a concrete floor, x 262..302, z −130..−100; a light single-engine plane up on jacks with its cowling

@@ -227,3 +227,15 @@ test('Joan lingers at the tarp after Barnette has gone, on both of her branches'
     assert.doesNotMatch(text, /after he's gone/)
   })
 })
+
+// The issue paths: the photo lab's two ways in (#343).
+const toPhotoLab = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1]
+
+test('the records room is at lunch on the clerk\'s lunch and after lockup on the borrowed key', () => {
+  const [lunch, key] = [1, 2].map((way) => replay([...toPhotoLab, way]).at(-1) as State)
+  assert.equal(place(lunch), 'photoRecords')
+  assert.equal(place(key), 'photoRecords')
+  assert.ok((clock(lunch) ?? '') < '1967-09-14T13:00', `lunch clock ${clock(lunch)}`)
+  assert.ok((clock(key) ?? '') > '1967-09-14T17:00', `key clock ${clock(key)}`)
+  assert.equal(menu(lunch).text, menu(key).text)
+})
