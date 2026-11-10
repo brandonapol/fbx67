@@ -134,8 +134,10 @@ you changed text. Leave the sweep and the long verify to CI unless you are repro
   `anthropic.com` address, no "Generated with Claude Code" footer, and no `claude.ai/code` session link. The
   `commit-msg` hook rejects them in commits and the `check-attribution` CI job rejects them in pull requests.
 - **Commit subjects** are imperative, under 80 characters, American spelling. A body explains why, wrapped at 120.
-- **Pull requests** fill in [`.github/pull_request_template.md`](.github/pull_request_template.md) and carry
-  `Closes #N` for the issue they finish. A PR that finishes part of an issue says `Part of #N`.
+- **Pull requests** fill in [`.github/pull_request_template.md`](.github/pull_request_template.md). A PR that
+  implements a ticket MUST carry `Closes #N` in its body, one line per ticket, including each sub-issue it finishes,
+  so merging closes the ticket. `Part of #N` is only for a PR that finishes part of a ticket, and it says what
+  remains. Never leave a finished ticket to be closed by hand, and never list `Closes` for work not done.
 - **Stacks.** Work with separable layers (a rule change then the code, a core change then the scene that uses it)
   ships as a stack of PRs, bottom first, each saying `Stacked on #M`.
 
