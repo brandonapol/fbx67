@@ -612,8 +612,6 @@ He'd stolen a brand-new hunting bow. A left-handed one. He tells the officer it 
 
 A left-handed man. Joan said the bruises were from a left hand. And Curly ties his bowlines backward, tail outside, like the one on Owen's sawhorse.
 
-You give Officer Tom Peter the piece of line you cut off Owen's sawhorse. He takes it out to Curly's hangar and comes back with a coil of yellow tie-down line off Curly's workbench: the same braid, the same blue tracer thread running through it.
-
 Curly is in a cell now, behind a door only the officer has the key to. Curly knows exactly what that means, and for the first time since August he sleeps.
 
 A letter from Mama is waiting at the hospital desk. Mama has read every word you sent twice, you can tell. She doesn't scold. She just has a story.
@@ -623,6 +621,26 @@ A letter from Mama is waiting at the hospital desk. Mama has read every word you
 "The Hendersons kept the farm. They haven't set foot in that church in six years, and Lila Henderson crosses the street when she sees Wanda coming. I think about that more than I ought to."
 
   1. Continue.
+
+== Act 3: Deep Winter :: The Coil ==
+
+Officer Tom Peter called the ward that morning and asked you to bring him the middle of that line. It's in the bottom of the duffel your sergeant brought in from your footlocker the week after the crash. He picks you up outside the hospital after lunch and doesn't say where you're going until the car is past the railroad yards. Phillips Field. The sun is a sliver over the flats to the south, already on its way back down.
+
+He has Curly's key ring from the arrest. He opens the padlock on the hangar with it and lets you in ahead of him. It's colder inside than out. The coil of yellow tie-down line is on the workbench where you saw it in November, beside a coffee can of bolts.
+
+He holds out his hand. You get the piece of line out of your coat one-handed and give it to him. The knot is still in it, a bowline, backward, the tail outside the loop. He lays it on the bench beside the coil and pulls the free end off the coil alongside it. The same braid. The same blue tracer thread. He looks at the two of them for a while.
+
+"Where'd this come from, Pruett?"
+
+You tell him. Owen's sawhorse, in the flood, a hand's width above the knot and a hand's width below so it would stay tied. Your jacket pocket, then your footlocker. Four months.
+
+He writes it down, all of it, in pencil. He doesn't ask why you kept it.
+
+He puts the piece of line in an envelope and writes the date across the flap, and his name, and yours. "Spring," he says. "Grand jury."
+
+He drives you back to the hospital and lets you off at the door.
+
+  1. Go back inside.
 
 == Act 3: Deep Winter :: What Eli Saw ==
 

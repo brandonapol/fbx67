@@ -174,7 +174,7 @@ test('the barfight move colors and locks nobody out: only the bottle adds heat',
 
 // #208: the survival night's order and signal carry state. The best route (Lucy goes in herself and is let go), with
 // the night's two choices swapped in.
-const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+const best = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 const atCrash = best.slice(0, 34)
 const nightRun = (order: number, signal: number): readonly State[] => replay([...atCrash, order, signal, ...best.slice(36)])
 const reach = (order: number, signal: number, id: State['scene']): State =>
@@ -392,4 +392,34 @@ test('the officer\'s stop moves nothing but the scene, and every branch after Ja
   assert.equal(send(send(jake, 'confront'), 'letDrop').scene, 'a2_officer')
   assert.equal(send(send(send(jake, 'confront'), 'leanOnHim'), 'continue').scene, 'a2_officer')
   assert.match(menu({ ...s, heat: 2 }).text, /asking Curly where his money comes from/)
+})
+
+// The officer and the cut line at Curly's hangar (#216): the warn path only, and it moves nothing.
+const warnToHangar = best.slice(0, 42)
+
+test('on the warn path the officer lays Wade\'s cut line beside the coil and asks where it came from', () => {
+  const s = replay(warnToHangar).at(-1) as State
+  assert.equal(s.scene, 'a3_hangar')
+  assert.equal(s.curlyPlan, 'warn')
+  assert.equal(place(s), 'bushStrip')
+  assert.equal(clock(s), '1967-12-26T13:00')
+  assert.equal(goal(s), `Answer ${N.cop}.`)
+  const t = menu(s).text
+  assert.match(t, new RegExp(N.cop))
+  assert.match(t, new RegExp(`lays it on the bench beside the coil[\\s\\S]*"Where'd this come from, ${N.wadeLast}\\?"`))
+  assert.doesNotMatch(t, /\boil\b|Ashby|deal/i)
+  const after = send(s, 'goInside')
+  assert.equal(after.scene, 'a3_eli')
+  assert.deepEqual({ ...after, scene: s.scene }, s)
+})
+
+test('only the warn path goes to the hangar; the others keep the handoff in the bow scene', () => {
+  const at = (curlyPlan: State['curlyPlan']): State => ({ ...initialState, scene: 'a3_curly', curlyPlan, evidence: ['curlyKnot', 'knot'] })
+  const handoff = /You give .* the piece of line you cut off Owen's sawhorse/
+  assert.equal(send(at('warn'), 'continue').scene, 'a3_hangar')
+  assert.doesNotMatch(menu(at('warn')).text, handoff)
+  for (const plan of ['confront', 'ignore'] as const) {
+    assert.equal(send(at(plan), 'continue').scene, 'a3_eli', plan)
+    assert.match(menu(at(plan)).text, handoff, plan)
+  }
 })

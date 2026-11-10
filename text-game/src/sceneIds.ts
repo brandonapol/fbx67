@@ -74,6 +74,7 @@ export const sceneIds = [
   'a3_wreck',
   'a3_home',
   'a3_curly',
+  'a3_hangar',
   'a3_eli',
   'a3_rash',
   'a3_rash_gossip',
