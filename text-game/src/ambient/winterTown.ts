@@ -15,7 +15,7 @@ import { N } from '../names.ts'
 // Some lines turn on moral weather (`weather(state)`): they describe the sky and the cold, never the reason for it.
 // Nobody tells Wade where he stands (only the café gossip does that), nobody states the land scheme, nobody plants a
 // clue, and nobody says oil. Two lines touch Eli and Lucy, and are for the consultants' review like the flood town's:
-// the deckhand on Eli's last freight run to Minto before the ice, and the land-office clerk on Lucy at the plat.
+// the deckhand on Eli riding the last barge down to Minto before the ice, and the land-office clerk on Lucy at the plat.
 
 const eli = N.eli
 const lucy = N.lucy
@@ -222,7 +222,7 @@ export const winterTown: readonly Townsperson[] = [
     at: [strip],
     lines: {
       greet: [line('float', 'Mind the float. It\'s coming off whether I\'m ready or not.')],
-      talk: [talk('sitting', ['Floats off, skis on, and nothing flies till the ice holds.', 'Three weeks of sitting. I\'d rather be cold up there.'], 'Sounds restful.', 'Ask me again in week two.')],
+      talk: [talk('sitting', ['Floats off, skis on, and nothing I\'ve got flies till the ice holds.', 'Three weeks of sitting. I\'d rather be cold up there.'], 'Sounds restful.', 'Ask me again in week two.')],
       bark: [line('wrench', 'Somebody hand me the big wrench. No. The bigger one.')],
       'askAbout:weather': [line('pancake', 'River\'s running slush. Pancake ice, the old-timers call it. Sounds like cereal.')],
     },
@@ -254,7 +254,7 @@ export const winterTown: readonly Townsperson[] = [
       greet: [line('door', 'Shut the door, airman. That stove is going, and it\'s mine.')],
       talk: [
         talk('white', ['River went white last week. The boat\'s pulled up on the bank.', 'Nothing to do now till breakup but this.'], 'What about work?', 'Cut wood. Haul water. Get fat. Same as every year.'),
-        line('minto', `${eli} ran the last freight down to Minto before the ice. Said he had people to sit with, and didn't say more.`),
+        line('minto', `${eli} rode the last barge down to Minto before the ice. Said he had people to sit with, and didn't say more.`),
       ],
       bark: [line('jukebox', 'Somebody tell that jukebox it\'s November.')],
     },

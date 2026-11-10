@@ -30,6 +30,17 @@ const mainAllowlist = (): readonly string[] | null | undefined => {
   return text === undefined ? null : parseAllowlist(text)
 }
 
+// The scene ids and mission ids main's story had, read from its source at the same ref as its allowlist.
+const quoted = (text: string, pattern: RegExp): readonly string[] => [...text.matchAll(pattern)].map((m) => m[1])
+const mainMenus = (): ReadonlySet<string> | undefined => {
+  const ref = git('merge-base', 'HEAD', 'origin/main') ?? git('rev-parse', '-q', '--verify', 'origin/main')
+  if (ref === undefined) return undefined
+  const ids = git('show', `${ref}:text-game/src/sceneIds.ts`)
+  const ms = git('show', `${ref}:text-game/src/missions.ts`)
+  if (ids === undefined || ms === undefined) return undefined
+  return new Set([...quoted(ids, /^\s*'([a-z0-9_]+)',$/gm), ...quoted(ms, /^\s*id: '([A-Za-z0-9]+)',$/gm)])
+}
+
 test('the walk reaches every Act 1-3 menu, missions as their notes', () => {
   assert.ok(story.has('a1_flood:findEli'))
   assert.ok(story.has('theBarfight:gotUp.shove.stoodWithEli.clean'), 'a mission is its ending notes')
@@ -50,7 +61,23 @@ test('the allowlist only shrinks against main', (t) => {
   const base = mainAllowlist()
   if (base === undefined) return t.skip('no origin/main to compare with')
   if (base === null) return t.diagnostic(`main has no ${ALLOWLIST} yet`)
-  assert.deepEqual(failures({ story, sent, allowed, base }), [])
+  assert.deepEqual(failures({ story, sent, allowed, base, baseMenus: mainMenus() }), [])
+})
+
+test('main\'s scenes and missions are read from its source', (t) => {
+  const menus = mainMenus()
+  if (menus === undefined) return t.skip('no origin/main to compare with')
+  assert.ok(menus.has('a1_flood') && menus.has('a2_jake') && menus.has('theMajorsCabinet'))
+})
+
+test('a scene new since main may start on the allowlist; an old one may not be re-added', () => {
+  const story = new Set(['old:x', 'new:y'])
+  const ratchet = { story, sent: new Set<string>(), allowed: ['old:x', 'new:y'], base: [], baseMenus: new Set(['old']) }
+  assert.deepEqual(failures(ratchet), ["old:x: not on main's allowlist, which may only shrink"])
+  assert.deepEqual(failures({ ...ratchet, baseMenus: new Set(['old', 'new']) }), [
+    "old:x: not on main's allowlist, which may only shrink",
+    "new:y: not on main's allowlist, which may only shrink",
+  ])
 })
 
 test('removing the engine sender for a built note fails, and listing the note to cover for it fails too', () => {

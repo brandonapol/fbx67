@@ -259,7 +259,7 @@ By morning Investigator Vernon Barnette has a description: a Native woman seen l
 
 == Act 2: Freeze-up :: The Airstrip ==
 
-November. Planes are coming off floats and going onto skis, so nobody is flying anywhere for weeks. You find Curly at the bush strip lashing a tarp over a wing.
+November. Planes are coming off floats and going onto skis, so nothing will fly out of the bush strip for weeks. You find Curly there lashing a tarp over a wing.
 
 He ties it off without looking, with yellow braided line off a coil on his workbench: a bowline, backward, the tail outside the loop.
 
@@ -269,6 +269,20 @@ You have seen that knot before. There's a piece of it in your footlocker, cut of
 
   1. Take Curly up on the steak.
   2. Make an excuse.
+
+== Act 2: Freeze-up :: Minto ==
+
+The Tanana froze while Eli was in Minto. He rode down the week after the Chiefs meeting on the last barge of the year, with slush ice already running, and came home ten days later on the mail plane, on wheels, off the village strip. Nobody told you he was going.
+
+Lucy's kitchen table is covered in it: a school notebook gone soft at the corners, carbon paper, and a stack of statements she has typed out clean at night, one for each elder. Each has a signature at the bottom, or a mark with two witnesses' names beside it.
+
+Eli doesn't look up from the notebook. Lucy tells it, while he checks her typing line by line against his own handwriting. He sat with the old people one at a time, in their houses, and let each of them talk until they were done: who fished the camp, which summers, where the racks stood, his grandfather's smokehouse, his mother as a girl cutting fish on the bank. Then he read it all back to them and asked if he had it right.
+
+"Eleven," she says. "The oldest one remembers our grandfather's father. The land office says the first application got lost. So we file a new one, with eleven names on it this time."
+
+Eli finds a word she typed wrong and hands the page back to her. He hasn't said a word to you.
+
+  1. Leave them to their work.
 
 == Act 2: Freeze-up :: Jake ==
 

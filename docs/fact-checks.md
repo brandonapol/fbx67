@@ -80,6 +80,7 @@ A note on method: research was done by web search. Direct page fetches were bloc
 | 80 | A councilman holds title to a family fish camp; Eli banned from it (issue #77) | Act 3 | Plausible; consultant review | Medium. Items 1, 2 and 3 cover the law; the ban is ours. |
 | 81 | Eli's last freight to Minto before the ice (issue #77) | Act 2 | Plausible; consultant review | Low. |
 | 82 | "A Native woman seen" on the base, and Wade naming Lucy (issue #77) | Acts 2-3 | Plausible; consultant review | Medium. A description that identifies by race, then a betrayal. |
+| 83 | Eli's trip to Old Minto at freeze-up: a last barge down, a wheel-plane mail run home (issue #102) | Act 2 | Plausible; unchecked | Low. Did Old Minto have a wheel strip and mail-plane service in November 1967, and did a last barge run down the Tanana in late October with slush ice running? Also consultant question (`docs/consultant-review.md`, item 14). |
 
 ## High priority
 
@@ -1573,7 +1574,7 @@ period; and whether the fish camp should be on the Chatanika at all (item 3).
 
 **For consultant review.**
 
-**Claim.** In November, a riverboat deckhand beached at the Silver Pan says Eli ran the last freight down to Minto
+**Claim.** In November, a riverboat deckhand beached at the Silver Pan says Eli rode the last barge down to Minto
 before the ice and "said he had people to sit with, and didn't say more" (`winterTown`, the man at the stove).
 
 **Verdict.** Plausible. The details are ours.
@@ -1605,3 +1606,20 @@ description is, not to endorse it. The hotel-bar narration names the same constr
 **Recommended change.** None until consultants review. Ask: whether the narration should repeat the phrase "Native
 woman" or let the investigator say it only in dialogue; whether Lucy's suspension and the evidence locker read as the
 period's treatment; and whether Wade informing is handled with enough weight on Lucy's side.
+
+### 83. Eli's trip to Old Minto at freeze-up
+
+**For consultant review.**
+
+**Claim.** The week after the Chiefs meeting, Eli rides the last barge of the year down to Minto with slush ice
+already running, sits with the elders for their testimony, and comes home ten days later on the mail plane, on
+wheels, off the village strip (`a2_minto`, issue #102).
+
+**Verdict.** Plausible; unchecked.
+
+**Evidence.** In 1967 the village was at Old Minto on the Tanana, reached by river until freeze-up (general knowledge,
+unchecked). Whether Old Minto had a wheel strip with mail-plane service in November 1967, and whether a last barge ran
+down the Tanana in late October with slush ice running, are not checked. Item 81 (the deckhand's line) must agree.
+
+**Recommended change.** None until checked. Ask the consultants how a Minto man in Fairbanks would have made the trip
+(`consultant-review.md`, item 14).
