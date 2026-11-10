@@ -1,12 +1,14 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { render, replay } from './engine.ts'
+import { clock, place } from './story.ts'
 import type { State } from './types.ts'
 
 // From the prologue to a3_rash. Choice 26 is a2_co_ask: 1 searches the Major's cabinet (coJob 'wade', then the heist
 // and what's in it), 2 refuses and Lucy goes herself (coJob 'lucy', one scene).
 const toRash = [1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 const lucyToRash = [...toRash.slice(0, 25), 2, 1, ...toRash.slice(28)]
+const plans = ['safe', 'burn', 'gunpoint', 'none'] as const
 
 const last = (path: readonly number[]): State => replay(path).at(-1) as State
 
@@ -37,7 +39,20 @@ test('turning on Lucy leaves her own standing with the law where it was', () => 
 
 // #340: Lucy can't get onto the base, so staying out of it never puts her at Wade's barracks window.
 test('staying out of it meets Lucy off the base', () => {
-  const none = last([...toRash, 4])
+  const out = replay([...toRash, 4, 1])
+  const [none, confession] = out.slice(-2)
   assert.equal(none.scene, 'a3_rash_none')
   assert.doesNotMatch(render(none), /window/)
+  assert.notEqual(place(confession), 'eielsonBarracks')
+})
+
+// #341: Lucy steps out of the dark where the plan was headed, not back in the barracks.
+test('Lucy stops each rash plan where it happens, minutes after it starts', () => {
+  plans.forEach((plan, i) => {
+    const [rash, confession] = replay([...toRash, i + 1, 1]).slice(-2)
+    assert.equal(rash.rashPlan, plan)
+    if (plan !== 'none') assert.equal(place(confession), place(rash), plan)
+    const minutes = (Date.parse(clock(confession)!) - Date.parse(clock(rash)!)) / 60_000
+    assert.ok(minutes > 0 && minutes <= 60, `${plan}: ${clock(rash)} to ${clock(confession)}`)
+  })
 })

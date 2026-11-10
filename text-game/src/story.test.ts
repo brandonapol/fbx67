@@ -207,7 +207,7 @@ test('each overheard prologue thread pays off in a line of its act, heard or not
   const payoffs: Readonly<Record<string, readonly [string, RegExp]>> = {
     whichRoom: ['a1_ruling', /didn't ask me which room this time/],
     gravelCash: ['a2_hotel_set', /new bills, in order[\s\S]*"Seen that kind of money before\."/],
-    shortCount: ['a3_confession', /count short week after week, and every short sheet initialed/],
+    shortCount: ['a3_confession_none', /count short week after week, and every short sheet initialed/],
   }
   assert.deepEqual(Object.keys(payoffs).sort(), prologueThreads.map((t) => t.id).sort())
   for (const t of prologueThreads) {
