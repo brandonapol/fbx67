@@ -3,6 +3,7 @@ import type { Game, Input } from './prologue.ts'
 import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { fade } from './skiff.ts'
 import { sweepFade } from './hazards.ts'
+import { flightFade } from './flight.ts'
 import { startFrom } from './start.ts'
 import type { Letter } from './letters.ts'
 import { sheet } from './letters.ts'
@@ -338,7 +339,7 @@ const renderHud = (g: Game): void => {
     placePrompt(target ? view.screenAt(target.x, 1.9, target.z) : undefined)
   }
   renderPanel(g)
-  fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept)))
+  fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept), flightFade(g.flight)))
 }
 
 const readPad = (): Pad | undefined => {
