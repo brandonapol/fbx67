@@ -56,11 +56,7 @@ The sergeant is looking the other way. For now.`,
     text: () => `
 You slip off the end of the line and wade north. Nobody stops you.
 
-A man in hip waders is carrying a mattress out of a rooming house over his head. Upstairs, a woman leans out a window with a sardine tin for her ashes, watching the street fill.
-
-"My geologist went out in this last night," she calls down, to you or to anybody. "Friend of his came by in a skiff, hood up. Didn't ask me which room this time. Bed's not slept in."
-
-You ask the man about a boat, a riverboat, a man named Eli.
+A man in hip waders is carrying a mattress out of a rooming house over his head. You ask about a boat, a riverboat, a man named Eli.
 
 "Went by twenty minutes ago with a load of kids," he says, without putting the mattress down. "Toward Lacey. Hold this end, would you?"
 
@@ -213,6 +209,8 @@ St. Joseph's took water on the first floor and sent everyone it could carry up t
 ${N.barnette} of the State Troopers has six drownings and a town underwater. He's a Barnette, yes, those Barnettes: his grandfather founded this town, and when the old man's bank went under with everybody's money, a jury acquitted him and he left town in disgrace anyway. Vernon has spent his life being the opposite. He lifts the tarp and looks at Owen for about a minute.
 
 "Tangled in a line in the current. Accident." He signs it and moves on. He never asks about the line. The piece with the knot in it stays in your pocket.
+
+At the tent flap an old woman with a sardine tin for her ashes is asking the nurses after her boarder, the geologist. "Never once missed breakfast. Bed's not slept in. And whoever came for him last night didn't ask me which room this time." A nurse takes her by the elbow, toward the back.
 
 ${s.joan > 0 ? `${N.joan}, the nurse who counted out the old man's pills this morning, is still at the tarp after he's gone. She looks up and knows you. "You again," she says, and doesn't sound sorry about it.` : `A nurse named ${N.joan} is still at the tarp after he's gone, sleeves rolled to the elbow, looking at the dead man's neck longer than she needs to.`}`,
     choices: () => [
