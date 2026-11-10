@@ -5,6 +5,7 @@ import { menu, place, sendMission } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, canLight, footY, heldBehind, inWorld, interact, playerBody, press, still, tick } from './prologue.ts'
 import { startFrom } from './start.ts'
+import { posed, poses } from './probe.ts'
 import { DT } from './drive.ts'
 import { solids, spaces } from './levels.ts'
 import { spaceFor } from './router.ts'
@@ -162,4 +163,17 @@ menu(there.story).options.forEach((o) =>
 test('the cabin is lit as the outdoors on a flood evening, with no streetlight out there', () => {
   const l = lighting('cabin', 'flood', 'dusk', '1967-08-15T18:00')
   assert.equal(l.lamp, undefined)
+})
+
+// The smoke run samples the cabin's budget and captures its frame from this pose (smoke/starts.ts). It holds the boat
+// at the end of the ride whatever the page's frame rate, with Wade on the thwart there.
+test('the cabin capture pose holds the boat where the ride ends, with Wade on its thwart', () => {
+  const p = poses.cabin!
+  const g = posed(boarded, p)
+  assert.equal(p.space, 'cabin')
+  assert.ok(p.ride! >= cabinRide.time, 'the ride is over')
+  const end = cabinRide.at(p.ride)
+  assert.ok(distance(g.pos, end.seat) < 0.01 && Math.abs(g.facing - end.heading) < 0.01)
+  assert.equal(g.ride, p.ride)
+  assert.equal(posed(boarded, { ...p, ride: undefined }).ride, boarded.ride, 'a pose without one leaves the ride alone')
 })
