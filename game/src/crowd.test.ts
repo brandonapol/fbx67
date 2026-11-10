@@ -4,11 +4,11 @@ import type { State } from '../../text-game/src/types.ts'
 import { initialState } from '../../text-game/src/state.ts'
 import { prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
 import type { Pose } from './ambient.ts'
-import { poses, slots } from './ambient.ts'
+import { lookOf, poses, slots } from './ambient.ts'
 import type { Owen } from './crowd.ts'
 import {
   LOD_FULL, LOD_IMPOSTOR, LOD_SLOW, NOD_TIME, RUN_INDOORS, RUN_OUTDOORS, SIDESTEP, STARE_TIME,
-  crowdIn, due, lookOf, nodPitch, noticeOf, react, speakUp, stareTime, staringAt, tierAt,
+  crowdIn, due, nodPitch, noticeOf, react, speakUp, stareTime, staringAt, tierAt,
 } from './crowd.ts'
 import { spaces } from './levels.ts'
 import { start } from './prologue.ts'

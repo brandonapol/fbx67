@@ -4,8 +4,8 @@ import { say } from '../../text-game/src/ambient/select.ts'
 import { prologueTown } from '../../text-game/src/ambient/prologueTown.ts'
 import type { AmbientSpace, Pose } from './ambient.ts'
 import { poses } from './ambient.ts'
+import { TOWN_SEED } from './townsfolk.ts'
 import { JOG_SPEED, WALK_SPEED } from './cast.ts'
-import { lookOf as barLook } from './silverPan.ts'
 import type { Visit } from './talk.ts'
 import { attending, queue } from './talk.ts'
 import type { Vec } from './world.ts'
@@ -14,36 +14,11 @@ import { RADIUS, angleBetween, angleTo, distance, length, offAxis, scale, sub, v
 // Ambient life, second layer (issue #44): the town ambient.ts places, as a crowd the renderer draws. Who stands where
 // is ambient.ts's; this file adds how each of them looks, how much of them to draw at a distance (LOD), and what they
 // do about Owen: look at him, nod as he passes, turn on him when he runs or bumps them or stares, and step aside when
-// he stands in a walker's way. Pure functions; render.ts keeps only the per-person timers.
-
-// The seed the town is placed with in play, the same one talk.ts's visits use, so what is drawn is what is talked to.
-export const SEED = 1
-
-export type Look = ReturnType<typeof barLook>
-
-// The street's people, as gray-box figures until they have models: the bar's patrons dress in silverPan.ts.
-const townLooks: Readonly<Record<string, Look>> = {
-  preacher: { coat: '#2a2a2e', skin: '#d8ab86', hair: '#c8c4bc', height: 1.78 },
-  cabbie: { coat: '#9a7a30', skin: '#c58f66', hair: '#3a2a1e', height: 1.73 },
-  touristHusband: { coat: '#b9a888', skin: '#f0c4a0', hair: '#7a6a5a', height: 1.79 },
-  touristWife: { coat: '#c4707a', skin: '#efc6a4', hair: '#c9a060', height: 1.64 },
-  landlady: { coat: '#6a4a6a', skin: '#e2b896', hair: '#a8a29a', height: 1.6 },
-  boarder: { coat: '#4a5a48', skin: '#d0a07c', hair: '#2a1e16', height: 1.77 },
-  waitress: { coat: '#e6dccb', skin: '#e8b892', hair: '#8a3a22', height: 1.63 },
-  cook: { coat: '#f0ece4', skin: '#b07a52', hair: '#1a1410', height: 1.8 },
-  landClerk: { coat: '#3e4652', skin: '#e4bc98', hair: '#5a4632', height: 1.74 },
-  paperKid: { coat: '#a8423a', skin: '#e8bc96', hair: '#c08a4a', height: 1.42 },
-  mother: { coat: '#5a7a8a', skin: '#8a5e40', hair: '#1e1612', height: 1.62 },
-  father: { coat: '#6a5a3a', skin: '#86583a', hair: '#1a1410', height: 1.76 },
-  daughter: { coat: '#d8b040', skin: '#8e6244', hair: '#1e1612', height: 1.3 },
-  dockHand: { coat: '#3a4a5e', skin: '#c4906a', hair: '#6a4a2a', height: 1.83 },
-  fisherman: { coat: '#5e6a3a', skin: '#d2a47e', hair: '#9a8a7a', height: 1.71 },
-}
-
-export const lookOf = (who: string): Look => townLooks[who] ?? barLook(who)
+// he stands in a walker's way. How they look is ambient.ts's (lookOf). Pure functions; crowdView.ts keeps the
+// per-person timers.
 
 // Everyone the schedule has in this space now, t seconds after it opened.
-export const crowdIn = (s: State, space: AmbientSpace, t: number, seed: number = SEED): readonly Pose[] =>
+export const crowdIn = (s: State, space: AmbientSpace, t: number, seed: number = TOWN_SEED): readonly Pose[] =>
   poses(s, seed, t).filter((p) => p.space === space)
 
 // Crowd LOD by distance from the camera's subject: drawn whole and posed every frame up close, posed four times a second
