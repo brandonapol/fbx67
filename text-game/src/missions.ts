@@ -154,4 +154,16 @@ const theMajorsCabinet: Mission = {
   ],
 }
 
-export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet]
+// docs/acts/act3-missions.md, section 1. The note is the spot Lucy dug first. The story checks it against owenCache:
+// a wrong spot plays a3_wrong_spot and its one dig before a3_found, then home. The wrong dig costs light and fingers inside the
+// mission only, so all three notes land on the same state: the tapes, and owenCache cleared.
+const lucysDig: Mission = {
+  id: 'lucysDig',
+  title: 'Lucy\'s dig',
+  details: [{ name: 'First dig', labels: ['stove', 'cache', 'marker'] }],
+  start: 'a3_camp',
+  end: 'a3_crash',
+  endings: ['stove', 'cache', 'marker'].map((spot) => ({ note: spot, label: spot, applies: [spot, 'home'] })),
+}
+
+export const missions: readonly Mission[] = [searchForEli, theBody, theBarfight, thePhotoLab, theHotelBar, theMajorsCabinet, lucysDig]
