@@ -1,4 +1,4 @@
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, stat } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { NodeIO } from '@gltf-transform/core'
@@ -6,6 +6,7 @@ import type { Document } from '@gltf-transform/core'
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { dedup, prune, quantize, textureCompress } from '@gltf-transform/functions'
 import sharp from 'sharp'
+import { cachedFetcher } from './fetchCache.ts'
 
 type Source = Readonly<{ url: string; job: string }>
 type Character = Source & Readonly<{ name: string; image: string; heightMeters: number }>
@@ -23,16 +24,7 @@ const outDir = join(here, '..', 'public', 'characters')
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS)
 
-const exists = (p: string): Promise<boolean> => stat(p).then(() => true, () => false)
-
-const fetchTo = async (url: string, path: string): Promise<string> => {
-  if (await exists(path)) return path
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`${res.status} fetching ${url}`)
-  await mkdir(dirname(path), { recursive: true })
-  await writeFile(path, Buffer.from(await res.arrayBuffer()))
-  return path
-}
+const fetchTo = cachedFetcher()
 
 const dropEmissive = (doc: Document): Document => {
   doc.getRoot().listMaterials().forEach((m) => {
