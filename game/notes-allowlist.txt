@@ -54,6 +54,7 @@ lucysDig:marker
 lucysDig:stove
 searchForEli:ranIt
 searchForEli:skippedIt
+# The hotel bar starts at a2_hotel, in Lucy's kitchen, and no engine space is Lucy's kitchen yet.
 theHotelBar:heardMost
 theHotelBar:heardPieces
 theHotelBar:skipped
@@ -63,16 +64,12 @@ theLongNight:fire.stampX
 theLongNight:jake.saveFire
 theLongNight:jake.smoke
 theLongNight:jake.stampX
+# The Major's cabinet starts at a2_co_ask, in Lucy's kitchen, and no engine space is Lucy's kitchen yet.
 theMajorsCabinet:code.seen
 theMajorsCabinet:code.unseen
 theMajorsCabinet:forced.seen
 theMajorsCabinet:forced.unseen
 theMajorsCabinet:refused
-thePhotoLab:key.crossChecked
-thePhotoLab:key.pulledAll
-thePhotoLab:lunch.crossChecked
-thePhotoLab:lunch.pulledAll
-thePhotoLab:refused
 theRashPlan:burn
 theRashPlan:gunpoint
 theRashPlan:safe

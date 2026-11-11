@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { menu, weather } from '../../text-game/src/story.ts'
 import { replayPath, startFrom } from '../src/start.ts'
 import type { Game } from '../src/prologue.ts'
-import { interact, press, still, tick } from '../src/prologue.ts'
+import { handedOff, interact, press, still, tick } from '../src/prologue.ts'
 import { sheet } from '../src/letters.ts'
 import type { Vec } from '../src/world.ts'
 import { distance, sub, vec } from '../src/world.ts'
@@ -62,6 +62,7 @@ test('Act 2 plays from its start to Act 3’s first scene, every choice the firs
   assert.equal(menu(start.story).act, 'Act 2: Freeze-up')
   const { end } = played()
   assert.equal(end.story.scene, ACT3_FIRST)
+  assert.equal(handedOff(end), false, 'Act 3 opens in the engine build, not the text build')
   const text = replayPath(end.path.join(','))
   assert.ok(!('error' in text), 'the engine’s path replays in the text build')
   assert.deepEqual(end.story, text.story, 'the engine reaches the same state as the text build on its path')
@@ -83,12 +84,13 @@ test('a beat starts where the place changes, or the space, not at every scene', 
   const at = (path: string): Game => startFrom(`#path=${path}`, '')
   const major = at(ACT2_PATH)
   const photos = act(major, nextStep(major))
-  const files = act(photos, nextStep(photos))
+  const on = (g: Game, n = 0): Game => (g.story.scene !== photos.story.scene || n > 10 ? g : on(act(g, nextStep(g)), n + 1))
+  const files = on(photos)
   assert.deepEqual([major.story.scene, photos.story.scene, files.story.scene], ['a2_major', 'a2_photos', 'a2_photos_files'])
   assert.equal(isBeat(undefined, major), true)
   assert.equal(isBeat(major, photos), true, 'the major’s office to the photo lab')
   assert.equal(isBeat(photos, photos), false)
-  assert.equal(isBeat(photos, { ...photos, space: 'eielson' }), true, 'same place, another space')
+  assert.equal(isBeat(photos, { ...photos, space: 'story' }), true, 'same place, another space')
 })
 
 // The probe's capture sets only the heat: on a start where Eli's trust is already spent, every band's frame is dusk or
