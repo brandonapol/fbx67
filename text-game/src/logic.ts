@@ -14,6 +14,9 @@ export type BarfightMemory = BarfightMove | 'seat'
 
 export const hankRemembers = (s: State): BarfightMemory => s.barfightMove ?? 'seat'
 
+// Owen kept his first letter to Lucy on the morning walk (p_dock), so it goes in the mail with the second (p_end).
+export const lettersTogether = (s: State): boolean => s.owenLetter === 'kept'
+
 // The photo lab's spare key is missed in November if Wade borrowed it to go in after lockup (design: photo-lab method).
 export const keyMissed = (s: State): boolean => s.photoLab === 'key'
 

@@ -66,6 +66,8 @@ export type Clock = `${number}-${number}-${number}T${number}:${number}`
 export type State = Readonly<{
   scene: SceneId
   owenCache?: CacheSpot
+  // Owen's first letter to Lucy on the morning walk: in the box on Cushman, or still in his jacket (p_dock).
+  owenLetter?: 'mailed' | 'kept'
   barfight?: 'coverEli' | 'blameEli' | 'sideCurly'
   barfightMove?: BarfightMove
   momHonesty: number

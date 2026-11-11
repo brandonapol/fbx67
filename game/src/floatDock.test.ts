@@ -15,6 +15,7 @@ import {
   routes,
   talk,
   toBed,
+  toPostBox,
   toRoom,
   toSkiff,
   wadeOut,
@@ -25,7 +26,7 @@ import {
 } from './drive.ts'
 import { start, still } from './prologue.ts'
 import { FLOAT, legs } from './downtown.ts'
-import { CURLY_ON_FLOAT, FLOAT_DECK, MORNING, POST_BOX, ROUND_TIME, curlyAt, curlyRound, dockFigures, dockProps } from './floatDock.ts'
+import { CURLY_ON_FLOAT, FLOAT_DECK, MORNING, POST_BOX, ROUND_TIME, curlyAt, curlyRound, dockFigures, dockNote, dockProps } from './floatDock.ts'
 import { WALK_SPEED, clipFor } from './cast.ts'
 import { FLIGHT_TIME, MOORED, MOORED_HEADING, PILOT_SEAT, SKIP, TOWN_TIME, flying, onBoard, seatAt } from './flight.ts'
 import { present, spaces } from './levels.ts'
@@ -36,9 +37,6 @@ import { distance, vec } from './world.ts'
 const PROLOGUE = [1, 1, 1, 1, 1, 1] as const
 
 const morning = (): Game => toBed(writeLetter(toRoom(talk(start(), 'texas'))))
-
-// The morning walk as far as the post box on Cushman.
-const toPostBox = (g: Game): Game => walk(g, [...legs[1]!.route.slice(0, 3), [-5.1, 66]])
 
 const hold = (g: Game): Game => {
   const started = interact(g)
@@ -53,7 +51,7 @@ const fromCamp = (camp: Game): Game => {
   return press(rideOut(press(toSkiff(wadeOut(downstairs(home))), 'note:continue')), 'continue')
 }
 
-test('the letter goes in the post box on the way, a hold that sends the story nothing', () => {
+test('the letter goes in the post box on the way, a hold that takes it out of his jacket and sends nothing yet', () => {
   const g = morning()
   assert.equal(g.story.scene, 'p_dock')
   const box = toPostBox(g)
@@ -68,6 +66,32 @@ test('the letter goes in the post box on the way, a hold that sends the story no
   assert.deepEqual(mailed.story, g.story)
   assert.deepEqual(mailed.path, g.path)
   assert.ok(!available(mailed).some((i) => i.id === POST_BOX), 'mailed once')
+})
+
+test("the dock's note is how the walk down ended: the letter in the mail, or still in Owen's jacket", () => {
+  assert.equal(dockNote(true), 'fly')
+  assert.equal(dockNote(false), 'keep')
+})
+
+// The text build's path with the letter kept: `node src/cli.ts --choices 1,1,1,2,1,1` ends on a1_flood.
+const KEPT = [1, 1, 1, 2, 1, 1] as const
+
+test('walking past the post box leaves the letter in his jacket: the dock offers only keep, as the text build does', () => {
+  const g = morning()
+  const dock = interact(walk(g, legs[1]!.route))
+  assert.equal(dock.mailed, undefined)
+  assert.equal(dock.story.scene, 'p_dock')
+  assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:keep'])
+  assert.match(dock.panel?.buttons[0]?.label ?? '', /still in your jacket/)
+  const aloft = aboardPlane(dock)
+  assert.equal(aloft.story.scene, 'p_camp')
+  assert.equal(aloft.story.owenLetter, 'kept')
+  assert.deepEqual(aloft.path, KEPT.slice(0, 4))
+  assert.deepEqual(aloft.story, replay(KEPT.slice(0, 4)).at(-1))
+  const flood = fromCamp(interact(aloft))
+  assert.equal(flood.story.scene, 'a1_flood')
+  assert.deepEqual(flood.path, KEPT)
+  assert.deepEqual(flood.story, replay(KEPT).at(-1))
 })
 
 test('the post box is only there for the morning letter', () => {
@@ -135,6 +159,7 @@ test('the end of the prologue plays through the dock, the flight and the flood i
   const dock = interact(walk(hold(toPostBox(morning())), legs[1]!.route.slice(2)))
   assert.equal(dock.story.scene, 'p_dock')
   assert.deepEqual(dock.panel?.buttons.map((b) => b.id), ['note:fly'])
+  assert.equal(aboardPlane(dock).story.owenLetter, 'mailed')
   const watched = fromCamp(landAtCamp(aboardPlane(dock)))
   const skipped = fromCamp(interact(aboardPlane(dock)))
   ;[watched, skipped].forEach((g) => {

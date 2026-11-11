@@ -1,6 +1,7 @@
 import type { Scene } from '../types.ts'
 import { N } from '../names.ts'
 import { set } from '../state.ts'
+import { lettersTogether } from '../logic.ts'
 
 const act = 'Prologue' as const
 
@@ -86,14 +87,18 @@ You write to ${N.lucy}, the clerk at the land office who has been asking the que
     clock: '1967-07-15T07:30',
     goal: `Fly north with ${N.curlyShort} to the survey camp.`,
     text: () => `
-It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
+It never got dark last night. You come down Cushman with the letter to ${N.lucy} in your jacket, past the mailbox at the curb outside the Federal Building.
 
 At the float dock on the Chena, ${N.curly} is down on one knee on a float with a hand pump, pumping the night's seep out of the float compartments. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
 
 "You look like you didn't sleep, ${N.owenShort}."
 
 You hand him your duffel and keep the satchel with the notes and the tapes. It rides on your knees all the way north.`,
-    choices: () => [{ label: `Climb in and fly north with ${N.curlyShort}.`, note: 'fly', next: 'p_camp' }],
+    // How the walk down ended, as one note: the letter went in the box on Cushman, or it is still in Owen's jacket.
+    choices: () => [
+      { label: `Climb in and fly north with ${N.curlyShort}, the letter in the mail.`, note: 'fly', apply: set({ owenLetter: 'mailed' }), next: 'p_camp' },
+      { label: `Climb in and fly north with ${N.curlyShort}, the letter still in your jacket.`, note: 'keep', apply: set({ owenLetter: 'kept' }), next: 'p_camp' },
+    ],
   },
   {
     id: 'p_camp',
@@ -121,8 +126,8 @@ Where do you hide them?`,
     place: 'boardingHouse',
     clock: '1967-08-14T21:00',
     goal: `Get across town to ${N.lucy}.`,
-    text: () => `
-You fly home. ${N.curlyShort} never sees where you put them. Back in town you write ${N.lucy} a second, longer letter, and somewhere in it is where to look.
+    text: (s) => `
+You fly home. ${N.curlyShort} never sees where you put them. Back in town you write ${N.lucy} a second, longer letter, and somewhere in it is where to look.${lettersTogether(s) ? ' It goes in the box on Cushman with the first one, the one you carried north and back.' : ''}
 
 A month later the rain starts and does not stop. By the second week of August the Chena is over its banks. You need to get across town to ${N.lucy} with the copies you kept. Somebody you know is at your door with a skiff, a man in a rain slicker with the hood up, offering a ride.
 
