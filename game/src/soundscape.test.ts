@@ -5,9 +5,12 @@ import type { Soundscape } from './soundscape.ts'
 import {
   BOATS_AT,
   CREEK_Z,
+  JUKEBOX_AT,
   LINE_AT,
   PLUGGED_AT,
+  RACK_AT,
   RIVER_Z,
+  STOVE_AT,
   act1Soundscapes,
   act2Soundscapes,
   act3Soundscapes,
@@ -21,6 +24,8 @@ import { LINE_Z } from './searchEli.ts'
 import type { Game } from './prologue.ts'
 import { start } from './prologue.ts'
 import { vec } from './world.ts'
+import { bar as barSpace } from './levels.ts'
+import { JUKEBOX, pieces } from './silverPan.ts'
 
 const beds: readonly (readonly [string, Soundscape])[] = [
   ...Object.entries(soundscapes),
@@ -119,4 +124,23 @@ test('an event with no condition always holds; writing needs an unfinished lette
   assert.equal(holds('writing', { ...g, panel: letter, typed: 3 }), true)
   assert.equal(holds('writing', { ...g, panel: letter, typed: 7 }), false)
   assert.equal(holds('refueling', { ...g, space: 'bar' }), false)
+})
+
+test('the Pan: every sound point is inside its walls, and the stove, rack and jukebox sound where they stand', () => {
+  const { w, d } = barSpace.size
+  const inner = 0.15
+  const pan = [soundscapes.bar, act1Soundscapes.barfight]
+  pan.forEach((s) =>
+    [...s.layers, ...s.events].forEach((x) => {
+      const at = 'at' in x ? x.at : undefined
+      if (!at) return
+      assert.ok(Math.abs(at.x) < w / 2 - inner && Math.abs(at.z) < d / 2 - inner, `(${at.x}, ${at.z}) is outside the walls`)
+    }),
+  )
+  const near = (a: { x: number; z: number }, b: { x: number; z: number }, label: string) =>
+    assert.ok(Math.hypot(a.x - b.x, a.z - b.z) <= 2, `${label} at (${a.x}, ${a.z}) is not by the prop at (${b.x}, ${b.z})`)
+  near(STOVE_AT, pieces.oilStove![0]!.box, 'stove')
+  near(RACK_AT, pieces.mooseRack![0]!.box, 'rack')
+  near(JUKEBOX_AT, JUKEBOX, 'jukebox')
+  assert.deepEqual(soundscapes.bar.events.find((e) => e.spot === 'crackle')?.at, STOVE_AT)
 })
