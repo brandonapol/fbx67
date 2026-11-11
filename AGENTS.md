@@ -15,6 +15,7 @@ story with the text build's logic as its source of truth.
 design.md                     the story bible: cast, acts, endings, decisions (v0.3)
 docs/story-api.md             the agreement between the engine and the story (notes, menus, read-only queries)
 docs/fact-checks.md           period and place checks, plausible not archival
+docs/design/                  design proposals; saves-and-checkpoints.md (Proposed)
 docs/town-map.md              downtown Fairbanks 1967: the walkable map, routes, spawns, flood depths (and .svg)
 docs/art/                     style rules and the character concept sheets
 text-game/src/logic.ts        ending gates and every derived fact; pure functions
