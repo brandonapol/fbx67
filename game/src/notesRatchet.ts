@@ -7,6 +7,7 @@ import { mission, noteOf, sendMission } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, interact, press, resume, tick } from './prologue.ts'
 import { route } from './router.ts'
+import { open as openLetter } from './letters.ts'
 import type { SpaceId } from './levels.ts'
 import type { Interactable } from './world.ts'
 import { angleTo, vec } from './world.ts'
@@ -84,10 +85,24 @@ const outcomes = (g: Game, depth: number): readonly Game[] => [
 ]
 
 // The notes the engine sends at this stop: it enters the space the story routes to, uses every spot there, and keeps
-// each note whose story the result lands on. A stop with no space only has the fallback menu, which builds nothing.
+// each note whose story the result lands on. A letter is written in its view; any other stop with no space only has
+// the fallback menu, which builds nothing.
 // `without` leaves spots out, as if the engine had no such spot.
+// A letter home (letters.ts) is written through the letter view wherever the story stands, so its notes are sent by
+// picking each line the view offers, the spot being the letter itself.
+export const LETTER = 'letter'
+const letterSenders = (stop: Stop, g: Game): readonly Sender[] =>
+  (g.home?.choices ?? []).flatMap((c) => {
+    const landed = press(g, `note:${c.note}`).story
+    return stop.offers.filter((o) => isDeepStrictEqual(landed, o.to)).map((o) => ({ key: o.key, space: g.space, spot: LETTER }))
+  })
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
+  if (openLetter(stop.state)) {
+    const g = resume(stop.state, [0])
+    return without(g.space, LETTER) ? [] : letterSenders(stop, g)
+  }
   if (r.to !== 'space') return []
   const g = resume(stop.state, [0])
   return available(g)
