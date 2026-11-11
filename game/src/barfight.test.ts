@@ -7,7 +7,7 @@ import { available, canLight, focus, interact, label, press, still, tick } from 
 import { startFrom } from './start.ts'
 import { present, solids, spaces } from './levels.ts'
 import type { Brawl } from './barfight.ts'
-import { CURLY_AT, ENDS_AT, FACING_HANK, HANK_SPOT, OFFICER, OUT_TIME, WADE_STOOL, WARN_AT, begin, noteOf, placed, play, roomOf, sceneNotes, wade, who } from './barfight.ts'
+import { CURLY_AT, ENDS_AT, FACING_HANK, HANK_SPOT, OFFICER, OUT_TIME, WADE_STOOL, WARN_AT, begin, canRestart, checkpoint, noteOf, placed, play, restart, roomOf, sceneNotes, wade, who } from './barfight.ts'
 import { DT, PLANS, inputFor, listen, noteFor, playOut } from './barfightBot.ts'
 import { idle } from './combat.ts'
 import { COUNTER, MOOSE_RACK, STOVE } from './silverPan.ts'
@@ -203,4 +203,43 @@ test('every plan lands a different note, and the scripted player plays from the 
 test('no rain falls inside the Silver Pan in the flood: it is lit as an interior, by its bulbs', () => {
   ;(['clear', 'dusk', 'night'] as const).forEach((w) => assert.equal(lighting('pan', 'flood', w).rain, false, w))
   assert.ok(lighting('pan', 'flood', 'clear').lamp, 'the bar is lit by its bulbs')
+})
+
+// Drives the game the way main.ts does, keeping the checkpoint beside it: the press that opens the fight, then ticks
+// with the scripted player until `stop` says so.
+const kept = (opened: 'gotUp' | 'stayedSeated', stop: (g: Game) => boolean) => {
+  const plan = PLANS.find((p) => p.opened === opened && p.move === 'bottle' && p.redHanded)!
+  let g = press(opening, `fight:${opened}`)
+  let shove = checkpoint(undefined, opening, g)
+  while (g.brawl && !stop(g)) {
+    const next = tick(g, inputFor(plan, g.brawl), DT)
+    shove = checkpoint(shove, g, next)
+    g = next
+  }
+  return { g, shove }
+}
+
+test('the pause menu restarts the fight from the shove: mid-fight or with the law in the door, back to the opening prompt', () => {
+  const stops: readonly ((g: Game) => boolean)[] = [(g) => g.brawl!.fight.t > 20, (g) => g.brawl!.fight.over, (g) => (g.brawl!.out ?? 0) > OUT_TIME / 2]
+  for (const opened of ['gotUp', 'stayedSeated'] as const)
+    for (const stop of stops) {
+      const { g, shove } = kept(opened, stop)
+      assert.ok(g.brawl, 'still in the fight')
+      assert.ok(canRestart(g, shove), 'the restart is offered in the fight')
+      const back = restart(g, shove)
+      assert.deepEqual(back, opening, 'the game as it stood at the shove')
+      assert.deepEqual([back.story, back.path], [opening.story, opening.path], 'the story heard nothing')
+      assert.deepEqual(back.panel?.buttons.map((b) => b.id), ['fight:gotUp', 'fight:stayedSeated'], 'get up or stay seated, again')
+      assert.deepEqual(playOut(back, PLANS[0]!).path, playOut(opening, PLANS[0]!).path, 'the fight plays again from there')
+    }
+})
+
+test('the restart is offered only during the fight, and the checkpoint goes once the notes are sent', () => {
+  assert.equal(checkpoint(undefined, arrived, opening), undefined, 'no checkpoint under the speech')
+  assert.equal(canRestart(opening, opening), false, 'not at the prompt')
+  assert.equal(restart(opening, opening), opening)
+  const { g, shove } = kept('gotUp', () => false)
+  assert.equal(g.brawl, undefined, 'on to the cell')
+  assert.equal(shove, undefined, 'nothing to go back to once the story has the note')
+  assert.equal(canRestart(g, opening), false)
 })

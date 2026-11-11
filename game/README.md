@@ -9,8 +9,8 @@ then the letter to Lucy typed out at the desk upstairs), the float dock and the 
 survey camp while Curly works (he looks over the camp after he lights a cigarette, and turns to a run on the gravel; the
 eye at the top of the screen says when he is looking), and the skiff in the flood. "Continue as Wade" on the end card
 puts the player on the sandbag line on Cushman as Wade, where Act 1 opens. Act 1 has a space for the line (the flooded
-street), the help tent, the flooded cabin (the boat ride and the knot), the land office and the jail; the barfight and
-the scenes between spaces play as menus. Act 2 plays as menus over the `story` backdrop (`eielson`, the base
+street), the help tent, the flooded cabin (the boat ride and the knot), the land office and the jail; the barfight plays in
+the Silver Pan, and the scenes between spaces play as menus. Act 2 plays as menus over the `story` backdrop (`eielson`, the base
 blockout, is built and sampled but no scene routes to it yet), and so does Act 3, whose five missions are each one menu
 of notes: Lucy's dig (`lucysDig`), the long night (`theLongNight`), the ski search (`theSkiSearch`), the wreck (`theWreck`)
 and the rash plans (`theRashPlan`). The text build is where the rest of each act is read in full.
@@ -71,7 +71,8 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
 - **Title, pause and journal** (`src/frontEnd.ts`, drawn by `src/frontEndView.ts`): a plain visit opens on the title,
   Owen on Second Avenue with the camera turning slowly round him; Continue (when a save exists), New game, Settings. A
   `#path=` or `?from=` link, and the smoke test's `?test=1`, start in the game. Esc or P (when not bound), the Menu
-  button, Start on a pad, or losing the mouse lock pauses: Resume, Journal, Map, Settings, Return to title. Nothing
+  button, Start on a pad, or losing the mouse lock pauses: Resume, Journal, Map, Settings, Return to title; in the barfight, Restart from the shove too, which
+  puts the fight back at the get-up or stay-seated prompt (`checkpoint` in `src/barfight.ts`). Nothing
   ticks while paused, so the story clock holds. The journal is Owen's notebook: the titles of the scenes played,
   the scene now and its `goal(state)`, `notebook(state)`, the people interacted with and the lines heard in talk
   panels. Nothing is in it the player did not do or hear.
