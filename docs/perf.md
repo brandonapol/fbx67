@@ -22,6 +22,10 @@ moral-weather band, into `game/smoke/baselines/act1/`. It fails on an Act 1 spac
 prologue's; the initial download is the prologue run's to measure. `make generate/baselines/act1` regenerates only
 its baselines.
 
+The search for Eli, Act 1's opening (`game/src/searchEli.ts`, `trail.ts`), is held by the `line` row: the whole trail
+is the flooded town, with the errand's one trip up to `helpTent`, and its start is the `a1_flood` frame in each band.
+Staying on the line instead cuts straight to `cabin`, which has its own row and `a1_body` frames.
+
 Act 3 has no run of its own yet: its `a3_camp` start (`game/smoke/starts.ts`) is sampled in the prologue run, over `story`.
 
 Act 2 has its own run and CI job the same way (`make test/game/smoke/act2`, `game/smoke/act2.test.ts`). It opens `a2_major`

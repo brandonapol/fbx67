@@ -171,3 +171,27 @@ test('each scene of the search opens at its stop; the message opens where Wade c
   assert.ok(onStreet('oldMan', replay(PATHS.ran.slice(0, 9)).at(-1)!))
   assert.equal(menu(replay(PATHS.ran.slice(0, 9)).at(-1)!).scene, 'a1_couple')
 })
+
+// The third opening (`--choices 1,1,1,1,1,1,2`): Wade stays on the line, and the story cuts to the evening, when the
+// sergeant lends him out to Eli. No trail is walked; the game is in the boat at the cabin with the text build's state.
+const STAYED = [1, 1, 1, 1, 1, 1, 2]
+
+test('staying on the line cuts to the cabin with Eli, at the state the text build reaches', () => {
+  const g = press(interact(opening()), 'note:stayOnLine')
+  assert.equal(g.story.scene, 'a1_body')
+  assert.equal(g.space, 'cabin')
+  assert.deepEqual(g.pos, spaces.cabin.spawn)
+  assert.deepEqual(g.path, STAYED)
+  assert.deepEqual(g.story, replay(STAYED).at(-1))
+  assert.equal(g.story.joan, 0, 'Joan is not met on the way')
+})
+
+test('the errand meets Joan at the tent and makes the trail longer; without it Eli is reached sooner, at Third', () => {
+  const skipped = play(SKIPPED)
+  const ran = play(RAN)
+  assert.equal(skipped.game.story.joan, 0)
+  assert.equal(ran.game.story.joan, 1, 'Joan counted out the pills')
+  const town = (w: Walked) => w.steps.filter((s) => s.space === 'line')
+  assert.ok(Math.max(...town(skipped).map((s) => s.pos.z)) < 110, 'without the errand Wade never goes past Third')
+  assert.ok(ran.steps.length > skipped.steps.length * 1.3, `the errand walks longer (${ran.steps.length} ticks against ${skipped.steps.length})`)
+})
