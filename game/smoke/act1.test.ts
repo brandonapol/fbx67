@@ -5,6 +5,7 @@ import type { Step } from './act1Plan.ts'
 import { ACT1_PATH, ACT2_FIRST, act1Spaces, bands, isBeat, label, nextStep, poseFor } from './act1Plan.ts'
 import type { Page } from './browser.ts'
 import { frames, game, smoke } from './browser.ts'
+import { stallContext, stallMessage } from './stall.ts'
 
 // Act 1's smoke run, its own job beside the prologue's (make test/game/smoke/act1): from the text build's Act 1 path
 // to Act 2's first scene, in headless Chromium, every choice the first. At the start of each beat (each space Wade
@@ -29,7 +30,7 @@ const where = (p: Page): Promise<string> =>
 const changed = async (p: Page, from: string, what: string): Promise<void> => {
   const end = Date.now() + STEP_MS
   while ((await where(p)) === from) {
-    if (Date.now() > end) throw new Error(`${what}: nothing changed in ${STEP_MS / 1000} s at ${from}`)
+    if (Date.now() > end) throw new Error(stallMessage({ what, seconds: STEP_MS / 1000, at: from, ...(await stallContext(p)) }))
     await frames(p, 2)
   }
 }
