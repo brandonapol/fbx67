@@ -7,8 +7,9 @@ import { available, canLight, focus, interact, label, press, still, tick } from 
 import { startFrom } from './start.ts'
 import { present, solids, spaces } from './levels.ts'
 import type { Brawl } from './barfight.ts'
-import { CURLY_AT, ENDS_AT, FACING_HANK, HANK_SPOT, OFFICER, OUT_TIME, WADE_STOOL, WARN_AT, begin, canRestart, checkpoint, noteOf, placed, play, restart, roomOf, sceneNotes, wade, who } from './barfight.ts'
+import { CURLY_AT, ENDS_AT, JOINERS, everybodys,  FACING_HANK, HANK_SPOT, OFFICER, OUT_TIME, WADE_STOOL, WARN_AT, begin, canRestart, checkpoint, noteOf, placed, play, restart, roomOf, sceneNotes, wade, who } from './barfight.ts'
 import { DT, PLANS, inputFor, listen, noteFor, playOut } from './barfightBot.ts'
+import type { Fight } from './combat.ts'
 import { idle } from './combat.ts'
 import { COUNTER, MOOSE_RACK, STOVE } from './silverPan.ts'
 import { blocked, hits, vec } from './world.ts'
@@ -103,6 +104,71 @@ PLANS.forEach((plan) => {
     assert.deepEqual(end.path.slice(0, TO_PAN.length), TO_PAN)
     assert.equal(end.path.length - TO_PAN.length, sceneNotes(opening.story, note).length, 'one choice per menu the note applies')
     assert.ok(last.slice(0, -1).every((g) => g.path.length === TO_PAN.length), 'nothing is sent before the officer is in')
+  })
+})
+
+// Who is in the fight this frame: everyone not sitting it out.
+const inIt = (f: Fight): readonly string[] => f.fighters.filter((x) => x.stance !== 'seated').map((x) => x.id)
+const sideOf = (f: Fight, id: string): string => f.fighters.find((x) => x.id === id)!.side
+
+PLANS.forEach((plan) => {
+  const note = noteFor(plan)
+  test(`${note}: the bar picks sides as the scene has it: Curly on Wade's, the patrons joining, swelling and breaking off`, () => {
+    const fights = frames(opening, plan.opened, (b) => inputFor(plan, b)).filter((g) => g.brawl).map((g) => g.brawl!.fight)
+    const start = everybodys(plan.opened)
+    // Got up, Wade and Curly are in it from the shove. Stayed seated, Eli takes the first punch alone: Wade and Curly
+    // on their stools until Curly comes off his yelling "Texas!", and only then is it everybody's fight.
+    const first = fights.filter((f) => f.t < start + DT)
+    assert.ok(first.length > 0)
+    const opening6 = plan.opened === 'gotUp' ? ['wade', 'eli', 'curly', 'drunk', 'friend', 'friend2'] : ['eli', 'drunk', 'friend', 'friend2']
+    first.filter((f) => f.t < start).forEach((f) => assert.deepEqual(inIt(f), opening6, `at ${f.t.toFixed(2)} s`))
+    fights.forEach((f) => assert.equal(sideOf(f, 'curly'), 'us', "Curly is on Wade's side"))
+    if (plan.opened === 'stayedSeated') {
+      fights.filter((f) => f.t < CURLY_AT).forEach((f) => assert.deepEqual(inIt(f).filter((id) => sideOf(f, id) === 'us'), ['eli'], 'Eli alone'))
+      assert.ok(fights.filter((f) => f.t >= CURLY_AT + DT).every((f) => inIt(f).includes('curly')), 'then Curly is in it')
+    }
+    // The patrons: each sits it out until his moment after the fight became everybody's, then comes in on his side.
+    // Both sides gain men: the whole bar picks sides, not one side.
+    assert.ok(JOINERS.some((j) => j.side === 'us') && JOINERS.some((j) => j.side === 'them'))
+    JOINERS.forEach((j) => {
+      const before = fights.filter((f) => f.t < start + j.joins - DT)
+      assert.ok(before.length > 0 && before.every((f) => !inIt(f).includes(j.id)), `${j.id} sits it out at first`)
+      const joined = fights.findIndex((f) => f.events.some((e) => e.kind === 'join' && e.who === j.id))
+      assert.ok(joined >= 0, `${j.id} joins`)
+      assert.equal(sideOf(fights[joined]!, j.id), j.side, `${j.id} on his side`)
+      // Once out of it, out for good: a patron who sits down in the mud does not come back in.
+      const out = fights.findIndex((f, i) => i > joined && !inIt(f).includes(j.id))
+      assert.ok(out > joined, `${j.id} breaks off before the law`)
+      assert.ok(fights.slice(out).every((f) => !inIt(f).includes(j.id)), `${j.id} stays out`)
+    })
+    // Swelling and breaking off: the fight grows past its six, then thins before the headlights.
+    const counts = fights.map((f) => inIt(f).length)
+    const peak = Math.max(...counts)
+    assert.ok(peak > 6, 'the fight swells')
+    assert.ok(fights.filter((f) => f.t >= WARN_AT).every((f) => inIt(f).length < peak), 'and has broken off some by the headlights')
+  })
+})
+
+test('a patron in it who goes down sits out the rest in the mud, where he fell', () => {
+  const j = JOINERS[0]!
+  const b0 = play(begin('gotUp', room), idle, DT)
+  const b1 = Array.from({ length: Math.ceil((j.joins + 1) / DT) }).reduce<Brawl>((b) => play(b, idle, DT), b0)
+  assert.notEqual(who(b1, j.id)!.stance, 'seated', 'in it')
+  const downed = { ...b1, fight: { ...b1.fight, fighters: b1.fight.fighters.map((x) => (x.id === j.id ? { ...x, stance: 'down' as const, timer: 1, vel: vec(0, 0) } : x)) } }
+  const b2 = play(downed, idle, DT)
+  const x = who(b2, j.id)!
+  assert.equal(x.stance, 'seated')
+  assert.deepEqual(x.pos, who(downed, j.id)!.pos, 'where he fell')
+  assert.equal(placed(b2, j.id)?.seated, true, 'drawn sitting')
+})
+
+test('the patrons are people in the Pan: each is drawn, seated where he sits it out before he joins', () => {
+  const b = begin('gotUp', room)
+  JOINERS.forEach((j) => {
+    const f = spaces.pan.figures.find((x) => x.id === j.id)
+    assert.ok(f, `${j.id} is a figure in the Pan`)
+    assert.deepEqual(placed(b, j.id), { at: f!.at, facing: f!.facing, down: false, seated: true, speed: 0 })
+    assert.ok(!room.walls.some((w) => hits(f!.at, w, -0.05)), `${j.id} sits clear of the room's solids`)
   })
 })
 

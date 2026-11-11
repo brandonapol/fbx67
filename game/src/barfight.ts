@@ -1,7 +1,7 @@
 import type { State } from '../../text-game/src/types.ts'
 import { menu, mission } from '../../text-game/src/story.ts'
-import type { Fight, Fighter, Intent, Room, Thing } from './combat.ts'
-import { STAGGER, details, fighter, haul, idle, start, step } from './combat.ts'
+import type { Fight, Fighter, Intent, Room, Side, Thing } from './combat.ts'
+import { STAGGER, details, fighter, haul, idle, join, sitOut, start, step } from './combat.ts'
 import type { Figure, Prop } from './levels.ts'
 import { COUNTER, MOOSE_RACK, STOVE } from './silverPan.ts'
 import type { Vec } from './world.ts'
@@ -46,14 +46,38 @@ export const DOOR = vec(0, 4.3)
 
 const N = Math.PI
 
+// The rest of the bar picks sides (#177): once it is everybody's fight (from the shove when Wade gets up; when Curly
+// drags him in when he stays seated), the patrons come in one at a time, `joins` seconds on, alternating sides so it
+// stays a brawl and not a beating. Each has had enough `quits` seconds on, or as soon as he goes down, and sits down
+// in the mud where he is for the rest: the fight swells, then breaks off back to the men it started with by the
+// headlights. An airman off the base and one of the card players come in on Wade's side; the other card player and a
+// regular at the end of the bar on the drunk's.
+export type Joiner = Readonly<{ id: string; side: Side; at: Vec; facing: number; joins: number; quits: number; target: string }>
+
+// They pair off, so Eli's fight stays his own: the card players fall out with each other over the hand, and the airman
+// and the regular off the stools next to each other.
+export const JOINERS: readonly Joiner[] = [
+  { id: 'airman', side: 'us', at: vec(-3.5, -2.35), facing: N, joins: 3, quits: 38, target: 'regular' },
+  { id: 'cards2', side: 'them', at: vec(-4.2, 2.85), facing: N, joins: 7, quits: 30, target: 'cards1' },
+  { id: 'cards1', side: 'us', at: vec(-4.2, 0.75), facing: 0, joins: 11, quits: 46, target: 'cards2' },
+  { id: 'regular', side: 'them', at: vec(-4.5, -2.35), facing: N, joins: 15, quits: 42, target: 'airman' },
+]
+
+// When the fight becomes everybody's, in seconds from the shove.
+export const everybodys = (opened: Opened): number => (opened === 'gotUp' ? 0 : CURLY_AT)
+
+const out = { stance: 'seated', timer: Infinity } as const
+
+// Stayed seated, Eli takes the first punch alone: Wade and Curly are on their stools until Curly comes off his.
 export const fighters = (opened: Opened): readonly Fighter[] => [
-  fighter(PLAYER, 'us', WADE_STOOL, 0, opened === 'stayedSeated' ? { stance: 'seated', timer: Infinity } : {}),
+  fighter(PLAYER, 'us', WADE_STOOL, 0, opened === 'stayedSeated' ? out : {}),
   // Eli defends himself and doesn't throw the first punch; the drunk's shove is the first hand laid on him.
   fighter('eli', 'us', add(ELI_STOOL, vec(0, 0.35)), 0, { answers: true, struck: true, stance: 'staggered', timer: STAGGER, target: 'friend' }),
-  fighter('curly', 'us', CURLY_STOOL, 0, { target: 'friend2' }),
+  fighter('curly', 'us', CURLY_STOOL, 0, { target: 'friend2', ...(opened === 'stayedSeated' ? out : {}) }),
   fighter('drunk', 'them', vec(-0.5, -0.9), N, { target: 'eli', cool: 1 }),
   fighter('friend', 'them', vec(-1.7, -0.6), N, { target: 'eli', cool: 2 }),
   fighter('friend2', 'them', vec(1.2, -0.4), N, { target: PLAYER, cool: 2 }),
+  ...JOINERS.map((j) => fighter(j.id, j.side, j.at, j.facing, { ...out, target: j.target })),
 ]
 
 // The rack over the door, and the bottles along the bar.
@@ -74,7 +98,8 @@ export const roomOf = (props: readonly Prop[], people: readonly Figure[] = []): 
   return { walls: [...solid.filter((b) => b !== COUNTER && b !== STOVE), ...out], counters: [COUNTER], stove: STOVE, friction: 3, slips: true }
 }
 
-export type Brawl = Readonly<{ opened: Opened; fight: Fight; out?: number }>
+// `satOut`: the patrons who have had enough, out of it for good.
+export type Brawl = Readonly<{ opened: Opened; fight: Fight; out?: number; satOut?: readonly string[] }>
 
 export const begin = (opened: Opened, room: Room): Brawl => ({
   opened,
@@ -85,8 +110,9 @@ export const who = (b: Brawl, id: string): Fighter | undefined => b.fight.fighte
 
 export const wade = (b: Brawl): Fighter => who(b, PLAYER)!
 
-// Curly hauls Wade off his stool by the collar, toward Eli.
-const dragIn = (f: Fight): Fight => {
+// Curly comes off his stool and hauls Wade off his by the collar, toward Eli.
+const dragIn = (f0: Fight): Fight => {
+  const f = join(f0, 'curly')
   const curly = f.fighters.find((x) => x.id === 'curly')!
   const at = add(WADE_STOOL, vec(0, 0.7))
   return haul(f, PLAYER, at, angleTo(at, curly.pos))
@@ -101,7 +127,22 @@ export const play = (b: Brawl, intent: Intent, dt: number): Brawl => {
   const f = hauled ? dragIn(b.fight) : b.fight
   const stepped = step(f, seated && !hauled ? idle : intent, dt)
   // The core's step starts each frame's events afresh; the haul is this frame's too.
-  return { ...b, fight: hauled ? { ...stepped, events: [...f.events.filter((e) => e.kind === 'haul'), ...stepped.events] } : stepped }
+  const kept = hauled ? { ...stepped, events: [...f.events.filter((e) => e.kind === 'haul' || e.kind === 'join'), ...stepped.events] } : stepped
+  return picksSides({ ...b, fight: kept })
+}
+
+// The patrons come in on their side at their moment, and sit down in the mud when they have had enough or go down;
+// once down there, a man stays out of it.
+const picksSides = (b: Brawl): Brawl => {
+  if (b.fight.over) return b
+  const t = b.fight.t - everybodys(b.opened)
+  return JOINERS.reduce<Brawl>((acc, j) => {
+    const x = who(acc, j.id)
+    const done = acc.satOut ?? []
+    if (!x || done.includes(j.id)) return acc
+    if (x.stance === 'seated') return t >= j.joins ? { ...acc, fight: join(acc.fight, j.id) } : acc
+    return t >= j.quits || x.stance === 'down' ? { ...acc, fight: sitOut(acc.fight, j.id), satOut: [...done, j.id] } : acc
+  }, b)
 }
 
 export const done = (b: Brawl): boolean => (b.out ?? 0) >= OUT_TIME
@@ -145,18 +186,23 @@ const looks = {
   drunk: { coat: '#6a3a2a', skin: '#d9a07a', hair: '#4a3420', height: 1.84 },
   friend: { coat: '#5a5a48', skin: '#e0b090', hair: '#2a2018', height: 1.8 },
   friend2: { coat: '#3e4a5a', skin: '#d8a880', hair: '#8a6a40', height: 1.78 },
+  airman: { coat: '#4f5a46', skin: '#e3b28a', hair: '#5a4028', height: 1.79 },
+  regular: { coat: '#5e4636', skin: '#d9a07a', hair: '#7a7a72', height: 1.77 },
+  cards1: { coat: '#4a5a3a', skin: '#e0b48f', hair: '#3a2c20', height: 1.75 },
+  cards2: { coat: '#6b3a2a', skin: '#c99a76', hair: '#2a2420', height: 1.78 },
 } as const
+
+// The patrons sit drinking until they come in.
+const sitting = new Set(JOINERS.map((j) => j.id))
 
 export const OFFICER = 'cop'
 
 export const figures: readonly Figure[] = [
   ...fighters('gotUp')
     .filter((x) => x.id !== PLAYER)
-    .map((x): Figure => ({ id: x.id, at: x.pos, facing: x.facing, ...looks[x.id as keyof typeof looks] })),
+    .map((x): Figure => ({ id: x.id, at: x.pos, facing: x.facing, ...looks[x.id as keyof typeof looks], ...(sitting.has(x.id) ? { activity: 'sitDrink' as const } : {}) })),
   { id: 'hank', at: HANK_AT, facing: 0, coat: '#e8e1d2', skin: '#e0b48f', hair: '#9a9a9a', height: 1.8, activity: 'stand' },
   { id: 'jake', at: vec(4.9, 4.35), facing: N, coat: '#5a4a32', skin: '#d8a880', hair: '#6a5a40', height: 1.8, activity: 'sitDrink' },
-  { id: 'cards1', at: vec(-4.2, 0.75), facing: 0, coat: '#4a5a3a', skin: '#e0b48f', hair: '#3a2c20', height: 1.75, activity: 'sitDrink' },
-  { id: 'cards2', at: vec(-4.2, 2.85), facing: N, coat: '#6b3a2a', skin: '#c99a76', hair: '#2a2420', height: 1.78, activity: 'sitDrink' },
   { id: OFFICER, at: DOOR, facing: N, coat: '#27304a', skin: '#e0b48f', hair: '#3a2c20', height: 1.85, when: () => false },
 ]
 

@@ -2,7 +2,7 @@ import type { Game, Input } from './prologue.ts'
 import { interact, press, tick } from './prologue.ts'
 import type { Brawl, Opened } from './barfight.ts'
 import { ENDS_AT, FACING_HANK, WADE_STOOL, wade, who } from './barfight.ts'
-import { MOOSE_RACK, POOL_TABLE } from './silverPan.ts'
+import { COUNTER, MOOSE_RACK, POOL_TABLE } from './silverPan.ts'
 import type { Vec } from './world.ts'
 import { distance, normalize, sub, vec } from './world.ts'
 
@@ -45,13 +45,15 @@ const stand = (p: Plan, b: Brawl, verbs = none): Input => {
   return p.stood ? go(me.pos, eli.pos, 0.8, verbs) : go(me.pos, away(eli.pos), 0.3, verbs)
 }
 
-// To the nearest whole bottle on the bar, and pick it up.
+// To the nearest whole bottle, and pick it up.
 const fetchBottle = (b: Brawl): Input => {
   const me = wade(b)
   const bottle = b.fight.things.filter((t) => t.kind === 'bottle' && !t.by && !t.broken).sort((a, c) => distance(a.pos, me.pos) - distance(c.pos, me.pos))[0]
   if (!bottle) return { dir: vec(0, 0), hold: false, verbs: none }
-  const spot = vec(bottle.pos.x, -2.4)
-  if (distance(me.pos, spot) < 0.3) return { dir: vec(0, 0), hold: false, verbs: { ...none, grab: true } }
+  // One on the bar is reached from the bar's side; one dropped on the floor, where it lies.
+  const onBar = bottle.pos.z < COUNTER.z + 0.5
+  const spot = onBar ? vec(bottle.pos.x, -2.4) : bottle.pos
+  if (distance(me.pos, spot) < (onBar ? 0.3 : 0.6)) return { dir: vec(0, 0), hold: false, verbs: { ...none, grab: true } }
   // South of the pool table, go round its east end first.
   const blocked = me.pos.x < POOL_TABLE.x + 1.5 && me.pos.z > POOL_TABLE.z - 0.7
   return go(me.pos, blocked ? vec(POOL_TABLE.x + 1.7, POOL_TABLE.z + 0.9) : spot, blocked ? 0.3 : 0.2)
@@ -65,7 +67,8 @@ export const inputFor = (p: Plan, b: Brawl): Input => {
   // The headlights are the warning: let go, or don't.
   if (f.t > ENDS_AT - 4) {
     if (!p.redHanded && held) return { dir: vec(0, 0), hold: false, verbs: { ...none, grab: true } }
-    if (p.redHanded && p.move === 'shove' && f.t > ENDS_AT - 1) return stand(p, b, { ...none, shove: true })
+    // Shoving through the last seconds keeps the men off him as well as catching him mid-shove.
+    if (p.redHanded && p.move === 'shove' && f.t > ENDS_AT - 3) return stand(p, b, { ...none, shove: true })
     // Red-handed with a room move: a bottle in his hand, out of reach of the punches once he has stood his half.
     if (p.redHanded && p.move !== 'shove') {
       if (!held) return fetchBottle(b)
@@ -74,9 +77,10 @@ export const inputFor = (p: Plan, b: Brawl): Input => {
     return stand(p, b)
   }
   // Red-handed with a room move, once it is made: something in his hand when the law comes in. A man knocked down drops
-  // what he holds, so a whole bottle off the bar does.
+  // what he holds, so a whole bottle off the bar does. Standing with Eli, not before he has stood his half.
   const made = p.move === 'bottle' ? f.tally.broke : f.tally.first === 'rack'
-  if (p.redHanded && made && !held && f.t > ENDS_AT - 20) return fetchBottle(b)
+  const free = !p.stood || f.tally.beside >= ENDS_AT / 2 + 1
+  if (p.redHanded && made && !held && f.t > ENDS_AT - 20 && free) return fetchBottle(b)
   if (p.move === 'bottle' && !f.tally.broke) {
     if (held === 'bottle') return { dir: vec(0, 0), hold: false, verbs: { ...none, use: true } }
     return fetchBottle(b)

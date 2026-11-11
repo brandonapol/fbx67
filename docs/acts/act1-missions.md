@@ -110,8 +110,13 @@ on #94: 60 to 90 seconds, a few verbs, no combo system, no game-over.
 - **The mud floor.** The water is gone and the mud stayed. A shoved man slides further than he should. Wade running
   across it can slip and go down.
 - **Who fights.** The drunk and two friends; Curly on Wade's side, loud; Hank behind the bar. Eli fights his own
-  fight, mostly with the drunk's friend: he defends himself and doesn't throw the first punch. The rest of the bar
-  taking sides within budget is #177's.
+  fight, mostly with the drunk's friend: he defends himself and doesn't throw the first punch. Stayed seated, Curly
+  stays on his stool too until he comes off it for Wade, so Eli is alone for those seconds.
+- **The bar picks sides** (#177). Once it is everybody's fight (the shove, or Curly dragging Wade in), the patrons come
+  in one at a time on alternating sides and pair off away from Eli: an airman off the base on Wade's side against a
+  regular from the next stool, and the two card players against each other. A patron who goes down, or has had
+  enough, sits down in the mud where he is and stays out. The fight swells from six to ten and is back to the men it
+  started with by the headlights. Jake and Hank stay out of it. Nobody joining changes the note.
 - **Fail and retry.** No fail and no game-over. One checkpoint at the shove, so the pause menu can restart the fight;
   the note is only sent when the officer comes in.
 - **The note.**
