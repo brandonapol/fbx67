@@ -9,7 +9,7 @@ import { available, focus, interact, press, resume, tick } from './prologue.ts'
 import { route } from './router.ts'
 import { open as openLetter } from './letters.ts'
 import { openedOf } from './barfight.ts'
-import { PLANS, playOut } from './barfightBot.ts'
+import { PLANS, listen, playOut } from './barfightBot.ts'
 import type { SpaceId } from './levels.ts'
 import type { Interactable } from './world.ts'
 import { angleTo, vec } from './world.ts'
@@ -104,7 +104,8 @@ const letterSenders = (stop: Stop, g: Game): readonly Sender[] =>
 export const FIGHT = 'fight'
 // A play is a few hundred milliseconds of ticks, so each stop's are played once.
 const fought = new WeakMap<Stop, readonly State[]>()
-const fightSenders = (stop: Stop, g: Game): readonly Sender[] => {
+const fightSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
+  const g = arrived.space === 'pan' ? listen(arrived) : arrived
   if (!g.panel?.buttons.some((b) => openedOf(b.id))) return []
   const landed = fought.get(stop) ?? PLANS.map((p) => playOut(g, p).story)
   fought.set(stop, landed)

@@ -115,7 +115,7 @@ notes.forEach((note, i) =>
       assert.deepEqual(next.story, textBuild(next))
       assert.deepEqual(next.story, startFrom(hash(next.path), '').story)
       assert.equal(next.space, 'pan', 'on to the Silver Pan')
-      assert.equal(next.panel?.title, menu(next.story).title, "Hank's speech opens on arrival")
+      assert.equal(next.panel, undefined, 'on his stool, with Hank across the bar to listen to')
     }),
   ),
 )

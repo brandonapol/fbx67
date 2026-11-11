@@ -20,7 +20,7 @@ import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
 import { COUNTER, dressing } from './silverPan.ts'
-import { WADE_STOOL, figures as panFigures } from './barfight.ts'
+import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 
 export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'story'
 
@@ -147,8 +147,8 @@ export const bar: Space = {
 }
 
 // The Silver Pan in Act 1, the Saturday after the water went down (barfight.ts, #176): the prologue's bar in its
-// dressing (silverPan.ts), with the people who are in it for the fight. Nothing to walk up to: Hank's speech opens on
-// arrival, and the fight is the space's play.
+// dressing (silverPan.ts), with the people who are in it for the fight. Wade comes in on his stool; turning to Hank opens
+// his speech, and the fight is the space's play.
 export const pan: Space = {
   ...bar,
   id: 'pan',
@@ -158,7 +158,7 @@ export const pan: Space = {
   spawn: WADE_STOOL,
   props: [...bar.props, ...dressing],
   figures: panFigures,
-  spots: [],
+  spots: [HANK_SPOT],
 }
 
 // A wall along x at z, from x0 to x1, with the door gaps cut out (thickness 0.2).

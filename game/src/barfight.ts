@@ -38,6 +38,9 @@ export const WADE_STOOL = vec(0.5, -2.35)
 export const ELI_STOOL = vec(-0.5, -2.35)
 export const CURLY_STOOL = vec(1.5, -2.35)
 export const HANK_AT = vec(-1.5, -4.0)
+// Where Wade turns to listen to Hank across the bar: the speech, then the shove, open there.
+export const HANK_SPOT = { id: 'hank', x: HANK_AT.x, z: COUNTER.z, r: 2.6, prompt: 'Listen to Hank' } as const
+export const FACING_HANK = Math.atan2(HANK_SPOT.x - WADE_STOOL.x, HANK_SPOT.z - WADE_STOOL.z)
 // The door the law comes in by.
 export const DOOR = vec(0, 4.3)
 
@@ -118,6 +121,9 @@ export const sceneNotes = (s: State, note: string): readonly string[] => {
 }
 
 export const starts = (s: State): boolean => mission(s)?.id === MISSION
+
+// Hank's speech is there to listen to only at the mission's start, before the fight.
+export const hankSpot = (s: State, fighting: boolean, id: string): boolean => id === HANK_SPOT.id && !fighting && starts(s)
 
 // The opening: the scene's own text (Hank's speech, the drunk, the shove) and its prompt, get up or stay seated. The
 // seated label is the story's own choice; getting up is any of the fight's moves, so it is the game's.

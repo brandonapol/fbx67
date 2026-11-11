@@ -85,9 +85,9 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
     if (g.space === 'office' && !g.panel) return play(officeReach(g, 'lucy'), n + 1)
     // Out to the cabin Wade rides in Eli's boat; when it stops he leans over to the knot and the scene's menu comes up.
     if (g.space === 'cabin' && !g.panel) return play(interact(wait(g, (x) => focus(x)?.id === 'knot')), n + 1)
-    // At the Silver Pan Wade gets up and fights at Eli's shoulder until the law comes in, and lets go when he sees the
+    // At the Silver Pan Wade listens to Hank, gets up and fights at Eli's shoulder until the law comes in, and lets go when he sees the
     // headlights: the fight's notes are each menu's first.
-    if (g.space === 'pan' && g.panel?.buttons.some((b) => b.id === 'fight:gotUp')) {
+    if (g.space === 'pan' && !g.panel) {
       const next = playOut(g, { opened: 'gotUp', move: 'shove', stood: true, redHanded: false })
       assert.deepEqual(next.story, textBuild(next), next.story.scene)
       return play(next, n + 1)

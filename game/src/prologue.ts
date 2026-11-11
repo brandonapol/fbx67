@@ -32,7 +32,7 @@ import { SLEEP_TIME } from './boardingHouseSleep.ts'
 import { POST_BOX, canMail } from './floatDock.ts'
 import { FLIGHT_TIME, OWEN_SEAT, flying, legAt, seatAt, skipSpot } from './flight.ts'
 import type { Brawl } from './barfight.ts'
-import { begin, done as fought, noteOf, openedOf, openingButtons, play, roomOf, sceneNotes, starts, wade } from './barfight.ts'
+import { FACING_HANK, begin, done as fought, hankSpot, noteOf, openedOf, openingButtons, play, roomOf, sceneNotes, starts, wade } from './barfight.ts'
 import type { Intent } from './combat.ts'
 
 import type { Body, Motion } from './cast.ts'
@@ -209,6 +209,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'boarding') return (i.id === 'front') === flooded(g.story)
     if (g.space === 'office') return officeSpot(g.carrying === 'ledger', i.id)
     if (g.space === 'cabin') return knotSpot(g.story, i.id)
+    if (g.space === 'pan') return hankSpot(g.story, g.brawl !== undefined, i.id)
     return true
   })
 
@@ -277,9 +278,10 @@ const arrive = (g: Game): Game => {
   if (walksUp(g.space, r.space, g.path)) return { ...g, panel: undefined }
   // To the cabin Wade goes by boat with Eli: in it from the first frame; at the end of the ride he leans to the knot.
   if (r.space === 'cabin' && g.space !== 'cabin') return board(enter(g, 'cabin'))
-  // At the Silver Pan Wade sits at the bar for Hank's speech, the bar going on around him; the drunk's shove ends it
-  // with the scene's prompt. A link straight into the fight's later scenes plays them as their menus.
-  if (r.space === 'pan') return starts(g.story) ? opening(enter(g, 'pan', spaces.pan.spawn, 0)) : menuPanel(enter(g, 'pan', spaces.pan.spawn, 0))
+  // At the Silver Pan Wade comes in on his stool facing Hank, the bar going on around him; listening to Hank opens his
+  // speech, which ends on the drunk's shove and the scene's prompt. A link straight into the fight's later scenes plays
+  // them as their menus.
+  if (r.space === 'pan') return starts(g.story) ? enter(g, 'pan', spaces.pan.spawn, FACING_HANK) : menuPanel(enter(g, 'pan', spaces.pan.spawn, FACING_HANK))
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
     // the town where he went up.
@@ -473,6 +475,7 @@ export const interact = (g: Game): Game => {
   // At the cabin Wade leans over the gunwale: the camera goes close on the knot and the scene's menu comes up, with no
   // way to look away from it. Eli looking at it (a1_knot) keeps the close-up.
   if (g.space === 'cabin' && id === 'knot') return { ...g, look: 'knot', panel: storyPanel(g.story, allNotes(g.story)) }
+  if (g.space === 'pan' && id === 'hank') return opening(g)
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }

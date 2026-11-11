@@ -1,7 +1,7 @@
 import type { Game, Input } from './prologue.ts'
-import { press, tick } from './prologue.ts'
+import { interact, press, tick } from './prologue.ts'
 import type { Brawl, Opened } from './barfight.ts'
-import { ENDS_AT, wade, who } from './barfight.ts'
+import { ENDS_AT, FACING_HANK, WADE_STOOL, wade, who } from './barfight.ts'
 import { MOOSE_RACK, POOL_TABLE } from './silverPan.ts'
 import type { Vec } from './world.ts'
 import { distance, normalize, sub, vec } from './world.ts'
@@ -93,9 +93,12 @@ export const inputFor = (p: Plan, b: Brawl): Input => {
   return stand(p, b)
 }
 
-// From the opening prompt to the cell: the game after the law is in and the notes are sent.
-export const playOut = (opening: Game, p: Plan): Game => {
-  let g = press(opening, `fight:${p.opened}`)
+// On his stool, Wade turns to Hank and listens: the speech and the shove's prompt come up.
+export const listen = (g: Game): Game => (g.panel ? g : interact({ ...g, pos: WADE_STOOL, facing: FACING_HANK, view: FACING_HANK, vel: vec(0, 0) }))
+
+// From arriving at the Pan, or from the opening prompt, to the cell: the game after the law is in and the notes are sent.
+export const playOut = (arrived: Game, p: Plan): Game => {
+  let g = press(listen(arrived), `fight:${p.opened}`)
   while (g.brawl) g = tick(g, inputFor(p, g.brawl), DT)
   return g
 }

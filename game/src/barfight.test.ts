@@ -3,12 +3,12 @@ import assert from 'node:assert/strict'
 import { replay } from '../../text-game/src/engine.ts'
 import { menu, mission, sendMission } from '../../text-game/src/story.ts'
 import type { Game, Input } from './prologue.ts'
-import { available, canLight, press, still, tick } from './prologue.ts'
+import { available, canLight, focus, interact, label, press, still, tick } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { present, solids, spaces } from './levels.ts'
 import type { Brawl } from './barfight.ts'
-import { CURLY_AT, ENDS_AT, OFFICER, OUT_TIME, WADE_STOOL, WARN_AT, begin, noteOf, placed, play, roomOf, sceneNotes, wade, who } from './barfight.ts'
-import { DT, PLANS, inputFor, noteFor, playOut } from './barfightBot.ts'
+import { CURLY_AT, ENDS_AT, FACING_HANK, HANK_SPOT, OFFICER, OUT_TIME, WADE_STOOL, WARN_AT, begin, noteOf, placed, play, roomOf, sceneNotes, wade, who } from './barfight.ts'
+import { DT, PLANS, inputFor, listen, noteFor, playOut } from './barfightBot.ts'
 import { idle } from './combat.ts'
 import { COUNTER, MOOSE_RACK, STOVE } from './silverPan.ts'
 import { blocked, hits, vec } from './world.ts'
@@ -23,7 +23,8 @@ const textBuild = (g: Game) => replay(g.path).at(-1)!
 
 // `node src/cli.ts --choices <TO_PAN>` ends on a1_barfight, Saturday at the Silver Pan.
 const TO_PAN = Array.from({ length: 19 }, () => 1)
-const opening = startFrom(hash(TO_PAN), '')
+const arrived = startFrom(hash(TO_PAN), '')
+const opening = listen(arrived)
 
 const room = roomOf(spaces.pan.props, spaces.pan.figures)
 
@@ -38,9 +39,21 @@ const frames = (g0: Game, opened: 'gotUp' | 'stayedSeated', input: (b: Brawl) =>
   return [...out, g]
 }
 
-test("arriving at the Silver Pan, Hank's speech plays as the scene's own text over the bar, with the shove's prompt", () => {
+test('arriving at the Silver Pan, Wade is on his stool facing Hank across the bar, with nothing open: the bar goes on', () => {
+  assert.equal(arrived.space, 'pan')
+  assert.equal(arrived.panel, undefined)
+  assert.deepEqual([arrived.pos, arrived.facing], [WADE_STOOL, FACING_HANK])
+  assert.deepEqual(available(arrived), [HANK_SPOT], 'Hank is the one thing to turn to')
+  assert.equal(focus(arrived)?.id, 'hank', 'from the stool, without a step')
+  assert.equal(label(arrived, focus(arrived)!), HANK_SPOT.prompt)
+  assert.deepEqual(interact(arrived), opening)
+  assert.deepEqual(available(press(opening, 'fight:gotUp')), [], 'once the fight is on there is nothing to listen to')
+})
+
+test("listening to Hank, his speech plays as the scene's own text over the bar, with the shove's prompt", () => {
   assert.equal(opening.story.scene, 'a1_barfight')
   assert.equal(opening.space, 'pan')
+  assert.equal(focus(opening), undefined, 'nothing to focus under the speech')
   assert.equal(mission(opening.story)?.id, 'theBarfight')
   assert.deepEqual(opening.pos, WADE_STOOL, 'on his stool at the bar')
   assert.equal(opening.panel?.kind, 'story')
@@ -56,7 +69,6 @@ test("arriving at the Silver Pan, Hank's speech plays as the scene's own text ov
 test('the Pan is Act 1 at the Silver Pan: its people stand clear of the room, and Wade starts clear of every solid', () => {
   assert.equal(spaces.pan.act, 'Act 1: Flood')
   assert.equal(spaces.pan.place, 'silverPan')
-  assert.deepEqual(available(opening), [], 'nothing to walk up to: the fight is the play')
   assert.equal(blocked(WADE_STOOL, solids(spaces.pan)), false)
   // The fighters stand clear of every solid; the people sitting it out are seated, in the booth and at the cards.
   begin('gotUp', room).fight.fighters.forEach((x) => assert.deepEqual(room.walls.filter((b) => hits(x.pos, b)), [], x.id))
@@ -184,6 +196,7 @@ test('every plan lands a different note, and the scripted player plays from the 
   assert.equal(new Set(PLANS.map(noteFor)).size, mission(opening.story)!.endings.length)
   assert.deepEqual([...PLANS.map(noteFor)].sort(), mission(opening.story)!.endings.map((e) => e.note).sort())
   assert.equal(playOut(opening, PLANS[0]!).story.scene, 'a1_tank')
+  assert.deepEqual(playOut(arrived, PLANS[0]!).story, playOut(opening, PLANS[0]!).story, 'from arriving too: it listens to Hank first')
 })
 
 // Regression: the Pan had no interior lamp, so in the flood it was lit as outdoors, with rain falling inside the bar.
