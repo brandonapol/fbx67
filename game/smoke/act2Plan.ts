@@ -18,9 +18,9 @@ export const ACT2_PATH = '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1'
 
 export const ACT3_FIRST: SceneId = 'a3_camp'
 
-// The Act 2 spaces are levels.ts's spaces of that act. Only the photo lab and its records room route to one, the
-// Eielson blockout (photoLab.ts); the rest of the act plays as panels over the space Wade is in, and the run also
-// visits the blockout from the Act 2 start to sample it.
+// The Act 2 spaces are levels.ts's spaces of that act. The photo lab and its records room route to the Eielson blockout
+// (photoLab.ts), and Lucy's kitchen to its room (kitchen.ts); the rest of the act plays as panels over the story
+// backdrop, and the run also visits each space from the Act 2 start to sample it.
 export const act2Spaces: readonly SpaceId[] = Object.values(spaces)
   .filter((s) => s.act === 'Act 2: Freeze-up')
   .map((s) => s.id)
@@ -37,6 +37,7 @@ export const isBeat = (before: Game | undefined, now: Game): boolean =>
 export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   story: 'story',
   eielson: 'base',
+  kitchen: 'kitchen',
 }
 
 // The beats of the run, in order: the first scene at each place on the path.

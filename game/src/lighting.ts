@@ -180,6 +180,8 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   helpTent: { color: '#ffc27a', intensity: 1.6, range: 11, at: [0, 2.2, 0] },
   // The land office: the power is off after the water, so only the gray morning through the door and window off Second.
   office: { color: '#cfd6dc', intensity: 1.5, range: 13, at: [0.5, 2.6, -3.5] },
+  // Lucy's kitchen: the bulb over her table.
+  kitchen: { color: '#ffb877', intensity: 1.8, range: 9, at: [0.6, 2.3, 0.6] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 

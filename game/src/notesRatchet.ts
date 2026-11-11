@@ -79,7 +79,7 @@ const facing = (g: Game, i: Interactable): Game => {
 }
 
 // Everything one spot leads to: the game after using it, after holding it to the end, and after each button on the
-// panels it opens, two panels deep.
+// panels it opens, `depth` panels deep.
 const outcomes = (g: Game, depth: number): readonly Game[] => [
   g,
   ...(g.holding ? outcomes(tick(g, { dir: vec(0, 0), hold: true }, g.holding.time + 1e-3), depth) : []),
@@ -112,6 +112,10 @@ const fightSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: FIGHT }))
 }
 
+// Two panels deep, or at a mission's start as many as its longest ending has notes: a mission played through its scenes'
+// menus (the hotel bar, the Major's cabinet) sends one note per menu until it lands where its mission note does.
+const depthAt = (s: State): number => Math.max(2, ...(mission(s)?.endings.map((e) => e.applies.length) ?? []))
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -125,7 +129,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
     .flatMap((i) => {
       const at = facing(g, i)
       if (focus(at)?.id !== i.id) throw new Error(`the probe cannot focus ${r.space}/${i.id} at ${stop.state.scene}`)
-      const landed = outcomes(interact(at), 2).map((o) => o.story).filter((s) => s !== stop.state)
+      const landed = outcomes(interact(at), depthAt(stop.state)).map((o) => o.story).filter((s) => s !== stop.state)
       return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: r.space, spot: i.id }))
     })]
 }
