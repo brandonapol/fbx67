@@ -175,10 +175,18 @@ rigged model whose face and clothes read clearly at gameplay distance, in about 
    - clips: drops the mesh, keeps rotations plus the `Hips` translation (other bones' translations encode the
      source's bone lengths and would stretch everyone to Curly's proportions), pins root motion in place for clips
      that walk forward, then retargets to each character (below).
-5. **Retarget.** Rigs share joint names but not rest orientations (Wade's head bone rests about 90° off the
-   others'). For every joint, the clip's rotation is re-expressed against the target's rest pose:
-   `q_target = q_clip × inverse(q_sourceRest) × q_targetRest`. Hip translation is offset from the target's rest
-   position and scaled by height (`heightMeters / sourceHeightMeters`).
+5. **Retarget** (`game/tools/retarget.ts`). Rigs share joint names but not rest orientations (Wade's head bone
+   rests about 90° off the others'). Both rigs must have the same joints, or the build fails naming the ones
+   missing. Each target joint turns from its own rest as the source joint turns from its rest, in the world:
+   `q_target = C × (q_clip × inverse(q_sourceRest)) × inverse(C) × q_targetRest`, with
+   `C = inverse(P_target) × P_source`, P being each rig's parent rest rotation in the world. Hip translation is
+   offset from the target's rest position and scaled by leg length (the ratio of the two rigs' rest hip heights),
+   not overall height.
+6. **Ground.** Rest poses and leg proportions still differ, so the same joint turns put each rig's feet at a
+   different height (before this step Hank's lowest foot hung 4 cm up at idle and 12 cm in the sneak). For every
+   key, the hips move up or down so the lowest toe is as far above its rest height as on the clip's own rig,
+   scaled by leg length. Measured with forward kinematics on the shipped clips, every character's lowest foot now
+   matches Curly's within 2 mm in every clip.
 
 ### Shared skeleton and retargeting plan
 
@@ -212,6 +220,12 @@ The core cast and the first nine clips cost about 215 credits.
 - One texture set per character at 2k base color. Close-up dialogue gets a sharper head set later (#40).
 - Textures are WebP, which shrinks the download but not GPU memory. KTX2/Basis is decided above, not yet built.
 - No mesh LODs yet (#40). No props in hands yet: drinking clips need a glass on the hand bone.
+- `heightMeters` in the manifest is the model's rest height (the mesh bounds in bind pose: Wade 1.82 m). In the
+  idle a figure stands about 5 cm shorter than that (the idle bends the knees and drops the hips about 6 cm), so
+  Wade measures about 1.76 m in the game. The retarget does not read `heightMeters`.
+- Seats are placed by hand in each space. The seated hips sit 0.25–0.36 m behind the figure's root (Hank 0.27,
+  Curly and Owen 0.31, Wade 0.36), with the `Hips` joint at 0.58–0.66 m (Hank lowest), so one chair height does not
+  fit every rig. Placing chairs from these offsets is a follow-up (#62).
 - Clips are generic library motion. Character-specific gestures (Curly's bowline, Wade's guitar) need new clips.
 - Locomotion picks one clip per speed band (`clipFor` in `game/src/cast.ts`), not a blend tree: walk (or sneak)
   up to 2.45 m/s, jog to 4.4 m/s, run above. Owen walks at 1.4 m/s, walks briskly indoors at 1.8 and jogs
