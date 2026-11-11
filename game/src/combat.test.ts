@@ -7,6 +7,7 @@ import {
   HITSTOP,
   HIT_PUSH,
   KNOCKDOWN,
+  PUNCH_WINDUP,
   RACK_SLOW,
   RISE_TIME,
   SHOVE_SPEED,
@@ -291,6 +292,32 @@ test('sitOut: a man in it sits down where he is for the rest, letting go and let
   assert.equal(who(later, 'x').stance, 'seated', 'out for good: the clock does not stand him up')
   assert.equal(sitOut(g, 'x'), g, 'already out')
   assert.equal(sitOut(f0, 'nobody'), f0)
+})
+
+test('sitOut: a man holding another by the collar lets him go as he sits, and the man he held is on his feet', () => {
+  const held = press(fight([fighter('x', 'them', vec(0, -1), 0)]), 'grab')
+  assert.equal(who(held, 'me').holding, 'x')
+  const g = sitOut(held, 'me')
+  assert.equal(who(g, 'me').stance, 'seated')
+  assert.equal(who(g, 'me').holding, undefined)
+  assert.equal(who(g, 'x').stance, 'up', 'let go, not left held by a man on the floor')
+  assert.equal(who(g, 'x').heldBy, undefined)
+})
+
+test('sitOut: a man with a bottle drops it where he sits, for anyone to pick up', () => {
+  const f = fight([fighter('x', 'them', vec(2, -2), 0, { holding: 'b' })], { things: [{ id: 'b', kind: 'bottle', pos: vec(2, -2), by: 'x' }] })
+  const g = sitOut(f, 'x')
+  assert.equal(who(g, 'x').holding, undefined)
+  assert.equal(what(g, 'b').by, undefined)
+  assert.deepEqual(what(g, 'b').pos, vec(2, -2))
+})
+
+test('sitOut: a punch on its way is called off; it lands if he stays in it', () => {
+  const f = fight([fighter('x', 'them', vec(0, -0.8), 0, { windup: PUNCH_WINDUP - DT / 2 })])
+  assert.ok(runAll(f, 0.5).some((h) => kinds(h).includes('hit')), 'left in it, the punch lands')
+  const g = sitOut(f, 'x')
+  assert.equal(who(g, 'x').windup, undefined)
+  assert.ok(!runAll(g, 2).some((h) => kinds(h).includes('hit')), 'sat out, nothing lands')
 })
 
 test('two men on their feet never stand in one spot', () => {
