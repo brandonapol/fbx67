@@ -14,8 +14,8 @@ import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
 import { mountSoundPanel } from './sound-panel.ts'
 import { spaces } from './levels.ts'
-import type { Rig } from './camera.ts'
-import { armFor, bob, follow, rigFor, toWorld } from './camera.ts'
+import type { Placed, Rig } from './camera.ts'
+import { armFor, bob, follow, place, rigFor, toWorld } from './camera.ts'
 import { canRestart, checkpoint, restart } from './barfight.ts'
 import type { Controls, Device, Pad, Stick } from './input.ts'
 import {
@@ -621,10 +621,9 @@ canvas.addEventListener('pointerup', lift)
 canvas.addEventListener('pointercancel', lift)
 
 const placeRig = (g: Game): void => {
-  const key = `${g.space}|${g.busts}`
-  if (live.rigFor === key) return
+  const { rig, key } = place({ rig: live.rig, key: live.rigFor }, g)
+  live.rig = rig
   live.rigFor = key
-  live.rig = rigFor(g.facing, live.rig.base)
 }
 
 renderHelp()
@@ -817,6 +816,14 @@ if (new URLSearchParams(window.location.search).get('test') === '1') {
       set: (g) => {
         live.g = g
         live.target = undefined
+      },
+      camera: {
+        get: (): Placed => ({ rig: live.rig, key: live.rigFor }),
+        set: (c) => {
+          const { rig, key } = c as Placed
+          live.rig = rig
+          live.rigFor = key
+        },
       },
     }),
   )

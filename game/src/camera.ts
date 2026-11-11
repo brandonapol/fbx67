@@ -51,6 +51,15 @@ const wrap = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a))
 
 export const rigFor = (facing: number, base: number): Rig => ({ yaw: facing, pitch: PITCH_REST, base, reach: 1, idle: 0 })
 
+// The rig and the space (and bust) it was placed for. It is placed behind the player once, on the first frame in a
+// space or after a bust; after that it follows (follow, below).
+export type Placed = Readonly<{ rig: Rig; key: string }>
+
+export const place = (p: Placed, g: Readonly<{ space: string; busts: number; facing: number }>): Placed => {
+  const key = `${g.space}|${g.busts}`
+  return p.key === key ? p : { rig: rigFor(g.facing, p.rig.base), key }
+}
+
 export const orbit = (rig: Rig, d: Look): Rig => ({
   ...rig,
   yaw: rig.yaw + d.yaw,
