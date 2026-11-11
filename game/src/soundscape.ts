@@ -13,6 +13,7 @@ import { PORCH, WALKWAY } from './highwater.ts'
 import { LINE_Z } from './searchEli.ts'
 import type { Rect } from './downtown.ts'
 import type { Bed } from './recordings.ts'
+import { LAB } from './eielson.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
 
@@ -74,6 +75,7 @@ export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'gl
   | 'calls'
   | 'fall'
   | 'screen'
+  | 'sting'
 
 export type Condition = 'writing' | 'refueling'
 
@@ -446,9 +448,10 @@ const slope: Soundscape = {
 // The crash itself ('impact') and Wade's falls ('fall') are beats, not weather: the missions fire them.
 export const act3Soundscapes: Readonly<Record<Act3Space, Soundscape>> = { icefog, cockpit, crash, slope }
 
-// The base in freeze-up: wind over the flat, the central steam plant's hum, a truck idling somewhere on the line.
+// The base in freeze-up: wind over the flat, the central steam plant's hum, a truck idling somewhere on the line. The
+// photo lab's floor is concrete, so Wade hears its people's steps come down the hall.
 const airbase: Soundscape = {
-  ground: { surface: 'gravel', regions: [], tempF: SEASON_F.freezeup },
+  ground: { surface: 'gravel', regions: [{ box: boxOf(LAB), surface: 'concrete' }], tempF: SEASON_F.freezeup },
   layers: [
     ...wind(0.18),
     { kind: 'hum', bus: 'ambience', gain: 0.05, buzz: 0.2 },
