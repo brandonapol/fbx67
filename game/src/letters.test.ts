@@ -53,8 +53,8 @@ const letters = [
 
 const combos = (k: number): readonly (readonly number[])[] => (k === 0 ? [[]] : combos(k - 1).flatMap((c) => [1, 2, 3].map((n) => [...c, n])))
 
-test('the letter scenes are exactly the four the story writes home in, and the hand is all that differs', () => {
-  assert.deepEqual(Object.keys(hands).sort(), ['a1_letter', 'a2_letter_friends', 'a2_letter_work', 'a3_joan'])
+test('the letter scenes are exactly the five the story writes home in or reads the reply to in, and the hand is all that differs', () => {
+  assert.deepEqual(Object.keys(hands).sort(), ['a1_letter', 'a2_letter_friends', 'a2_letter_work', 'a3_curly', 'a3_joan'])
   assert.deepEqual(new Set(Object.values(hands)), new Set(['wade', 'joan']))
   assert.equal(hands.a3_joan, 'joan', 'Joan takes it down')
   const shapes = letters.map(({ scene }) => Object.keys(open(from(upTo(scene)))!).sort())

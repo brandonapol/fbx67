@@ -106,8 +106,8 @@ test('the allowlist file reads one key per line and skips comments', () => {
 })
 
 test('the engine sends every letter note through the letter view, and without the view each one fails', () => {
-  const letterKeys = [...story].filter((k) => /^(a1_letter|a2_letter_work|a2_letter_friends|a3_joan):/.test(k)).sort()
-  assert.equal(letterKeys.length, 12, 'three lines in each of the four letter scenes')
+  const letterKeys = [...story].filter((k) => /^(a1_letter|a2_letter_work|a2_letter_friends|a3_curly|a3_joan):/.test(k)).sort()
+  assert.equal(letterKeys.length, 13, 'three lines in each of four letter scenes, and the one line Wade goes on with at the hospital desk')
   const viaView = engineSenders(stops).filter((s) => s.spot === LETTER)
   assert.deepEqual([...new Set(viaView.map((s) => s.key))].sort(), letterKeys)
   const lost = new Set(engineSenders(stops, (_space, spot) => spot === LETTER).map((s) => s.key))
