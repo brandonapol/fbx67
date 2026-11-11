@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { spaces } from '../src/levels.ts'
 import type { Sample } from '../src/probe.ts'
+import { moments, poses } from '../src/probe.ts'
 import type { Act } from '../../text-game/src/types.ts'
 import { breaches, parseBudgets, spread, summarize, unbudgeted } from './budget.ts'
 
@@ -20,6 +21,8 @@ const sample = (space: string, over: Partial<Sample> = {}): Sample => ({
 })
 
 const order = Object.keys(spaces)
+// Every row docs/perf.md holds: the spaces, then the moments the probe holds still.
+const budgeted = [...order, ...Object.keys(moments)]
 
 const doc = (rows: string, download = '| Initial download | 40 |'): string =>
   [
@@ -46,9 +49,9 @@ const doc = (rows: string, download = '| Initial download | 40 |'): string =>
     '| `later` | 1 | 1 | 1 |',
   ].join('\n')
 
-test('docs/perf.md budgets every space in levels.ts and the download', () => {
+test('docs/perf.md budgets every space in levels.ts, every moment the probe holds, and the download', () => {
   const b = parseBudgets(docs)
-  assert.deepEqual(Object.keys(b.spaces), order)
+  assert.deepEqual(Object.keys(b.spaces), budgeted)
   assert.deepEqual(b.spaces.camp, { drawCalls: 1500, triangles: 1500000, textureMB: 512 })
   assert.equal(b.downloadMB, 40)
 })
@@ -77,10 +80,10 @@ test('spread takes median, 95th percentile and peak', () => {
 
 test('a space fails on its peak frame, and CPU time never fails', () => {
   const b = parseBudgets(docs)
-  const ok = order.map((s) => sample(s, { cpuMs: 900 }))
-  assert.deepEqual(breaches({ downloadMB: 3, spaces: summarize(ok, order) }, b), [])
+  const ok = budgeted.map((s) => sample(s, { cpuMs: 900 }))
+  assert.deepEqual(breaches({ downloadMB: 3, spaces: summarize(ok, budgeted) }, b), [])
   const hot = [...ok, sample('camp', { drawCalls: 1501, triangles: 2e6, textureBytes: 600e6 })]
-  assert.deepEqual(breaches({ downloadMB: 41, spaces: summarize(hot, order) }, b), [
+  assert.deepEqual(breaches({ downloadMB: 41, spaces: summarize(hot, budgeted) }, b), [
     'initial download is 41.00 MB, budget 40 MB',
     'camp: draw calls peaked at 1501, budget 1500',
     'camp: triangles peaked at 2000000, budget 1500000',
@@ -90,7 +93,7 @@ test('a space fails on its peak frame, and CPU time never fails', () => {
 
 test('a budgeted space with no frames fails, and so does a sampled space with no budget', () => {
   const b = parseBudgets(docs)
-  const failed = breaches({ downloadMB: 1, spaces: summarize([...order.slice(1).map((s) => sample(s)), sample('dock')], order) }, b)
+  const failed = breaches({ downloadMB: 1, spaces: summarize([...budgeted.slice(1).map((s) => sample(s)), sample('dock')], budgeted) }, b)
   assert.deepEqual(failed, [`${order[0]}: no frames recorded`, 'dock: no budget row in docs/perf.md'])
 })
 
@@ -120,4 +123,18 @@ test('a run that plays only some spaces fails only on those with no frames', () 
   const act1 = ['line', 'helpTent', 'cabin', 'office', 'jail']
   const some = summarize(act1.slice(1).map((s) => sample(s)), act1)
   assert.deepEqual(breaches({ downloadMB: 1, spaces: some }, b, act1), ['line: no frames recorded'])
+})
+
+test('the Pan at the barfight’s peak has its own row, held to the bar’s limits (#177)', () => {
+  const b = parseBudgets(docs)
+  assert.equal(poses[moments.panPeak]?.space, 'pan', 'the peak is a pose in the Pan')
+  assert.deepEqual(b.spaces.panPeak, b.spaces.pan, 'at peak density the Pan holds the same budget as the Pan')
+  const peak = summarize([sample('panPeak', { drawCalls: 1501 })], ['panPeak'])
+  assert.deepEqual(breaches({ downloadMB: 1, spaces: peak }, b, ['panPeak']), ['panPeak: draw calls peaked at 1501, budget 1500'])
+})
+
+test('a run that names no spaces it played is held to every space, not to a moment another run samples (#177)', () => {
+  const b = parseBudgets(docs)
+  const all = summarize(order.map((s) => sample(s)), order)
+  assert.deepEqual(breaches({ downloadMB: 1, spaces: all }, b), [], 'the prologue run samples every space, not the barfight’s peak')
 })

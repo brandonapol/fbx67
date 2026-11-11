@@ -118,6 +118,13 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   jail: 'cell',
 }
 
+// The barfight mid-fight (#177): at the Pan's beat, besides the Pan before the shove, the run captures the fight at its
+// peak (all ten men in it, src/probe.ts) in each band, and samples it held still against its own row in docs/perf.md.
+export const PEAK = { scene: 'a1_barfight', frame: 'a1_brawl', pose: 'brawl', moment: 'panPeak' } as const
+
+// What the run must sample: every Act 1 space, and the peak.
+export const act1Played: readonly string[] = [...act1Spaces, PEAK.moment]
+
 // A tap of interact acts on the keydown, on whatever is in focus then (main.ts), not on what the plan read a moment
 // before: the camera can have turned since (a beat's capture can leave it placed for its pose). So the smoke run
 // presses only while the live game still offers the step's spot, and presses again, when a press changed nothing, only
