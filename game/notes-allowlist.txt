@@ -40,7 +40,6 @@ a3_confession_none:walk
 a3_confession_safe:stay
 a3_confession_safe:turn
 a3_confession_safe:walk
-a3_curly:continue
 a3_eli:leverage
 a3_eli:quiet
 a3_eli:report

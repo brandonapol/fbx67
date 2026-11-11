@@ -4,7 +4,7 @@ import { menu } from '../../text-game/src/story.ts'
 
 // Letters home (#119): one view for every letter Wade writes to Mama. The story's menu is the letter: its title heads
 // the page, its text is what is said or read before the pen moves (Mama's reply, when Joan reads it aloud, is part of
-// it), and its options are the lines Wade can write. Choosing a line sends its note and writes it on the page in the
+// it; so is Mama's reply read at the hospital desk, a3_curly, whose one line is Wade going on), and its options are the lines Wade can write. Choosing a line sends its note and writes it on the page in the
 // letter's hand. Every option is on offer at once, none picked ahead of the player, the flight date included.
 
 export type Hand = 'wade' | 'joan'
@@ -14,6 +14,7 @@ export const hands: Readonly<Partial<Record<SceneId, Hand>>> = {
   a1_letter: 'wade',
   a2_letter_work: 'wade',
   a2_letter_friends: 'wade',
+  a3_curly: 'wade',
   a3_joan: 'joan',
 }
 
