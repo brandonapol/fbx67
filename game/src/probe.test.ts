@@ -1,10 +1,14 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import type { AnimLayerLike } from './probe.ts'
-import { freezeAnims, posed, poses } from './probe.ts'
+import { freezeAnims, installProbe, posed, poses } from './probe.ts'
 import { centerOf, spaces } from './levels.ts'
 import { playerMotion, start } from './prologue.ts'
 import { clipFor } from './cast.ts'
+import type { Placed } from './camera.ts'
+import { ARM, place, rigFor } from './camera.ts'
+import type { Game } from './prologue.ts'
+import type { View } from './render.ts'
 import { weather } from '../../text-game/src/story.ts'
 
 type Log = string[]
@@ -85,4 +89,74 @@ test('a capture pose stands the player still, whatever pace the live game had', 
   const p = posed(walking, poses.camp!)
   assert.deepEqual(p.vel, { x: 0, z: 0 })
   assert.equal(clipFor(playerMotion(p)), 'idle', 'the clip in the frame does not depend on how fast Owen was walking')
+})
+
+// The page as installProbe sees it: an app whose frames the test steps, a view that ignores shots, and main.ts's update,
+// which places the rig once per space and turns the player's view to it.
+const page = () => {
+  const handlers: Record<string, (() => void)[]> = {}
+  const app = {
+    timeScale: 1,
+    on: (e: string, f: () => void) => {
+      handlers[e] = [...(handlers[e] ?? []), f]
+    },
+    once: (e: string, f: () => void) => {
+      const once = (): void => {
+        handlers[e] = (handlers[e] ?? []).filter((h) => h !== once)
+        f()
+      }
+      app.on(e, once)
+    },
+    root: { findComponents: () => [], findByName: () => null },
+  }
+  const g = globalThis as unknown as Record<string, unknown>
+  g.document = { head: { append: () => {} }, body: { dataset: {} }, createElement: () => ({}) }
+  g.window = {}
+  const view = { app, pose: () => {}, reset: () => {} } as unknown as View
+  return { app, view, emit: (e: string) => [...(handlers[e] ?? [])].forEach((h) => h()) }
+}
+
+test("a capture before a space's first frame leaves the camera behind the player, not the pose (#420)", async () => {
+  const { view, emit } = page()
+  // The player has just walked into the Pan facing away from the pose's facing, and no frame has run there yet.
+  const state: { g: Game; camera: Placed } = {
+    g: { ...start(), space: 'pan', facing: Math.PI, view: Math.PI },
+    camera: { rig: rigFor(Math.PI / 2, ARM.interior), key: 'bar|0' },
+  }
+  assert.notEqual(poses.pan.facing, Math.PI)
+  installProbe(view, {
+    get: () => state.g,
+    set: (g) => {
+      state.g = g
+    },
+    camera: {
+      get: () => state.camera,
+      set: (c) => {
+        state.camera = c as Placed
+      },
+    },
+  })
+  const frame = (): void => {
+    emit('frameupdate')
+    state.camera = place(state.camera, state.g)
+    state.g = { ...state.g, view: state.camera.rig.yaw }
+    emit('frameend')
+  }
+  const run = async (p: Promise<void>): Promise<void> => {
+    const done = { now: false }
+    void p.then(() => {
+      done.now = true
+    })
+    while (!done.now) {
+      frame()
+      await new Promise((r) => setImmediate(r))
+    }
+  }
+  const probe = (globalThis as unknown as { window: { __prologue: { capture: (n: string) => Promise<void>; release: () => Promise<void> } } }).window.__prologue
+  await run(probe.capture('pan'))
+  await run(probe.release())
+  frame()
+  assert.equal(state.g.facing, Math.PI)
+  assert.equal(state.g.view, Math.PI)
+  assert.equal(state.camera.rig.yaw, Math.PI)
 })

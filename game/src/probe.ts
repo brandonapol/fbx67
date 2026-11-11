@@ -78,7 +78,9 @@ export type Sample = Readonly<{
   frameMs: number
 }>
 
-export type Live = Readonly<{ get: () => Game; set: (g: Game) => void }>
+// camera is the page's camera rig and the space it was placed for, kept whole through a capture so release puts it back:
+// a capture taken before a space's first frame would otherwise leave the rig placed behind the pose, not the player.
+export type Live = Readonly<{ get: () => Game; set: (g: Game) => void; camera: Readonly<{ get: () => unknown; set: (c: unknown) => void }> }>
 
 export type AnimLayerLike = {
   readonly activeState: string | null
@@ -116,7 +118,7 @@ const hudStyle = 'body[data-capture] > :not(#scene) { visibility: hidden !import
 
 export const installProbe = (view: View, live: Live): void => {
   const app = view.app
-  const hold: { saved?: Game } = {}
+  const hold: { saved?: Game; camera?: unknown } = {}
   const rec: {
     on: boolean
     start: number
@@ -161,6 +163,7 @@ export const installProbe = (view: View, live: Live): void => {
     if (!found) throw new Error(`no capture pose named ${at}`)
     const pose = heat === undefined ? found : { ...found, heat }
     const saved = hold.saved ?? live.get()
+    if (!hold.saved) hold.camera = live.camera.get()
     hold.saved = saved
     live.set(posed(saved, pose))
     app.timeScale = 0
@@ -174,7 +177,9 @@ export const installProbe = (view: View, live: Live): void => {
 
   const release = (): Promise<void> => {
     if (hold.saved) live.set(hold.saved)
+    if (hold.saved) live.camera.set(hold.camera)
     hold.saved = undefined
+    hold.camera = undefined
     view.pose(undefined)
     app.timeScale = 1
     delete document.body.dataset.capture
