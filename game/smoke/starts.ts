@@ -15,6 +15,8 @@ export const starts: readonly Start[] = [
   { scene: 'a1_barfight', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'pan' },
   { scene: 'a1_tank', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'cell' },
   { scene: 'a2_major', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1', pose: 'story' },
+  // The photo lab refused, straight on to Lucy's kitchen: the start the prologue run samples the kitchen from.
+  { scene: 'a2_hotel', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3', pose: 'kitchen' },
   { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1', pose: 'story' },
   {
     scene: 'a4_news',
