@@ -129,6 +129,9 @@ Not in Git LFS. Every generated asset is rebuilt from a committed manifest and c
   fails the build instead of silently changing the game.
 - **Sources** download once into `game/.cache/` (ignored by git). CC0 sources are not committed: they are public,
   pinned, and re-fetchable.
+  `make generate/characters` downloads each file once even when every character asks for it at once
+  (`game/tools/fetchCache.ts`), and a download whose length does not match Content-Length fails instead of
+  caching a truncated file.
 - **Outputs** (`game/public/props/`, `game/public/characters/`) are committed, so the build and CI need no network.
   `make generate/assets` rebuilds the props byte for byte.
 - Revisit LFS if the committed outputs pass about 100 MB (today about 12 MB).
