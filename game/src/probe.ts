@@ -98,7 +98,7 @@ export const poses: Readonly<Record<string, Pose>> = {
   cafe: { space: 'cafe', pos: vec(-2.5, -2.7), facing: 0, t: 0, shot: { eye: [-3.8, 2.1, -3.0], at: [0.2, 1.0, 2.4] } },
   // The Richardson Highway at the end of the stage: the truck parked at the turnout and, where Barnette stops Wade,
   // the cruiser behind it with its lights going and Barnette at the window; from the road, looking north up it.
-  highway: { space: 'highway', pos: vec(4.6, -18.5), facing: Math.PI, t: 0, stop: 30, shot: { eye: [-0.5, 2.4, -4.5], at: [5.4, 1.0, -16] } },
+  highway: { space: 'highway', pos: vec(5, -18.5), facing: Math.PI, t: 0, stop: 30, shot: { eye: [-1.5, 3.2, 2.5], at: [5.2, 1.0, -15] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
