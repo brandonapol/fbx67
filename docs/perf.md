@@ -67,6 +67,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | Space   | Draw calls | Triangles | Texture memory (MB) |
 | ------- | ---------: | --------: | ------------------: |
 | `bar`   |      1,500 | 1,500,000 |                 512 |
+| `pan`   |      1,500 | 1,500,000 |                 512 |
 | `boarding` |   1,500 | 1,500,000 |                 512 |
 | `room`  |      1,500 | 1,500,000 |                 512 |
 | `camp`  |      1,500 | 1,500,000 |                 512 |

@@ -19,8 +19,10 @@ import { eielson } from './eielson.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
+import { COUNTER, dressing } from './silverPan.ts'
+import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 
-export type SpaceId = 'bar' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -119,7 +121,7 @@ export const bar: Space = {
   spawn: vec(0, 3.0),
   props: [
     ...walls(12, 10, '#7a5a3f'),
-    { box: { x: -1.5, z: -3.3, w: 7, d: 0.9 }, h: 1.1, color: '#3e2618', solid: true, occludes: true },
+    { box: COUNTER, h: 1.1, color: '#3e2618', solid: true, occludes: true },
     { box: { x: -1.5, z: -4.6, w: 8, d: 0.4 }, h: 2.2, color: '#4a2f1e', solid: true },
     { box: { x: -3, z: -4.55, w: 1.4, d: 0.3 }, h: 0.35, y: 1.6, color: '#c7a24a', glow: true },
     { box: { x: 0.5, z: -4.55, w: 1.4, d: 0.3 }, h: 0.35, y: 1.6, color: '#8fb7a0', glow: true },
@@ -142,6 +144,21 @@ export const bar: Space = {
     { id: 'hank', x: -1.5, z: -2.6, r: 1.5, note: 'round', hold: ROUND_TIME },
     { id: 'door', x: 0, z: 4.4, r: 1.0, note: 'goodnight' },
   ],
+}
+
+// The Silver Pan in Act 1, the Saturday after the water went down (barfight.ts, #176): the prologue's bar in its
+// dressing (silverPan.ts), with the people who are in it for the fight. Wade comes in on his stool; turning to Hank opens
+// his speech, and the fight is the space's play.
+export const pan: Space = {
+  ...bar,
+  id: 'pan',
+  act: 'Act 1: Flood',
+  back: undefined,
+  ground: '#4a3a28',
+  spawn: WADE_STOOL,
+  props: [...bar.props, ...dressing],
+  figures: panFigures,
+  spots: [HANK_SPOT],
 }
 
 // A wall along x at z, from x0 to x1, with the door gaps cut out (thickness 0.2).
@@ -350,7 +367,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets that are built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the

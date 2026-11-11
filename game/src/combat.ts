@@ -15,7 +15,9 @@ import { RADIUS, add, angleBetween, angleTo, distance, hits, length, move, norma
 
 export type Side = 'us' | 'them'
 
-export type Stance = 'up' | 'staggered' | 'held' | 'down' | 'rising' | 'burned' | 'pinned' | 'wary'
+// Seated: on a stool, out of the fight. Nobody goes for him, the room's moves pass him by, and his verbs do nothing
+// until something stands him up (`haul`).
+export type Stance = 'up' | 'staggered' | 'held' | 'down' | 'rising' | 'burned' | 'pinned' | 'wary' | 'seated'
 
 export type Fighter = Readonly<{
   id: string
@@ -74,7 +76,7 @@ export type Tally = Readonly<{
   redHanded?: boolean
 }>
 
-export type EventKind = 'shove' | 'whiff' | 'grab' | 'drop' | 'smash' | 'yelp' | 'pin' | 'windup' | 'hit' | 'down' | 'slip' | 'getUp' | 'thud' | 'warning' | 'law'
+export type EventKind = 'shove' | 'whiff' | 'grab' | 'drop' | 'smash' | 'yelp' | 'pin' | 'windup' | 'hit' | 'down' | 'slip' | 'getUp' | 'thud' | 'warning' | 'law' | 'haul'
 
 export type FightEvent = Readonly<{ kind: EventKind; who: string; at: Vec; weight?: number }>
 
@@ -149,7 +151,7 @@ const holds = (f: Fight, who: Fighter, kind: ThingKind): Thing | undefined => {
 
 const free = (x: Fighter): boolean => x.stance === 'up'
 
-const standing = (x: Fighter): boolean => x.stance !== 'down' && x.stance !== 'rising'
+const standing = (x: Fighter): boolean => x.stance !== 'down' && x.stance !== 'rising' && x.stance !== 'seated'
 
 const put = (f: Fight, x: Fighter): Fight => ({ ...f, fighters: f.fighters.map((y) => (y.id === x.id ? x : y)) })
 
@@ -392,7 +394,7 @@ const apart = (f: Fight): Fight =>
     f.fighters.slice(i + 1).reduce<Fight>((h, b0) => {
       const x = byId(h, a.id)!
       const y = byId(h, b0.id)!
-      if (x.heldBy || y.heldBy || x.holding === y.id || y.holding === x.id || x.stance === 'down' || y.stance === 'down') return h
+      if (x.heldBy || y.heldBy || x.holding === y.id || y.holding === x.id || [x, y].some((z) => z.stance === 'down' || z.stance === 'seated')) return h
       const d = distance(x.pos, y.pos)
       if (d >= 2 * RADIUS) return h
       const n = d > 1e-6 ? normalize(sub(y.pos, x.pos)) : vec(1, 0)
@@ -447,5 +449,12 @@ export const details = (f: Fight): Details => ({
   stood: f.tally.beside >= f.endsAt / 2,
   redHanded: !!f.tally.redHanded,
 })
+
+// Someone stands a seated man up and pulls him into it by the collar: he is on his feet at `pos`, facing `facing`.
+export const haul = (f: Fight, id: string, pos: Vec, facing: number): Fight => {
+  const x = byId(f, id)
+  if (!x || x.stance !== 'seated') return f
+  return emit(put(f, { ...x, pos, facing, stance: 'up', timer: 0, vel: vec(0, 0) }), 'haul', x)
+}
 
 export const warned = (f: Fight): boolean => f.t >= f.warnAt

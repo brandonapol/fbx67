@@ -81,6 +81,7 @@ import { showing } from './talk.ts'
 import { ASK_PROMPT, TOWN_SEED, ask, asker, townsfolk } from './townsfolk.ts'
 import type { Interactable, Vec } from './world.ts'
 import { distance, length, sub, vec } from './world.ts'
+import { fightHelp, intent as fightIntent } from './fightControls.ts'
 
 const $ = <T extends HTMLElement>(id: string): T => {
   const el = document.getElementById(id)
@@ -164,6 +165,9 @@ const live: {
   // What the town has said to the player (talk.ts): asking the way puts a line here, shown over the speaker.
   talk: Talk
   shownLine?: string
+  // Keys gone down since the last tick, for the barfight's verbs (fightControls.ts), and whether its help is up.
+  pressed: Set<string>
+  fighting: boolean
 } = {
   g: first,
   rig: rigFor(first.facing, armFor(spaces[first.space])),
@@ -180,6 +184,8 @@ const live: {
   now: 0,
   shownAt: 0,
   talk: { spent: {}, log: [] },
+  pressed: new Set(),
+  fighting: false,
   log: firstShown === 'play' ? parseLog(store.read(JOURNAL_KEY), savePath(first.path)) : emptyLog,
   prefs: parsePrefs(store.read(PREFS_KEY)),
 }
@@ -266,7 +272,7 @@ const choose = (id: string): void => {
 }
 
 const renderHelp = (): void => {
-  helpEl.textContent = help(live.device, live.controls)
+  helpEl.textContent = live.fighting ? fightHelp(live.device, live.controls.bindings) : help(live.device, live.controls)
 }
 
 const setDevice = (d: Device): void => {
@@ -474,6 +480,7 @@ const input = (pad: Pad | undefined, dt: number): Readonly<{ input: Input; look:
 window.addEventListener('keydown', (e) => {
   setDevice('keyboard')
   if (e.repeat) return
+  live.pressed.add(e.code)
   if (!runs(live.screen)) {
     // The Esc that let go of the mouse already paused (pointerlockchange); it does not also resume.
     if (e.code === 'Escape' && performance.now() - live.shownAt > 250) go('back')
@@ -724,9 +731,17 @@ view.app.on('update', (dtRaw: number) => {
   const l3 = pad ? pressedNow(live.pad, pad.buttons, PAD.l3) : false
   const lean = pad ? padMove(pad) : { x: 0, y: 0 }
   live.run = runLatch(live.run, l3, Math.hypot(lean.x, lean.y))
+  const padBefore = live.pad
   padFrame(pad)
   const frame = input(pad, dt)
-  live.g = tick(live.g, frame.input, dt)
+  // In the barfight the verbs pressed since the last tick go with this one (fightControls.ts).
+  const verbs = live.g.brawl ? fightIntent(live.controls.bindings, live.keys, live.pressed, pad, padBefore) : undefined
+  live.pressed.clear()
+  live.g = tick(live.g, verbs ? { ...frame.input, verbs } : frame.input, dt)
+  if (live.fighting !== !!live.g.brawl) {
+    live.fighting = !!live.g.brawl
+    renderHelp()
+  }
   const more = (n: number): void => {
     if (n <= 0 || live.g.panel) return
     live.g = tick(live.g, input(pad, dt).input, dt)

@@ -14,6 +14,7 @@ import {
   WALK,
   details,
   fighter,
+  haul,
   idle,
   start,
   step,
@@ -243,6 +244,25 @@ test('a man who answers does not throw the first punch, and does once he is hit'
   })
   assert.ok(runAll(f, 4).every((g) => !g.events.some((e) => e.kind === 'windup' && e.who === 'eli')))
   assert.ok(runAll(f, 12).some((g) => g.events.some((e) => e.kind === 'windup' && e.who === 'eli')))
+})
+
+test('seated: nobody goes for him, the rack and a bottle pass him by, and his verbs do nothing', () => {
+  const f = fight([fighter('x', 'them', vec(0, -3), 0)], { fighters: [fighter('me', 'us', vec(0, 0), NORTH, { stance: 'seated', timer: Infinity }), fighter('x', 'them', vec(0, -3), 0)] })
+  const later = run(f, 10, { shove: true, grab: true, use: true, run: true, move: vec(1, 0) })
+  assert.equal(who(later, 'me').stance, 'seated', 'still on the stool: the clock does not stand him up')
+  assert.deepEqual(who(later, 'me').pos, vec(0, 0), 'he does not walk')
+  assert.ok(!later.fighters.some((x) => x.windup !== undefined) && !runAll(f, 10).some((g) => kinds(g).includes('hit')), 'nobody throws at him')
+  assert.equal(later.tally.beside, 0)
+})
+
+test('haul: a seated man is stood up where he is put, on his feet and in it; anyone else is left alone', () => {
+  const f = fight([], { fighters: [fighter('me', 'us', vec(0, 0), NORTH, { stance: 'seated', timer: Infinity })] })
+  const g = haul(f, 'me', vec(1, 1), 0)
+  assert.equal(who(g, 'me').stance, 'up')
+  assert.deepEqual(who(g, 'me').pos, vec(1, 1))
+  assert.deepEqual(kinds(g), ['haul'])
+  assert.equal(haul(g, 'me', vec(2, 2), 0), g, 'already up')
+  assert.equal(haul(f, 'nobody', vec(2, 2), 0), f)
 })
 
 test('two men on their feet never stand in one spot', () => {

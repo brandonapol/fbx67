@@ -18,13 +18,16 @@ test('each space answers to the act and place the story names for it', () => {
   assert.equal(spaces.downtown.place, undefined, 'downtown is walked through, never routed to')
 })
 
-// a1_barfight: Act 1 at the Silver Pan, a place with a space only in the prologue, so none yet in Act 1.
+// a1_letter: Act 1's letter home, at no place with a space.
+const letter = replay(Array.from({ length: 24 }, () => 1)).at(-1)!
+
+// a1_barfight: Act 1 at the Silver Pan, which has a space in the prologue and its own in Act 1 (barfight.ts).
 const barfight = replay(Array.from({ length: 19 }, () => 1)).at(-1)!
 
 test('the story backdrop belongs to no act: a spaceless scene of any act shows its menu there', () => {
   assert.equal(spaces.story.act, undefined)
-  assert.equal(barfight.scene, 'a1_barfight')
-  assert.deepEqual(route(barfight, 'story'), { to: 'menu' })
+  assert.equal(letter.scene, 'a1_letter')
+  assert.deepEqual(route(letter, 'story'), { to: 'menu' })
   assert.deepEqual(route(replay([1, 1, 1, 1]).at(-1)!, 'story'), { to: 'space', space: 'camp' })
 })
 
@@ -37,15 +40,22 @@ test('a place the engine has no space for, or no place at all, has no space; a p
 })
 
 test('a scene with no space in an act the current space is not part of leaves for the text build', () => {
-  assert.deepEqual(route(barfight, 'flood'), { to: 'text' })
+  assert.deepEqual(route(letter, 'flood'), { to: 'text' })
 })
 
 test('Act 1 opens on the sandbag line from the prologue flood, and its spaceless scenes show their menus there', () => {
   const flood = replay([1, 1, 1, 1, 1, 1]).at(-1)!
   assert.equal(flood.scene, 'a1_flood')
   assert.deepEqual(route(flood, 'flood'), { to: 'space', space: 'line' })
-  assert.deepEqual(route(barfight, 'line'), { to: 'menu' })
+  assert.deepEqual(route(letter, 'line'), { to: 'menu' })
   assert.deepEqual(route(replay([1, 1, 1, 1, 1, 1, 2]).at(-1)!, 'line'), { to: 'space', space: 'cabin' }, 'the cabin, on the stay path')
+})
+
+test('the Silver Pan in Act 1 is its own space, not the prologue bar', () => {
+  assert.equal(barfight.scene, 'a1_barfight')
+  assert.deepEqual(route(barfight, 'story'), { to: 'space', space: 'pan' })
+  assert.deepEqual(route(barfight, 'office'), { to: 'space', space: 'pan' })
+  assert.equal(spaceFor('Prologue', 'silverPan'), 'bar')
 })
 
 test('a place with a space routes into it', () => {
@@ -54,7 +64,9 @@ test('a place with a space routes into it', () => {
 })
 
 test('a later act at a prologue place leaves for the text build, not the prologue space', () => {
-  const later = replay(best).filter((s) => menu(s).act !== 'Prologue' && Object.values(spaces).some((sp) => sp.act === 'Prologue' && sp.place === place(s)))
+  const later = replay(best).filter(
+    (s) => menu(s).act !== 'Prologue' && spaceFor(menu(s).act, place(s)) === undefined && Object.values(spaces).some((sp) => sp.act === 'Prologue' && sp.place === place(s)),
+  )
   assert.ok(later.length > 0, 'the best route revisits a prologue place')
   later.forEach((s) => assert.deepEqual(route(s, 'bar'), { to: 'text' }, s.scene))
 })

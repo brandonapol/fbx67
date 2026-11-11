@@ -8,6 +8,8 @@ import type { Game } from './prologue.ts'
 import { available, focus, interact, press, resume, tick } from './prologue.ts'
 import { route } from './router.ts'
 import { open as openLetter } from './letters.ts'
+import { openedOf } from './barfight.ts'
+import { PLANS, listen, playOut } from './barfightBot.ts'
 import type { SpaceId } from './levels.ts'
 import type { Interactable } from './world.ts'
 import { angleTo, vec } from './world.ts'
@@ -97,6 +99,19 @@ const letterSenders = (stop: Stop, g: Game): readonly Sender[] =>
     return stop.offers.filter((o) => isDeepStrictEqual(landed, o.to)).map((o) => ({ key: o.key, space: g.space, spot: LETTER }))
   })
 
+// A fight has no spot to use: its notes are sent by playing it out. From the barfight's opening prompt, every plan of
+// the scripted player (barfightBot.ts), the spot being the fight itself.
+export const FIGHT = 'fight'
+// A play is a few hundred milliseconds of ticks, so each stop's are played once.
+const fought = new WeakMap<Stop, readonly State[]>()
+const fightSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
+  const g = arrived.space === 'pan' ? listen(arrived) : arrived
+  if (!g.panel?.buttons.some((b) => openedOf(b.id))) return []
+  const landed = fought.get(stop) ?? PLANS.map((p) => playOut(g, p).story)
+  fought.set(stop, landed)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: FIGHT }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -105,14 +120,14 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   }
   if (r.to !== 'space') return []
   const g = resume(stop.state, [0])
-  return available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...available(g)
     .filter((i) => !without(r.space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)
       if (focus(at)?.id !== i.id) throw new Error(`the probe cannot focus ${r.space}/${i.id} at ${stop.state.scene}`)
       const landed = outcomes(interact(at), 2).map((o) => o.story).filter((s) => s !== stop.state)
       return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: r.space, spot: i.id }))
-    })
+    })]
 }
 
 export const engineSenders = (stops: readonly Stop[], without?: (space: SpaceId, spot: string) => boolean): readonly Sender[] =>

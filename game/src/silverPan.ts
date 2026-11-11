@@ -2,7 +2,7 @@ import type { State } from '../../text-game/src/types.ts'
 import type { Figure, Prop } from './levels.ts'
 import type { Pose } from './ambient.ts'
 import { lookOf, poses } from './ambient.ts'
-import type { Vec } from './world.ts'
+import type { Box, Vec } from './world.ts'
 import { vec } from './world.ts'
 
 // The Silver Pan, full (issue #46): the dressing that makes the bar read as a 1967 Fairbanks bar at 11 pm in July, and
@@ -22,6 +22,11 @@ export const JUKEBOX: Vec = vec(5.55, -0.5)
 export const ORDER_STOOL: Vec = vec(-0.5, -2.35)
 export const STOOL_XS: readonly number[] = [-4.5, -3.5, -2.5, -1.5, -0.5, 0.5, 1.5]
 export const STOOL_Z = -2.35
+// The solid bar a bottle breaks on (levels.ts stands it in the room), the oil stove in the southwest corner, and the
+// moose rack over the door, low enough to pull down: what the barfight's room is made of (barfight.ts).
+export const COUNTER: Box = { x: -1.5, z: -3.3, w: 7, d: 0.9 }
+export const STOVE: Box = { x: -5.2, z: 4.1, w: 0.7, d: 0.7 }
+export const MOOSE_RACK: Vec = vec(0, 4.5)
 
 const brass = '#b8913e'
 const darkWood = '#3a2416'
@@ -108,7 +113,7 @@ export const pieces: Readonly<Record<string, readonly Prop[]>> = {
   ],
   // The oil stove in the southwest corner and its pipe.
   oilStove: [
-    { box: { x: -5.2, z: 4.1, w: 0.7, d: 0.7 }, h: 0.9, color: '#2e2a26', solid: true, shape: 'cylinder' },
+    { box: STOVE, h: 0.9, color: '#2e2a26', solid: true, shape: 'cylinder' },
     { box: { x: -5.2, z: 4.1, w: 0.15, d: 0.15 }, h: 1.9, y: 0.9, color: '#262320', shape: 'cylinder' },
   ],
   // The coat hooks west of the door, heavy with jackets, and the pay phone east of it.

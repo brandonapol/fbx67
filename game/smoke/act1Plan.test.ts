@@ -12,6 +12,8 @@ import type { Step } from './act1Plan.ts'
 import { ACT1_PATH, ACT2_FIRST, act1Spaces, isBeat, nextStep, poseFor } from './act1Plan.ts'
 
 const DT = 1 / 30
+// A steer in the browser is a walk target and two drawn frames at the smoke run's pace of four ticks a frame.
+const STEER_TICKS = 8
 
 const walkTo = (g: Game, to: Vec): Game => {
   let cur = g
@@ -34,6 +36,10 @@ const act = (g: Game, s: Step): Game => {
     const started = interact(g)
     const fill = (cur: Game, n: number): Game => (cur.holding && n < 600 ? fill(tick(cur, { dir: vec(0, 0), hold: true }, DT), n + 1) : cur)
     return s.hold ? fill(started, 0) : started
+  }
+  if (s.kind === 'steer') {
+    const toward = (cur: Game, n: number): Game => (n === 0 || !cur.brawl ? cur : toward(tick(cur, { dir: sub(vec(s.x, s.z), cur.pos), hold: false, verbs: { shove: s.getUp, grab: false, use: false } }, DT), n - 1))
+    return toward(g, STEER_TICKS)
   }
   if (s.kind === 'walk') {
     const there = s.points.reduce((cur, [x, z]) => walkTo(cur, vec(x, z)), g)
@@ -72,7 +78,7 @@ test('every Act 1 space is a beat of the run, and each beat has a pose in its sp
   const { beats } = played()
   assert.deepEqual(
     beats.map((b) => `${b.story.scene} in ${b.space}`),
-    ['a1_flood in line', 'a1_errand in helpTent', 'a1_trail in line', 'a1_body in cabin', 'a1_ruling in helpTent', 'a1_lucy in office', 'a1_tank in jail'],
+    ['a1_flood in line', 'a1_errand in helpTent', 'a1_trail in line', 'a1_body in cabin', 'a1_ruling in helpTent', 'a1_lucy in office', 'a1_barfight in pan', 'a1_tank in jail'],
   )
   assert.deepEqual([...new Set(beats.map((b) => b.space))].sort(), [...act1Spaces].sort())
   beats.forEach((b) => assert.equal(poses[poseFor[b.space]!]?.space, b.space, `${b.story.scene} in ${b.space}`))
