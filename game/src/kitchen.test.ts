@@ -58,8 +58,9 @@ const play = (arrived: Game, notes: readonly string[]): Game =>
 
 const starts = { theHotelBar: 'a2_hotel', theMajorsCabinet: 'a2_co_ask' } as const
 
-// The endings played through menus at the table: all but the cabinet searched, which is the base's run.
-const atTheTable = (e: MissionEnding): boolean => e.applies[0] !== 'search'
+// The endings played through menus at the table: all but the cabinet searched, which is the base's run, and the hotel
+// bar heard, which is played in the bar (hotelBar.ts).
+const atTheTable = (id: string) => (e: MissionEnding): boolean => e.applies[0] !== 'search' && (id !== 'theHotelBar' || e.note === 'skipped')
 
 Object.entries(starts).forEach(([id, scene]) => {
   const arrived = startFrom(hash(pathTo(scene)), '')
@@ -86,15 +87,16 @@ Object.entries(starts).forEach(([id, scene]) => {
 
   // Each of the mission's notes played at the table, as the scene notes it applies, one per menu: the text build's path
   // for it. Searching the Major's cabinet tonight takes Wade to the base, where the run sends its notes
-  // (majorsCabinet.test.ts); at the table only refusing plays on as menus.
+  // (majorsCabinet.test.ts), and bringing the guitar takes him to the hotel bar, where the set does (hotelBar.test.ts).
   test(`every way through ${id} from the table lands where its mission note does, on the text build's path`, () => {
     const m = mission(arrived.story)
     assert.equal(m?.id, id)
-    m!.endings.filter(atTheTable).forEach((e) => {
+    m!.endings.filter(atTheTable(id)).forEach((e) => {
       const g = play(arrived, e.applies)
       assert.deepEqual(g.story, sendMission(arrived.story, e.note), e.note)
-      assert.equal(g.space, 'story', `out of the kitchen, ${g.story.scene} plays over the story backdrop`)
-      assert.equal(g.panel?.title, menu(g.story).title)
+      const r = route(g.story, 'story')
+      assert.equal(g.space, r.to === 'space' ? r.space : 'story', `out of the kitchen, ${g.story.scene} plays where it routes`)
+      if (r.to !== 'space') assert.equal(g.panel?.title, menu(g.story).title)
     })
   })
 })
