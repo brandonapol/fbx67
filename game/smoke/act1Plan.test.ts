@@ -7,9 +7,9 @@ import { interact, press, still, tick } from '../src/prologue.ts'
 import { sheet } from '../src/letters.ts'
 import type { Vec } from '../src/world.ts'
 import { distance, sub, vec } from '../src/world.ts'
-import { poses } from '../src/probe.ts'
+import { moments, poses } from '../src/probe.ts'
 import type { Step } from './act1Plan.ts'
-import { ACT1_PATH, ACT2_FIRST, act1Spaces, isBeat, nextStep, offers, poseFor } from './act1Plan.ts'
+import { ACT1_PATH, ACT2_FIRST, PEAK, act1Played, act1Spaces, isBeat, nextStep, offers, poseFor } from './act1Plan.ts'
 
 const DT = 1 / 30
 // A steer in the browser is a walk target and two drawn frames at the smoke run's pace of four ticks a frame.
@@ -108,4 +108,13 @@ test('a press of interact is made only while the live game still offers the plan
   const aimed = act(turned, nextStep(turned))
   assert.ok(offers(step, aimed), 'aimed at Hank again, he is offered')
   assert.ok(act(aimed, step).panel, 'and the press opens the speech')
+})
+
+test('at the Pan’s beat the run also takes the fight at its peak: a frame per band, and the peak sampled on its own row (#177)', () => {
+  const { beats } = played()
+  const pan = beats.find((b) => b.story.scene === PEAK.scene)
+  assert.ok(pan, `${PEAK.scene} is a beat of the run`)
+  assert.equal(poses[PEAK.pose]?.space, pan.space, 'the peak pose is in the beat’s space')
+  assert.equal(moments[PEAK.moment], PEAK.pose, 'the sampled moment holds the same pose as the frame')
+  assert.deepEqual(act1Played, [...act1Spaces, PEAK.moment], 'the run fails with no frames of the peak')
 })

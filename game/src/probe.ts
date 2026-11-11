@@ -1,5 +1,9 @@
 import type * as pc from 'playcanvas'
 import type { SpaceId } from './levels.ts'
+import { spaces } from './levels.ts'
+import type { Brawl } from './barfight.ts'
+import { WADE_STOOL, begin, play, roomOf, wade } from './barfight.ts'
+import { idle } from './combat.ts'
 import type { Game } from './prologue.ts'
 import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
@@ -11,8 +15,23 @@ const FLIGHT_SHOT = 22
 
 // heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band; ride, when
 // set, holds a boat at that many seconds into its ride, so the frame does not depend on how fast the page ran; flight,
-// likewise, holds the plane that many seconds into the flight north (flight.ts).
-export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number; flight?: number }>
+// likewise, holds the plane that many seconds into the flight north (flight.ts); fight puts the barfight on, that many
+// seconds after the shove (fightAt), and stands the player where it has Wade, whatever pos says.
+export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number; flight?: number; fight?: number }>
+
+// The barfight at its peak (#177): 16 s after the shove every patron has come in (barfight.ts, JOINERS) and none has
+// had enough yet, so all ten men in the Pan are in it, Wade on his feet among them.
+export const PEAK_FIGHT = 16
+
+const FIGHT_DT = 1 / 30
+
+// The fight that many seconds after Wade got up, played on its own clock with Wade standing idle: the same every time,
+// however fast the page ran.
+export const fightAt = (seconds: number): Brawl =>
+  Array.from({ length: Math.round(seconds / FIGHT_DT) }).reduce<Brawl>(
+    (b) => play(b, idle, FIGHT_DT),
+    begin('gotUp', roomOf(spaces.pan.props, spaces.pan.figures)),
+  )
 
 export const poses: Readonly<Record<string, Pose>> = {
   bar: { space: 'bar', pos: vec(0, 3.9), facing: Math.PI, t: 0, shot: { eye: [0, 9.5, 9.5], at: [0, 0.9, 0] } },
@@ -39,6 +58,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // Act 1's Saturday at the Silver Pan: Wade on his stool for Hank's speech, Eli on the next one, the drunk and his
   // friends behind them, the mud on the boards, from over the room toward the bar.
   pan: { space: 'pan', pos: vec(0.5, -2.35), facing: 0, t: 0, shot: { eye: [3.6, 3.2, 3.4], at: [-0.6, 1.0, -2.2] } },
+  // The same Saturday mid-fight, at its peak: all ten in it along the bar and down to the card table, from the corner
+  // by the jukebox and the door, over the room.
+  brawl: { space: 'pan', pos: WADE_STOOL, facing: 0, t: 0, fight: PEAK_FIGHT, shot: { eye: [4.8, 3.2, 4.2], at: [-1.0, 0.9, -0.8] } },
   // Act 1's land office: Wade in the water inside the door, Eli by him, Lucy at the foot of the stair with the ledgers.
   office: { space: 'office', pos: vec(0, -4.1), facing: 0, t: 0, shot: { eye: [-2.5, 2.6, -4.6], at: [3.5, 1.2, -1] } },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
@@ -68,8 +90,14 @@ export const poses: Readonly<Record<string, Pose>> = {
 
 export const WARMUP_FRAMES = 5
 
+// A moment budgeted on its own row in docs/perf.md, beside its space's: a capture pose held still and sampled, its
+// frames counted under the moment's id and not its space's. The Pan at the barfight's peak is the bar at its densest.
+export const moments = { panPeak: 'brawl' } as const satisfies Readonly<Record<string, keyof typeof poses>>
+
+export type Moment = keyof typeof moments
+
 export type Sample = Readonly<{
-  space: SpaceId
+  space: SpaceId | Moment
   drawCalls: number
   triangles: number
   textureBytes: number
@@ -105,7 +133,10 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
   const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
-  return { ...g, story, pos: p.pos, facing: p.facing, t: p.t, vel: vec(0, 0), holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
+  const held = { ...g, story, pos: p.pos, facing: p.facing, t: p.t, vel: vec(0, 0), holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
+  if (p.fight === undefined) return held
+  const brawl = fightAt(p.fight)
+  return { ...held, brawl, pos: wade(brawl).pos, facing: wade(brawl).facing }
 }
 
 const triangles = (app: pc.AppBase): number =>
@@ -123,7 +154,8 @@ export const installProbe = (view: View, live: Live): void => {
     on: boolean
     start: number
     age: number
-    space?: SpaceId
+    space?: Sample['space']
+    moment?: Moment
     pending?: Pick<Sample, 'space' | 'triangles' | 'cpuMs'>
     samples: Sample[]
   } = { on: false, start: 0, age: 0, samples: [] }
@@ -151,7 +183,7 @@ export const installProbe = (view: View, live: Live): void => {
   app.on('frameend', () => {
     if (!rec.on) return
     const cpuMs = performance.now() - rec.start
-    const space = live.get().space
+    const space = rec.moment ?? live.get().space
     rec.age = space === rec.space ? rec.age + 1 : 0
     rec.space = space
     if (rec.age >= WARMUP_FRAMES) rec.pending = { space, triangles: triangles(app), cpuMs }
@@ -200,7 +232,22 @@ export const installProbe = (view: View, live: Live): void => {
     rec.on = on
     rec.age = 0
     rec.space = undefined
+    rec.moment = undefined
     rec.pending = undefined
+  }
+
+  // Holds a moment's pose still and records n frames of it, past the warmup, under the moment's id; then puts the game
+  // back and records as before.
+  const sampleMoment = async (moment: string, n: number): Promise<void> => {
+    if (!(moment in moments)) throw new Error(`no moment named ${moment}`)
+    const id = moment as Moment
+    const was = rec.on
+    await capture(id, moments[id])
+    record(true)
+    rec.moment = id
+    await frames(WARMUP_FRAMES + n + 1)
+    record(was)
+    await release()
   }
 
   const w = window as unknown as { __prologue: object }
@@ -209,5 +256,5 @@ export const installProbe = (view: View, live: Live): void => {
     return app.root.findByName(name)?.enabled ?? false
   }
 
-  w.__prologue = { ...w.__prologue, capture, release, visit, record, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
+  w.__prologue = { ...w.__prologue, capture, release, visit, record, sampleMoment, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
 }

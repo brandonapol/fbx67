@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replayPath } from '../src/start.ts'
 import type { Step } from './act1Plan.ts'
-import { ACT1_PATH, ACT2_FIRST, act1Spaces, bands, isBeat, label, nextStep, offers, poseFor } from './act1Plan.ts'
+import { ACT1_PATH, ACT2_FIRST, PEAK, act1Played, bands, isBeat, label, nextStep, offers, poseFor } from './act1Plan.ts'
 import type { Page } from './browser.ts'
 import { frames, game, smoke } from './browser.ts'
 import { stallContext, stallMessage } from './stall.ts'
@@ -12,7 +12,7 @@ import { stallContext, stallMessage } from './stall.ts'
 // comes into) it captures that space's frame in each moral-weather band, into game/smoke/baselines/act1, and it
 // samples every Act 1 space against docs/perf.md. act1Plan.test.ts proves the same steps headless.
 
-const run = smoke({ baselines: 'act1', played: act1Spaces, port: 4320, report: 'smoke-report-act1' })
+const run = smoke({ baselines: 'act1', played: act1Played, port: 4320, report: 'smoke-report-act1' })
 
 // Game ticks per drawn frame (main.ts, pace): software rendering draws a few frames a second.
 const FAST = 4
@@ -99,6 +99,9 @@ const take = async (p: Page, s: Step): Promise<void> => {
 
 const MAX_STEPS = 1500
 
+// Frames of the fight's peak sampled held still, as many as the story backdrop's in each start.
+const PEAK_FRAMES = 40
+
 test('Act 1 plays from its path to Act 2’s first scene, a frame per beat in each band', { timeout: 1500000 }, async () => {
   const { page, errors, close } = await run.open(ACT1_PATH)
   const started = Date.now()
@@ -116,6 +119,10 @@ test('Act 1 plays from its path to Act 2’s first scene, a frame per beat in ea
         beats.push(g.story.scene)
         console.log(`  beat ${g.story.scene} in ${g.space}: ${((Date.now() - started) / 1000).toFixed(0)} s in`)
         for (const b of bands) await run.capture(page, `${g.story.scene}${b.suffix}`, poseFor[g.space as keyof typeof poseFor]!, b.heat)
+        if (g.story.scene === PEAK.scene) {
+          for (const b of bands) await run.capture(page, `${PEAK.frame}${b.suffix}`, PEAK.pose, b.heat)
+          await page.evaluate(([m, n]) => (window as any).__prologue.sampleMoment(m, n), [PEAK.moment, PEAK_FRAMES] as const)
+        }
       }
       before = g
       // A capture poses the game and puts it back, and the camera with it may not be where it was: plan from the game

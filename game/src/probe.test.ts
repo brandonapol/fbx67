@@ -10,6 +10,8 @@ import { ARM, place, rigFor } from './camera.ts'
 import type { Game } from './prologue.ts'
 import type { View } from './render.ts'
 import { weather } from '../../text-game/src/story.ts'
+import { startFrom } from './start.ts'
+import { wade } from './barfight.ts'
 
 type Log = string[]
 
@@ -159,4 +161,20 @@ test("a capture before a space's first frame leaves the camera behind the player
   assert.equal(state.g.facing, Math.PI)
   assert.equal(state.g.view, Math.PI)
   assert.equal(state.camera.rig.yaw, Math.PI)
+})
+
+test('the brawl pose holds the Silver Pan at the barfight’s peak: all ten fighters in it, the same every time (#177)', () => {
+  // `node src/cli.ts --choices 1,…,1` (19 ones) ends on a1_barfight, the Act 1 smoke's beat in the Pan.
+  const pan = startFrom(`#path=${Array.from({ length: 19 }, () => 1).join(',')}`, '')
+  assert.equal(pan.story.scene, 'a1_barfight')
+  assert.equal(pan.brawl, undefined, 'the beat is before the shove')
+  const p = posed(pan, poses.brawl!)
+  const b = p.brawl!
+  assert.ok(b, 'the pose puts the fight on')
+  assert.equal(b.fight.fighters.length, 10)
+  assert.deepEqual(b.fight.fighters.filter((x) => x.stance === 'seated').map((x) => x.id), [], 'every man in the bar is in it')
+  assert.equal(wade(b).stance, 'up', 'Wade on his feet')
+  assert.deepEqual([p.pos, p.facing], [wade(b).pos, wade(b).facing], 'the player stands where the fight has Wade')
+  assert.deepEqual(posed(pan, poses.brawl!), p, 'the same frame every time')
+  assert.deepEqual(posed(pan, poses.pan!).brawl, undefined, 'the Pan’s own pose stays before the shove')
 })

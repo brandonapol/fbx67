@@ -9,7 +9,8 @@ The smoke test plays the prologue in headless Chromium and, in each space, walks
 page records one sample per frame. `story`, the backdrop for scenes with no space yet, is sampled for 40 frames in
 each act's start from a path (`game/smoke/starts.ts`) while its menu is open (see `game/src/probe.ts`). The first 5 frames after recording starts or the player
 enters a space are dropped, so a space's first build and shader compiles do not count. Every space in
-`game/src/levels.ts` must have a row below, and a space that was sampled but has no row fails. 1 MB is 10^6 bytes.
+`game/src/levels.ts` must have a row below, and so must every moment the probe holds (`moments` in `game/src/probe.ts`);
+a space or moment that was sampled but has no row fails. 1 MB is 10^6 bytes.
 A close-up is a camera in its space, not a space: the knot at the cabin (`game/src/knot.ts`) is props of the cabin,
 counted in the `cabin` row, and its close-up frames are captured from the cabin's start in each moral-weather band.
 
@@ -21,6 +22,15 @@ space Wade comes into: `line`, `helpTent`, `cabin`, `office`, `jail`; the scenes
 moral-weather band, into `game/smoke/baselines/act1/`. It fails on an Act 1 space with no frames, not on the
 prologue's; the initial download is the prologue run's to measure. `make generate/baselines/act1` regenerates only
 its baselines.
+
+The barfight is the bar at its densest, so it has a row of its own beside the Pan's. At the `a1_barfight` beat the Act 1
+run also captures the fight at its peak, `a1_brawl` in each band, from the probe's `brawl` pose: the fight played on its
+own clock 16 s past the shove with Wade got up and idle, when every patron has come in and none has had enough, so all
+ten men in the Pan are in it (`game/src/probe.ts`, `fightAt`). It then holds that pose still and samples 40 frames of
+it under `panPeak`, a moment and not a space (`moments` in `game/src/probe.ts`), so the peak is held to its own row and
+not averaged into the Pan's walk. The run fails with no `panPeak` frames. There is one quality tier: the engine build
+has no quality-tier switch yet, so the peak is measured on the one renderer there is. When tiers come, the peak is
+sampled once per tier.
 
 The search for Eli, Act 1's opening (`game/src/searchEli.ts`, `trail.ts`), is held by the `line` row: the whole trail
 is the flooded town, with the errand's one trip up to `helpTent`, and its start is the `a1_flood` frame in each band.
@@ -81,6 +91,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `cabin` |      1,500 | 1,500,000 |                 512 |
 | `kitchen` |    1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
+| `panPeak` |    1,500 | 1,500,000 |                 512 |
 
 | Download         | Limit (MB) |
 | ---------------- | ---------: |
