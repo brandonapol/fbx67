@@ -14,6 +14,7 @@ the Silver Pan, and the scenes between spaces play as menus. Act 2 plays as menu
 blockout, is built and sampled but no scene routes to it yet), and so does Act 3, whose five missions are each one menu
 of notes: Lucy's dig (`lucysDig`), the long night (`theLongNight`), the ski search (`theSkiSearch`), the wreck (`theWreck`)
 and the rash plans (`theRashPlan`). The text build is where the rest of each act is read in full.
+Act 2's engine spaces and what is not built: [`docs/acts/act2-engine.md`](../docs/acts/act2-engine.md).
 
 The player is whoever the story's `pov(state)` says, never a scene id: `bodies` in `src/cast.ts` gives each point of
 view its model and clip set, the camera's eye height (Wade's is 1.8 m, Owen's 1.7 m) and its footstep voice. Owen's
