@@ -5,6 +5,7 @@ import type { SpaceId } from './levels.ts'
 import { REEL_AT, TYPEWRITER_AT } from './levels.ts'
 import { beatOf, clockOf, cueBetween } from './curly.ts'
 import { DRUM } from './camp.ts'
+import { JUKEBOX } from './silverPan.ts'
 import type { Game } from './prologue.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
@@ -101,8 +102,10 @@ export const SPRUCE_GAIN = 0.38
 export const RAIN_GAIN = 1.74
 export const FLOOD_GAIN = 1.89
 
-export const JUKEBOX_AT = vec(-5.4, -1.6)
-export const STOVE_AT = vec(5.1, -3.8)
+// The Silver Pan's sources sit on the props in silverPan.ts: the jukebox on the east wall, the oil stove in the
+// southwest corner, the moose rack over the door.
+export const JUKEBOX_AT = JUKEBOX
+export const STOVE_AT = vec(-5.2, 4.1)
 export { REEL_AT }
 export const RADIO_AT = vec(-7.4, 3.4)
 export const DRUM_AT = DRUM
@@ -296,7 +299,7 @@ export const LINE_AT = vec(-1, LINE_Z)
 export const RIVER_Z = LINE_Z - 8
 export const BOATS_AT: readonly Vec[] = [vec(-7, RIVER_Z - 2), vec(6, RIVER_Z - 4)]
 export const DRIPS_AT: readonly Vec[] = [vec(-2.5, -4), vec(1.8, 2.5), vec(0.4, 7)]
-export const RACK_AT = vec(-6.5, 2.4)
+export const RACK_AT = vec(0, 4.78)
 export const RADIATOR_AT = vec(-1.8, -1.6)
 export const CORRIDOR_AT = vec(0, 4)
 
