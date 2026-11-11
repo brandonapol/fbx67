@@ -16,7 +16,7 @@ const toPreacher = (v: Visit): Visit => ({ ...v, game: walk(v.game, [[42.9, 49.6
 test('the night walk has the town on Second Avenue: the preacher, the cabbie and the strolling couple, each in their own look', () => {
   const folk = townsfolk(night())
   assert.deepEqual(folk.map((f) => f.id).sort(), ['cabbie', 'preacher', 'touristHusband', 'touristWife'])
-  assert.equal(new Set(folk.map((f) => f.coat + f.hair)).size, folk.length, 'no two dressed alike')
+  assert.equal(new Set(folk.map((f) => `${f.coat}${f.hair}`)).size, folk.length, 'no two dressed alike')
   folk.forEach((f) => assert.deepEqual({ coat: f.coat, height: f.height }, { coat: lookOf(f.id).coat, height: lookOf(f.id).height }))
 })
 

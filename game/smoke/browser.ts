@@ -9,6 +9,7 @@ import type { Sample } from '../src/probe.ts'
 import { MB, breaches, parseBudgets, perfMarkdown, summarize } from './budget.ts'
 import type { FrameDirs, FrameResult } from './frames.ts'
 import { checkFrame, framesMarkdown } from './frames.ts'
+import { waitLoaded } from './loaded.ts'
 
 // The smoke run's browser side, for a run beside the prologue's (act1.test.ts): the same preview server, headless
 // Chromium under SwiftShader, test probe, frame check (frames.ts) and budgets (budget.ts) as prologue.test.ts, which
@@ -100,7 +101,7 @@ export const smoke = (run: Run): Smoke => {
     const errors: string[] = []
     page.on('pageerror', (e) => errors.push(String(e)))
     await page.goto(path === undefined ? url : `${url}#path=${path}`)
-    await page.waitForFunction(() => (window as any).__prologue?.capture !== undefined)
+    await waitLoaded(page)
     return { page, errors, close: () => context.close() }
   }
 

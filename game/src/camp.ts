@@ -76,7 +76,7 @@ export const camp: Space = {
   ground: '#6f7a4a',
   spawn: vec(-8.2, 3.6),
   props: campProps,
-  figures: [{ id: 'curly', at: vec(-6.4, 5.4), facing: -Math.PI / 2, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75 }],
+  figures: [{ id: 'curly', cast: 'curly', at: vec(-6.4, 5.4), facing: -Math.PI / 2, height: 1.75 }],
   spots: [
     { id: 'stove', x: STOVE.x, z: STOVE.z, r: 1.1, note: 'stove', hold: HIDE_TIME },
     { id: 'cache', x: CACHE.x, z: CACHE.z, r: 1.1, note: 'cache', hold: HIDE_TIME },

@@ -58,6 +58,6 @@ test('the card game is at the card table, and the patrons look like themselves',
   const players = poses(barNight, 1, 0).filter((p) => doingAt(p.slot) === 'cards')
   for (const p of players) assert.ok(Math.hypot(p.at.x - CARD_TABLE.x, p.at.z - CARD_TABLE.z) < 1.2, p.who)
   const figs = patrons(barNight, 1)
-  assert.equal(new Set(figs.map((f) => f.coat + f.hair)).size, figs.length, 'no two patrons dressed alike')
+  assert.equal(new Set(figs.map((f) => `${f.coat}${f.hair}`)).size, figs.length, 'no two patrons dressed alike')
   assert.deepEqual(patrons(at('p_camp'), 1), [], 'nobody from the bar at the camp')
 })

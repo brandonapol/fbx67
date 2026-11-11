@@ -392,3 +392,10 @@ body[data-text='large'] #panel-buttons button {
 #map nav {
   padding-top: 10px;
 }
+
+#loading[data-failed] p {
+  max-width: min(480px, 85%);
+  text-align: center;
+  font-variant: normal;
+  letter-spacing: normal;
+}

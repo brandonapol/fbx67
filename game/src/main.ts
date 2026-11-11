@@ -57,6 +57,7 @@ import {
   emptyLog,
   firstScreen,
   isCastFile,
+  loadOrReport,
   journal,
   loadShare,
   metAt,
@@ -117,7 +118,7 @@ const watcher =
         front.loading(loadShare(arrived.n))
       })
 watcher?.observe({ type: 'resource', buffered: true })
-const view = await createView(canvas, import.meta.env.BASE_URL)
+const view = await loadOrReport(() => createView(canvas, import.meta.env.BASE_URL), front.failed)
 const syncSigns = mountSigns(document.body)
 watcher?.disconnect()
 front.loading(undefined)

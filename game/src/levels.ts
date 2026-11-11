@@ -50,21 +50,19 @@ export type Letter = 'unfolded' | 'folded'
 
 export type Mark = Letter | 'doused' | 'posting' | 'parked' | 'mess'
 
-export type Figure = Readonly<{
+// A figure either wears a cast model (cast.ts), which it names even when its id is one, or is a gray box in a look.
+type Wears = Readonly<{ cast: CastId; coat?: never; skin?: never; hair?: never; hood?: never }>
+type GrayBox = Readonly<{ cast?: never; coat: string; skin: string; hair: string; hood?: boolean }>
+
+export type Figure = (Wears | GrayBox) & Readonly<{
   id: string
   at: Vec
   facing: number
-  coat: string
-  skin: string
-  hair: string
   height: number
-  hood?: boolean
   activity?: Activity
   // The story place while which this figure stands in for its townsperson, so the town does not place them again;
   // the space's own place when it has one.
   during?: Place
-  // The cast model this figure wears when its id is not one (a second place for the same person in a space).
-  cast?: CastId
   // Whether the figure is in the space at this state of the story, reached by these choices; always, when unset.
   when?: (s: State, path?: readonly number[]) => boolean
 }>
@@ -138,9 +136,9 @@ export const bar: Space = {
     { box: { x: 0, z: 4.45, w: 1.4, d: 0.7 }, h: 0.03, color: '#a8794a' },
   ],
   figures: [
-    { id: 'hank', at: vec(-1.5, -4.0), facing: 0, coat: '#e8e1d2', skin: '#e0b48f', hair: '#9a9a9a', height: 1.8, activity: 'stand' },
-    { id: 'curly', at: vec(3.9, 0.9), facing: -1.9, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75, activity: 'sitDrink' },
-    { id: 'wade', at: vec(2.6, 2.3), facing: 2.9, coat: '#5d7a8f', skin: '#efc49e', hair: '#5a3b22', height: 1.82, activity: 'sit' },
+    { id: 'hank', cast: 'hank', at: vec(-1.5, -4.0), facing: 0, height: 1.8, activity: 'stand' },
+    { id: 'curly', cast: 'curly', at: vec(3.9, 0.9), facing: -1.9, height: 1.75, activity: 'sitDrink' },
+    { id: 'wade', cast: 'wade', at: vec(2.6, 2.3), facing: 2.9, height: 1.82, activity: 'sit' },
   ],
   spots: [
     { id: 'wade', x: 2.6, z: 2.3, r: 1.9, prompt: 'Talk to Wade' },

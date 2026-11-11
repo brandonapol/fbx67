@@ -10,6 +10,8 @@ export type FrontEndAction = 'continue' | 'new' | 'settings' | 'resume' | 'shove
 
 export type FrontEndView = Readonly<{
   loading: (share: number | undefined) => void
+  // The load failed: the loading screen stays up with this message in place of the bar.
+  failed: (message: string) => void
   show: (screen: Screen, data: Readonly<{ canContinue: boolean; canRestart?: boolean; goal?: string; journal?: Journal; map?: PocketMap }>) => void
   objective: (text: string | undefined) => void
   buttons: () => readonly HTMLButtonElement[]
@@ -45,7 +47,10 @@ export const mountFrontEnd = (on: (a: FrontEndAction) => void, parent: HTMLEleme
   }
 
   const bar = el('div', { id: 'loading-fill' })
-  const loading = el('div', { id: 'loading' }, el('p', { textContent: 'Loading' }), el('div', { id: 'loading-bar' }, bar))
+  const label = el('p', { textContent: 'Loading' })
+  const track = el('div', { id: 'loading-bar' }, bar)
+  const loading = el('div', { id: 'loading' }, label, track)
+  loading.setAttribute('aria-live', 'assertive')
 
   const cont = button('continue', 'Continue')
   const title = el(
@@ -86,6 +91,12 @@ export const mountFrontEnd = (on: (a: FrontEndAction) => void, parent: HTMLEleme
     loading: (share) => {
       loading.hidden = share === undefined
       bar.style.width = `${Math.round((share ?? 1) * 100)}%`
+    },
+    failed: (message) => {
+      loading.hidden = false
+      loading.dataset.failed = ''
+      track.hidden = true
+      label.textContent = message
     },
     show: (screen, data) => {
       cont.hidden = !data.canContinue

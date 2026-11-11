@@ -84,7 +84,7 @@ export const dockProps: readonly Prop[] = [
 
 // Curly, out on the float by the plane, only on the morning.
 export const dockFigures: readonly Figure[] = [
-  { id: 'curly', at: CURLY_ON_FLOAT, facing: TO_DOCK, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75, during: 'floatDock', when: morning },
+  { id: 'curly', cast: 'curly', at: CURLY_ON_FLOAT, facing: TO_DOCK, height: 1.75, during: 'floatDock', when: morning },
 ]
 
 // His walkaround on the plane's near float while Owen comes down to the river: from the pump up to the float's bow and a

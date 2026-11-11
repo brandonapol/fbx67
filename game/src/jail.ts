@@ -74,8 +74,8 @@ const figures: readonly Figure[] = [
   { id: 'ashby', at: ASHBY_AT, facing: -Math.PI / 2, coat: '#3b3a3e', skin: '#e6c0a0', hair: '#9a9590', height: 1.8, when: answered },
   { id: 'eli', at: vec(-2.6, -2.9), facing: Math.PI / 2, ...eli, activity: 'sit', when: (s) => !answered(s) || eliStays(s) },
   { id: 'eliOut', at: vec(0.4, 3.2), facing: Math.PI, ...eli, when: (s) => answered(s) && !eliStays(s) },
-  { id: 'curly', at: vec(-4.3, -1.6), facing: Math.PI / 2, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75, activity: 'sit', when: (s) => !curlyClaps(s) },
-  { id: 'curlyOut', cast: 'curly', at: vec(-0.9, 2.4), facing: -0.6, coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75, when: curlyClaps },
+  { id: 'curly', cast: 'curly', at: vec(-4.3, -1.6), facing: Math.PI / 2, height: 1.75, activity: 'sit', when: (s) => !curlyClaps(s) },
+  { id: 'curlyOut', cast: 'curly', at: vec(-0.9, 2.4), facing: -0.6, height: 1.75, when: curlyClaps },
 ]
 
 export const jail: Space = {

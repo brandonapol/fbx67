@@ -196,6 +196,19 @@ export const loadShare = (done: number, total: number = castFiles): number => (t
 
 export const isCastFile = (url: string): boolean => /\/characters\/.*\.glb(\?|$)/.test(url)
 
+// A load that fails says so where the bar was, instead of leaving "Loading" up for good (#62).
+export const loadFailure = (e: unknown): string =>
+  `The game could not load: ${e instanceof Error ? e.message : String(e)}. Reload the page to try again.`
+
+export const loadOrReport = async <T>(load: () => Promise<T>, report: (message: string) => void): Promise<T> => {
+  try {
+    return await load()
+  } catch (e) {
+    report(loadFailure(e))
+    throw e
+  }
+}
+
 // The standard gamepad's Start and Back buttons: Start pauses, Back recalls the objective.
 export const PAD_START = 9
 export const PAD_BACK = 8
