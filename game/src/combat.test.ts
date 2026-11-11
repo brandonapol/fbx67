@@ -16,6 +16,8 @@ import {
   fighter,
   haul,
   idle,
+  join,
+  sitOut,
   start,
   step,
 } from './combat.ts'
@@ -263,6 +265,32 @@ test('haul: a seated man is stood up where he is put, on his feet and in it; any
   assert.deepEqual(kinds(g), ['haul'])
   assert.equal(haul(g, 'me', vec(2, 2), 0), g, 'already up')
   assert.equal(haul(f, 'nobody', vec(2, 2), 0), f)
+})
+
+test('join: a man sitting it out comes in where he sits, on his feet; anyone up already is left alone', () => {
+  const f = fight([], { fighters: [fighter('me', 'us', vec(0, 0), NORTH), fighter('x', 'them', vec(0, -3), 0, { stance: 'seated', timer: Infinity })] })
+  const g = join(f, 'x')
+  assert.equal(who(g, 'x').stance, 'up')
+  assert.deepEqual(who(g, 'x').pos, vec(0, -3))
+  assert.deepEqual(kinds(g), ['join'])
+  assert.equal(join(g, 'x'), g, 'already in it')
+  assert.equal(join(f, 'nobody'), f)
+  assert.ok(runAll(g, 4).some((h) => kinds(h).includes('hit')), 'once in, he goes for the other side')
+})
+
+test('sitOut: a man in it sits down where he is for the rest, letting go and let go; nobody goes for him after', () => {
+  const f0 = fight([fighter('x', 'them', vec(0, -1), 0)])
+  const held = press(f0, 'grab')
+  assert.equal(who(held, 'x').stance, 'held')
+  const g = sitOut(held, 'x')
+  assert.equal(who(g, 'x').stance, 'seated')
+  assert.equal(who(g, 'x').heldBy, undefined)
+  assert.equal(who(g, 'me').holding, undefined, 'the collar is let go')
+  assert.ok(kinds(g).includes('sitOut'))
+  const later = run(g, 20)
+  assert.equal(who(later, 'x').stance, 'seated', 'out for good: the clock does not stand him up')
+  assert.equal(sitOut(g, 'x'), g, 'already out')
+  assert.equal(sitOut(f0, 'nobody'), f0)
 })
 
 test('two men on their feet never stand in one spot', () => {

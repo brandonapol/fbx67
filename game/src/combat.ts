@@ -76,7 +76,7 @@ export type Tally = Readonly<{
   redHanded?: boolean
 }>
 
-export type EventKind = 'shove' | 'whiff' | 'grab' | 'drop' | 'smash' | 'yelp' | 'pin' | 'windup' | 'hit' | 'down' | 'slip' | 'getUp' | 'thud' | 'warning' | 'law' | 'haul'
+export type EventKind = 'shove' | 'whiff' | 'grab' | 'drop' | 'smash' | 'yelp' | 'pin' | 'windup' | 'hit' | 'down' | 'slip' | 'getUp' | 'thud' | 'warning' | 'law' | 'haul' | 'join' | 'sitOut'
 
 export type FightEvent = Readonly<{ kind: EventKind; who: string; at: Vec; weight?: number }>
 
@@ -458,3 +458,22 @@ export const haul = (f: Fight, id: string, pos: Vec, facing: number): Fight => {
 }
 
 export const warned = (f: Fight): boolean => f.t >= f.warnAt
+
+// Someone sitting it out comes in where he is: on his feet and in it, going for the other side.
+export const join = (f: Fight, id: string): Fight => {
+  const x = byId(f, id)
+  if (!x || x.stance !== 'seated') return f
+  return emit(put(f, { ...x, stance: 'up', timer: 0, vel: vec(0, 0) }), 'join', x)
+}
+
+// Someone in it has had enough and sits down where he is, in the mud, for the rest: he lets go of what he holds and
+// is let go, and from then nobody goes for him (seated, as on a stool).
+export const sitOut = (f: Fight, id: string): Fight => {
+  const x = byId(f, id)
+  if (!x || x.stance === 'seated') return f
+  const by = byId(f, x.heldBy)
+  const g = by ? letGo(f, by) : f
+  const y = byId(g, id)!
+  const h = y.holding ? letGo(g, y) : g
+  return emit(put(h, { ...byId(h, id)!, stance: 'seated', timer: Infinity, heldBy: undefined, windup: undefined, shoving: 0, vel: vec(0, 0) }), 'sitOut', x)
+}
