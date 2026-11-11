@@ -21,6 +21,9 @@ export type Step =
   | Readonly<{ kind: 'walk'; spot: string; points: Points; yaw: number }>
   | Readonly<{ kind: 'interact'; spot: string; hold: boolean }>
   | Readonly<{ kind: 'wait' }>
+  // In the barfight: head for this point a moment, without waiting to get there (the fight moves under him).
+  // Knocked down, he presses shove to get up: any of the fight's verbs does.
+  | Readonly<{ kind: 'steer'; x: number; z: number; getUp: boolean }>
 
 // Where a space offers more than one thing to use, the one that moves the story (the land office's ledgers only
 // carry; Lucy asks).
@@ -56,14 +59,28 @@ const routeTo = (g: Game, spot: Interactable): Points =>
   g.space === 'line' && legs[spot.id] ? legs[spot.id]!(g) : approach(g.pos, spot)
 
 // The key for the button that takes the story's first choice: the path is all 1s.
+// At the barfight's prompt the first choice is a move, so getting up.
 const firstChoice = (g: Game, buttons: readonly string[]): Step => {
   const first = menu(g.story).options.find((o) => o.n === 1)?.note
-  const at = [first && `note:${first}`, 'continue', 'close'].map((id) => (id ? buttons.indexOf(id) : -1)).find((i) => i >= 0)
+  const at = [first && `note:${first}`, 'fight:gotUp', 'continue', 'close'].map((id) => (id ? buttons.indexOf(id) : -1)).find((i) => i >= 0)
   if (at === undefined) throw new Error(`${g.story.scene}: no button takes choice 1 (${buttons.join(', ')})`)
   return { kind: 'key', key: String(at + 1) }
 }
 
+// In the barfight Wade stands with Eli: he steers for Eli's shoulder, the side he is on, and stays there until the law
+// comes in. That is the fight's first choice at every one of its menus: shove, clean, stood with Eli.
+const SHOULDER = 0.8
+
+const steer = (g: Game): Step => {
+  const eli = g.brawl!.fight.fighters.find((x) => x.id === 'eli')!
+  const down = g.brawl!.fight.fighters.find((x) => x.id === 'wade')!.stance === 'down'
+  const d = Math.hypot(g.pos.x - eli.pos.x, g.pos.z - eli.pos.z)
+  const k = d === 0 ? 0 : Math.min(1, SHOULDER / d)
+  return { kind: 'steer', x: eli.pos.x + (g.pos.x - eli.pos.x) * k, z: eli.pos.z + (g.pos.z - eli.pos.z) * k, getUp: down }
+}
+
 export const nextStep = (g: Game): Step => {
+  if (g.brawl) return steer(g)
   if (g.home) return g.home.writing ? { kind: 'wait' } : firstChoice(g, sheet(g.home).buttons.map((b) => `note:${b.note}`))
   if (g.panel) return firstChoice(g, g.panel.buttons.map((b) => b.id))
   // Holding a spot, lying down, swept by the current, or on a ride with nothing to use yet: the game moves on alone.
@@ -97,10 +114,11 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   helpTent: 'tent',
   cabin: 'cabin',
   office: 'office',
+  pan: 'pan',
   jail: 'cell',
 }
 
 export const isBeat = (before: Game | undefined, now: Game): boolean => before === undefined || before.space !== now.space
 
 export const label = (s: Step): string =>
-  s.kind === 'key' ? `key ${s.key}` : s.kind === 'walk' ? `walk to ${s.spot}` : s.kind === 'interact' ? `${s.hold ? 'hold' : 'use'} ${s.spot}` : 'wait'
+  s.kind === 'steer' ? `steer to ${s.x.toFixed(1)},${s.z.toFixed(1)}` : s.kind === 'key' ? `key ${s.key}` : s.kind === 'walk' ? `walk to ${s.spot}` : s.kind === 'interact' ? `${s.hold ? 'hold' : 'use'} ${s.spot}` : 'wait'

@@ -10,6 +10,7 @@ import { jailTalk, officeReach, prologueSteps, wait, walk } from './drive.ts'
 import { nextStop, start as onFoot } from './trailDrive.ts'
 import { bodies } from './cast.ts'
 import { spaces } from './levels.ts'
+import { playOut } from './barfightBot.ts'
 
 const prologue = prologueSteps('round', 'marker')
 const onLine = press(prologue.at(-1)!, 'continue')
@@ -84,6 +85,13 @@ test('from the line, every Act 1 menu moves on until Act 2 hands off to the text
     if (g.space === 'office' && !g.panel) return play(officeReach(g, 'lucy'), n + 1)
     // Out to the cabin Wade rides in Eli's boat; when it stops he leans over to the knot and the scene's menu comes up.
     if (g.space === 'cabin' && !g.panel) return play(interact(wait(g, (x) => focus(x)?.id === 'knot')), n + 1)
+    // At the Silver Pan Wade gets up and fights at Eli's shoulder until the law comes in, and lets go when he sees the
+    // headlights: the fight's notes are each menu's first.
+    if (g.space === 'pan' && g.panel?.buttons.some((b) => b.id === 'fight:gotUp')) {
+      const next = playOut(g, { opened: 'gotUp', move: 'shove', stood: true, redHanded: false })
+      assert.deepEqual(next.story, textBuild(next), next.story.scene)
+      return play(next, n + 1)
+    }
     assert.equal(g.panel?.kind, 'story', `${g.story.scene} in ${g.space} has no menu`)
     const note = g.panel.buttons.find((b) => b.id.startsWith('note:'))
     assert.ok(note, `${g.story.scene} offers no note`)

@@ -14,6 +14,7 @@ import { castFor, clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { footY, hiding, inWorld, playerBody, playerMotion, shows } from './prologue.ts'
+import { OFFICER, placed } from './barfight.ts'
 import type { CampView } from './campView.ts'
 import { buildCamp } from './campView.ts'
 import { boatIn } from './cabinRide.ts'
@@ -402,6 +403,17 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       const e = b.figures.get(f.id)
       if (!e) return
       e.enabled = present(f, g.story, g.path) || (f.id === 'curly' && flying(g.flight))
+      // In the barfight a man stands where the fight has him, laid out while he is down (barfight.ts); the officer is
+      // in the door once the law is in.
+      const fx = g.brawl && placed(g.brawl, f.id)
+      if (g.brawl && f.id === OFFICER) e.enabled = fx !== undefined
+      if (fx) {
+        e.setLocalPosition(fx.at.x, 0, fx.at.z)
+        e.setLocalEulerAngles(fx.down ? -80 : 0, (fx.facing * 180) / Math.PI, 0)
+        const c = clipFor({ speed: fx.speed, sneaking: false, activity: fx.seated ? 'sit' : 'stand', talking: false })
+        if (castFor(f.cast ?? f.id)) cast.play(e, c, playbackRate(c, fx.speed))
+        return
+      }
       if (!castFor(f.cast ?? f.id)) return
       if (f.id === 'curly' && drawn) {
         const c = clipFor(drawn.motion)

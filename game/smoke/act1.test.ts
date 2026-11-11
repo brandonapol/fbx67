@@ -62,6 +62,11 @@ const take = async (p: Page, s: Step): Promise<void> => {
     await p.keyboard.up('e')
     return
   }
+  if (s.kind === 'steer') {
+    await p.evaluate(([x, z]) => (window as any).__prologue.walkTo(x, z), [s.x, s.z] as const)
+    if (s.getUp) await p.keyboard.press('f')
+    return frames(p, 2)
+  }
   if (s.kind === 'walk') {
     for (const [x, z] of s.points) await walkTo(p, x, z)
     await p.evaluate((yaw) => (window as any).__prologue.aim(yaw, 0), s.yaw)
@@ -98,7 +103,7 @@ test('Act 1 plays from its path to Act 2’s first scene, a frame per beat in ea
     const text = replayPath(end.path.join(','))
     assert.ok(!('error' in text), 'the engine’s path replays in the text build')
     assert.deepEqual(end.story, text.story, 'the engine reaches the text build’s state on its path')
-    assert.deepEqual(beats, ['a1_flood', 'a1_errand', 'a1_trail', 'a1_body', 'a1_ruling', 'a1_lucy', 'a1_tank'])
+    assert.deepEqual(beats, ['a1_flood', 'a1_errand', 'a1_trail', 'a1_body', 'a1_ruling', 'a1_lucy', 'a1_barfight', 'a1_tank'])
     assert.deepEqual(errors, [])
     console.log(`  Act 1 took ${((Date.now() - started) / 1000).toFixed(0)} s`)
   } finally {

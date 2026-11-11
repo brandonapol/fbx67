@@ -31,6 +31,9 @@ import { isRoomThing, roomThingsOpen, useRoom } from './room.ts'
 import { SLEEP_TIME } from './boardingHouseSleep.ts'
 import { POST_BOX, canMail } from './floatDock.ts'
 import { FLIGHT_TIME, OWEN_SEAT, flying, legAt, seatAt, skipSpot } from './flight.ts'
+import type { Brawl } from './barfight.ts'
+import { begin, done as fought, noteOf, openedOf, openingButtons, play, roomOf, sceneNotes, starts, wade } from './barfight.ts'
+import type { Intent } from './combat.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -91,9 +94,14 @@ export type Game = Readonly<{
   sleeping?: number
   // Curly at the survey camp: his routine's clock, the noise he turned to, how much of Owen he has seen (curly.ts).
   watch?: Watch
+  // The barfight at the Silver Pan while it plays (barfight.ts): the fight, from the shove until the law is in.
+  brawl?: Brawl
 }>
 
-export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number }>
+// The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
+export type Verbs = Readonly<{ shove: boolean; grab: boolean; use: boolean }>
+
+export type Input = Readonly<{ dir: Vec; hold: boolean; run?: boolean; limit?: number; view?: number; verbs?: Verbs }>
 
 const zero = vec(0, 0)
 
@@ -148,6 +156,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   look: undefined,
   flight: undefined,
   watch: undefined,
+  brawl: undefined,
 })
 
 export const start = (): Game => ({
@@ -186,7 +195,7 @@ const doorOpen = (g: Game, id: string): boolean => doors.some((d) => d.id === id
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
-  flying(g.flight) ? [] : spaces[g.space].spots.filter((i) => {
+  flying(g.flight) || g.brawl ? [] : spaces[g.space].spots.filter((i) => {
     if (g.space === 'bar') return i.id === 'door' ? talked(g) : i.id === 'hank' ? g.story.scene === 'p_bar' : true
     if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
     if (g.space === 'flood') return g.story.scene === 'p_end'
@@ -268,6 +277,9 @@ const arrive = (g: Game): Game => {
   if (walksUp(g.space, r.space, g.path)) return { ...g, panel: undefined }
   // To the cabin Wade goes by boat with Eli: in it from the first frame; at the end of the ride he leans to the knot.
   if (r.space === 'cabin' && g.space !== 'cabin') return board(enter(g, 'cabin'))
+  // At the Silver Pan Wade sits at the bar for Hank's speech, the bar going on around him; the drunk's shove ends it
+  // with the scene's prompt. A link straight into the fight's later scenes plays them as their menus.
+  if (r.space === 'pan') return starts(g.story) ? opening(enter(g, 'pan', spaces.pan.spawn, 0)) : menuPanel(enter(g, 'pan', spaces.pan.spawn, 0))
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
     // the town where he went up.
@@ -287,6 +299,29 @@ const arrive = (g: Game): Game => {
   return menuPanel(g)
 }
 
+const opening = (g: Game): Game => {
+  const m = menu(g.story)
+  return { ...g, panel: { kind: 'story', title: m.title, text: m.text, buttons: openingButtons(g.story) } }
+}
+
+// The fight's player is Wade: the camera and his body follow where the fight has him.
+const mirror = (g: Game, b: Brawl): Game => {
+  const me = wade(b)
+  return { ...g, brawl: b, pos: me.pos, facing: me.facing, view: me.facing, vel: me.vel }
+}
+
+// The law is in and the officer has stood in the door: the mission's note goes as the scene notes it applies, one per
+// menu, in play order, and the story moves on to the cell.
+const report = (g: Game, b: Brawl): Game => arrive(sceneNotes(g.story, noteOf(b)).reduce(sendNote, { ...g, brawl: undefined }))
+
+const brawling = (g: Game, b: Brawl, input: Input, dt: number): Game => {
+  const v = input.verbs
+  const l = length(input.dir)
+  const intent: Intent = { move: l > 1 ? scale(input.dir, 1 / l) : input.dir, run: input.run ?? false, shove: v?.shove ?? false, grab: v?.grab ?? false, use: v?.use ?? false }
+  const next = play(b, intent, dt)
+  return fought(next) ? report(g, next) : mirror(g, next)
+}
+
 export const resume = (story: State, path: readonly number[]): Game => (path.length ? arrive(backdrop(story, path)) : start())
 
 // Smoking is a held action anywhere Wade is on his feet in the world: hold interact with nothing in front of him to
@@ -294,7 +329,7 @@ export const resume = (story: State, path: readonly number[]): Game => (path.len
 export const CIGARETTE = 'cigarette'
 export const LIGHT_TIME = 1.5
 
-export const canLight = (g: Game): boolean => !g.panel && !g.holding && !g.lit && !riding(g.ride) && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
+export const canLight = (g: Game): boolean => !g.brawl && !g.panel && !g.holding && !g.lit && !riding(g.ride) && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
 
 // Lucy takes a lit cigarette out of Wade's mouth as soon as he is near her, and drops it in the water.
 const douse = (g: Game): Game => (g.space === 'office' && g.lit && takesIt(g.pos) ? { ...g, lit: undefined, doused: true } : g)
@@ -447,6 +482,8 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'retry') return enter(g, g.space)
   if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
+  const opened = openedOf(button)
+  if (opened && g.space === 'pan' && starts(g.story)) return mirror({ ...g, panel: undefined }, begin(opened, roomOf(spaces.pan.props, spaces.pan.figures)))
   if (g.home) {
     if (button === 'finish') return { ...g, home: penDown(g.home) }
     if (!button.startsWith('note:') || g.home.writing) return g
@@ -577,6 +614,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (riding(g.ride)) return ride({ ...g, t }, dt)
   if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
   if (beingCaught(g)) return scolded({ ...g, t }, dt)
+  if (g.brawl) return brawling({ ...g, t }, g.brawl, input, dt)
   const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
   return douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt))
 }
@@ -588,7 +626,9 @@ export const playerBody = (g: Game): Body => bodyFor(g.story, g.space === 'flood
 // prologue's flood under the end card, where the story has already moved on to Wade.
 export const inWorld = (g: Game): boolean => (riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act)
 
-export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: riding(g.ride) || flying(g.flight) ? 'sit' : 'stand', talking: false })
+const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated'))
+
+export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: sitting(g) ? 'sit' : 'stand', talking: false })
 
 // How high Owen's feet are: on the plane's cabin floor in the air, on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
