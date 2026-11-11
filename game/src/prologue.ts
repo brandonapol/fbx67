@@ -38,6 +38,8 @@ import type { Lab } from './photoLab.ts'
 import { DRAWERS, arrival, baseEntry, catcher, counterNotes, found as searched, labSpot, messy, pick as pickLab, restart as restartLab, scold as scoldLab, searchTime, step as labStep } from './photoLab.ts'
 import { LAB_SPOT } from './eielson.ts'
 import { GO, TABLE_SPOT, asks, tableNotes, tableSpot } from './kitchen.ts'
+import type { Cabinet, Turn } from './majorsCabinet.ts'
+import { AIRMAN, DESK_LOOK, DESK_SPOT, DIAL_SPOT, PRY_SPOT, arrival as cabinetArrival, cabinetSpot, dialText, held as cabinetHeld, look as lookDesk, pried, pry, restart as restartCabinet, scold as scoldCabinet, step as cabinetStep, tryHandle, turn as turnDial } from './majorsCabinet.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -103,6 +105,9 @@ export type Game = Readonly<{
   // The photo lab run on the base, from Wade picking his way in at the counter to walking out with the prints
   // (photoLab.ts).
   lab?: Lab
+  // The Major's cabinet after hours, from the hall outside his office to stepping out of it with the files photographed
+  // (majorsCabinet.ts).
+  cabinet?: Cabinet
 }>
 
 // The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
@@ -165,6 +170,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   watch: undefined,
   brawl: undefined,
   lab: undefined,
+  cabinet: undefined,
 })
 
 export const start = (): Game => ({
@@ -218,7 +224,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'office') return officeSpot(g.carrying === 'ledger', i.id)
     if (g.space === 'cabin') return knotSpot(g.story, i.id)
     if (g.space === 'pan') return hankSpot(g.story, g.brawl !== undefined, i.id)
-    if (g.space === 'eielson') return labSpot(g.story, g.lab, i.id)
+    if (g.space === 'eielson') return labSpot(g.story, g.lab, i.id) || cabinetSpot(g.cabinet, i.id)
     if (g.space === 'kitchen') return tableSpot(g.story, i.id)
     return true
   })
@@ -286,6 +292,9 @@ const arrive = (g: Game): Game => {
   // Off the base or out of Lucy's kitchen to a place with no space yet, Wade leaves the space: the rest of Act 2 plays
   // over the story backdrop, as it did before those places had spaces, and goes on into Act 3 there rather than to the
   // text build.
+  // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
+  const cab = cabinetArrival(g.story)
+  if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
   if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
@@ -418,6 +427,50 @@ const retryLab = (g: Game, lab: Lab): Game => {
   return { ...g, pos: c.at, facing: c.facing, view: c.facing, vel: zero, panel: undefined, holding: undefined, lab: restartLab(lab) }
 }
 
+// The Major's cabinet, once a frame after Wade's step (majorsCabinet.ts): the getaway's note goes as he steps out of the
+// office with everything back, and the duty airman's light, or his ear while the screwdriver works, stops him.
+const cabinetWatch = (g: Game, dt: number): Game => {
+  if (!g.cabinet || g.space !== 'eielson') return g
+  const s = cabinetStep(g.cabinet, g.pos, g.holding?.id === PRY_SPOT.id, dt)
+  if (s.send) return press({ ...g, cabinet: undefined }, `note:${s.send}`)
+  return s.cabinet.caught !== undefined ? { ...g, cabinet: s.cabinet, holding: undefined, vel: zero } : { ...g, cabinet: s.cabinet }
+}
+
+const cabinetScolded = (g: Game, c: Cabinet, dt: number): Game => {
+  const next = scoldCabinet(c, dt)
+  if (next !== 'busted') return { ...g, vel: zero, cabinet: next }
+  return { ...g, vel: zero, busts: g.busts + 1, panel: { kind: 'busted', title: AIRMAN.who, text: `"${AIRMAN.line}"`, buttons: [{ id: 'retry', label: 'Try again' }] } }
+}
+
+const retryCabinet = (g: Game, c: Cabinet): Game => {
+  const at = c.checkpoint
+  return { ...g, pos: at.at, facing: at.facing, view: at.facing, vel: zero, panel: undefined, holding: undefined, cabinet: restartCabinet(c) }
+}
+
+// The dial's panel: the wheels, the number his fingers are on, and giving up on it for the screwdriver.
+const DIAL_BUTTONS: readonly Button[] = [
+  { id: 'dial:next', label: 'Move to the next number' },
+  { id: 'dial:up', label: 'Turn it up one' },
+  { id: 'dial:down', label: 'Turn it down one' },
+  { id: 'dial:up10', label: 'Turn it up ten' },
+  { id: 'dial:down10', label: 'Turn it down ten' },
+  { id: 'dial:try', label: 'Try the handle' },
+  { id: 'dial:pry', label: 'Give up on the dial. Get the screwdriver.' },
+  close('Step back.'),
+]
+
+const dialPanel = (c: Cabinet): Panel => ({ kind: 'story', title: "The Major's cabinet", text: dialText(c), buttons: DIAL_BUTTONS })
+
+const dialed = (g: Game, c: Cabinet, button: string): Game => {
+  if (button === 'dial:pry') return { ...g, panel: undefined, cabinet: pry(c) }
+  if (button !== 'dial:try') {
+    const next = turnDial(c, button.slice(5) as Turn)
+    return { ...g, cabinet: next, panel: dialPanel(next) }
+  }
+  const t = tryHandle(c, g.pos, g.facing)
+  return t.send ? { ...sendNote(g, t.send), panel: undefined, cabinet: t.cabinet } : { ...g, cabinet: t.cabinet, panel: dialPanel(t.cabinet) }
+}
+
 const endCard: Panel = {
   kind: 'end',
   title: 'End of the prologue',
@@ -481,7 +534,9 @@ export const shows = (g: Game, w: Mark | undefined): boolean =>
         ? !flying(g.flight)
         : w === 'mess'
           ? messy(g.lab, g.holding)
-          : (w === 'folded') === (g.letter === 'folded'))
+          : w === 'pried'
+            ? pried(g.cabinet)
+            : (w === 'folded') === (g.letter === 'folded'))
 
 export const interact = (g: Game): Game => {
   if (flying(g.flight)) return touchDown(g)
@@ -538,13 +593,17 @@ export const interact = (g: Game): Game => {
     const l = g.lab
     return l.method ? { ...g, vel: zero, holding: { id, progress: l.searched, time: searchTime(l) } } : { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
   }
+  // In the Major's dark office: the desk under the flashlight, and the dial.
+  if (g.space === 'eielson' && id === DESK_SPOT.id && g.cabinet) return { ...g, cabinet: lookDesk(g.cabinet), panel: { kind: 'story', title: "The Major's desk", text: DESK_LOOK, buttons: [close('Step back.')] } }
+  if (g.space === 'eielson' && id === DIAL_SPOT.id && g.cabinet) return { ...g, vel: zero, panel: dialPanel(g.cabinet) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
 
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
-  if (button === 'retry') return g.lab ? retryLab(g, g.lab) : enter(g, g.space)
+  if (button === 'retry') return g.lab ? retryLab(g, g.lab) : g.cabinet ? retryCabinet(g, g.cabinet) : enter(g, g.space)
+  if (button.startsWith('dial:') && g.cabinet) return dialed(g, g.cabinet, button)
   if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
   const opened = openedOf(button)
@@ -615,6 +674,10 @@ const finish = (g: Game, h: Holding): Game => {
   if (h.id === CIGARETTE) return { ...done, lit: true }
   if (h.id === POST_BOX) return { ...done, mailed: true }
   if (h.id === DRAWERS.id && g.lab) return { ...done, lab: searched(g.lab) }
+  if (g.cabinet && cabinetSpot(g.cabinet, h.id)) {
+    const t = cabinetHeld(g.cabinet, h.id, g.pos, g.facing)
+    return t.send ? { ...sendNote(done, t.send), cabinet: t.cabinet } : { ...done, cabinet: t.cabinet }
+  }
   if (!h.note) return done
   if (isSpot(h.id)) return { ...sendNote(done, h.note), hidden: h.id }
   return press(done, `note:${h.note}`)
@@ -684,9 +747,11 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
   if (beingCaught(g)) return scolded({ ...g, t }, dt)
   if (g.lab?.caught !== undefined) return labScolded({ ...g, t }, g.lab, dt)
+  if (g.cabinet?.caught !== undefined) return cabinetScolded({ ...g, t }, g.cabinet, dt)
   if (g.brawl) return brawling({ ...g, t }, g.brawl, input, dt)
   const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
-  return labWatch(douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt)), dt)
+  const after = hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
+  return cabinetWatch(labWatch(douse(after), dt), dt)
 }
 
 // The player is whoever the story's pov(state) says (pov.ts).

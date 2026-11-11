@@ -3,6 +3,8 @@ import { curlyNow, watchOf } from './prologue.ts'
 import { CAUGHT_LINE } from './curly.ts'
 import type { Lab } from './photoLab.ts'
 import { catcher, spotter } from './photoLab.ts'
+import type { Cabinet } from './majorsCabinet.ts'
+import { AIRMAN, PRY_SPOT, spotted } from './majorsCabinet.ts'
 
 // Readable stealth at the survey camp (#49): instead of a cone on the ground, a small eye at the top of the screen.
 // It is shut while Curly is at work, half open while his head turns (he is about to look), open while he looks, and
@@ -31,7 +33,23 @@ const labStealth = (g: Game, l: Lab): Stealth => {
   }
 }
 
+// In the Major's office the eye reads the duty airman the same way.
+const cabinetStealth = (g: Game, c: Cabinet): Stealth => {
+  const prying = g.holding?.id === PRY_SPOT.id
+  const now = spotted(c.clock, g.pos, prying)
+  const soon = !now && [0.5, 1, 1.5, WARN].some((d) => spotted(c.clock + d, g.pos, prying))
+  const caught = c.caught !== undefined
+  return {
+    shown: true,
+    eye: now ? 'open' : soon ? 'turning' : 'shut',
+    aware: c.aware,
+    who: now || soon || caught ? AIRMAN.who : 'Nobody',
+    line: caught ? `${AIRMAN.who}: "${AIRMAN.line}"` : undefined,
+  }
+}
+
 export const stealthOf = (g: Game): Stealth => {
+  if (g.space === 'eielson' && g.cabinet && !g.panel) return cabinetStealth(g, g.cabinet)
   if (g.space === 'eielson' && g.lab && !g.panel) return labStealth(g, g.lab)
   if (g.space !== 'camp' || g.panel || g.flight !== undefined) return { shown: false, eye: 'shut', aware: 0 }
   const w = watchOf(g)
