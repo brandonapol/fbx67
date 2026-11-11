@@ -2,13 +2,14 @@
 
 How Act 3's five playable missions play in the engine build, the survival rules the night and the search share, and
 the one note each mission sends the story ([`story-api.md`](../story-api.md), Rules 1 to 4). Issue #97. The scene text
-is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the other menus will be in
-[`missions.ts`](../../text-game/src/missions.ts) once each spec is approved and implemented. Where this file and
+is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); all five menus are in
+[`missions.ts`](../../text-game/src/missions.ts). Where this file and
 [`design.md`](../../design.md) disagree, the design wins.
 
 **Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. Section 1's menu,
 `lucysDig`, section 2's, `theLongNight`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's,
-`theRashPlan`, are already in `missions.ts`.
+`theRashPlan`, are in `missions.ts`, and Act 3 plays through them as panels over `story` in its own smoke run
+(`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). The mission spaces and their play are not built yet.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:
@@ -31,6 +32,11 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); the 
 
 The rules for Lucy's dig, the long night and Wade's ski search. As few numbers as possible: two things to watch, and
 both are things in the world, not bars on the screen.
+
+The rules exist as pure code in `game/src/survival.ts` (the sky's light from the clock, the four warmth steps, the fire,
+the meal, hands and feet) with unit tests, and the arm's rules in `game/src/oneHand.ts` (every engine interaction
+declares whether it works one-handed; climbing, driving a stick shift and shooting a rifle are ruled out). Neither is
+wired into a mission or a space yet; the numbers in `survival.ts` other than the clock rate are its own tuning.
 
 - **Light.** The sky is the clock. In a survival mission the game clock runs at about twenty times real time, so the
   dig's three hours of grey light are about nine minutes of play, and the engine lights each moment from the date and

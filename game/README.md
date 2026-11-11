@@ -11,8 +11,9 @@ eye at the top of the screen says when he is looking), and the skiff in the floo
 puts the player on the sandbag line on Cushman as Wade, where Act 1 opens. Act 1 has a space for the line (the flooded
 street), the help tent, the flooded cabin (the boat ride and the knot), the land office and the jail; the barfight and
 the scenes between spaces play as menus. Act 2 plays as menus over the `story` backdrop (`eielson`, the base
-blockout, is built and sampled but no scene routes to it yet), and so does Act 3, including Lucy's dig, which is one
-menu of three notes (`lucysDig`). The text build is where the rest of each act is read in full.
+blockout, is built and sampled but no scene routes to it yet), and so does Act 3, whose five missions are each one menu
+of notes: Lucy's dig (`lucysDig`), the long night (`theLongNight`), the ski search (`theSkiSearch`), the wreck (`theWreck`)
+and the rash plans (`theRashPlan`). The text build is where the rest of each act is read in full.
 
 The player is whoever the story's `pov(state)` says, never a scene id: `bodies` in `src/cast.ts` gives each point of
 view its model and clip set, the camera's eye height (Wade's is 1.8 m, Owen's 1.7 m) and its footstep voice. Owen's
@@ -95,9 +96,9 @@ src/camera.ts     the spring-arm camera: orbit, pitch clamp, wall pull-in, inter
 src/input.ts      bindings, sticks, deadzones, gamepad and touch mapping, glyphs; pure
 src/levels.ts     the spaces as data: the `SpaceId` list, the prologue's (the boarding house's hall among them), the story backdrop
 src/searchEli.ts  Act 1's line: the flooded street and the search for Eli
-src/hospital.ts   Act 1's help tent
+src/hospital.ts   Act 1's help tent (St. Joseph's patients and nurses on the high ground), dressed by season and clock
 src/cabinRide.ts  Act 1's flooded cabin: the boat ride to the knot
-src/landoffice.ts Act 1's land office
+src/landoffice.ts Act 1's land office: two floors, the river in the ground floor, wet ledgers and Lucy on the stair
 src/jail.ts       Act 1's cell and front desk
 src/eielson.ts    Eielson Air Force Base as a blockout (docs/base-map.md); no scene routes to it yet
 src/downtown.ts   downtown Fairbanks as data (docs/town-map.md)
@@ -108,6 +109,12 @@ src/campView.ts   PlayCanvas: the camp's terrain, instanced plants, mosquitoes, 
 src/stealthView.ts the eye at the top of the screen that shows what Curly is doing and how much he has seen
 src/router.ts     which space a scene plays in, from the story's place; pure
 src/start.ts      reads a #path= or ?from= link and replays it through the story; pure
+src/silverPan.ts  the Silver Pan's dressing and the look of the patrons the ambient schedule seats; pure data
+src/ambient.ts    who is in town and the bar, and when; src/barTalk.ts is what Owen can do in the bar (order, jukebox, cards)
+src/letters.ts    the letter view's sheet: every letter to Mama as one page, in Wade's or Joan's hand; pure
+src/letterView.ts draws a letter's sheet in the DOM (a1_letter, a2_letter_work, a2_letter_friends, a3_curly, a3_joan)
+src/survival.ts   Act 3's survival rules (light from the clock, warmth steps, fire, food, hands); pure, not wired in yet
+src/oneHand.ts    what one hand rules out per engine interaction (climb, stick shift, rifle); pure, not wired in yet
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   sun, sky, fog and grade per space, season and moral-weather band; pure
 src/render.ts     PlayCanvas: draws the game state, owns nothing
@@ -117,6 +124,7 @@ src/frontEndView.ts  the title, pause menu, journal, loading bar and objective l
 src/frontEndMap.ts   the pocket map: which places are known, where the player is, where to go; pure
 src/mixer.ts      buses, slider gain, ducking and saved volumes; pure
 src/footsteps.ts  stride cadence from distance walked and surface lookup; pure
+src/recordings.ts the recorded beds and takes (game/public/audio), with procedural fallbacks; src/takes.ts is generated
 src/soundscape.ts ambience beds, spot effects and surfaces per space as data, and their conditions
 src/synth.ts      procedural sounds on Web Audio: noise beds, walla, jukebox, footsteps, spot effects
 src/audio.ts      the audio engine: unlock on gesture, buses, positional panners, the per-frame sync
@@ -130,14 +138,17 @@ src/combat.ts     the grounded combat core: shove, grab, use, get up, the clock 
 src/fightSpace.ts the fight's test space: one room, the player and one man against him
 src/fightControls.ts the fight's keys and gamepad buttons; pure
 src/fightView.ts  fight.html: the test space drawn in blocks, on keyboard or gamepad (make serve/game)
-tools/            asset generators: characters.ts, assets.ts and procedural.ts (docs/art/pipeline.md)
+tools/            asset generators: characters.ts, assets.ts and procedural.ts (docs/art/pipeline.md); audio.ts builds public/audio
 smoke/            the end-to-end browser test, frame comparison and budget checks
 smoke/baselines/  the committed frame per capture pose
 ```
 
 ## Sound
 
-Every sound is synthesized at run time; sources and the size budget are in
+Nine CC0 field recordings in `public/audio` (Opus in WebM, rebuilt by `make generate/audio`, which needs ffmpeg) layer
+over the procedural sounds: the bar's walla, clink, wood steps and screen door, the camp's creek, spruce wind and gravel,
+and the flood's rain and river. A space fetches only its own files, and the procedural version plays until they decode
+(or for good if they never do). Every other sound is synthesized at run time. Sources, licenses and the size budget are in
 [`docs/audio/sources.md`](../docs/audio/sources.md). Four buses (ambience, effects, voices, music) feed a limiter;
 a story panel ducks voices and music. The hotel mission's eavesdrop drives the guitar cover with
 `audio.setCover(0..1)`: as Wade plays harder the voices bus (the conversation) ducks toward `COVER_FLOOR`; at 0 it
@@ -145,7 +156,7 @@ is clear. The mission sets it back to 0 when the eavesdrop ends. Spot effects an
 Web Audio panners with the listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m
 at a walk, 1.2 m at a jog), on the surface under Owen; snow goes from a soft crunch near freezing to a squeak in
 deep cold, from the space's temperature; the hospital hallway and the cell are concrete. `soundscapes` has one entry
-per space in `levels.ts`. The Act 1 line, help tent (`hospital`) and cell are in it; the barfight bed in
+per space in `levels.ts`. The Act 1 line, help tent (`hospital`), land office and cell are in it; the barfight bed in
 `act1Soundscapes`, the town, hotel and hall beds in `act2Soundscapes` and the four Act 3 beds in `act3Soundscapes` wait
 until their spaces land. Escape closes the sound panel.
 
@@ -167,15 +178,15 @@ until their spaces land. Escape closes the sound panel.
     its perf samples and captures frame `<scene>.png` from the start's pose. A later act ticket adds its start as one
     entry there, with a pose in `src/probe.ts` for the space it starts in.
 
-  Acts 1 and 2 each play through in their own run and CI job, with frames per beat in each moral-weather band:
+  Acts 1, 2 and 3 each play through in their own run and CI job, with frames per beat in each moral-weather band:
   `make test/game/smoke/act1` (baselines in `smoke/baselines/act1/`) and `make test/game/smoke/act2` (`act2/`); see
-  [`docs/perf.md`](../docs/perf.md). Act 3 has no run of its own yet, only its `a3_camp` start above.
+  [`docs/perf.md`](../docs/perf.md). Act 3 has its own run too, `make test/game/smoke/act3` (`smoke/act3.test.ts`, baselines in `smoke/baselines/act3/`), in its own CI job.
 
   It refuses a port that serves another build, so parallel worktrees need their own `SMOKE_PORT`. Everything lands
   in `smoke-report/` (`SMOKE_REPORT=<dir>` moves it): `frames/`, `diff/` for changed frames,
   `perf.json` and `summary.md`. Set `CHROMIUM_PATH` to use a browser other than Playwright's.
-- `make generate/baselines`: the prologue, Act 1 and Act 2 runs, overwriting `smoke/baselines/` with the new frames
-  (`make generate/baselines/act1` and `make generate/baselines/act2` replay only that act). Run it when a
+- `make generate/baselines`: the prologue, Act 1, Act 2 and Act 3 runs, overwriting `smoke/baselines/` with the new frames
+  (`make generate/baselines/act1`, `act2` and `act3` replay only that act). Run it when a
   change to the look is meant, read the new images, and commit them. Baselines are rendered by Playwright's
   headless Chromium in software (SwiftShader), the same as CI, so generate them without `CHROMIUM_PATH`. If a
   local run and CI ever disagree past the tolerance, take the frames from CI instead: download the
