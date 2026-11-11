@@ -9,7 +9,7 @@ import type { Vec } from '../src/world.ts'
 import { distance, sub, vec } from '../src/world.ts'
 import { poses } from '../src/probe.ts'
 import type { Step } from './act2Plan.ts'
-import { ACT2_FIRST, ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, isBeat, nextStep, poseFor } from './act2Plan.ts'
+import { ACT2_FIRST, ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, beatName, isBeat, nextStep, poseFor } from './act2Plan.ts'
 
 const DT = 1 / 30
 
@@ -46,19 +46,23 @@ const act = (g: Game, s: Step): Game => {
   return tick(g, still, DT)
 }
 
-type Played = Readonly<{ end: Game; beats: readonly Game[] }>
+type Played = Readonly<{ end: Game; beats: readonly Game[]; names: readonly string[] }>
 
 const played = (): Played => {
   const beats: Game[] = []
+  const names: string[] = []
   let g = startFrom(`#path=${ACT2_PATH}`, '')
   let before: Game | undefined
   for (let n = 0; g.story.scene !== ACT3_FIRST; n++) {
     if (n > 2000) throw new Error(`stuck at ${g.story.scene} in ${g.space} at ${g.pos.x.toFixed(2)},${g.pos.z.toFixed(2)}`)
-    if (isBeat(before, g)) beats.push(g)
+    if (isBeat(before, g)) {
+      beats.push(g)
+      names.push(beatName(before, g))
+    }
     before = g
     g = act(g, nextStep(g))
   }
-  return { end: g, beats }
+  return { end: g, beats, names }
 }
 
 test('Act 2 plays from its start to Act 3’s first scene, every choice the first, as the text build does', () => {
@@ -75,8 +79,8 @@ test('Act 2 plays from its start to Act 3’s first scene, every choice the firs
 })
 
 test('each Act 2 beat is a place on the path, and each has a pose in the space it plays in', () => {
-  const { beats } = played()
-  assert.deepEqual(beats.map((b) => b.story.scene), act2Beats)
+  const { beats, names } = played()
+  assert.deepEqual(names, act2Beats)
   beats.forEach((b) => assert.equal(poses[poseFor[b.space]!]?.space, b.space, `${b.story.scene} in ${b.space}`))
 })
 
@@ -95,6 +99,9 @@ test('a beat starts where the place changes, or the space, not at every scene', 
   assert.equal(isBeat(undefined, major), true)
   assert.equal(isBeat(major, photos), true, 'the major’s office to the photo lab')
   assert.equal(isBeat(photos, photos), false)
+  assert.equal(photos.space, 'kitchen', 'Lucy asks for the photo lab in her kitchen')
+  assert.equal(beatName(major, photos), 'a2_photos')
+  assert.equal(beatName(photos, { ...photos, space: 'eielson' }), 'a2_photos_eielson', 'the same scene on the base is a beat of its own')
   assert.equal(isBeat(photos, { ...photos, space: 'story' }), true, 'same place, another space')
 })
 

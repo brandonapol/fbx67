@@ -12,6 +12,7 @@ import { openedOf } from './barfight.ts'
 import { PLANS, listen, playOut } from './barfightBot.ts'
 import { LAB_SPOT } from './eielson.ts'
 import { WAY_NOTE } from './photoLab.ts'
+import { GO, asks } from './kitchen.ts'
 import type { Method } from './photoLab.ts'
 import { playLab } from './photoLabBot.ts'
 import type { SpaceId } from './levels.ts'
@@ -121,10 +122,13 @@ const fightSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
 const depthAt = (s: State): number => Math.max(2, ...(mission(s)?.endings.map((e) => e.applies.length) ?? []))
 
 // The photo lab's notes go as its run plays (photoLab.ts): from the counter, every way in with every method, played by
-// the lab's scripted player (photoLabBot.ts), the spot being the counter where the way in is picked.
+// the lab's scripted player (photoLabBot.ts), the spot being the counter where the way in is picked. Lucy asks first, in
+// her kitchen (kitchen.ts): telling her he will go takes Wade to the counter.
+const toBase = (g: Game): Game => (g.space === 'kitchen' && asks(g.story) ? press(g, GO.id) : g)
 const METHODS: readonly Method[] = ['crossCheck', 'pullAll']
 const labbed = new WeakMap<Stop, readonly State[]>()
-const labSenders = (stop: Stop, g: Game): readonly Sender[] => {
+const labSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
+  const g = toBase(arrived)
   const spot = available(g).find((i) => i.id === LAB_SPOT.id)
   if (!spot) return []
   const landed =
@@ -142,13 +146,15 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   }
   if (r.to !== 'space') return []
   const g = resume(stop.state, [0])
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(r.space, LAB_SPOT.id) ? [] : labSenders(stop, g)), ...available(g)
-    .filter((i) => !without(r.space, i.id))
+  // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
+  const space = g.space
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...available(g)
+    .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)
-      if (focus(at)?.id !== i.id) throw new Error(`the probe cannot focus ${r.space}/${i.id} at ${stop.state.scene}`)
+      if (focus(at)?.id !== i.id) throw new Error(`the probe cannot focus ${space}/${i.id} at ${stop.state.scene}`)
       const landed = outcomes(interact(at), depthAt(stop.state)).map((o) => o.story).filter((s) => s !== stop.state)
-      return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: r.space, spot: i.id }))
+      return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space, spot: i.id }))
     })]
 }
 

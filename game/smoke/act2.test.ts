@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replayPath } from '../src/start.ts'
 import type { Step } from './act2Plan.ts'
-import { ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, isBeat, label, nextStep, poseFor } from './act2Plan.ts'
+import { ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, beatName, isBeat, label, nextStep, poseFor } from './act2Plan.ts'
 import type { Page } from './browser.ts'
 import { frames, game, smoke } from './browser.ts'
 import { stallContext, stallMessage } from './stall.ts'
@@ -98,9 +98,10 @@ test('Act 2 plays from its start to Act 3’s first scene, a frame per beat in e
       if (g.story.scene === ACT3_FIRST) break
       assert.ok(n < MAX_STEPS, `stuck at ${g.story.scene} in ${g.space}`)
       if (isBeat(before, g)) {
-        beats.push(g.story.scene)
-        console.log(`  beat ${g.story.scene} in ${g.space}: ${((Date.now() - started) / 1000).toFixed(0)} s in`)
-        for (const b of bands) await run.capture(page, `${g.story.scene}${b.suffix}`, poseFor[g.space as keyof typeof poseFor]!, b.heat)
+        const name = beatName(before, g)
+        beats.push(name)
+        console.log(`  beat ${name} in ${g.space}: ${((Date.now() - started) / 1000).toFixed(0)} s in`)
+        for (const b of bands) await run.capture(page, `${name}${b.suffix}`, poseFor[g.space as keyof typeof poseFor]!, b.heat)
       }
       before = g
       await take(page, nextStep(g))

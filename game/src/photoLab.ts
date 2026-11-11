@@ -8,8 +8,9 @@ import { DRAWERS, LAB, LAB_SPOT, RECORDS, pieces, spawns } from './eielson.ts'
 export { DRAWERS }
 import { yawOf } from './downtown.ts'
 
-// The photo lab on the base (docs/acts/act2-missions.md, section 1). Wade picks his way in at the counter (the scene's
-// own menu: the clerk's lunch, after lockup with a borrowed key, or refuse), and the run starts there: he slips past the
+// The photo lab on the base (docs/acts/act2-missions.md, section 1). Lucy asks first, in her kitchen (kitchen.ts),
+// where refusing is a conversation with her. On the base Wade picks his way in at the counter (the scene's own menu's
+// ways in: the clerk's lunch, or after lockup with a borrowed key), and the run starts there: he slips past the
 // counter and down the lab hall to the records room, opens the drawers the index card names and searches them, and
 // walks out with the prints. The lab's people walk their rounds as data (WATCH): seen where he has no business,
 // he is busted and retries from the last checkpoint, and the story never hears of it (Rule 4).
@@ -203,6 +204,9 @@ export const DRAIN = 1.2
 // The busted beat: the watcher's line shows this long before the retry comes up.
 export const CAUGHT_TIME = 1.8
 
+// The notes the lab counter offers: the ways in. Refusing is Lucy's, at her table (kitchen.ts).
+export const counterNotes = (notes: readonly string[]): readonly string[] => notes.filter((n) => WAY_OF[n] !== undefined)
+
 export const wayOf = (s: State): Way => (s.photoLab === 'key' ? 'key' : 'lunch')
 
 // The run starts at the counter, once Wade picks his way in.
@@ -213,8 +217,8 @@ export const arrival = (s: State, at: Vec, facing: number): Lab | undefined =>
   place(s) === 'photoRecords' ? fresh(wayOf(s), { at, facing, clock: 0, phase: 'drawers' }) : undefined
 
 // What a menu's note does in the run, if it is the run's: the way in starts it at the counter (no note goes yet); the
-// drawers' method is picked with them open, the checkpoint before the first print is pulled. Anything else (refusing)
-// is the story's.
+// drawers' method is picked with them open, the checkpoint before the first print is pulled. Anything else is the
+// story's.
 export const pick = (s: State, lab: Lab | undefined, note: string, at: Vec, facing: number): Lab | undefined => {
   if (!lab && mission(s)?.id === 'thePhotoLab' && WAY_OF[note]) return begin(WAY_OF[note]!, at, facing)
   if (lab?.phase === 'drawers' && !lab.found && place(s) === 'photoRecords' && METHODS.includes(note)) {

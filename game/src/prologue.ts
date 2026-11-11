@@ -35,9 +35,9 @@ import type { Brawl } from './barfight.ts'
 import { FACING_HANK, begin, done as fought, hankSpot, noteOf, openedOf, openingButtons, play, roomOf, sceneNotes, starts, wade } from './barfight.ts'
 import type { Intent } from './combat.ts'
 import type { Lab } from './photoLab.ts'
-import { DRAWERS, arrival, baseEntry, catcher, found as searched, labSpot, messy, pick as pickLab, restart as restartLab, scold as scoldLab, searchTime, step as labStep } from './photoLab.ts'
+import { DRAWERS, arrival, baseEntry, catcher, counterNotes, found as searched, labSpot, messy, pick as pickLab, restart as restartLab, scold as scoldLab, searchTime, step as labStep } from './photoLab.ts'
 import { LAB_SPOT } from './eielson.ts'
-import { TABLE_SPOT, tableSpot } from './kitchen.ts'
+import { GO, TABLE_SPOT, asks, tableNotes, tableSpot } from './kitchen.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -300,6 +300,8 @@ const arrive = (g: Game): Game => {
   // speech, which ends on the drunk's shove and the scene's prompt. A link straight into the fight's later scenes plays
   // them as their menus.
   if (r.space === 'pan') return starts(g.story) ? enter(g, 'pan', spaces.pan.spawn, FACING_HANK) : menuPanel(enter(g, 'pan', spaces.pan.spawn, FACING_HANK))
+  // The photo lab is Lucy's ask first: Wade comes into her kitchen, and her table asks whether he goes (kitchen.ts).
+  if (r.space === 'eielson' && asks(g.story) && g.space !== 'kitchen' && g.space !== 'eielson') return enter(g, 'kitchen')
   // On the base each scene starts at its place's spawn: Wade walks to what it offers there, or its menu opens there.
   if (r.space === 'eielson') {
     const e = baseEntry(g.story)
@@ -525,10 +527,11 @@ export const interact = (g: Game): Game => {
   // way to look away from it. Eli looking at it (a1_knot) keeps the close-up.
   if (g.space === 'cabin' && id === 'knot') return { ...g, look: 'knot', panel: storyPanel(g.story, allNotes(g.story)) }
   if (g.space === 'pan' && id === 'hank') return opening(g)
-  // In the photo lab the scene's own menu asks when Wade goes back to the records room, or whether he does.
-  if (g.space === 'eielson' && id === LAB_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
-  // At Lucy's table the scene's own menu asks what Wade does for her: the hotel bar, or the Major's cabinet.
-  if (g.space === 'kitchen' && id === TABLE_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  // In the photo lab the scene's own menu asks when Wade goes back to the records room; whether he does was Lucy's.
+  if (g.space === 'eielson' && id === LAB_SPOT.id) return { ...g, panel: storyPanel(g.story, counterNotes(allNotes(g.story)), [close('Step back.')]) }
+  // At Lucy's table the scene's own menu asks what Wade does for her: the hotel bar, or the Major's cabinet; or, for
+  // the photo lab, whether he goes at all, going taking him to the base.
+  if (g.space === 'kitchen' && id === TABLE_SPOT.id) return { ...g, panel: storyPanel(g.story, tableNotes(g.story), [...(asks(g.story) ? [GO] : []), close('Step back.')]) }
   // At the drawers the records room's menu asks how Wade searches them; once he has picked, holding searches them, and
   // letting go keeps what he has done.
   if (g.space === 'eielson' && id === DRAWERS.id && g.lab) {

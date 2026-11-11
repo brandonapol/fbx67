@@ -7,7 +7,8 @@ import type { Game } from './prologue.ts'
 import { available, focus, interact, label, press, still, tick } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { route } from './router.ts'
-import { SPAWN, TABLE_SPOT } from './kitchen.ts'
+import { GO, SPAWN, TABLE_SPOT } from './kitchen.ts'
+import { LAB_SPOT, spawnAt } from './eielson.ts'
 import { engineSenders, walk } from './notesRatchet.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
 import { angleTo, distance, sub, vec } from './world.ts'
@@ -104,5 +105,52 @@ test("the ratchet counts Lucy's table as the sender of every hotel bar and Major
   const at = engineSenders(walk()).filter((s) => ids.some((id) => s.key.startsWith(`${id}:`)))
   const all = walk().flatMap((s) => s.offers.map((o) => o.key)).filter((k) => ids.some((id) => k.startsWith(`${id}:`)))
   assert.deepEqual([...new Set(at.map((s) => s.key))].sort(), [...new Set(all)].sort())
+  at.forEach((s) => assert.deepEqual([s.space, s.spot], ['kitchen', TABLE_SPOT.id]))
+})
+
+// The photo lab (a2_photos) is Lucy's ask before it is the base's: Wade comes into her kitchen, and at her table
+// refusing is a conversation with her (docs/acts/act2-missions.md: a deliberate prompt, asked before the mission
+// starts). Agreeing sends nothing and takes him to the lab's front door, where the counter asks when he goes in.
+test("at a2_photos Wade comes into Lucy's kitchen first, with her table to walk to", () => {
+  const arrived = startFrom(hash(pathTo('a2_photos')), '')
+  assert.equal(arrived.story.scene, 'a2_photos')
+  assert.equal(arrived.space, 'kitchen')
+  assert.deepEqual(arrived.pos, SPAWN)
+  assert.equal(arrived.panel, undefined, 'no menu until he walks to the table')
+  assert.deepEqual(available(arrived), [TABLE_SPOT])
+})
+
+test("at a2_photos Lucy's table offers refusing and going, nothing else, and asking sends nothing", () => {
+  const arrived = startFrom(hash(pathTo('a2_photos')), '')
+  const asked = interact(atTable(arrived))
+  assert.equal(asked.panel?.title, menu(arrived.story).title)
+  assert.deepEqual(asked.panel?.buttons.map((b) => b.id), ['note:refuse', GO.id, 'close'])
+  assert.deepEqual(asked.story, arrived.story)
+})
+
+test('refusing Lucy lands where the photo lab\'s refused note does, on the text build\'s path', () => {
+  const arrived = startFrom(hash(pathTo('a2_photos')), '')
+  const g = press(interact(atTable(arrived)), 'note:refuse')
+  assert.deepEqual(g.story, sendMission(arrived.story, 'refused'))
+  assert.deepEqual(g.story, textBuild(g), 'parity with the text build')
+  assert.equal(g.story.scene, 'a2_hotel')
+  assert.equal(g.space, 'kitchen', 'he is still in her kitchen, for the hotel bar')
+})
+
+test('going sends nothing and takes Wade to the photo lab\'s front door, the counter to walk to', () => {
+  const arrived = startFrom(hash(pathTo('a2_photos')), '')
+  const g = press(interact(atTable(arrived)), GO.id)
+  assert.deepEqual(g.story, arrived.story)
+  assert.deepEqual(g.path, arrived.path)
+  assert.equal(g.space, 'eielson')
+  const door = spawnAt('photoLab')
+  assert.deepEqual(g.pos, vec(door.x, door.z))
+  assert.equal(g.panel, undefined)
+  assert.deepEqual(available(g), [LAB_SPOT])
+})
+
+test("the ratchet counts Lucy's table as the sender of the photo lab's refusal", () => {
+  const at = engineSenders(walk()).filter((s) => s.key === 'thePhotoLab:refused')
+  assert.ok(at.length > 0)
   at.forEach((s) => assert.deepEqual([s.space, s.spot], ['kitchen', TABLE_SPOT.id]))
 })
