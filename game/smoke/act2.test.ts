@@ -24,11 +24,12 @@ const STEP_MS = 120000
 // Frames sampled in a space the run visits rather than plays, as the prologue's run samples the blockout.
 const VISIT_FRAMES = 40
 
-// What a step is waiting to see change: the scene, the space, the panel or letter, what Wade holds, the path.
+// What a step is waiting to see change: the scene, the space, the panel or letter, what Wade holds, the path. A panel's
+// text counts: the Major's cabinet's dial changes only what it reads.
 const where = (p: Page): Promise<string> =>
   p.evaluate(() => {
     const g = (window as any).__prologue.game()
-    return JSON.stringify([g.story.scene, g.space, g.panel?.title, g.panel?.buttons.length, g.home?.writing !== undefined, g.home?.page?.length, g.holding?.id, g.look, g.path.length])
+    return JSON.stringify([g.story.scene, g.space, g.panel?.title, g.panel?.text, g.panel?.buttons.length, g.home?.writing !== undefined, g.home?.page?.length, g.holding?.id, g.look, g.path.length])
   })
 
 const changed = async (p: Page, from: string, what: string): Promise<void> => {
