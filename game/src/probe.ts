@@ -58,9 +58,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // Act 1's Saturday at the Silver Pan: Wade on his stool for Hank's speech, Eli on the next one, the drunk and his
   // friends behind them, the mud on the boards, from over the room toward the bar.
   pan: { space: 'pan', pos: vec(0.5, -2.35), facing: 0, t: 0, shot: { eye: [3.6, 3.2, 3.4], at: [-0.6, 1.0, -2.2] } },
-  // The same Saturday mid-fight, at its peak: all ten in it along the bar and down to the card table, from the corner
-  // by the jukebox and the door, over the room.
-  brawl: { space: 'pan', pos: WADE_STOOL, facing: 0, t: 0, fight: PEAK_FIGHT, shot: { eye: [4.8, 3.2, 4.2], at: [-1.0, 0.9, -0.8] } },
+  // The same Saturday mid-fight, at its peak: all ten in it along the bar and down to the card table, from high over
+  // the door, as the prologue's bar is shot, so the whole room is in the frame.
+  brawl: { space: 'pan', pos: WADE_STOOL, facing: 0, t: 0, fight: PEAK_FIGHT, shot: { eye: [0, 9, 8.5], at: [-0.2, 0.8, -0.3] } },
   // Act 1's land office: Wade in the water inside the door, Eli by him, Lucy at the foot of the stair with the ledgers.
   office: { space: 'office', pos: vec(0, -4.1), facing: 0, t: 0, shot: { eye: [-2.5, 2.6, -4.6], at: [3.5, 1.2, -1] } },
   downtown: { space: 'downtown', pos: vec(33, 50.5), facing: Math.PI / 2, t: 0, shot: { eye: [26, 4.5, 50.5], at: [70, 3, 53] } },
