@@ -10,6 +10,7 @@ import { route } from './router.ts'
 import { spaces } from './levels.ts'
 import { BOOTH_SPOT, CURLY_SPOT, DOOR_H, HANGAR_SPAWN, JAKE_HEIGHT, JAKE_SPOT, PAN_SPAWN, STRIP_SPAWN, TIE_SHOT, WATCH_SPOT, loop, rollOut, tail, tieShot } from './bushStrip.ts'
 import { engineSenders, walk } from './notesRatchet.ts'
+import { lighting } from './lighting.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
 import type { Vec } from './world.ts'
 import { angleTo, distance, sub, vec } from './world.ts'
@@ -131,6 +132,14 @@ test('taking Curly up on the steak takes Wade into the Pan, Curly at the booth w
   const on = pressNote(sat, 'continue')
   assert.equal(on.story.scene, 'a2_minto')
   assert.equal(on.space, 'kitchen')
+})
+
+// Regression: the Pan's booth was lit as outdoors, the freeze-up air falling through the room, because it had no
+// practical of its own.
+test("the Pan's booth is lit by its bulbs, as an interior, and the strip and the hangar by the sky", () => {
+  assert.ok(spaces.steak.interior)
+  assert.ok(lighting('steak', 'freezeup', 'clear').lamp, 'the booth has its bulbs')
+  ;(['strip', 'hangar'] as const).forEach((id) => assert.ok(!spaces[id].interior && !lighting(id, 'freezeup', 'clear').lamp, id))
 })
 
 // --- Jake and decision 3 (#183) ---

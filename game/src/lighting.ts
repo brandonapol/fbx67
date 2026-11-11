@@ -182,6 +182,8 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   office: { color: '#cfd6dc', intensity: 1.5, range: 13, at: [0.5, 2.6, -3.5] },
   // Lucy's kitchen: the bulb over her table.
   kitchen: { color: '#ffb877', intensity: 1.8, range: 9, at: [0.6, 2.3, 0.6] },
+  // The Silver Pan in November: the same bulbs, over Curly's booth (bushStrip.ts).
+  steak: { color: '#ffb877', intensity: 2.2, range: 14, at: [0, 2.6, 0] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 
