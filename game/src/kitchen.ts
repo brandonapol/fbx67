@@ -1,14 +1,18 @@
 import type { State } from '../../text-game/src/types.ts'
-import { mission } from '../../text-game/src/story.ts'
+import { menu, mission, place } from '../../text-game/src/story.ts'
 import type { Figure, Prop, Space } from './levels.ts'
+import type { Button } from './prologue.ts'
 import type { Interactable } from './world.ts'
 import { vec } from './world.ts'
+import { WAY_NOTE } from './photoLab.ts'
 
 // Lucy's kitchen (place `lucysKitchen`; docs/town-map.md: off the map, no scene walks there), as its first pass plays
 // it: one gray-box room, Wade in at the door, Lucy at her table. At the two missions that start here, the hotel bar
 // (a2_hotel) and the Major's cabinet (a2_co_ask), Wade walks to the table and the scene's own menu asks what he does;
-// every other kitchen scene opens its menu where he comes in. Nothing here decides what a choice does. Local x east,
-// z south; the door is in the north wall.
+// every other kitchen scene opens its menu where he comes in. The photo lab (a2_photos) is asked here too, before the
+// base: refusing is a conversation with Lucy at her table, and going takes Wade to the lab (photoLab.ts), where the
+// counter asks when he goes in. Nothing here decides what a choice does. Local x east, z south; the door is in the
+// north wall.
 
 const W = 6
 const D = 5
@@ -23,10 +27,24 @@ const LUCY_AT = vec(TABLE_AT.x + 0.2, TABLE_AT.z + 0.75)
 // Lucy's table, where she reads what Wade brings her: her menu comes up here.
 export const TABLE_SPOT: Interactable = { id: 'table', x: TABLE_AT.x, z: TABLE_AT.z, r: 1.6, prompt: 'Sit down with Lucy' }
 
-// The table is there to use only where one of the kitchen's missions starts.
+// The table is there to use only where one of the kitchen's missions starts, or where Lucy asks for the photo lab.
 const MISSIONS: readonly string[] = ['theHotelBar', 'theMajorsCabinet']
 
-export const tableSpot = (s: State, id: string): boolean => id === TABLE_SPOT.id && MISSIONS.includes(mission(s)?.id ?? '')
+// Lucy asks for the aerial photographs before Wade goes to the base: the photo lab mission's start, at the lab.
+export const asks = (s: State): boolean => mission(s)?.id === 'thePhotoLab' && place(s) === 'photoLab'
+
+export const tableSpot = (s: State, id: string): boolean => id === TABLE_SPOT.id && (MISSIONS.includes(mission(s)?.id ?? '') || asks(s))
+
+// Telling Lucy he will get them sends nothing: it takes Wade to the base, where the counter asks when he goes in. Its
+// id is `continue`, the game's button for moving on to where the story is.
+export const GO: Button = { id: 'continue', label: 'Tell her you\'ll get them.' }
+
+// The notes the table offers: where Lucy asks for the photo lab, only what is not a way in (refusing); the ways in
+// are the lab counter's. Anywhere else the scene's whole menu.
+export const tableNotes = (s: State): readonly string[] => {
+  const ways: readonly string[] = Object.values(WAY_NOTE)
+  return menu(s).options.map((o) => o.note).filter((n) => !asks(s) || !ways.includes(n))
+}
 
 const wall = (x: number, z: number, w: number, d: number, color: string): Prop => ({ box: { x, z, w, d }, h: 2.6, color, solid: true, occludes: true })
 

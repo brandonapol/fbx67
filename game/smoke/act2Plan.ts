@@ -43,6 +43,11 @@ const at = (g: Game): readonly [SpaceId, Place | undefined] => [g.space, place(g
 export const isBeat = (before: Game | undefined, now: Game): boolean =>
   before === undefined || at(before).some((x, i) => x !== at(now)[i])
 
+// A beat's name, which its frames are captured under: its scene, or, where the same scene moves on to another space
+// (the photo lab, asked in Lucy's kitchen and played on the base), the scene and that space.
+export const beatName = (before: Game | undefined, now: Game): string =>
+  before?.story.scene === now.story.scene ? `${now.story.scene}_${now.space}` : now.story.scene
+
 // The probe pose each space Act 2 plays in has its frame taken from (src/probe.ts).
 export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   story: 'story',
@@ -50,10 +55,11 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   kitchen: 'kitchen',
 }
 
-// The beats of the run, in order: the first scene at each place on the path.
-export const act2Beats: readonly SceneId[] = [
+// The beats of the run, in order: the first scene at each place on the path, and the photo lab again on the base.
+export const act2Beats: readonly string[] = [
   'a2_major',
   'a2_photos',
+  'a2_photos_eielson',
   'a2_photos_files',
   'a2_hotel',
   'a2_hotel_set',

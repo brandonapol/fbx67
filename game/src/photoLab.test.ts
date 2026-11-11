@@ -8,6 +8,7 @@ import { startFrom } from './start.ts'
 import { route } from './router.ts'
 import { DRAWERS, LAB_SPOT, RECORDS, spawnAt } from './eielson.ts'
 import { engineSenders, walk } from './notesRatchet.ts'
+import { GO, TABLE_SPOT } from './kitchen.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
 import { angleTo, distance, sub, vec } from './world.ts'
 import type { Method, Way } from './photoLab.ts'
@@ -16,7 +17,8 @@ import { AT_DRAWERS, HIDE, act, labNext, playLab } from './photoLabBot.ts'
 import { stealthOf } from './stealthView.ts'
 
 // The photo lab on the base (docs/acts/act2-missions.md, section 1): the story's photo lab and records room route to
-// the Eielson blockout. Wade comes in at the lab's front door and picks his way in at the counter's open end; the run
+// the Eielson blockout. Lucy asks first, at her kitchen table (kitchen.test.ts), where refusing is a conversation with
+// her; agreeing, Wade comes in at the lab's front door and picks his way in at the counter's open end; the run
 // plays from there: past the counter, down the hall, into the records room (the way in's note), the drawers searched,
 // and out with the prints (the drawers' note). Played headless and checked against the text build on each `--choices`
 // path; busted retries never reach the story.
@@ -27,7 +29,8 @@ const textBuild = (g: Game) => replay(g.path).at(-1)!
 // a2_major's one choice from the Act 2 start lands on a2_photos.
 const PHOTOS = [...ACT2_PATH.split(',').map(Number), 1]
 
-const arrived = startFrom(`#path=${PHOTOS.join(',')}`, '')
+// Lucy asks in her kitchen; Wade sits down at her table and tells her he will get them.
+const asked = startFrom(`#path=${PHOTOS.join(',')}`, '')
 
 const walkTo = (g: Game, to: { x: number; z: number }): Game => {
   let cur = g
@@ -37,6 +40,13 @@ const walkTo = (g: Game, to: { x: number; z: number }): Game => {
   }
   return cur
 }
+
+const atTable = (g: Game): Game => {
+  const near = walkTo(g, vec(-0.5, 0))
+  return tick(near, { ...still, view: angleTo(near.pos, TABLE_SPOT) }, DT)
+}
+
+const arrived = press(interact(atTable(asked)), GO.id)
 
 const walkThrough = (g: Game, ps: readonly (readonly [number, number])[]): Game => ps.reduce((cur, [x, z]) => walkTo(cur, vec(x, z)), g)
 
@@ -67,11 +77,12 @@ test('the photo lab routes to the base: Wade comes in at its front door, with th
   assert.equal(label(there, LAB_SPOT), LAB_SPOT.prompt)
 })
 
-test("at the counter the scene's own menu asks when Wade goes in, and asking sends nothing", () => {
-  const asked = interact(atCounter())
-  assert.equal(asked.panel?.title, menu(arrived.story).title)
-  assert.deepEqual(asked.panel?.buttons.map((b) => b.id), [...menu(arrived.story).options.map((o) => `note:${o.note}`), 'close'])
-  assert.deepEqual(asked.story, arrived.story)
+test("at the counter the scene's own menu asks when Wade goes in, the ways in only, and asking sends nothing", () => {
+  const counter = interact(atCounter())
+  assert.equal(counter.panel?.title, menu(arrived.story).title)
+  assert.deepEqual(counter.panel?.buttons.map((b) => b.id), [...Object.values(WAY_NOTE).map((n) => `note:${n}`), 'close'])
+  assert.ok(!counter.panel?.buttons.some((b) => b.id === 'note:refuse'), 'refusing is a conversation with Lucy, not the counter')
+  assert.deepEqual(counter.story, arrived.story)
 })
 
 test('picking a way in starts the run at the counter and sends nothing yet', () => {
@@ -267,10 +278,11 @@ test("every way through the photo lab is reachable by play and lands where its m
   assert.equal(m?.id, 'thePhotoLab')
   assert.deepEqual(Object.keys(ways).sort(), m!.endings.map((e) => e.note).sort())
   Object.entries(ways).forEach(([note, how]) => {
-    const g = how === 'refuse' ? press(interact(atCounter()), 'note:refuse') : playLab(goes(how[0]), how[1])
+    const g = how === 'refuse' ? press(interact(atTable(asked)), 'note:refuse') : playLab(goes(how[0]), how[1])
     assert.equal(g.story.scene, 'a2_hotel', note)
     assert.equal(g.space, 'kitchen', 'off the base, Wade comes into Lucy\'s kitchen')
-    assert.equal(g.panel, undefined, 'he walks to her table for the hotel bar\'s menu')
+    if (how === 'refuse') assert.equal(g.panel?.title, menu(g.story).title, 'refusing at her table, he is there for the hotel bar\'s menu')
+    else assert.equal(g.panel, undefined, 'he walks to her table for the hotel bar\'s menu')
     assert.equal(g.lab, undefined, 'the run is over')
     assert.deepEqual(g.story, sendMission(arrived.story, note), note)
     assert.deepEqual(g.story, textBuild(g), `parity with the text build on ${note}`)
@@ -298,8 +310,8 @@ test('the lab\'s people are drawn only while the run is on, and only in the buil
   assert.deepEqual(figuresOf(goes('key').lab), [], 'after lockup the sergeant is out on his round')
 })
 
-test('the ratchet counts the lab counter as the sender of every photo lab note, and only there', () => {
+test("the ratchet counts the lab counter as the sender of every way in, and Lucy's table as the refusal's, and only there", () => {
   const at = engineSenders(walk()).filter((s) => s.key.startsWith('thePhotoLab:'))
   assert.deepEqual([...new Set(at.map((s) => s.key))].sort(), Object.keys(ways).map((n) => `thePhotoLab:${n}`).sort())
-  at.forEach((s) => assert.deepEqual([s.space, s.spot], ['eielson', LAB_SPOT.id]))
+  at.forEach((s) => assert.deepEqual([s.space, s.spot], s.key === 'thePhotoLab:refused' ? ['kitchen', TABLE_SPOT.id] : ['eielson', LAB_SPOT.id]))
 })

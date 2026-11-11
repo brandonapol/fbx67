@@ -42,8 +42,8 @@ test('a game started from a path writes the same path back, and keeps playing in
   const next = press(from(major), from(major).panel!.buttons[0].id)
   assert.deepEqual(next.path, [...major, 1])
   assert.deepEqual(next.story, replay([...major, 1]).at(-1))
-  assert.equal(next.space, 'eielson', 'the photo lab is on the base')
-  assert.equal(next.panel, undefined, 'Wade walks to the records room')
+  assert.equal(next.space, 'kitchen', 'Lucy asks for the photo lab in her kitchen, before the base')
+  assert.equal(next.panel, undefined, 'Wade walks to her table')
 })
 
 test('a path into a scene with a space puts the player in it, with no panel', () => {
