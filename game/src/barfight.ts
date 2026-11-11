@@ -182,7 +182,7 @@ export const openedOf = (button: string): Opened | undefined =>
 // game, and the officer in the door at the end. The fighters stand where the fight puts them (render.ts).
 const looks = {
   eli: { coat: '#4a4f3a', skin: '#a8754f', hair: '#1e1a17', height: 1.76 },
-  curly: { coat: '#8a5a2a', skin: '#e3b28a', hair: '#c8873f', height: 1.75 },
+  curly: { cast: 'curly', height: 1.75 },
   drunk: { coat: '#6a3a2a', skin: '#d9a07a', hair: '#4a3420', height: 1.84 },
   friend: { coat: '#5a5a48', skin: '#e0b090', hair: '#2a2018', height: 1.8 },
   friend2: { coat: '#3e4a5a', skin: '#d8a880', hair: '#8a6a40', height: 1.78 },
@@ -201,7 +201,7 @@ export const figures: readonly Figure[] = [
   ...fighters('gotUp')
     .filter((x) => x.id !== PLAYER)
     .map((x): Figure => ({ id: x.id, at: x.pos, facing: x.facing, ...looks[x.id as keyof typeof looks], ...(sitting.has(x.id) ? { activity: 'sitDrink' as const } : {}) })),
-  { id: 'hank', at: HANK_AT, facing: 0, coat: '#e8e1d2', skin: '#e0b48f', hair: '#9a9a9a', height: 1.8, activity: 'stand' },
+  { id: 'hank', cast: 'hank', at: HANK_AT, facing: 0, height: 1.8, activity: 'stand' },
   { id: 'jake', at: vec(4.9, 4.35), facing: N, coat: '#5a4a32', skin: '#d8a880', hair: '#6a5a40', height: 1.8, activity: 'sitDrink' },
   { id: OFFICER, at: DOOR, facing: N, coat: '#27304a', skin: '#e0b48f', hair: '#3a2c20', height: 1.85, when: () => false },
 ]

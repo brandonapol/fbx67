@@ -4,6 +4,7 @@ import { initialState } from '../../text-game/src/state.ts'
 import { sceneIds } from '../../text-game/src/sceneIds.ts'
 import { clock, season } from '../../text-game/src/story.ts'
 import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
+import { castFor } from './cast.ts'
 import { propsIn, solids, spaces } from './levels.ts'
 import { timeOf } from './lighting.ts'
 import { stageOf, townLayer } from './freezeup.ts'
@@ -111,4 +112,16 @@ test('Wade cannot walk through the staircase from the side of the room', () => {
   Array.from({ length: 10 }, (_, i) => vec(STAIR_X, -1.6 + 0.5 * (i + 0.5))).forEach((tread) =>
     assert.ok(blocked(tread, solids(spaces.office)), `tread at z ${tread.z}`),
   )
+})
+
+// #62: figures that wear a cast model carried a coat, skin and hair nothing drew. A cast figure names its model and
+// carries no gray-box look; a gray box is never a cast member.
+test('a figure is either a cast model or a gray box, never both', () => {
+  const figures = Object.values(spaces).flatMap((s) => s.figures.map((f) => ({ space: s.id, f })))
+  figures.forEach(({ space, f }) => {
+    const where = `${space}/${f.id}`
+    if (f.cast !== undefined) assert.deepEqual([f.coat, f.skin, f.hair], [undefined, undefined, undefined], `${where} wears ${f.cast} and a look`)
+    else assert.equal(castFor(f.id), undefined, `${where} is a cast member but does not name its model`)
+  })
+  assert.ok(figures.some(({ f }) => f.cast !== undefined))
 })

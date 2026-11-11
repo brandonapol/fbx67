@@ -10,7 +10,7 @@ import type { Lighting, Time } from './lighting.ts'
 import type { Cast } from './characters.ts'
 import { loadCast } from './characters.ts'
 import type { CastId } from './cast.ts'
-import { castFor, clipFor, playbackRate } from './cast.ts'
+import { clipFor, playbackRate } from './cast.ts'
 import { grades, lighting, skyColor, sunDirection, timeAt, timeOf } from './lighting.ts'
 import type { Game } from './prologue.ts'
 import { footY, hiding, inWorld, playerBody, playerMotion, shows } from './prologue.ts'
@@ -110,9 +110,8 @@ const addProp = (root: pc.Entity, p: Prop): pc.Entity | undefined => {
 const UNIFORM: Readonly<Record<string, string>> = { clerk: '#4a5a78', airman: '#56688a', sergeant: '#2f3a4e' }
 
 const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
-  const who = castFor(f.cast ?? f.id)
-  if (who) {
-    const c = cast.spawn(who)
+  if (f.cast !== undefined) {
+    const c = cast.spawn(f.cast)
     c.setLocalPosition(f.at.x, 0, f.at.z)
     c.setLocalEulerAngles(0, (f.facing * 180) / Math.PI, 0)
     root.addChild(c)
@@ -420,10 +419,10 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
         e.setLocalPosition(fx.at.x, 0, fx.at.z)
         e.setLocalEulerAngles(fx.down ? -80 : 0, (fx.facing * 180) / Math.PI, 0)
         const c = clipFor({ speed: fx.speed, sneaking: false, activity: fx.seated ? 'sit' : 'stand', talking: false })
-        if (castFor(f.cast ?? f.id)) cast.play(e, c, playbackRate(c, fx.speed))
+        if (f.cast !== undefined) cast.play(e, c, playbackRate(c, fx.speed))
         return
       }
-      if (!castFor(f.cast ?? f.id)) return
+      if (f.cast === undefined) return
       if (f.id === 'curly' && drawn) {
         const c = clipFor(drawn.motion)
         e.setLocalPosition(drawn.at.x, drawn.y, drawn.at.z)
