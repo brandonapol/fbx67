@@ -129,7 +129,7 @@ export const CURLY_SPOT: Interactable = { id: 'curly', x: CURLY_AT.x, z: CURLY_A
 export const WATCH_SPOT: Interactable = { id: 'watch', x: BENCH_AT.x, z: BENCH_AT.z, r: 1.8, prompt: 'Watch him work' }
 
 export const strip: Space = {
-  id: 'strip' as Space['id'],
+  id: 'strip',
   act: 'Act 2: Freeze-up',
   place: 'bushStrip',
   name: 'The bush strip',
@@ -199,7 +199,7 @@ const panFigures: readonly Figure[] = [
 export const BOOTH_SPOT: Interactable = { id: 'booth', x: BOOTH_AT.x, z: BOOTH_AT.z, r: 2.0, prompt: 'Sit down with Curly' }
 
 export const steak: Space = {
-  id: 'steak' as Space['id'],
+  id: 'steak',
   act: 'Act 2: Freeze-up',
   place: 'silverPan',
   name: 'The Silver Pan',
@@ -243,7 +243,7 @@ const jake: Figure = { id: 'jake', at: JAKE_AT, facing: 0, height: JAKE_HEIGHT, 
 export const JAKE_SPOT: Interactable = { id: 'jake', x: JAKE_AT.x, z: JAKE_AT.z, r: 2.0, prompt: 'Hear Jake out' }
 
 export const hangar: Space = {
-  id: 'hangar' as Space['id'],
+  id: 'hangar',
   act: 'Act 2: Freeze-up',
   place: 'baseHangar',
   name: 'The base hangar',
