@@ -29,7 +29,7 @@ import { entryFrom, walksUp } from './trail.ts'
 import { paceThrough, wash } from './hazards.ts'
 import { isRoomThing, roomThingsOpen, useRoom } from './room.ts'
 import { SLEEP_TIME } from './boardingHouseSleep.ts'
-import { POST_BOX, canMail } from './floatDock.ts'
+import { POST_BOX, canMail, dockNote, morning } from './floatDock.ts'
 import { FLIGHT_TIME, OWEN_SEAT, flying, legAt, seatAt, skipSpot } from './flight.ts'
 import type { Brawl } from './barfight.ts'
 import { FACING_HANK, begin, done as fought, hankSpot, noteOf, openedOf, openingButtons, play, roomOf, sceneNotes, starts, wade } from './barfight.ts'
@@ -88,7 +88,7 @@ export type Game = Readonly<{
   look?: Look
   // Seconds since the current took Wade's feet on the search for Eli, while the screen fades (hazards.ts).
   swept?: number
-  // The letter to Lucy is in the post box on Cushman: ambient, the story already sent it (floatDock.ts).
+  // The letter to Lucy is out of Owen's jacket and in the post box on Cushman; the dock's note says so (floatDock.ts).
   mailed?: true
   // Seconds into the flight north, from the moment Owen climbs in at the float (flight.ts).
   flight?: number
@@ -254,10 +254,14 @@ const locked = (title: string): Panel => ({ kind: 'locked', title, text: 'The do
 // A letter home has no buttons of its own: the letter view offers its lines, so no key can pick one by default.
 const homePanel = (l: Home): Panel => ({ kind: 'home', title: l.title, text: l.said, buttons: [] })
 
+// The notes a menu offers: all of them, except at the float dock, where the walk down has already ended one way (the
+// letter in the post box or still in Owen's jacket) and only that note is on offer (floatDock.ts).
+const offered = (g: Game): readonly string[] => (morning(g.story) ? [dockNote(g.mailed === true)] : allNotes(g.story))
+
 // The scene's whole menu: through the letter view where the story is writing home, else as its story panel.
 const menuPanel = (g: Game, extra: readonly Button[] = []): Game => {
   const l = openHome(g.story)
-  return l ? { ...g, home: l, panel: homePanel(l) } : { ...g, panel: storyPanel(g.story, allNotes(g.story), extra) }
+  return l ? { ...g, home: l, panel: homePanel(l) } : { ...g, panel: storyPanel(g.story, offered(g), extra) }
 }
 
 // The pen moves on the picked line; once it is written the letter turns to the next topic or is done.

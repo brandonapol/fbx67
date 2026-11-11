@@ -34,7 +34,7 @@ You write to Lucy, the clerk at the land office who has been asking the question
 
 == Prologue :: Owen: The Float Dock ==
 
-It never got dark last night. You drop the letter in the slot at the post office on your way down to the river, and then it is out of your hands.
+It never got dark last night. You come down Cushman with the letter to Lucy in your jacket, past the mailbox at the curb outside the Federal Building.
 
 At the float dock on the Chena, Curly Boone is down on one knee on a float with a hand pump, pumping the night's seep out of the float compartments. The floats are the amphibian kind, with wheels tucked up inside them for the gravel bar at camp. He squints at you over the strut.
 
@@ -42,7 +42,8 @@ At the float dock on the Chena, Curly Boone is down on one knee on a float with 
 
 You hand him your duffel and keep the satchel with the notes and the tapes. It rides on your knees all the way north.
 
-  1. Climb in and fly north with Curly.
+  1. Climb in and fly north with Curly, the letter in the mail.
+  2. Climb in and fly north with Curly, the letter still in your jacket.
 
 == Prologue :: Owen: The Survey Camp ==
 

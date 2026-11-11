@@ -19,6 +19,7 @@ const dropEvidence = (...es: readonly Evidence[]) => (s: State): State => ({
 const confessions = ['a3_confession_safe', 'a3_confession_burn', 'a3_confession_gun', 'a3_confession_none'] as const
 
 export const rules: readonly Rule[] = [
+  { after: 'p_end', apply: drop('owenLetter') },
   { after: 'a1_ashby', apply: drop('barfight') },
   { after: 'a2_steak', apply: drop('barfightMove') },
   { after: 'a2_hotel', apply: dropEvidence('aerialPhotos') },

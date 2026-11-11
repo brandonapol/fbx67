@@ -275,8 +275,9 @@ It is procedural boxes only, no art assets (issue #41, pass 1).
   [`story-api.md`](story-api.md), "Where to go next"). A street name changed here changes all three.
 - **People:** the ambient schedule's street people stand on the street (`game/src/townsfolk.ts`) and will tell the
   player the way. The Silver Pan is dressed and seated by `game/src/silverPan.ts`.
-- **The post box:** a hold at the box (−4.5, 66) on the morning walk mails Owen's letter to Lucy; the story keeps no
-  note of it (`game/src/floatDock.ts`).
+- **The post box:** a hold at the box (−4.5, 66) on the morning walk mails Owen's letter to Lucy. Walking past it is
+  allowed. At the dock the story's menu offers the one note that matches: `fly` with the letter in the mail, `keep`
+  with it still in his jacket (`game/src/floatDock.ts`, #412). The box is blue under a red lid.
 - **The flight:** `fly` at the dock plays the plane off the Chena over town and down at the camp
   (`game/src/flight.ts`); interact skips it.
 - **Collision:** every building and block is solid, the water is solid except the bridge deck and the float, and the

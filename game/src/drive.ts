@@ -71,11 +71,17 @@ export const talk = (g: Game, who: 'texas' | 'munitions' | 'round'): Game => {
   return press(opened, 'close')
 }
 
-// Walks a prologue leg downtown along the town map's route and uses the door at its end.
+// The morning walk as far as the post box on Cushman, standing at it (floatDock.ts, POST_BOX at -4.5, 66).
+export const MAIL_AT = 2
+export const toPostBox = (g: Game): Game => walk(g, [...legs[1]!.route.slice(0, MAIL_AT + 1), [-5.1, 66]])
+
+// Walks a prologue leg downtown along the town map's route and uses the door at its end. On the morning leg Owen
+// mails the letter to Lucy at the post box on the way, as the text build's first note at the dock says (`fly`).
 export const walkLeg = (g: Game): Game => {
   const leg = legs.find((l) => g.space === 'downtown' && l.place === place(g.story))
   if (!leg) throw new Error(`no walk downtown from ${g.space} at ${g.story.scene}`)
-  return interact(walk(g, leg.route))
+  if (leg !== legs[1] || g.mailed) return interact(walk(g, leg.route))
+  return interact(walk(hold(toPostBox(g)), leg.route.slice(MAIL_AT)))
 }
 
 export const leaveBar = (bar: Game): Game => interact(walk(bar, [[0, 4.2]]))
@@ -103,7 +109,12 @@ export const writeLetter = (room: Game): Game => press(typeOut(interact(walk(roo
 export const toBed = (room: Game): Game => wait(interact(walk(room, [[-0.6, 0.6]])), (g) => g.sleeping === undefined)
 
 // Climbs in at the float and sits through the flight north, to the camp.
-export const aboardPlane = (dock: Game): Game => press(dock, 'note:fly')
+// The dock offers the one note that says how the walk down ended (floatDock.ts, dockNote).
+export const aboardPlane = (dock: Game): Game => {
+  const note = dock.panel?.buttons.find((b) => b.id.startsWith('note:'))
+  if (!note) throw new Error(`no note to climb in with at ${dock.story.scene}`)
+  return press(dock, note.id)
+}
 
 export const landAtCamp = (aloft: Game): Game => wait(aloft, (cur) => !flying(cur.flight))
 

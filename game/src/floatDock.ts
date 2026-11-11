@@ -10,7 +10,9 @@ import { MOORED, MOORED_HEADING, PILOT_SEAT, flying, onBoard, seatAt } from './f
 
 // The float dock morning (p_dock, place floatDock), on the downtown map (docs/town-map.md, "Float dock"). Owen
 // walks down from the boarding house past the post box on Cushman, where he can mail the letter to Lucy on the way: a
-// hold at the box. The story doesn't track it (the scene's text has already sent it), so nothing is sent. At the foot
+// hold at the box takes it out of his jacket. The walk is one mission to the story (docs/story-api.md, Rule 1): at the
+// dock its menu offers the one note that says how it ended, `fly` with the letter in the mail or `keep` with it still
+// in his jacket, and nothing is sent at the box. Leaving it unposted is allowed (#412). At the foot
 // of the gangway Curly's floatplane lies alongside the dock, and Curly is out on the plane's near float with a hand
 // pump in its compartment's hatch; the scene has him on one knee there, and the cast has no kneeling clip, so he
 // stands at the pump. The scene's own menu comes up there, as its panel; its `fly` puts Owen in the right seat
@@ -33,6 +35,9 @@ export const postBoxSpot: Interactable = { id: POST_BOX, x: -4.5, z: 66, r: 1.5,
 
 // Whether the post box can be used: on the morning walk, until the letter is in it.
 export const canMail = (s: State, mailed: boolean): boolean => morning(s) && !mailed
+
+// The dock's note for how the walk down ended: the letter in the post box, or still in Owen's jacket.
+export const dockNote = (mailed: boolean): 'fly' | 'keep' => (mailed ? 'fly' : 'keep')
 
 // The same yellow braid as the line on Owen's sawhorse (knot.ts).
 const yellow = '#d9b52a'
@@ -71,6 +76,8 @@ export const dockProps: readonly Prop[] = [
   { box: { x: CURLY_ON_FLOAT.x, z: CURLY_ON_FLOAT.z + 0.4, w: 0.08, d: 0.08 }, h: 0.6, y: FLOAT_DECK, color: '#6b6b66', shape: 'cylinder' },
   // Owen's duffel on the float, waiting to go in the back.
   { box: { x: 119.4, z: -17.6, w: 0.9, d: 0.4 }, h: 0.35, y: 0.12, color: '#55603e', shape: 'cylinder' },
+  // The post box's red lid over its blue body, the colors of 1967 (docs/fact-checks.md, item 30).
+  { box: { x: -4.5, z: 66, w: 0.54, d: 0.54 }, h: 0.1, y: 1.2, color: '#a3302a' },
   // The letter going into the post box's slot, while Owen holds it there.
   { box: { x: -4.5, z: 66, w: 0.24, d: 0.03 }, h: 0.12, y: 1.15, color: '#efe6cf', while: 'posting' },
 ]

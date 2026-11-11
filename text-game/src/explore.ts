@@ -13,6 +13,7 @@ import { budgetFailures, budgetTable, parseBudget } from './budget.ts'
 const KEYED = {
   scene: true,
   owenCache: true,
+  owenLetter: true,
   barfight: true,
   barfightMove: true,
   momHonesty: true,
