@@ -52,8 +52,6 @@ a3_walk:continue
 lucysDig:cache
 lucysDig:marker
 lucysDig:stove
-searchForEli:ranIt
-searchForEli:skippedIt
 theLongNight:fire.saveFire
 theLongNight:fire.smoke
 theLongNight:fire.stampX

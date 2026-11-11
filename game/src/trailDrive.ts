@@ -1,5 +1,6 @@
 import type { Game, Input } from './prologue.ts'
-import { available, interact, tick } from './prologue.ts'
+import type { SceneId } from '../../text-game/src/types.ts'
+import { available, interact, press, tick } from './prologue.ts'
 import type { Points } from './trail.ts'
 import { LEGS } from './trail.ts'
 import type { Vec } from './world.ts'
@@ -52,4 +53,33 @@ export const nextStop = (w: Walked): Walked => {
   const there = wade(w, leg(w.game))
   const used = interact(there.game)
   return { game: used, steps: [...there.steps, { space: used.space, pos: used.pos }] }
+}
+
+// At the help tent: walks to Joan, just short of her, and speaks to her.
+export const atTent = (w: Walked): Walked => {
+  const joan = available(w.game)[0]
+  if (w.game.space !== 'helpTent' || !joan) throw new Error(`no one to speak to at the help tent at ${w.game.story.scene}`)
+  const there = wade(w, [[joan.x, joan.z + 0.9]])
+  const g = interact(there.game)
+  return { game: g, steps: [...there.steps, { space: g.space, pos: g.pos }] }
+}
+
+// The note a menu takes: its only one, or where it offers more, the first of the notes still to apply that it offers.
+const pick = (offered: readonly string[], applies: readonly string[]): string | undefined =>
+  offered.length === 1 ? offered[0] : applies.find((n) => offered.includes(n))
+
+// Plays the search on from wherever Wade stands in it, the way a player would, until the story reaches `end`: wades
+// to each stop the story opens (up to Joan at the help tent and back) and presses the note the ending applies, or the
+// one note a single-option beat offers. Applies and end come from the story's mission (missions.ts), not from here.
+export const playSearch = (w: Walked, applies: readonly string[], end: SceneId): Walked => {
+  if (w.game.story.scene === end) return w
+  if (w.steps.length > MAX_TICKS * 10) throw new Error(`the search never reached ${end}`)
+  const panel = w.game.panel
+  if (!panel) return playSearch(w.game.space === 'helpTent' ? atTent(w) : nextStop(w), applies, end)
+  const offered = panel.buttons.filter((b) => b.id.startsWith('note:')).map((b) => b.id.slice('note:'.length))
+  const note = pick(offered, applies)
+  if (note === undefined) throw new Error(`${w.game.story.scene} offers ${offered.join(', ')}, none of ${applies.join(', ')}`)
+  const g = press(w.game, `note:${note}`)
+  const rest = applies.includes(note) ? applies.slice(applies.indexOf(note) + 1) : applies
+  return playSearch({ game: g, steps: [...w.steps, { space: g.space, pos: g.pos }] }, rest, end)
 }
