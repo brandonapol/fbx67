@@ -272,6 +272,9 @@ const arrive = (g: Game): Game => {
   const walking = walkFrom(g)
   if (walking) return walking
   const r = route(g.story, g.space)
+  // Off the base to a place with no space yet, Wade leaves the blockout: the rest of Act 2 plays over the story backdrop,
+  // as it did before the base had a place, and goes on into Act 3 there rather than to the text build.
+  if (r.to !== 'space' && g.space === 'eielson') return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes

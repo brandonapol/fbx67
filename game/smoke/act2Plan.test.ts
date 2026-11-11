@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { menu, weather } from '../../text-game/src/story.ts'
 import { replayPath, startFrom } from '../src/start.ts'
 import type { Game } from '../src/prologue.ts'
-import { interact, press, still, tick } from '../src/prologue.ts'
+import { handedOff, interact, press, still, tick } from '../src/prologue.ts'
 import { sheet } from '../src/letters.ts'
 import type { Vec } from '../src/world.ts'
 import { distance, sub, vec } from '../src/world.ts'
@@ -62,6 +62,7 @@ test('Act 2 plays from its start to Act 3’s first scene, every choice the firs
   assert.equal(menu(start.story).act, 'Act 2: Freeze-up')
   const { end } = played()
   assert.equal(end.story.scene, ACT3_FIRST)
+  assert.equal(handedOff(end), false, 'Act 3 opens in the engine build, not the text build')
   const text = replayPath(end.path.join(','))
   assert.ok(!('error' in text), 'the engine’s path replays in the text build')
   assert.deepEqual(end.story, text.story, 'the engine reaches the same state as the text build on its path')
