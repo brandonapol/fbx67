@@ -171,3 +171,16 @@ export const placed = (b: Brawl, id: string): Placed | undefined => {
 }
 
 export const officerIn = (b: Brawl | undefined): boolean => !!b?.fight.over
+
+// The checkpoint at the shove (the spec's "fail and retry"): the game as it stood under the opening prompt, kept while
+// the fight is on, so the pause menu can restart the fight from there. Nothing is sent to the story until the officer
+// is in and the out beat ends, so going back drops nothing the story has heard. Main keeps it beside the game: given
+// the checkpoint so far and the game before and after a change, it is the game the fight began from, for as long as
+// the fight lasts.
+export const checkpoint = <G extends Readonly<{ brawl?: Brawl }>>(kept: G | undefined, before: G, after: G): G | undefined =>
+  !after.brawl ? undefined : before.brawl ? kept : before
+
+// The pause menu offers the restart only in the fight, with its checkpoint in hand.
+export const canRestart = <G extends Readonly<{ brawl?: Brawl }>>(g: G, kept: G | undefined): boolean => !!g.brawl && kept !== undefined
+
+export const restart = <G extends Readonly<{ brawl?: Brawl }>>(g: G, kept: G | undefined): G => (canRestart(g, kept) ? kept! : g)

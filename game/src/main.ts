@@ -16,6 +16,7 @@ import { mountSoundPanel } from './sound-panel.ts'
 import { spaces } from './levels.ts'
 import type { Rig } from './camera.ts'
 import { armFor, bob, follow, rigFor, toWorld } from './camera.ts'
+import { canRestart, checkpoint, restart } from './barfight.ts'
 import type { Controls, Device, Pad, Stick } from './input.ts'
 import {
   KEY_RATE,
@@ -168,6 +169,8 @@ const live: {
   // Keys gone down since the last tick, for the barfight's verbs (fightControls.ts), and whether its help is up.
   pressed: Set<string>
   fighting: boolean
+  // The game at the drunk's shove while the barfight is on: the pause menu restarts the fight from it (barfight.ts).
+  shove?: Game
 } = {
   g: first,
   rig: rigFor(first.facing, armFor(spaces[first.space])),
@@ -253,8 +256,14 @@ const interactNow = (): void => {
   act(interact)
 }
 
+// Every change to the game goes through here or the tick, so the barfight's checkpoint follows it.
+const moved = (g: Game): void => {
+  live.shove = checkpoint(live.shove, live.g, g)
+  live.g = g
+}
+
 const act = (f: (g: Game) => Game): void => {
-  live.g = f(live.g)
+  moved(f(live.g))
   live.target = undefined
   if (handedOff(live.g)) window.location.href = textBuild(live.g)
 }
@@ -636,6 +645,7 @@ const showObjective = (): void => {
 const drawFront = (): void =>
   front.show(live.screen, {
     canContinue: savedAt() !== undefined,
+    canRestart: canRestart(live.g, live.shove),
     goal: objectiveShown(live.objective ? recall(live.objective, live.now) : undefined, live.now),
     journal: live.screen === 'journal' ? journal(live.g, live.log) : undefined,
     map: live.screen === 'map' ? pocketMap(live.g, live.log.seen) : undefined,
@@ -643,6 +653,7 @@ const drawFront = (): void =>
 
 const begin = (g: Game, log: Log): void => {
   live.g = g
+  live.shove = undefined
   live.log = log
   live.target = undefined
   live.objective = undefined
@@ -683,6 +694,11 @@ const go = (a: FrontEndAction): void => {
   if (a === 'pause') return show(runs(live.screen) ? 'pause' : live.screen)
   if (a === 'map' && live.screen === 'title') return
   if (a === 'resume') return show('play')
+  if (a === 'shove') {
+    moved(restart(live.g, live.shove))
+    live.target = undefined
+    return show('play')
+  }
   if (a === 'back') return show(back(live.screen))
   return show(a)
 }
@@ -737,14 +753,14 @@ view.app.on('update', (dtRaw: number) => {
   // In the barfight the verbs pressed since the last tick go with this one (fightControls.ts).
   const verbs = live.g.brawl ? fightIntent(live.controls.bindings, live.keys, live.pressed, pad, padBefore) : undefined
   live.pressed.clear()
-  live.g = tick(live.g, verbs ? { ...frame.input, verbs } : frame.input, dt)
+  moved(tick(live.g, verbs ? { ...frame.input, verbs } : frame.input, dt))
   if (live.fighting !== !!live.g.brawl) {
     live.fighting = !!live.g.brawl
     renderHelp()
   }
   const more = (n: number): void => {
     if (n <= 0 || live.g.panel) return
-    live.g = tick(live.g, input(pad, dt).input, dt)
+    moved(tick(live.g, input(pad, dt).input, dt))
     more(n - 1)
   }
   more(live.pace - 1)

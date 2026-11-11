@@ -6,11 +6,11 @@ import { drawMap } from './frontEndMapView.ts'
 // The front end's DOM (issue #51): the loading bar, the title, the pause menu, the journal and the objective line.
 // It owns no state: main.ts says which screen is up and passes what to show; the buttons call back by id.
 
-export type FrontEndAction = 'continue' | 'new' | 'settings' | 'resume' | 'journal' | 'map' | 'title' | 'back' | 'pause'
+export type FrontEndAction = 'continue' | 'new' | 'settings' | 'resume' | 'shove' | 'journal' | 'map' | 'title' | 'back' | 'pause'
 
 export type FrontEndView = Readonly<{
   loading: (share: number | undefined) => void
-  show: (screen: Screen, data: Readonly<{ canContinue: boolean; goal?: string; journal?: Journal; map?: PocketMap }>) => void
+  show: (screen: Screen, data: Readonly<{ canContinue: boolean; canRestart?: boolean; goal?: string; journal?: Journal; map?: PocketMap }>) => void
   objective: (text: string | undefined) => void
   buttons: () => readonly HTMLButtonElement[]
 }>
@@ -57,12 +57,14 @@ export const mountFrontEnd = (on: (a: FrontEndAction) => void, parent: HTMLEleme
   )
 
   const goal = el('p', { className: 'goal' })
+  // Only in the barfight: back to the drunk's shove, the get-up or stay-seated prompt (barfight.ts).
+  const shove = button('shove', 'Restart from the shove')
   const pause = el(
     'section',
     { id: 'pause', hidden: true },
     el('h2', { textContent: 'Paused' }),
     goal,
-    el('nav', {}, button('resume', 'Resume'), button('journal', 'Journal'), button('map', 'Map'), button('settings', 'Settings'), button('title', 'Return to title')),
+    el('nav', {}, button('resume', 'Resume'), shove, button('journal', 'Journal'), button('map', 'Map'), button('settings', 'Settings'), button('title', 'Return to title')),
   )
 
   const pages = el('div', { className: 'pages' })
@@ -87,6 +89,7 @@ export const mountFrontEnd = (on: (a: FrontEndAction) => void, parent: HTMLEleme
     },
     show: (screen, data) => {
       cont.hidden = !data.canContinue
+      shove.hidden = !data.canRestart
       goal.textContent = data.goal ?? ''
       if (screen === 'journal' && data.journal) pages.replaceChildren(...journalBody(data.journal))
       if (screen === 'map' && data.map) drawMap(sheet, data.map)
