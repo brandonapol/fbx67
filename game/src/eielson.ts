@@ -210,10 +210,20 @@ const lab: readonly Prop[] = [
   low([157, 157.6, 37.5, 37.9], 0.04, '#efe6cf', FLOOR + 1.05),
   // The darkrooms: the sinks and trays under the red safelights.
   ...[48, 56, 64].flatMap((z): Prop[] => [low([131, 139, z - 0.5, z + 0.5], 0.9, color.metal), glow([134.8, 135.2, z - 0.2, z + 0.2], 0.1, FLOOR + 2.6, color.safelight)]),
-  // The records room: three rows of flat drawers, the index card cabinet by the door, one bulb.
-  ...[58, 62, 66].map((z) => low([164, 186, z - 0.5, z + 0.5], 2.2, color.metal)),
+  // The records room: three rows of flat drawers, as tall as a man, so the aisles behind them are out of sight of
+  // the door; the index card cabinet by the door, one bulb.
+  ...[58, 62, 66].map((z): Prop => ({ ...low([164, 186, z - 0.5, z + 0.5], 2.2, color.metal), occludes: true })),
   low([172, 173, 52.7, 53.3], 1.3, color.wood),
   glow([174.9, 175.1, 60.9, 61.1], 0.1, FLOOR + 2.6),
+]
+
+// The mess pulling everything leaves (photoLab.ts): the index card's three drawers hanging open out of the first row,
+// and prints on the floor in front of them. Drawn only once Wade has started pulling.
+const print = (x: number, z: number): Prop => ({ box: box([x - 0.12, x + 0.12, z - 0.1, z + 0.1]), h: 0.01, y: FLOOR, color: '#e9e4d6', flat: true, while: 'mess' })
+
+export const MESS: readonly Prop[] = [
+  ...[[166.6, 1.0], [168, 1.4], [169.4, 0.6]].map(([x, y]): Prop => ({ box: box([x! - 0.6, x! + 0.6, 56.95, 57.5]), h: 0.14, y: FLOOR + y!, color: color.metal, while: 'mess' })),
+  ...[[166.2, 56.4], [167.1, 55.9], [168.4, 56.2], [169.1, 55.4], [167.7, 54.9], [170.3, 56.1], [165.6, 55.3]].map(([x, z]) => print(x!, z!)),
 ]
 
 // The hangar, x 262..302, z -130..-100: the big doors shut on the south face, the personnel door on the west; the
@@ -286,6 +296,7 @@ export const pieces: readonly Prop[] = [
   ...dorm,
   ...squadron,
   ...lab,
+  ...MESS,
   ...hangar,
   ...doors.flatMap(doorDressing),
 ]
@@ -317,6 +328,9 @@ const barracks = spawnAt('eielsonBarracks')
 // hall door is past. The photo lab's menu (when Wade goes in, or whether) comes up here (photoLab.ts).
 export const LAB_SPOT: Interactable = { id: 'recordsWay', x: 163.5, z: 38, r: 3, prompt: 'Look past the counter to the records room' }
 
+// The index card's three drawers, on the north face of the first row in from the door (photoLab.ts).
+export const DRAWERS: Interactable = { id: 'drawers', x: 168, z: 57.3, r: 1.5, prompt: 'Open the drawers on the index card' }
+
 export const eielson: Space = {
   id: 'eielson',
   act: 'Act 2: Freeze-up',
@@ -329,7 +343,7 @@ export const eielson: Space = {
   spawn: vec(barracks.x, barracks.z),
   props: pieces,
   figures: [],
-  spots: [LAB_SPOT],
+  spots: [LAB_SPOT, DRAWERS],
 }
 
 // The nav graph: the base's walkable network as nodes on the base map's routes, through the doors, and the straight

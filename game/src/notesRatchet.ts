@@ -10,6 +10,10 @@ import { route } from './router.ts'
 import { open as openLetter } from './letters.ts'
 import { openedOf } from './barfight.ts'
 import { PLANS, listen, playOut } from './barfightBot.ts'
+import { LAB_SPOT } from './eielson.ts'
+import { WAY_NOTE } from './photoLab.ts'
+import type { Method } from './photoLab.ts'
+import { playLab } from './photoLabBot.ts'
 import type { SpaceId } from './levels.ts'
 import type { Interactable } from './world.ts'
 import { angleTo, vec } from './world.ts'
@@ -116,6 +120,20 @@ const fightSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
 // menus (the hotel bar, the Major's cabinet) sends one note per menu until it lands where its mission note does.
 const depthAt = (s: State): number => Math.max(2, ...(mission(s)?.endings.map((e) => e.applies.length) ?? []))
 
+// The photo lab's notes go as its run plays (photoLab.ts): from the counter, every way in with every method, played by
+// the lab's scripted player (photoLabBot.ts), the spot being the counter where the way in is picked.
+const METHODS: readonly Method[] = ['crossCheck', 'pullAll']
+const labbed = new WeakMap<Stop, readonly State[]>()
+const labSenders = (stop: Stop, g: Game): readonly Sender[] => {
+  const spot = available(g).find((i) => i.id === LAB_SPOT.id)
+  if (!spot) return []
+  const landed =
+    labbed.get(stop) ??
+    Object.values(WAY_NOTE).flatMap((way) => METHODS.map((m) => playLab(press(interact(facing(g, spot)), `note:${way}`), m).story))
+  labbed.set(stop, landed)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: spot.id }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -124,7 +142,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   }
   if (r.to !== 'space') return []
   const g = resume(stop.state, [0])
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(r.space, LAB_SPOT.id) ? [] : labSenders(stop, g)), ...available(g)
     .filter((i) => !without(r.space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)

@@ -34,7 +34,8 @@ import { FLIGHT_TIME, OWEN_SEAT, flying, legAt, seatAt, skipSpot } from './fligh
 import type { Brawl } from './barfight.ts'
 import { FACING_HANK, begin, done as fought, hankSpot, noteOf, openedOf, openingButtons, play, roomOf, sceneNotes, starts, wade } from './barfight.ts'
 import type { Intent } from './combat.ts'
-import { baseEntry, labSpot } from './photoLab.ts'
+import type { Lab } from './photoLab.ts'
+import { DRAWERS, arrival, baseEntry, catcher, found as searched, labSpot, messy, pick as pickLab, restart as restartLab, scold as scoldLab, searchTime, step as labStep } from './photoLab.ts'
 import { LAB_SPOT } from './eielson.ts'
 import { TABLE_SPOT, tableSpot } from './kitchen.ts'
 
@@ -99,6 +100,9 @@ export type Game = Readonly<{
   watch?: Watch
   // The barfight at the Silver Pan while it plays (barfight.ts): the fight, from the shove until the law is in.
   brawl?: Brawl
+  // The photo lab run on the base, from Wade picking his way in at the counter to walking out with the prints
+  // (photoLab.ts).
+  lab?: Lab
 }>
 
 // The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
@@ -160,6 +164,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   flight: undefined,
   watch: undefined,
   brawl: undefined,
+  lab: undefined,
 })
 
 export const start = (): Game => ({
@@ -213,7 +218,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'office') return officeSpot(g.carrying === 'ledger', i.id)
     if (g.space === 'cabin') return knotSpot(g.story, i.id)
     if (g.space === 'pan') return hankSpot(g.story, g.brawl !== undefined, i.id)
-    if (g.space === 'eielson') return labSpot(g.story, i.id)
+    if (g.space === 'eielson') return labSpot(g.story, g.lab, i.id)
     if (g.space === 'kitchen') return tableSpot(g.story, i.id)
     return true
   })
@@ -298,7 +303,7 @@ const arrive = (g: Game): Game => {
   // On the base each scene starts at its place's spawn: Wade walks to what it offers there, or its menu opens there.
   if (r.space === 'eielson') {
     const e = baseEntry(g.story)
-    const into = enter(g, 'eielson', e.at, e.facing)
+    const into = { ...enter(g, 'eielson', e.at, e.facing), lab: arrival(g.story, e.at, e.facing) }
     return available(into).length ? into : menuPanel(into)
   }
   if (r.space !== g.space) {
@@ -388,6 +393,29 @@ const attend = (g: Game, dt: number): Game => {
   return { ...next, watch: notice(heard, seen(next), dt) }
 }
 
+// The photo lab run, once a frame after Wade's step (photoLab.ts): the way in goes as he steps into the records room,
+// the drawers' note as he walks out with the prints, and a watcher who sees him where he has no business stops him.
+const labWatch = (g: Game, dt: number): Game => {
+  if (!g.lab || g.space !== 'eielson') return g
+  const s = labStep(g.lab, g.pos, g.facing, g.holding, dt)
+  if (s.send && s.lab.found) return press({ ...g, lab: s.lab }, `note:${s.send}`)
+  const sent = s.send ? sendNote(g, s.send) : g
+  return s.lab.caught !== undefined ? { ...sent, lab: s.lab, holding: undefined, vel: zero } : { ...sent, lab: s.lab }
+}
+
+// Caught in the photo lab: the watcher's line plays, then the retry. The story never hears of it (Rule 4).
+const labScolded = (g: Game, lab: Lab, dt: number): Game => {
+  const next = scoldLab(lab, dt)
+  if (next !== 'busted') return { ...g, vel: zero, lab: next }
+  const w = catcher(lab)
+  return { ...g, vel: zero, busts: g.busts + 1, panel: { kind: 'busted', title: w.who, text: `"${w.line}"`, buttons: [{ id: 'retry', label: 'Try again' }] } }
+}
+
+const retryLab = (g: Game, lab: Lab): Game => {
+  const c = lab.checkpoint
+  return { ...g, pos: c.at, facing: c.facing, view: c.facing, vel: zero, panel: undefined, holding: undefined, lab: restartLab(lab) }
+}
+
 const endCard: Panel = {
   kind: 'end',
   title: 'End of the prologue',
@@ -449,7 +477,9 @@ export const shows = (g: Game, w: Mark | undefined): boolean =>
       ? g.holding?.id === POST_BOX
       : w === 'parked'
         ? !flying(g.flight)
-        : (w === 'folded') === (g.letter === 'folded'))
+        : w === 'mess'
+          ? messy(g.lab, g.holding)
+          : (w === 'folded') === (g.letter === 'folded'))
 
 export const interact = (g: Game): Game => {
   if (flying(g.flight)) return touchDown(g)
@@ -499,13 +529,19 @@ export const interact = (g: Game): Game => {
   if (g.space === 'eielson' && id === LAB_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
   // At Lucy's table the scene's own menu asks what Wade does for her: the hotel bar, or the Major's cabinet.
   if (g.space === 'kitchen' && id === TABLE_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  // At the drawers the records room's menu asks how Wade searches them; once he has picked, holding searches them, and
+  // letting go keeps what he has done.
+  if (g.space === 'eielson' && id === DRAWERS.id && g.lab) {
+    const l = g.lab
+    return l.method ? { ...g, vel: zero, holding: { id, progress: l.searched, time: searchTime(l) } } : { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }
 
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
-  if (button === 'retry') return enter(g, g.space)
+  if (button === 'retry') return g.lab ? retryLab(g, g.lab) : enter(g, g.space)
   if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
   const opened = openedOf(button)
@@ -519,6 +555,9 @@ export const press = (g: Game, button: string): Game => {
   if (button === 'finish') return typed(g, letterLength(g))
   if (button === 'fold') return { ...g, panel: undefined, typed: undefined, letter: 'folded' }
   if (button.startsWith('note:')) {
+    // In the photo lab the way in and the drawers' method are the run's to play out; the notes go as it goes.
+    const lab = g.space === 'eielson' ? pickLab(g.story, g.lab, button.slice(5), g.pos, g.facing) : undefined
+    if (lab) return { ...g, panel: undefined, lab }
     const next = sendNote(g, button.slice(5))
     // Climbing into the plane at the float sends the story to the camp; the flight plays out before Owen is there.
     if (takesOff(g.story, next.story)) return takeOff(next)
@@ -572,6 +611,7 @@ const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
   if (h.id === CIGARETTE) return { ...done, lit: true }
   if (h.id === POST_BOX) return { ...done, mailed: true }
+  if (h.id === DRAWERS.id && g.lab) return { ...done, lab: searched(g.lab) }
   if (!h.note) return done
   if (isSpot(h.id)) return { ...sendNote(done, h.note), hidden: h.id }
   return press(done, `note:${h.note}`)
@@ -640,9 +680,10 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (riding(g.ride)) return ride({ ...g, t }, dt)
   if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
   if (beingCaught(g)) return scolded({ ...g, t }, dt)
+  if (g.lab?.caught !== undefined) return labScolded({ ...g, t }, g.lab, dt)
   if (g.brawl) return brawling({ ...g, t }, g.brawl, input, dt)
   const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
-  return douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt))
+  return labWatch(douse(hold({ ...walked, view: input.view ?? walked.facing }, input, dt)), dt)
 }
 
 // The player is whoever the story's pov(state) says (pov.ts).

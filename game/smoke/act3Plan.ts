@@ -2,9 +2,10 @@ import type { SceneId } from '../../text-game/src/types.ts'
 import type { SpaceId } from '../src/levels.ts'
 import { spaces } from '../src/levels.ts'
 
-export type { Step } from './act1Plan.ts'
-export { bands, label, nextStep } from './act1Plan.ts'
-export { isBeat } from './act2Plan.ts'
+export { bands, label } from './act1Plan.ts'
+// Act 2's planner: Act 1's, with the photo lab run's own player (act2Plan.ts), for the run from Act 2 to Act 3.
+export type { Step } from './act2Plan.ts'
+export { isBeat, nextStep } from './act2Plan.ts'
 
 // Act 3 played as the smoke test plays it: from where the Act 2 run reaches Act 3's first scene to Act 4's first
 // scene, every choice the first. Act 1's planner says what a player does next (act1Plan.ts, nextStep); act3Plan.test.ts
