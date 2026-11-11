@@ -15,6 +15,8 @@ import {
   saveLog,
   titleScene,
   journal,
+  loadFailure,
+  loadOrReport,
   loadShare,
   metAt,
   objectiveFor,
@@ -150,6 +152,17 @@ test('loading fills by the cast files that have arrived', () => {
   assert.ok(isCastFile('http://x/fbx67/play/characters/anims/owen/walk.glb'))
   assert.ok(isCastFile('http://x/fbx67/play/characters/owen.glb'))
   assert.ok(!isCastFile('http://x/fbx67/play/props/crate.glb'))
+})
+
+// #62: a failed load left "Loading" on screen forever, with the error only in the console.
+test('a failed load is reported on screen and still rejects', async () => {
+  const shown: string[] = []
+  await assert.rejects(loadOrReport(() => Promise.reject(new Error('404 fetching characters/owen.glb')), (m) => shown.push(m)), /404/)
+  assert.deepEqual(shown, [loadFailure(new Error('404 fetching characters/owen.glb'))])
+  assert.match(shown[0], /404 fetching characters\/owen\.glb/)
+  assert.equal(await loadOrReport(() => Promise.resolve(7), (m) => shown.push(m)), 7)
+  assert.equal(shown.length, 1, 'a good load reports nothing')
+  assert.match(loadFailure('offline'), /offline/)
 })
 
 test('the journal log goes with the save and is dropped for any other path', () => {

@@ -20,6 +20,7 @@ import { CURLY_WINDOW, FAST } from './pace.ts'
 import { legs } from '../src/downtown.ts'
 import { FLOOD_WALK, HALL } from '../src/drive.ts'
 import { faceSeen, manAt } from '../src/skiff.ts'
+import { waitLoaded } from './loaded.ts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright') as typeof import('playwright')
@@ -251,7 +252,7 @@ const open = async (opts: Readonly<{ touch?: boolean; pad?: boolean; path?: stri
     })
   }
   await page.goto(opts.path === undefined ? url : `${url}#path=${opts.path}`)
-  await page.waitForFunction(() => (window as any).__prologue?.capture !== undefined)
+  await waitLoaded(page)
   loading.on = false
   return { page, errors, initial, close: () => context.close() }
 }
