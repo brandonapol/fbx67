@@ -4,13 +4,13 @@ import { replay } from '../../text-game/src/engine.ts'
 import { menu, place, sendMission } from '../../text-game/src/story.ts'
 import { startFrom } from './start.ts'
 import type { Game } from './prologue.ts'
-import { JOG, WALK, available, focus, inWorld, interact, press, tick } from './prologue.ts'
+import { JOG, WALK, focus, inWorld, interact, press, tick } from './prologue.ts'
 import { present, spaces, standAt } from './levels.ts'
 import { depthAt } from './highwater.ts'
 import { FROM_TENT, KNEE, SLOWEST, WAIST, wadePace } from './trail.ts'
 import { LINE_SPAWN, LINE_Z, SERGEANT_AT, STOPS, onStreet } from './searchEli.ts'
 import type { Walked } from './trailDrive.ts'
-import { nextStop, start, wade } from './trailDrive.ts'
+import { atTent, nextStop, start, wade } from './trailDrive.ts'
 import { distance, vec } from './world.ts'
 
 const DT = 1 / 30
@@ -81,14 +81,6 @@ const press1 = (w: Walked, note: string): Walked => {
   assert.ok(w.game.panel?.buttons.some((b) => b.id === `note:${note}`), `${w.game.story.scene} offers ${note}`)
   const g = press(w.game, `note:${note}`)
   return { game: g, steps: [...w.steps, { space: g.space, pos: g.pos }] }
-}
-
-const atTent = (w: Walked): Walked => {
-  assert.equal(w.game.space, 'helpTent')
-  const joan = available(w.game)[0]!
-  const there = wade(w, [[joan.x, joan.z + 0.9]])
-  const g = interact(there.game)
-  return { game: g, steps: [...there.steps, { space: g.space, pos: g.pos }] }
 }
 
 const play = (notes: readonly string[]): Walked => {

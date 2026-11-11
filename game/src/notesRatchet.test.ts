@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { missions } from '../../text-game/src/missions.ts'
-import { LETTER, engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
+import { LETTER, TRAIL, engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
 
 const ALLOWLIST = 'game/notes-allowlist.txt'
 
@@ -112,4 +112,13 @@ test('the engine sends every letter note through the letter view, and without th
   assert.deepEqual([...new Set(viaView.map((s) => s.key))].sort(), letterKeys)
   const lost = new Set(engineSenders(stops, (_space, spot) => spot === LETTER).map((s) => s.key))
   assert.deepEqual([...failures({ story, sent: lost, allowed })].sort(), letterKeys.map((k) => `${k}: on a story menu, but no engine path sends it`).sort())
+})
+
+test('the engine sends both search for Eli notes by walking the trail, and without the walk each one fails', () => {
+  const search = ['searchForEli:ranIt', 'searchForEli:skippedIt']
+  const viaTrail = engineSenders(stops).filter((s) => s.spot === TRAIL)
+  assert.deepEqual([...new Set(viaTrail.map((s) => s.key))].sort(), search)
+  assert.ok(viaTrail.every((s) => s.space === 'line'), 'from the sandbag line')
+  const lost = new Set(engineSenders(stops, (_space, spot) => spot === TRAIL).map((s) => s.key))
+  assert.deepEqual([...failures({ story, sent: lost, allowed: allowed.filter((k) => !search.includes(k)) })].sort(), search.map((k) => `${k}: on a story menu, but no engine path sends it`))
 })

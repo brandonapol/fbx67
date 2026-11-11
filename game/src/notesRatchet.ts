@@ -4,6 +4,7 @@ import { initialState } from '../../text-game/src/state.ts'
 import { choicesOf, follow, sceneOf } from '../../text-game/src/engine.ts'
 import { canonical } from '../../text-game/src/liveness.ts'
 import { mission, noteOf, sendMission } from '../../text-game/src/story.ts'
+import { endOf } from '../../text-game/src/missions.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, interact, press, resume, tick } from './prologue.ts'
 import { route } from './router.ts'
@@ -16,6 +17,7 @@ import { GO, asks } from './kitchen.ts'
 import type { Method } from './photoLab.ts'
 import { playLab } from './photoLabBot.ts'
 import type { SpaceId } from './levels.ts'
+import { playSearch, start as startWalk } from './trailDrive.ts'
 import type { Interactable } from './world.ts'
 import { angleTo, vec } from './world.ts'
 
@@ -138,6 +140,18 @@ const labSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: spot.id }))
 }
 
+// The search for Eli is walked, not pressed from one spot: Wade wades from stop to stop through the flooded town and up
+// to the help tent and back (trailDrive.ts), so its notes are sent by playing every ending of the mission from the line,
+// the spot being the trail itself.
+export const TRAIL = 'trail'
+const SEARCH = 'searchForEli'
+const trailSenders = (stop: Stop, g: Game): readonly Sender[] => {
+  const m = mission(stop.state)
+  if (m?.id !== SEARCH || g.space !== 'line') return []
+  const landed = m.endings.map((e) => playSearch(startWalk(g), e.applies, endOf(m, e)).game.story)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: TRAIL }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -148,7 +162,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   const g = resume(stop.state, [0])
   // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
   const space = g.space
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...available(g)
     .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)
