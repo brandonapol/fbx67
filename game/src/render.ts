@@ -26,6 +26,7 @@ import { flightLight, flying, litGold, planeAt, planeHull, restingIn } from './f
 import { curlyAt } from './floatDock.ts'
 import type { CrowdView } from './crowdView.ts'
 import { crowdFor, syncCrowd } from './crowdView.ts'
+import { figuresOf, walkers } from './photoLab.ts'
 
 const FAR_CLIP = 200
 
@@ -104,6 +105,9 @@ const addProp = (root: pc.Entity, p: Prop): pc.Entity | undefined => {
   const y = (p.y ?? 0) + p.h / 2
   return primitive(root, p.shape ?? 'box', p.color, [p.box.x, y, p.box.z], [p.box.w, p.h, p.box.d], { glow: p.glow, shadows: !p.glow && !p.flat })
 }
+
+// The lab's people in Air Force blue, the duty sergeant's darker under his parka.
+const UNIFORM: Readonly<Record<string, string>> = { clerk: '#4a5a78', airman: '#56688a', sergeant: '#2f3a4e' }
 
 const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
   const who = castFor(f.cast ?? f.id)
@@ -259,6 +263,8 @@ type Built = Readonly<{
   weather: string
   time: Time
   toggles: readonly (readonly [pc.Entity, Prop['while']])[]
+  // The photo lab's people on the base, drawn where their rounds have them while the run is on (photoLab.ts).
+  labMen: ReadonlyMap<string, pc.Entity>
 }>
 
 export const createView = async (canvas: HTMLCanvasElement, base: string): Promise<View> => {
@@ -327,6 +333,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       return e && p.while ? [[e, p.while] as const] : []
     })
     const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f, cast)] as const))
+    const labMen = new Map(
+      space.id === 'eielson' ? walkers.map((w) => [w.id, addFigure(root, { id: `lab-${w.id}`, at: w.from, facing: 0, coat: UNIFORM[w.id], skin: '#c99b7a', hair: '#3a2c22', height: 1.78 }, cast)] as const) : [],
+    )
     const camp = space.id === 'camp' ? buildCamp(app, root, base) : undefined
     const boat = space.id === 'flood' || space.id === 'cabin' ? new pc.Entity('boat') : undefined
     if (boat) {
@@ -352,7 +361,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, camp, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles }
+    return { id: space.id, root, figures, camp, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles, labMen }
   }
 
   const state: { built?: Built; held?: Shot; crowd?: CrowdView; cone: boolean } = { cone: false }
@@ -467,6 +476,14 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       player.enabled = inWorld(g) && (!cam.close || state.held !== undefined)
     }
     b.camp?.sync(g, flying(g.flight) ? undefined : b.figures.get('curly'), cast, state.cone)
+    const lab = figuresOf(g.lab)
+    b.labMen.forEach((e, id) => {
+      const f = lab.find((x) => x.id === id)
+      e.enabled = f !== undefined
+      if (!f) return
+      e.setLocalPosition(f.pose.at.x, 0.3, f.pose.at.z)
+      e.setLocalEulerAngles(0, (f.pose.facing * 180) / Math.PI, 0)
+    })
     b.toggles.forEach(([e, w]) => {
       e.enabled = shows(g, w)
     })

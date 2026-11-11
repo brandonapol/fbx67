@@ -15,7 +15,7 @@ const DT = 1 / 30
 
 const walkTo = (g: Game, to: Vec): Game => {
   let cur = g
-  for (let n = 0; distance(cur.pos, to) >= 0.15 && !cur.panel; n++) {
+  for (let n = 0; distance(cur.pos, to) >= 0.15 && !cur.panel && cur.space === g.space; n++) {
     if (n > 30 * 300) throw new Error(`stuck at ${cur.pos.x.toFixed(2)},${cur.pos.z.toFixed(2)} walking to ${to.x},${to.z} in ${cur.space}`)
     cur = tick(cur, { dir: sub(to, cur.pos), hold: false, limit: distance(to, cur.pos) }, DT)
   }
@@ -35,8 +35,13 @@ const act = (g: Game, s: Step): Game => {
     return s.hold ? fill(started, 0) : started
   }
   if (s.kind === 'walk') {
-    const there = s.points.reduce((cur, [x, z]) => walkTo(cur, vec(x, z)), g)
-    return there.panel ? there : tick(there, { ...still, view: s.yaw }, DT)
+    // A walk ends where the story takes Wade on the way (out of the photo lab's records room).
+    const there = s.points.reduce((cur, [x, z]) => (cur.space === g.space ? walkTo(cur, vec(x, z)) : cur), g)
+    return there.panel || there.space !== g.space ? there : tick(there, { ...still, view: s.yaw }, DT)
+  }
+  if ('seconds' in s) {
+    const wait = (cur: Game, n: number): Game => (n <= 0 || cur.panel ? cur : wait(tick(cur, still, DT), n - 1))
+    return wait(g, Math.round(s.seconds / DT))
   }
   return tick(g, still, DT)
 }
@@ -84,7 +89,7 @@ test('a beat starts where the place changes, or the space, not at every scene', 
   const at = (path: string): Game => startFrom(`#path=${path}`, '')
   const major = at(ACT2_PATH)
   const photos = act(major, nextStep(major))
-  const on = (g: Game, n = 0): Game => (g.story.scene !== photos.story.scene || n > 10 ? g : on(act(g, nextStep(g)), n + 1))
+  const on = (g: Game, n = 0): Game => (g.story.scene !== photos.story.scene || n > 400 ? g : on(act(g, nextStep(g)), n + 1))
   const files = on(photos)
   assert.deepEqual([major.story.scene, photos.story.scene, files.story.scene], ['a2_major', 'a2_photos', 'a2_photos_files'])
   assert.equal(isBeat(undefined, major), true)

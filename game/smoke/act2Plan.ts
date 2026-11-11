@@ -4,8 +4,18 @@ import type { Game } from '../src/prologue.ts'
 import type { SpaceId } from '../src/levels.ts'
 import { spaces } from '../src/levels.ts'
 
-export type { Step } from './act1Plan.ts'
-export { bands, label, nextStep } from './act1Plan.ts'
+import type { Step as Act1Step } from './act1Plan.ts'
+import { nextStep as act1Step } from './act1Plan.ts'
+import { labNext } from '../src/photoLabBot.ts'
+
+export { bands, label } from './act1Plan.ts'
+
+// A step, or a wait for so many seconds of the game: the photo lab run waits out the lab's people.
+export type Step = Act1Step | Readonly<{ kind: 'wait'; seconds: number }>
+
+// What a player does next: Act 1's planner, but in the photo lab run its own player (photoLabBot.ts), which times the
+// lab's people and searches the drawers by the records room's first choice.
+export const nextStep = (g: Game): Step => (g.lab && g.space === 'eielson' ? labNext(g, 'crossCheck') : act1Step(g))
 
 // Act 2 played as the smoke test plays it: from where the Act 1 run reaches Act 2's first scene to Act 3's first
 // scene, every choice the first. Act 1's planner says what a player does next (act1Plan.ts, nextStep); act2Plan.test.ts

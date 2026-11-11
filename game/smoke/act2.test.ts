@@ -39,14 +39,16 @@ const changed = async (p: Page, from: string, what: string): Promise<void> => {
   }
 }
 
+// A walk ends where it is going, or where the story takes Wade on the way (out of the photo lab's records room).
 const walkTo = async (p: Page, x: number, z: number): Promise<void> => {
+  const space = await p.evaluate(() => (window as any).__prologue.game().space as string)
   await p.evaluate(([x, z]) => (window as any).__prologue.walkTo(x, z), [x, z] as const)
   await p.waitForFunction(
-    ([x, z]) => {
+    ([x, z, space]) => {
       const g = (window as any).__prologue.game()
-      return Math.hypot(g.pos.x - x, g.pos.z - z) < 0.2
+      return Math.hypot(g.pos.x - x, g.pos.z - z) < 0.2 || g.space !== space
     },
-    [x, z] as const,
+    [x, z, space] as const,
     { timeout: STEP_MS },
   )
 }
@@ -69,7 +71,11 @@ const take = async (p: Page, s: Step): Promise<void> => {
     return
   }
   if (s.kind === 'walk') {
-    for (const [x, z] of s.points) await walkTo(p, x, z)
+    const space = await p.evaluate(() => (window as any).__prologue.game().space as string)
+    for (const [x, z] of s.points) {
+      if ((await p.evaluate(() => (window as any).__prologue.game().space as string)) !== space) break
+      await walkTo(p, x, z)
+    }
     await p.evaluate((yaw) => (window as any).__prologue.aim(yaw, 0), s.yaw)
     await frames(p, 3)
     return

@@ -37,7 +37,8 @@ export type Prop = Readonly<{
   shape?: 'box' | 'cylinder' | 'cone'
   // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door; or only once
   // Lucy has dropped Wade's cigarette in the water; or only while Owen holds the letter in the post box's slot; or
-  // only while the plane at the camp is parked, not landing (flight.ts).
+  // only while the plane at the camp is parked, not landing (flight.ts); or only once Wade is pulling everything out of
+  // the photo lab's drawers (photoLab.ts).
   while?: Mark
   // A floor the player stands on, at its top, while over it (the flood's porch and walkway).
   deck?: true
@@ -47,7 +48,7 @@ export type Prop = Readonly<{
 
 export type Letter = 'unfolded' | 'folded'
 
-export type Mark = Letter | 'doused' | 'posting' | 'parked'
+export type Mark = Letter | 'doused' | 'posting' | 'parked' | 'mess'
 
 export type Figure = Readonly<{
   id: string
