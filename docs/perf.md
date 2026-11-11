@@ -26,7 +26,7 @@ The search for Eli, Act 1's opening (`game/src/searchEli.ts`, `trail.ts`), is he
 is the flooded town, with the errand's one trip up to `helpTent`, and its start is the `a1_flood` frame in each band.
 Staying on the line instead cuts straight to `cabin`, which has its own row and `a1_body` frames.
 
-Act 3 has no run of its own yet: its `a3_camp` start (`game/smoke/starts.ts`) is sampled in the prologue run, over `story`.
+Act 3's `a3_camp` start (`game/smoke/starts.ts`) is also sampled in the prologue run, over `story`; Act 3 plays through in its own run, below.
 
 Act 2 has its own run and CI job the same way (`make test/game/smoke/act2`, `game/smoke/act2.test.ts`). It opens `a2_major`
 where the Act 1 run reaches it (every choice the first, so Eli still trusts Wade and the heat alone sets the band) and
@@ -39,7 +39,7 @@ Act 2 space with no frames. `make generate/baselines/act2` regenerates only its 
 Act 3 has its own run and CI job the same way (`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). It opens
 `a3_camp` where the Act 2 run reaches it (every choice the first, so the three act runs are one playthrough) and plays
 to Act 4's first scene, every choice the first, with the steps `game/smoke/act3Plan.test.ts` plays headless. No Act 3
-scene's place has a space yet and `game/src/levels.ts` has no Act 3 space, so the act plays as panels over `story`,
+scene's place has a space yet and `game/src/levels.ts` has no Act 3 space, so the act plays as panels over `story` (the five mission menus, `lucysDig`, `theLongNight`, `theSkiSearch`, `theWreck` and `theRashPlan`, all show there as panels),
 and its beats are the story's places: at the first scene at each place it captures the frame of the space it plays
 in, in each moral-weather band, into `game/smoke/baselines/act3/`. When an Act 3 space is built, the run visits it
 from the Act 3 start, samples it and captures its frame in each band, and fails on it with no frames or no row below.

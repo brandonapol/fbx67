@@ -107,6 +107,8 @@ procedural layers and spots on top), as spectrograms:
 | Shouting across water               | Act 1 sandbag line      | Procedural: falling sawtooth through two formants          | Original, repo |
 | Hallway room tone and hum           | Act 1 hospital          | Procedural: low-passed brown noise, faint mains hum        | Original, repo |
 | Drips                               | Act 1 hospital          | Procedural: rising sine blip and its hallway echo          | Original, repo |
+| Floodwater in the ground floor      | Act 1 land office       | Procedural: low-passed brown noise, the street through the door | Original, repo |
+| Ceiling drips, the door             | Act 1 land office       | Procedural: the hospital's drip spot, the interior door spot | Original, repo |
 | Crowd that swells and dies          | Act 1 barfight          | Procedural: walla (6 voices), slow pink-noise roar         | Original, repo |
 | Shoves                              | Act 1 barfight          | Procedural: cloth swish, brown-noise body thud             | Original, repo |
 | Body against the stove              | Act 1 barfight          | Procedural: thud and inharmonic sine ring                  | Original, repo |
@@ -157,10 +159,11 @@ recording above has loaded, or if it never does.
 
 ## Follow-ups
 
-- **Act 1 spaces.** The four Act 1 beds live in `act1Soundscapes` in `soundscape.ts`, keyed by `line` (the sandbag
-  line on the flooded street), `hospital`, `barfight` (the Silver Pan in August, mud floor) and `cell`. They play once
-  those spaces exist in `levels.ts`, the same way as Act 2. The fight foley runs on timers inside the barfight bed;
-  the barfight mission can later fire the same spots from its own beats.
+- **Act 1 spaces.** The sandbag line (`line`), the help tent (`hospital`, in `levels.ts` as `helpTent`), the land office
+  (`office`) and the cell (`cell`, as `jail`) are built and play their beds from `soundscapes`. The barfight bed is
+  still in `act1Soundscapes`, keyed by `barfight` (the Silver Pan in August, mud floor), until the barfight space is
+  on main. The fight foley runs on timers inside that bed; the barfight mission can later fire the same spots from
+  its own beats.
 
 - **Act 2 spaces.** The four Act 2 beds live in `act2Soundscapes` in `soundscape.ts`, keyed by `town`, `base`,
   `hotel` and `hall`. They play once those spaces exist in `levels.ts`: add the ids to `SpaceId` and move each bed
