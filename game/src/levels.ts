@@ -71,6 +71,8 @@ export type Space = Readonly<{
   id: SpaceId
   act?: Act
   place?: Place
+  // The story places a space spans that route to it besides its own (the base's buildings), as router.ts reads.
+  places?: readonly Place[]
   name: string
   back?: string
   size: Readonly<{ w: number; d: number }>

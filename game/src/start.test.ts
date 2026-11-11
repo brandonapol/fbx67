@@ -37,13 +37,13 @@ test('?from= reads the same path, and #path= wins when both are given', () => {
   assert.equal(pathParam('', '?test=1'), undefined)
 })
 
-test('a game started from a path writes the same path back, and keeps playing as panels', () => {
+test('a game started from a path writes the same path back, and keeps playing into the next scene\'s space', () => {
   assert.equal(textBuildHash(from(major)), `#path=${major.join(',')}`)
   const next = press(from(major), from(major).panel!.buttons[0].id)
   assert.deepEqual(next.path, [...major, 1])
   assert.deepEqual(next.story, replay([...major, 1]).at(-1))
-  assert.equal(next.space, 'story')
-  assert.equal(next.panel?.title, menu(next.story).title)
+  assert.equal(next.space, 'eielson', 'the photo lab is on the base')
+  assert.equal(next.panel, undefined, 'Wade walks to the records room')
 })
 
 test('a path into a scene with a space puts the player in it, with no panel', () => {

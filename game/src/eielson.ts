@@ -1,6 +1,6 @@
 import type { Place } from '../../text-game/src/types.ts'
 import type { Prop, Space } from './levels.ts'
-import type { Box, Vec } from './world.ts'
+import type { Box, Interactable, Vec } from './world.ts'
 import { blocked, vec } from './world.ts'
 import type { Rect } from './downtown.ts'
 import { gaps } from './downtown.ts'
@@ -313,10 +313,15 @@ export const spawnAt = (id: string): Spawn => {
 
 const barracks = spawnAt('eielsonBarracks')
 
+// The way back to the records room from the photo lab's front door: the open east end of the counter, which the lab
+// hall door is past. The photo lab's menu (when Wade goes in, or whether) comes up here (photoLab.ts).
+export const LAB_SPOT: Interactable = { id: 'recordsWay', x: 163.5, z: 38, r: 3, prompt: 'Look past the counter to the records room' }
+
 export const eielson: Space = {
   id: 'eielson',
   act: 'Act 2: Freeze-up',
   name: 'Eielson Air Force Base',
+  places: ['photoLab', 'photoRecords'],
   interior: false,
   size: SIZE,
   center: CENTER,
@@ -324,7 +329,7 @@ export const eielson: Space = {
   spawn: vec(barracks.x, barracks.z),
   props: pieces,
   figures: [],
-  spots: [],
+  spots: [LAB_SPOT],
 }
 
 // The nav graph: the base's walkable network as nodes on the base map's routes, through the doors, and the straight

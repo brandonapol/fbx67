@@ -9,8 +9,8 @@ import { frames, game, smoke } from './browser.ts'
 // Act 2's smoke run, its own job beside Act 1's (make test/game/smoke/act2): from where the Act 1 run reaches Act 2 to
 // Act 3's first scene, in headless Chromium, every choice the first. At the start of each beat (each place the
 // story moves to) it captures the frame of the space it plays in, in each moral-weather band, into
-// game/smoke/baselines/act2. No Act 2 scene routes to a space yet, so it also visits the Eielson blockout from the Act 2
-// start, and samples every Act 2 space against docs/perf.md. act2Plan.test.ts proves the same steps headless.
+// game/smoke/baselines/act2. Only the photo lab routes to a space yet, so it also visits the Eielson blockout from the
+// Act 2 start, and samples every Act 2 space against docs/perf.md. act2Plan.test.ts proves the same steps headless.
 
 const run = smoke({ baselines: 'act2', played: act2Spaces, port: 4322, report: 'smoke-report-act2' })
 
@@ -112,7 +112,7 @@ test('Act 2 plays from its start to Act 3’s first scene, a frame per beat in e
   }
 })
 
-// No Act 2 scene routes to a space yet: the probe puts Wade in each Act 2 space from the Act 2 start, in its season, to
+// Only the photo lab routes to a space yet: the probe puts Wade in each Act 2 space from the Act 2 start, in its season, to
 // sample it and capture its frame in each band.
 test('every Act 2 space renders from the Act 2 start, a frame in each band', { timeout: 600000 }, async () => {
   const { page, errors, close } = await run.open(ACT2_PATH)

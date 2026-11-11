@@ -83,12 +83,13 @@ test('a beat starts where the place changes, or the space, not at every scene', 
   const at = (path: string): Game => startFrom(`#path=${path}`, '')
   const major = at(ACT2_PATH)
   const photos = act(major, nextStep(major))
-  const files = act(photos, nextStep(photos))
+  const on = (g: Game, n = 0): Game => (g.story.scene !== photos.story.scene || n > 10 ? g : on(act(g, nextStep(g)), n + 1))
+  const files = on(photos)
   assert.deepEqual([major.story.scene, photos.story.scene, files.story.scene], ['a2_major', 'a2_photos', 'a2_photos_files'])
   assert.equal(isBeat(undefined, major), true)
   assert.equal(isBeat(major, photos), true, 'the major’s office to the photo lab')
   assert.equal(isBeat(photos, photos), false)
-  assert.equal(isBeat(photos, { ...photos, space: 'eielson' }), true, 'same place, another space')
+  assert.equal(isBeat(photos, { ...photos, space: 'story' }), true, 'same place, another space')
 })
 
 // The probe's capture sets only the heat: on a start where Eli's trust is already spent, every band's frame is dusk or

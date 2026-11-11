@@ -6,7 +6,7 @@ import { spaces } from './levels.ts'
 export type Route = Readonly<{ to: 'space'; space: SpaceId }> | Readonly<{ to: 'menu' }> | Readonly<{ to: 'text' }>
 
 export const spaceFor = (act: Act, p: Place | undefined): SpaceId | undefined =>
-  p === undefined ? undefined : Object.values(spaces).find((s) => s.act === act && s.place === p)?.id
+  p === undefined ? undefined : Object.values(spaces).find((s) => s.act === act && (s.place === p || s.places?.includes(p)))?.id
 
 export const route = (s: State, from: SpaceId): Route => {
   const act = menu(s).act
