@@ -12,6 +12,7 @@ import { DT, PLANS, inputFor, noteFor, playOut } from './barfightBot.ts'
 import { idle } from './combat.ts'
 import { COUNTER, MOOSE_RACK, STOVE } from './silverPan.ts'
 import { blocked, hits, vec } from './world.ts'
+import { lighting } from './lighting.ts'
 
 // The barfight at the Silver Pan (#176): Hank's speech on arrival, the shove, then the fight on the combat core until
 // the law comes in, played headless through the game's own tick. Each of the mission's notes is driven by play and
@@ -183,4 +184,10 @@ test('every plan lands a different note, and the scripted player plays from the 
   assert.equal(new Set(PLANS.map(noteFor)).size, mission(opening.story)!.endings.length)
   assert.deepEqual([...PLANS.map(noteFor)].sort(), mission(opening.story)!.endings.map((e) => e.note).sort())
   assert.equal(playOut(opening, PLANS[0]!).story.scene, 'a1_tank')
+})
+
+// Regression: the Pan had no interior lamp, so in the flood it was lit as outdoors, with rain falling inside the bar.
+test('no rain falls inside the Silver Pan in the flood: it is lit as an interior, by its bulbs', () => {
+  ;(['clear', 'dusk', 'night'] as const).forEach((w) => assert.equal(lighting('pan', 'flood', w).rain, false, w))
+  assert.ok(lighting('pan', 'flood', 'clear').lamp, 'the bar is lit by its bulbs')
 })
