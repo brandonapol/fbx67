@@ -1,5 +1,5 @@
 import { N } from '../names.ts'
-import { type BarfightMemory, HEAT_LIMIT, hankRemembers, keyMissed, lucyLetGo, recordsOpen } from '../logic.ts'
+import { type BarfightMemory, HEAT_LIMIT, barnetteStops, barnetteTrustsWade, hankRemembers, keyMissed, lucyLetGo, recordsOpen } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, lucyHeat, mom, pipe, recordsLog, set } from '../state.ts'
 import type { Choice, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
@@ -553,7 +553,7 @@ Then your friends. Mama always asks if you're eating and who you eat with.`,
     clock: '1967-11-30T13:00',
     goal: heatGoal,
     text: (s) => `
-${s.heat >= 3 ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and ${lucyLetGo(s) ? `${N.eli}'s sister` : 'that land office girl'}," he says. "I'm watching all three of you."${s.heat > 3 ? ' He leans in the window. "Next time you tell me something, Pruett, I won\'t believe a word of it."' : ''}\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
+${barnetteStops(s) ? `${N.barnette} pulls you over on the Richardson Highway in a borrowed truck for no reason at all and searches it. He finds nothing. "You and Boone and ${lucyLetGo(s) ? `${N.eli}'s sister` : 'that land office girl'}," he says. "I'm watching all three of you."${!barnetteTrustsWade(s) ? ' He leans in the window. "Next time you tell me something, Pruett, I won\'t believe a word of it."' : ''}\n\n` : ''}December is coming. The sun is barely up for four hours. You could keep your head down for a while.`,
     choices: (s) => [...heatChoices(s), askGossip('a2_heat_gossip')],
   },
   { ...gossip('a2_heat_gossip', act, (s) => heatChoices(s)), place: 'nlCafe', clock: '1967-11-30T14:00', goal: heatGoal },

@@ -53,6 +53,11 @@ export const iceJam = (s: State): IceJam => (honestWithFriends(s) && s.offer !==
 
 export const barnetteTrustsWade = (s: State): boolean => s.heat <= HEAT_LIMIT
 
+// Barnette pulls Wade over on the Richardson Highway before the dark (a2_heat) once his heat reaches the limit, and
+// leans in the window to say he is done believing him once it is past it (design: Systems > Heat). The engine stages
+// the stop from this gate (game/src/roadsideStop.ts), so the scene and the stop never disagree.
+export const barnetteStops = (s: State): boolean => s.heat >= HEAT_LIMIT
+
 export const councilmanFlips = (s: State): boolean => s.sharedWreck
 
 export const paperRouteComplete = (s: State): boolean => s.afterConfession === 'stay' && s.testified === true
