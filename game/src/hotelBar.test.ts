@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replay } from '../../text-game/src/engine.ts'
-import { menu, send, sendMission } from '../../text-game/src/story.ts'
+import { menu, mission, place, send, sendMission } from '../../text-game/src/story.ts'
 import { notebook } from '../../text-game/src/queries.ts'
 import type { SceneId } from '../../text-game/src/types.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
@@ -38,7 +38,15 @@ import {
   toNextBeat,
 } from './hotelBar.ts'
 import type { Box } from './world.ts'
-import { blocked, hits, lineOfSight, vec } from './world.ts'
+import { angleTo, blocked, distance, hits, lineOfSight, sub, vec } from './world.ts'
+import type { Game } from './prologue.ts'
+import { available, interact, press, still, tick } from './prologue.ts'
+import { startFrom } from './start.ts'
+import { route, spaceFor } from './router.ts'
+import { solids, spaces } from './levels.ts'
+import { TABLE_SPOT } from './kitchen.ts'
+import { SET, engineSenders, walk as ratchetWalk } from './notesRatchet.ts'
+import { act as barAct, barNext, playBar } from './hotelBarBot.ts'
 
 // The hotel bar's run (hotelBar.ts), played as pure logic: the stools, the rhythm, what comes through from the booth,
 // the stare and its retry, and the staging rule that keeps the quiet man's face out of every view.
@@ -213,4 +221,107 @@ test('stopping dead by the door costs only what Wade hears: nobody stares', () =
 
 test('the song is BEATS chords on the beat after the lead-in', () => {
   assert.equal(SONG_TIME, LEAD + BEATS * BEAT)
+})
+
+// --- The mission, played headless in the engine build and checked against the text build ---
+
+const hash = (path: readonly number[]): string => `#path=${path.join(',')}`
+const textBuild = (g: Game) => replay(g.path).at(-1)!
+const GDT = 1 / 30
+
+const walkTo = (g: Game, to: { x: number; z: number }): Game => {
+  let cur = g
+  for (let n = 0; distance(cur.pos, to) >= 0.15 && !cur.panel; n++) {
+    if (n > 30 * 60) throw new Error(`stuck at ${cur.pos.x.toFixed(2)},${cur.pos.z.toFixed(2)}`)
+    cur = tick(cur, { dir: sub(vec(to.x, to.z), cur.pos), hold: false, limit: distance(to, cur.pos) }, GDT)
+  }
+  return cur
+}
+
+// Lucy's table, where she asks; bringing the guitar takes Wade to the hotel bar's door.
+const atKitchen = startFrom(hash(pathTo('a2_hotel')), '')
+const asked = (() => {
+  const near = walkTo(atKitchen, vec(-0.5, 0))
+  return interact(tick(near, { ...still, view: angleTo(near.pos, TABLE_SPOT) }, GDT))
+})()
+const inBar = press(asked, 'note:guitar')
+
+test('bringing the guitar takes Wade from Lucy\'s table to the hotel bar\'s door, the stools to choose from', () => {
+  assert.equal(inBar.story.scene, 'a2_hotel_set')
+  assert.deepEqual(inBar.story, textBuild(inBar))
+  assert.deepEqual(route(inBar.story, 'kitchen'), { to: 'space', space: 'hotelBar' })
+  assert.equal(inBar.space, 'hotelBar')
+  assert.deepEqual(inBar.pos, SPAWN)
+  assert.equal(inBar.panel, undefined, 'no menu: where he sits is played, not picked')
+  assert.deepEqual(available(inBar).map((i) => i.id).sort(), seats.map((s) => s.id).sort())
+  assert.equal(spaceFor('Act 2: Freeze-up', 'hotelBar'), 'hotelBar')
+  assert.equal(blocked(spaces.hotelBar.spawn, solids(spaces.hotelBar)), false)
+})
+
+test('skipping it at Lucy\'s table lands where the skipped note does', () => {
+  const g = press(asked, 'note:skip')
+  assert.deepEqual(g.story, sendMission(hotel, 'skipped'))
+  assert.deepEqual(g.story, textBuild(g))
+})
+
+const ends = { boothStool: 'heardMost', doorStool: 'heardPieces' } as const
+
+Object.entries(ends).forEach(([seat, note]) => {
+  test(`the whole set on the ${seat}: the story hears ${note}, on the text build's path`, () => {
+    const played = playBar(inBar, seat as SeatId)
+    assert.equal(played.space, 'hotelBar')
+    assert.equal(played.panel?.title, menu(played.story).title, 'what he heard is the scene\'s own text')
+    assert.equal(played.panel?.text, menu(played.story).text)
+    assert.deepEqual(played.story, textBuild(played))
+    const told = press(played, `note:${played.panel!.buttons[0]!.id.slice(5)}`)
+    assert.deepEqual(told.story, sendMission(hotel, note))
+    assert.deepEqual(told.story, textBuild(told), 'parity with the text build')
+    assert.equal(told.space, 'story', 'out of the bar, the Chiefs play over the story backdrop')
+  })
+})
+
+test('mid-song nothing reaches the story: strums and songs send no note until the set is done', () => {
+  let g = inBar
+  for (let n = 0; n < 400 && !(g.bar?.songs === SONGS - 1 && g.bar.song === undefined); n++) g = barAct(g, barNext(g, 'barStool'))
+  assert.equal(g.bar?.songs, SONGS - 1)
+  assert.deepEqual(g.story, inBar.story)
+  assert.deepEqual(g.path, inBar.path)
+})
+
+test('stared at by the booth: busted, and the retry is the start of that song, with the story untouched', () => {
+  const firstSong = (() => {
+    let g = inBar
+    for (let n = 0; n < 200 && g.bar?.songs !== 1; n++) g = barAct(g, barNext(g, 'boothStool'))
+    return g
+  })()
+  const sat = interact(firstSong)
+  assert.ok(sat.bar?.song, 'sitting again starts the next song')
+  let g = sat
+  for (let n = 0; n < 30 * 30 && !g.panel; n++) g = tick(g, still, GDT)
+  assert.equal(g.panel?.kind, 'busted')
+  assert.equal(g.busts, inBar.busts + 1)
+  assert.deepEqual(g.story, inBar.story)
+  const retried = press(g, 'retry')
+  assert.equal(retried.panel, undefined)
+  assert.equal(retried.bar?.songs, 1)
+  assert.equal(retried.bar?.song, undefined)
+  assert.deepEqual(retried.bar?.heard, firstSong.bar?.heard)
+  const done = playBar(retried, 'boothStool')
+  const told = press(done, `note:${done.panel!.buttons[0]!.id.slice(5)}`)
+  assert.deepEqual(told.story, sendMission(hotel, 'heardMost'), 'and the set can still be played to the end')
+})
+
+test('a link straight to what Wade heard opens its menu in the bar, with no set to play', () => {
+  const g = startFrom(hash([...pathTo('a2_hotel'), 1, 1]), '')
+  assert.equal(place(g.story), 'hotelBar')
+  assert.equal(g.space, 'hotelBar')
+  assert.equal(g.bar, undefined)
+  assert.equal(g.panel?.title, menu(g.story).title)
+})
+
+test('the ratchet counts the hotel bar\'s set as the sender of heard most and heard pieces', () => {
+  const at = engineSenders(ratchetWalk().filter((s) => mission(s.state)?.id === 'theHotelBar'))
+  assert.deepEqual([...new Set(at.filter((s) => s.space === 'hotelBar').map((s) => s.key))].sort(), ['theHotelBar:heardMost', 'theHotelBar:heardPieces'])
+  assert.deepEqual([...new Set(at.filter((s) => s.key === 'theHotelBar:skipped').map((s) => `${s.space}/${s.spot}`))], [`kitchen/${TABLE_SPOT.id}`])
+  assert.ok(at.every((s) => s.key === 'theHotelBar:skipped' || (s.space === 'hotelBar' && s.spot === SET)), 'heard most and pieces only from the set')
 })

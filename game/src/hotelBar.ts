@@ -311,9 +311,7 @@ const figures: readonly Figure[] = [
   { id: 'professorB', at: vec(0.25, 3.6), facing: -Math.PI / 2, coat: '#3e4a3a', skin: '#c49a7a', hair: '#5a4a3a', height: 1.7, activity: 'sit' },
 ]
 
-export type HotelSpace = Omit<Space, 'id'> & Readonly<{ id: 'hotelBar' }>
-
-export const hotelBar: HotelSpace = {
+export const hotelBar: Space = {
   id: 'hotelBar',
   act: 'Act 2: Freeze-up',
   place: 'hotelBar',

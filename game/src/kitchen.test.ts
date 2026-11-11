@@ -10,7 +10,7 @@ import { route } from './router.ts'
 import { GO, SPAWN, TABLE_SPOT } from './kitchen.ts'
 import { DIAL_SPOT, LAB_SPOT, spawnAt } from './eielson.ts'
 import type { MissionEnding } from '../../text-game/src/missions.ts'
-import { engineSenders, walk } from './notesRatchet.ts'
+import { SET, engineSenders, walk } from './notesRatchet.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
 import { angleTo, distance, sub, vec } from './world.ts'
 
@@ -108,13 +108,16 @@ test("Lucy's other kitchen scenes open their menus where Wade comes in: the tabl
   assert.equal(g.panel?.title, menu(g.story).title)
 })
 
-test("the ratchet counts Lucy's table as the sender of every hotel bar note and the cabinet refused, the base's run the rest", () => {
+test("the ratchet counts Lucy's table as the sender of the hotel bar skipped and the cabinet refused, the runs the rest", () => {
   const ids = Object.keys(starts)
   const at = engineSenders(walk()).filter((s) => ids.some((id) => s.key.startsWith(`${id}:`)))
   const all = walk().flatMap((s) => s.offers.map((o) => o.key)).filter((k) => ids.some((id) => k.startsWith(`${id}:`)))
   assert.deepEqual([...new Set(at.map((s) => s.key))].sort(), [...new Set(all)].sort())
   const searched = (key: string): boolean => key.startsWith('theMajorsCabinet:') && key !== 'theMajorsCabinet:refused'
-  at.forEach((s) => assert.deepEqual([s.space, s.spot], searched(s.key) ? ['eielson', DIAL_SPOT.id] : ['kitchen', TABLE_SPOT.id], s.key))
+  const heard = (key: string): boolean => key.startsWith('theHotelBar:') && key !== 'theHotelBar:skipped'
+  at.forEach((s) =>
+    assert.deepEqual([s.space, s.spot], searched(s.key) ? ['eielson', DIAL_SPOT.id] : heard(s.key) ? ['hotelBar', SET] : ['kitchen', TABLE_SPOT.id], s.key),
+  )
 })
 
 // The photo lab (a2_photos) is Lucy's ask before it is the base's: Wade comes into her kitchen, and at her table

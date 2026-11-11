@@ -17,13 +17,14 @@ import { line } from './searchEli.ts'
 import { roomThings } from './room.ts'
 import { eielson } from './eielson.ts'
 import { kitchen } from './kitchen.ts'
+import { hotelBar } from './hotelBar.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
 import { COUNTER, dressing } from './silverPan.ts'
 import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -369,7 +370,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets that are built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the

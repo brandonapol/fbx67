@@ -85,6 +85,8 @@ export const poses: Readonly<Record<string, Pose>> = {
   flight: { space: 'downtown', pos: seatAt(FLIGHT_SHOT, OWEN_SEAT).at, facing: planeAt(FLIGHT_SHOT).heading, t: 0, flight: FLIGHT_SHOT, shot: { eye: [-56, 31, -26], at: [-36, 24, -19] } },
   // Lucy's kitchen: Wade inside the door, Lucy at her table with the photos, the stove in the far corner.
   kitchen: { space: 'kitchen', pos: vec(-1.6, -1.8), facing: 0, t: 0, shot: { eye: [-2.4, 2.1, -2.0], at: [0.8, 0.8, 1.2] } },
+  // The hotel bar: Wade in at the door with his guitar, the bar down the left, Tolliver's booth in the far corner.
+  hotelBar: { space: 'hotelBar', pos: vec(-4, -4.2), facing: 0, t: 0, shot: { eye: [-4.6, 2.3, -4.6], at: [4.5, 0.9, 3.6] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
