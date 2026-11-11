@@ -132,3 +132,9 @@ test('the Pan at the barfight’s peak has its own row, held to the bar’s limi
   const peak = summarize([sample('panPeak', { drawCalls: 1501 })], ['panPeak'])
   assert.deepEqual(breaches({ downloadMB: 1, spaces: peak }, b, ['panPeak']), ['panPeak: draw calls peaked at 1501, budget 1500'])
 })
+
+test('a run that names no spaces it played is held to every space, not to a moment another run samples (#177)', () => {
+  const b = parseBudgets(docs)
+  const all = summarize(order.map((s) => sample(s)), order)
+  assert.deepEqual(breaches({ downloadMB: 1, spaces: all }, b), [], 'the prologue run samples every space, not the barfight’s peak')
+})

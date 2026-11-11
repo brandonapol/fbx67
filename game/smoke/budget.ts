@@ -1,4 +1,5 @@
 import type { Sample } from '../src/probe.ts'
+import { moments } from '../src/probe.ts'
 
 export type Limits = Readonly<{ drawCalls: number; triangles: number; textureMB: number }>
 
@@ -108,8 +109,13 @@ export const unbudgeted = (budgets: Budgets, ids: readonly string[]): readonly s
   ids.filter((id) => budgets.spaces[id] === undefined).map((id) => `${id}: no budget row in docs/perf.md`)
 
 // A run fails on the download, on a space it played that has no frames (every budgeted space, unless the run plays
-// only some), on a sampled space with no row, and on a peak over a limit.
-export const breaches = (report: Report, budgets: Budgets, played: readonly string[] = Object.keys(budgets.spaces)): readonly string[] => [
+// only some; a moment only when the run names it, since the run that holds it is the one that samples it), on a sampled
+// space with no row, and on a peak over a limit.
+export const breaches = (
+  report: Report,
+  budgets: Budgets,
+  played: readonly string[] = Object.keys(budgets.spaces).filter((id) => !(id in moments)),
+): readonly string[] => [
   ...(report.downloadMB > budgets.downloadMB
     ? [`initial download is ${report.downloadMB.toFixed(2)} MB, budget ${budgets.downloadMB} MB`]
     : []),
