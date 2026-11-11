@@ -224,3 +224,51 @@ test('the records thread is open below Lucy\'s let-go heat and closed at it or a
   assert.equal(LUCY_LET_GO, 2)
   assert.deepEqual([0, 1, 2, 3, 4].map((h) => recordsOpen(w({ lucyHeat: h }))), [true, true, false, false, false])
 })
+
+// design.md, Outcomes: the best ending needs "heat ≤ 3". The tests above use HEAT_LIMIT + 1, so pin the number and
+// the boundary itself.
+test('heat at the limit still reaches best, one above does not', () => {
+  assert.equal(HEAT_LIMIT, 3)
+  assert.equal(ending(w({ heat: HEAT_LIMIT })), 'best')
+  assert.deepEqual(missingForBest(w({ heat: HEAT_LIMIT })), [])
+  assert.equal(ending(w({ heat: HEAT_LIMIT + 1 })), 'good')
+})
+
+// Every combination of the plot decisions and the gating facts, so a gate added to isBest without a reason in
+// missingForBest (or the reverse) fails here.
+const decisionStates: readonly State[] = (['warn', 'confront', 'ignore'] as const).flatMap((curlyPlan) =>
+  (['quiet', 'report', 'leverage'] as const).flatMap((eliTrespass) =>
+    (['stay', 'walk', 'turn'] as const).flatMap((afterConfession) =>
+      (['refuse', 'fake', 'take'] as const).flatMap((offer) =>
+        [true, false].flatMap((testified) =>
+          [true, false].flatMap((sharedWreck) =>
+            [true, false].flatMap((leakedFlightDate) =>
+              [HEAT_LIMIT, HEAT_LIMIT + 1].map((heat) =>
+                w({ curlyPlan, eliTrespass, afterConfession, offer, testified, sharedWreck, leakedFlightDate, heat }),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)
+
+test('missingForBest is empty exactly when the ending is best, over every decision combination', () => {
+  assert.equal(decisionStates.length, 3 ** 4 * 2 ** 4)
+  decisionStates.forEach((s) => assert.equal(missingForBest(s).length === 0, ending(s) === 'best', JSON.stringify(s)))
+})
+
+test('the bad ending is exactly taking the offer, turning on Lucy, or faking it without honesty', () => {
+  decisionStates.forEach((s) => {
+    const honest = s.eliTrespass === 'quiet' && s.afterConfession === 'stay'
+    const bad = s.offer === 'take' || s.afterConfession === 'turn' || (s.offer === 'fake' && !honest)
+    assert.equal(ending(s) === 'bad', bad, JSON.stringify(s))
+  })
+})
+
+test('outside bad, good and best are exactly the paper route: stayed and testified', () => {
+  decisionStates
+    .filter((s) => ending(s) !== 'bad')
+    .forEach((s) => assert.equal(ending(s) !== 'middle', s.afterConfession === 'stay' && s.testified === true, JSON.stringify(s)))
+})
