@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { missions } from '../../text-game/src/missions.ts'
-import { engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
+import { LETTER, engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
 
 const ALLOWLIST = 'game/notes-allowlist.txt'
 
@@ -103,4 +103,13 @@ test('a listed note the engine sends, one no menu offers, or one listed twice fa
 
 test('the allowlist file reads one key per line and skips comments', () => {
   assert.deepEqual(parseAllowlist('# head\n\na:x\n  b:y  # why\n'), ['a:x', 'b:y'])
+})
+
+test('the engine sends every letter note through the letter view, and without the view each one fails', () => {
+  const letterKeys = [...story].filter((k) => /^(a1_letter|a2_letter_work|a2_letter_friends|a3_joan):/.test(k)).sort()
+  assert.equal(letterKeys.length, 12, 'three lines in each of the four letter scenes')
+  const viaView = engineSenders(stops).filter((s) => s.spot === LETTER)
+  assert.deepEqual([...new Set(viaView.map((s) => s.key))].sort(), letterKeys)
+  const lost = new Set(engineSenders(stops, (_space, spot) => spot === LETTER).map((s) => s.key))
+  assert.deepEqual([...failures({ story, sent: lost, allowed })].sort(), letterKeys.map((k) => `${k}: on a story menu, but no engine path sends it`).sort())
 })
