@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { replayPath } from '../src/start.ts'
 import type { Step } from './act1Plan.ts'
-import { ACT1_PATH, ACT2_FIRST, act1Spaces, bands, isBeat, label, nextStep, poseFor } from './act1Plan.ts'
+import { ACT1_PATH, ACT2_FIRST, act1Spaces, bands, isBeat, label, nextStep, offers, poseFor } from './act1Plan.ts'
 import type { Page } from './browser.ts'
 import { frames, game, smoke } from './browser.ts'
 
@@ -34,6 +34,29 @@ const changed = async (p: Page, from: string, what: string): Promise<void> => {
   }
 }
 
+// A press acts on its keydown (main.ts), so what it changes shows at once; a few frames cover the key's release.
+const PRESS_FRAMES = 4
+
+const changedWithin = async (p: Page, from: string, n: number): Promise<boolean> => {
+  if ((await where(p)) !== from) return true
+  if (n <= 0) return false
+  await frames(p, 1)
+  return changedWithin(p, from, n - 1)
+}
+
+// A tap of interact, made only while the live game still offers the step's spot, and made again only when it changed
+// nothing and the spot is still offered (act1Plan.ts, offers). When it is not, the plan reads the game afresh.
+const use = async (p: Page, s: Step): Promise<void> => {
+  const end = Date.now() + STEP_MS
+  for (;;) {
+    const from = await where(p)
+    if (!offers(s, await game(p))) return
+    await p.keyboard.press('e')
+    if (await changedWithin(p, from, PRESS_FRAMES)) return
+    if (Date.now() > end) throw new Error(`${label(s)}: nothing changed in ${STEP_MS / 1000} s at ${from}`)
+  }
+}
+
 const walkTo = async (p: Page, x: number, z: number): Promise<void> => {
   await p.evaluate(([x, z]) => (window as any).__prologue.walkTo(x, z), [x, z] as const)
   await p.waitForFunction(
@@ -53,10 +76,7 @@ const take = async (p: Page, s: Step): Promise<void> => {
     return changed(p, from, label(s))
   }
   if (s.kind === 'interact') {
-    if (!s.hold) {
-      await p.keyboard.press('e')
-      return changed(p, from, label(s))
-    }
+    if (!s.hold) return use(p, s)
     await p.keyboard.down('e')
     await p.waitForFunction(() => (window as any).__prologue.game().holding === undefined, null, { timeout: STEP_MS })
     await p.keyboard.up('e')
@@ -90,13 +110,16 @@ test('Act 1 plays from its path to Act 2’s first scene, a frame per beat in ea
       const g = await game(page)
       if (g.story.scene === ACT2_FIRST) break
       assert.ok(n < MAX_STEPS, `stuck at ${g.story.scene} in ${g.space}`)
-      if (isBeat(before, g)) {
+      const beat = isBeat(before, g)
+      if (beat) {
         beats.push(g.story.scene)
         console.log(`  beat ${g.story.scene} in ${g.space}: ${((Date.now() - started) / 1000).toFixed(0)} s in`)
         for (const b of bands) await run.capture(page, `${g.story.scene}${b.suffix}`, poseFor[g.space as keyof typeof poseFor]!, b.heat)
       }
       before = g
-      await take(page, nextStep(g))
+      // A capture poses the game and puts it back, and the camera with it may not be where it was: plan from the game
+      // as it is now.
+      await take(page, nextStep(beat ? await game(page) : g))
     }
     await page.evaluate(() => (window as any).__prologue.record(false))
     const end = await game(page)

@@ -9,7 +9,7 @@ import type { Vec } from '../src/world.ts'
 import { distance, sub, vec } from '../src/world.ts'
 import { poses } from '../src/probe.ts'
 import type { Step } from './act1Plan.ts'
-import { ACT1_PATH, ACT2_FIRST, act1Spaces, isBeat, nextStep, poseFor } from './act1Plan.ts'
+import { ACT1_PATH, ACT2_FIRST, act1Spaces, isBeat, nextStep, offers, poseFor } from './act1Plan.ts'
 
 const DT = 1 / 30
 // A steer in the browser is a walk target and two drawn frames at the smoke run's pace of four ticks a frame.
@@ -92,4 +92,20 @@ test('nextStep takes the first choice from a panel and walks to the spot that mo
   const office = startFrom('#path=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', '')
   assert.equal(office.story.scene, 'a1_lucy')
   assert.equal((nextStep(office) as { spot?: string }).spot, 'lucy', 'Lucy, not the ledgers, at the land office')
+})
+
+test('a press of interact is made only while the live game still offers the planned spot', () => {
+  const pan = startFrom('#path=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', '')
+  assert.equal(pan.story.scene, 'a1_barfight')
+  const step = nextStep(pan)
+  assert.deepEqual(step, { kind: 'interact', spot: 'hank', hold: false })
+  assert.ok(offers(step, pan), 'on the stool facing Hank, Hank is offered')
+  // The camera left where the Pan's capture pose faced it (facing 0): the planned press would land on no focus and
+  // only start a cigarette the released key drops, so nothing changes. The plan aims back at Hank instead.
+  const turned = { ...pan, view: 0 }
+  assert.equal(offers(step, turned), false, 'turned away, Hank is not offered')
+  assert.equal(nextStep(turned).kind, 'walk', 'turned away, the plan aims at Hank again')
+  const aimed = act(turned, nextStep(turned))
+  assert.ok(offers(step, aimed), 'aimed at Hank again, he is offered')
+  assert.ok(act(aimed, step).panel, 'and the press opens the speech')
 })

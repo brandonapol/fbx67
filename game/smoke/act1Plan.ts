@@ -118,6 +118,15 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   jail: 'cell',
 }
 
+// A tap of interact acts on the keydown, on whatever is in focus then (main.ts), not on what the plan read a moment
+// before: the camera can have turned since (a beat's capture can leave it placed for its pose). So the smoke run
+// presses only while the live game still offers the step's spot, and presses again, when a press changed nothing, only
+// while it still does; otherwise the plan reads the game afresh (an aim puts the spot back in view).
+export const offers = (s: Step, now: Game): boolean => {
+  const next = nextStep(now)
+  return s.kind === 'interact' && next.kind === 'interact' && next.spot === s.spot && next.hold === s.hold
+}
+
 export const isBeat = (before: Game | undefined, now: Game): boolean => before === undefined || before.space !== now.space
 
 export const label = (s: Step): string =>
