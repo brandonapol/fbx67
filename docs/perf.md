@@ -28,7 +28,8 @@ run also captures the fight at its peak, `a1_brawl` in each band, from the probe
 own clock 16 s past the shove with Wade got up and idle, when every patron has come in and none has had enough, so all
 ten men in the Pan are in it (`game/src/probe.ts`, `fightAt`). It then holds that pose still and samples 40 frames of
 it under `panPeak`, a moment and not a space (`moments` in `game/src/probe.ts`), so the peak is held to its own row and
-not averaged into the Pan's walk. The run fails with no `panPeak` frames. There is one quality tier: the engine build
+not averaged into the Pan's walk. The run fails with no `panPeak` frames. When the row was added (#428) the peak measured 140 draw calls, 120,572
+triangles and 137.8 MB of texture memory, well under the limits below. There is one quality tier: the engine build
 has no quality-tier switch yet, so the peak is measured on the one renderer there is. When tiers come, the peak is
 sampled once per tier.
 

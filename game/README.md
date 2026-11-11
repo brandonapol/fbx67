@@ -74,7 +74,9 @@ half a second after you let go; after 1.5 s without looking, the camera swings b
   `#path=` or `?from=` link, and the smoke test's `?test=1`, start in the game. Esc or P (when not bound), the Menu
   button, Start on a pad, or losing the mouse lock pauses: Resume, Journal, Map, Settings, Return to title; in the barfight, Restart from the shove too, which
   puts the fight back at the get-up or stay-seated prompt (`checkpoint` in `src/barfight.ts`). Nothing
-  ticks while paused, so the story clock holds. The journal is Owen's notebook: the titles of the scenes played,
+  ticks while paused, so the story clock holds. If the cast fails to load, the loading screen says so where the bar was
+  ("The game could not load: ...", with a reload hint) instead of staying on "Loading" (`loadFailure` in
+  `src/frontEnd.ts`). The journal is Owen's notebook: the titles of the scenes played,
   the scene now and its `goal(state)`, `notebook(state)`, the people interacted with and the lines heard in talk
   panels. Nothing is in it the player did not do or hear.
 - **Pocket map** (`src/frontEndMap.ts`, M or the pause menu's Map; pauses like the menu): Wade's folded street map of
@@ -133,14 +135,21 @@ src/audio.ts      the audio engine: unlock on gesture, buses, positional panners
 src/sound-panel.ts the volume sliders
 src/main.ts       devices, HUD and the frame loop
 src/drive.ts      a headless player for tests
-src/probe.ts      test-only hooks: fixed capture poses and per-frame stats; loaded only with ?test=1
+src/probe.ts      test-only hooks: fixed capture poses (`poses`, among them `brawl`, the barfight at its peak via `fightAt`), the
+                  `moments` sampled under their own budget row (`panPeak`) and per-frame stats; loaded only with ?test=1
 src/props.ts      the glTF loader for every model (meshopt decoding), and prop placement
 src/viewer.ts     viewer.html: the generated assets and one animated character, for make test/assets
+src/barfight.ts   the barfight at the Silver Pan: the patrons who join and sit out, the clock to the law, the checkpoint at the shove
+src/trailDrive.ts a scripted player for the search for Eli: wades to each stop and presses the note (`playSearch`); pure
+src/notesRatchet.ts the parity ratchet: every note an Act 1 to 3 menu offers has an engine path that sends it, or is in notes-allowlist.txt
 src/combat.ts     the grounded combat core: shove, grab, use, get up, the clock to the law, the tally; pure
 src/fightSpace.ts the fight's test space: one room, the player and one man against him
 src/fightControls.ts the fight's keys and gamepad buttons; pure
 src/fightView.ts  fight.html: the test space drawn in blocks, on keyboard or gamepad (make serve/game)
-tools/            asset generators: characters.ts, assets.ts and procedural.ts (docs/art/pipeline.md); audio.ts builds public/audio
+tools/            asset generators: characters.ts, assets.ts and procedural.ts (docs/art/pipeline.md); audio.ts builds public/audio;
+                  fetchCache.ts (one shared download per source file, kept only when its length matches Content-Length);
+                  retarget.ts (clips onto each rig, then grounded: the hips move so the lowest foot is as high off the floor as on
+                  Curly's); testSuite.test.ts fails on a smoke/*.test.ts that no npm script runs
 smoke/            the end-to-end browser test, frame comparison and budget checks
 smoke/baselines/  the committed frame per capture pose
 ```
@@ -173,12 +182,19 @@ until their spaces land. Escape closes the sound panel.
   - freezes the clock and every animation layer at each beat, puts Owen at a fixed spot and holds the camera on a
     fixed shot (`poses` in `src/probe.ts`, `View.pose` in `src/render.ts`), hides the HUD and compares the frame with
     `smoke/baselines/` (pixelmatch; a frame fails past 0.2% changed pixels);
+  - at the barfight, `a1_brawl` (Act 1's run, `smoke/baselines/act1/`): the fight 16 s past the shove from the probe's
+    `brawl` pose, all ten men in it, then 40 frames of it held still against the `panPeak` row of
+    [`docs/perf.md`](../docs/perf.md);
   - walks back and forth in each space for 10 s, recording draw calls, triangles, texture memory and CPU frame time,
     and fails when a space goes over a budget in [`docs/perf.md`](../docs/perf.md);
   - opens one start from a path per act, and per Act 1 space past the line (`smoke/starts.ts`: `a1_flood`, `a1_body`,
     `a1_ruling`, `a1_lucy`, `a1_tank`, `a2_major`, `a3_camp`, `a4_news`), checks the scene and its menu panel, records
     its perf samples and captures frame `<scene>.png` from the start's pose. A later act ticket adds its start as one
     entry there, with a pose in `src/probe.ts` for the space it starts in.
+
+  `npm test` also runs `smoke/stall.test.ts`, and `tools/testSuite.test.ts` fails when a `smoke/*.test.ts` is named by
+  no `test` or `smoke*` script. The parity ratchet (`src/notesRatchet.ts`) sends the search for Eli's notes by walking the
+  trail with `playSearch` (`src/trailDrive.ts`).
 
   Acts 1, 2 and 3 each play through in their own run and CI job, with frames per beat in each moral-weather band:
   `make test/game/smoke/act1` (baselines in `smoke/baselines/act1/`) and `make test/game/smoke/act2` (`act2/`); see

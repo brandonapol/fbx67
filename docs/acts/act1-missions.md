@@ -52,7 +52,9 @@ evening (`a1_body`).
   *Ran it* applies `helpTent`, `envelope` (+1 Joan), `waitBaby` (+1 Eli trust), `wadeBack`, `passBags`.
   *Skipped it* applies `sendSomebody`, `tellEli` (+1 Eli trust), `wadeBack`, `passBags`. Both are existing choices;
   no new state. The menu is `searchForEli` in [`missions.ts`](../../text-game/src/missions.ts), notes `ranIt`
-  and `skippedIt`; it applies `passBags` too, so the story lands on `a1_body`.
+  and `skippedIt`; it applies `passBags` too, so the story lands on `a1_body`. The engine's parity ratchet
+  (`game/src/notesRatchet.ts`) sends both notes by walking the trail: `playSearch` in `game/src/trailDrive.ts` wades to
+  each stop, up to Joan at the help tent and back, and presses the note the ending applies.
 - **What shades heat or trust.** Nothing about how it is played. The trust point comes from going, and Joan's from
   the errand (owner, #230). The sergeant's chewing-out at `a1_line` is color: no heat.
 
