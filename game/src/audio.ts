@@ -1,6 +1,7 @@
 import type { Bus, Volumes } from './mixer.ts'
 import { BUSES, LIMITER, STORAGE_KEY, busGains, clamp01, parseVolumes, serializeVolumes, withVolume } from './mixer.ts'
 import type { Gait } from './footsteps.ts'
+import type { Tread } from './cast.ts'
 import { pace, standing, stepTempF, surfaceAt } from './footsteps.ts'
 import type { SpaceId } from './levels.ts'
 import { spaces } from './levels.ts'
@@ -14,6 +15,7 @@ import { between, footstep, layerVoice, makeBuffers, mulberry, playTake, spot } 
 import type { Clip, Library, Shot } from './recordings.ts'
 import { SHOT_GAIN, SPOT_TAKES, STEP_TAKES, clipsOf, library, pickSlice, slicesOf, urlOf } from './recordings.ts'
 import type { Spot } from './soundscape.ts'
+import { labCues } from './photoLabAudio.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
 
@@ -244,12 +246,24 @@ export const createAudio = (store: Storage | undefined): Audio => {
     const { gait, falls } = pace(live.gait, walked(live.prev, g), dt)
     live.gait = gait
     if (!falls) return
+    oneShot(gr, 'sfx', g.pos, (dest) => step(gr, g, g.pos, dest, playerBody(g).tread))
+  }
+
+  // A step on the floor at `at`, a recorded take where the surface has them.
+  const step = (gr: Graph, g: Game, at: Vec, dest: AudioNode, tread: Tread = { pitch: 1, weight: 1 }): number => {
     const ground = soundscapes[g.space].ground
-    const surface = surfaceAt(ground, g.pos)
-    const tread = playerBody(g).tread
-    oneShot(gr, 'sfx', g.pos, (dest) =>
+    const surface = surfaceAt(ground, at)
+    return (
       take(gr, STEP_TAKES[surface], dest, tread.weight, tread.pitch * between(rand, 0.92, 1.08)) ??
-      footstep(gr.ctx, gr.buffers, surface, dest, rand, stepTempF(ground, season(g.story)), tread),
+      footstep(gr.ctx, gr.buffers, surface, dest, rand, stepTempF(ground, season(g.story)), tread)
+    )
+  }
+
+  // The photo lab's people by ear (photoLabAudio.ts): their steps, the clerk's lighter, the doors, the sting.
+  const lab = (gr: Graph, g: Game): void => {
+    const runOf = (x: Game | undefined) => (x?.space === 'eielson' ? x.lab : undefined)
+    labCues(runOf(live.prev), runOf(g), g.pos).forEach((c) =>
+      oneShot(gr, c.bus, c.at, (dest) => (c.sound === 'step' ? step(gr, g, c.at, dest) : play(gr, c.sound, dest))),
     )
   }
 
@@ -272,6 +286,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
     events(gr, s, g)
     arrivals(live.prev, g).forEach((a) => oneShot(gr, 'sfx', g.pos, (dest) => play(gr, a, dest)))
     cues(live.prev, g).forEach((c) => oneShot(gr, 'sfx', curlyNow(g).at, (dest) => play(gr, c, dest)))
+    lab(gr, g)
     steps(gr, g, dt)
   }
 

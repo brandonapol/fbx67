@@ -652,6 +652,20 @@ export const spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest:
       return tone(ctx, dest, 'sine', f, at + i * between(rand, 0.03, 0.09), between(rand, 0.03, 0.08), 0.002, 0.04, f * 1.9)
     }).reduce((a, b) => Math.max(a, b), at)
   }
+  // Being seen in the photo lab: a low stab a semitone apart, sagging as it dies, over a soft hit. Not in the room.
+  if (which === 'sting') {
+    const dark = filter(ctx, 'lowpass', 900, 1.2)
+    dark.connect(dest)
+    const f = between(rand, 110, 118)
+    return latest(
+      [
+        tone(ctx, dark, 'sawtooth', f, at, 0.22, 0.015, 0.9, f * 0.94),
+        tone(ctx, dark, 'sawtooth', f * 1.06, at, 0.18, 0.015, 0.9, f),
+        burst(ctx, buffers, dest, 'brown', 'lowpass', 160, 1, at, 0.5, 0.005, 0.35, rand),
+      ],
+      at,
+    )
+  }
   const creak = tone(ctx, dest, 'sawtooth', between(rand, 90, 120), at, 0.05, 0.25, 0.45, between(rand, 130, 160))
   const thump = burst(ctx, buffers, dest, 'brown', 'lowpass', 220, 1, creak, 0.9, 0.005, 0.3, rand)
   return Math.max(thump, tone(ctx, dest, 'square', 1800, creak + 0.02, 0.03, 0.001, 0.02))

@@ -123,6 +123,9 @@ procedural layers and spots on top), as spectrograms:
 | Ravens                              | Act 2 town              | Procedural: falling sawtooth through a formant             | Original, repo |
 | Base interior hum                   | Act 2 base              | Procedural: 60 Hz mains, harmonics, ballast buzz           | Original, repo |
 | Base ventilation and distant doors  | Act 2 base              | Procedural: low-passed noise, the door spot                | Original, repo |
+| Lab people's steps, concrete floor  | Act 2 photo lab         | Procedural: the concrete step, at each watcher's feet      | Original, repo |
+| The clerk's lighter                 | Act 2 photo lab         | Procedural: the lighter spot (`snap`), Curly's lighter     | Original, repo |
+| Being seen (sting)                  | Act 2 photo lab         | Procedural: low sawtooth stab a semitone apart, brown hit  | Original, repo |
 | Wade's guitar                       | Act 2 hotel bar         | Procedural: plucked sawtooth, original I-IV-I-V boom-chick | Original, repo |
 | Hotel bar murmur, glasses, fallback | Act 2 hotel bar         | Procedural: walla (5 voices), clinks                       | Original, repo |
 | Hall room tone                      | Act 2 community hall    | Procedural: low-passed brown noise                         | Original, repo |
