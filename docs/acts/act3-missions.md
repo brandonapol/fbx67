@@ -166,6 +166,19 @@ near the last known heading. Playing Wade, two-handed.
   land on `a3_arm`.
 - **What shades heat or trust.** Nothing. The route is color (`design.md`, choices that carry state).
 - **New state.** None.
+- **Built (#141).** The ski mode is pure code in `game/src/skiing.ts` with tests in `skiing.test.ts`: the slope's
+  ground (`heightAt`, the two routes and the drop to the wreck), the rules (downhill under gravity with a snowplow and
+  no falls; on the flats a held push shuffles safely, a kick in its window glides, one kick too soon staggers him and a
+  second while he staggers falls him; the climb is slow, holds where he stops and soaks him in sweat that the survival
+  rules count as wet), and the space's props (`searchSpace`). `game/src/skiView.ts` draws the slope. The headless
+  test skis both routes and checks the story lands where `sendMission` and the `--choices` path do.
+- **Not wired yet.** The controller and the space registry were claimed by other work when this landed. To play it:
+  add `'search'` to `SpaceId` and `search: { id: 'search', ...searchSpace }` to `spaces` (`levels.ts`) and to
+  `soundscapes` (its bed is `slope`); in `prologue.ts` carry `ski?: Ski` on `Game`, clear it in `enter`, and in
+  `arrive` for the search space start `setOff(routeOf(story))` when a route scene is current (the a3_search prompt
+  plays as its menu); in `tick`, before the walk, run `skiFrame` with `input.dir` and the space's solids, sending
+  `ARRIVE_NOTE` on `'arrived'`; `footY` is `skiFootY` on skis; in `render.ts` call `buildSlope` instead of the flat
+  ground box. The smoke at the follow-the-smoke signal and the act's smoke plan for the new space come after.
 
 ## 4. The wreck
 
