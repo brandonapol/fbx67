@@ -115,7 +115,7 @@ export const figures: readonly Figure[] = [
   { id: 'regular2', at: vec(4.25, -0.85), facing: Math.PI, coat: '#6b5a3a', skin: '#e0b896', hair: '#8a6a4a', height: 1.7, activity: 'sit' },
 ]
 
-export const cafe = {
+export const cafe: Space = {
   id: 'cafe',
   act: 'Act 2: Freeze-up',
   place: 'nlCafe',
@@ -128,4 +128,4 @@ export const cafe = {
   props,
   figures,
   spots: [COUNTER_SPOT],
-} as const satisfies Omit<Space, 'id'> & Readonly<{ id: string; scenes: readonly SceneId[] }>
+}

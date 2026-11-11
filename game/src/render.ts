@@ -18,6 +18,7 @@ import { OFFICER, placed } from './barfight.ts'
 import type { CampView } from './campView.ts'
 import { buildCamp } from './campView.ts'
 import { boatIn } from './cabinRide.ts'
+import { CRUISER_HULL, LIGHT_BAR, TRUCK_HULL, barnetteAt, cruiserAt, lightColor, truckAt } from './roadsideStop.ts'
 import { closeUp } from './knot.ts'
 import { tieShot } from './bushStrip.ts'
 import type { Debris } from './hazards.ts'
@@ -257,6 +258,8 @@ type Built = Readonly<{
   boat?: pc.Entity
   // Curly's floatplane: moored at the float downtown, and on the flight north over town and down at the camp.
   plane?: pc.Entity
+  // Barnette's roadside stop on the highway: the borrowed truck, the cruiser and its two lamps (roadsideStop.ts).
+  roadside?: Readonly<{ truck: pc.Entity; cruiser: pc.Entity; red: pc.Entity; blue: pc.Entity }>
   // Whether it is lit by the flight's gold over town (flight.ts, flightLight).
   gold: boolean
   // What comes down the flooded town's streets on the water (hazards.ts).
@@ -267,6 +270,25 @@ type Built = Readonly<{
   // The photo lab's people on the base, drawn where their rounds have them while the run is on (photoLab.ts).
   labMen: ReadonlyMap<string, pc.Entity>
 }>
+
+// The roadside stop's vehicles, each in its own frame like the boats (boat.ts), placed every frame by sync.
+const buildRoadside = (root: pc.Entity) => {
+  const vehicle = (name: string, hull: readonly Prop[]) => {
+    const e = new pc.Entity(name)
+    hull.forEach((p) => addProp(e, p))
+    root.addChild(e)
+    return e
+  }
+  const truck = vehicle('truck', TRUCK_HULL)
+  const cruiser = vehicle('cruiser', CRUISER_HULL)
+  const lamp = (p: Prop) => {
+    const e = new pc.Entity('lamp')
+    addProp(e, p)
+    cruiser.addChild(e)
+    return e
+  }
+  return { truck, cruiser, red: lamp(LIGHT_BAR.red), blue: lamp(LIGHT_BAR.blue) }
+}
 
 export const createView = async (canvas: HTMLCanvasElement, base: string): Promise<View> => {
   const app = new pc.Application(canvas, {
@@ -348,6 +370,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       planeHull.forEach((p) => addProp(plane, p))
       root.addChild(plane)
     }
+    const roadside = space.id === 'highway' ? buildRoadside(root) : undefined
     const debris = space.id === 'line' ? DEBRIS.map((d) => [floating(root, d), d] as const) : []
     const l = flightLight(lighting(space.id, t.season, weather(g.story), t.clock), g.flight)
     const rainRoot = new pc.Entity('rain')
@@ -362,7 +385,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       : []
     light(l, space)
     app.root.addChild(root)
-    return { id: space.id, root, figures, camp, rain, rainRoot, boat, plane, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles, labMen }
+    return { id: space.id, root, figures, camp, rain, rainRoot, boat, plane, roadside, debris, weather: weather(g.story), time: t, gold: litGold(g.flight), toggles, labMen }
   }
 
   const state: { built?: Built; held?: Shot; crowd?: CrowdView; cone: boolean } = { cone: false }
@@ -449,6 +472,29 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       const man = b.figures.get(craft.man)
       man?.setLocalPosition(r.bow.x, craft.deck, r.bow.z)
       man?.setLocalEulerAngles(0, (r.heading * 180) / Math.PI, 0)
+    }
+    if (b.roadside) {
+      // The stage plays from the story's own gates: the cruiser only where Barnette stops Wade, and he only on foot
+      // from the search on (roadsideStop.ts). Seconds into the stage; before it starts, its first frame.
+      const r = b.roadside
+      const at = g.stop ?? 0
+      const put = (e: pc.Entity, p: { at: { x: number; z: number }; heading: number }) => {
+        e.setLocalPosition(p.at.x, 0, p.at.z)
+        e.setLocalEulerAngles(0, (p.heading * 180) / Math.PI, 0)
+      }
+      put(r.truck, truckAt(g.story, at))
+      const car = cruiserAt(g.story, at)
+      r.cruiser.enabled = car !== undefined
+      if (car) put(r.cruiser, car)
+      const lamp = lightColor(g.story, at)
+      r.red.enabled = lamp === 'red'
+      r.blue.enabled = lamp === 'blue'
+      const man = b.figures.get('barnette')
+      const on = barnetteAt(g.story, at)
+      if (man) {
+        man.enabled = on !== undefined
+        if (on) put(man, on)
+      }
     }
     if (b.plane) {
       // At the camp the plane is drawn only while it comes in; parked, the camp's own plane stands there.

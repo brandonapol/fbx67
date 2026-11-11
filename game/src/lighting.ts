@@ -184,6 +184,8 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   kitchen: { color: '#ffb877', intensity: 1.8, range: 9, at: [0.6, 2.3, 0.6] },
   // The Silver Pan in November: the same bulbs, over Curly's booth (bushStrip.ts).
   steak: { color: '#ffb877', intensity: 2.2, range: 14, at: [0, 2.6, 0] },
+  // The café: the lamps over Dottie's counter.
+  cafe: { color: '#ffcf8a', intensity: 1.9, range: 12, at: [-0.7, 2.4, 2.0] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 

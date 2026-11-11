@@ -198,7 +198,7 @@ const figures: readonly Figure[] = [
   { id: 'barnette', at: WINDOW_AT, facing: EAST, coat: '#3a3a30', skin: '#d9b08a', hair: '#5a4a3a', height: 1.85, when: stops },
 ]
 
-export const highway = {
+export const highway: Space = {
   id: 'highway',
   act: 'Act 2: Freeze-up',
   place: 'richardsonHighway',
@@ -210,4 +210,4 @@ export const highway = {
   props: Object.values(pieces).flat(),
   figures,
   spots: [WHEEL],
-} as const satisfies Omit<Space, 'id'> & Readonly<{ id: string }>
+}

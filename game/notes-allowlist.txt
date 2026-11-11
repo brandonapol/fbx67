@@ -7,11 +7,6 @@ a2_chiefs:slipOut
 a2_chiefs_after:continue
 a2_chiefs_spoke:continue
 a2_flight:writeMama
-a2_heat:gossip
-a2_heat:keepDigging
-a2_heat:lieLow
-a2_heat_gossip:keepDigging
-a2_heat_gossip:lieLow
 a2_let_go:carryHome
 a2_major:yesSir
 a2_minto:leave

@@ -1,7 +1,7 @@
 import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 import type { Activity, CastId } from './cast.ts'
-import type { Act, Clock, Place, State } from '../../text-game/src/types.ts'
+import type { Act, Clock, Place, SceneId, State } from '../../text-game/src/types.ts'
 import type { Season } from '../../text-game/src/story.ts'
 import { season } from '../../text-game/src/story.ts'
 import { N } from '../../text-game/src/names.ts'
@@ -19,13 +19,15 @@ import { eielson } from './eielson.ts'
 import { kitchen } from './kitchen.ts'
 import { hotelBar } from './hotelBar.ts'
 import { hangar, steak, strip } from './bushStrip.ts'
+import { cafe } from './dottiesCafe.ts'
+import { highway } from './roadsideStop.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
 import { COUNTER, dressing } from './silverPan.ts'
 import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -75,6 +77,9 @@ export type Space = Readonly<{
   place?: Place
   // The story places a space spans that route to it besides its own (the base's buildings), as router.ts reads.
   places?: readonly Place[]
+  // The only scenes that route to this space, whatever their act, as router.ts reads; when set, its place alone routes
+  // nothing (the café plays the gossip visits, not every scene placed at the café).
+  scenes?: readonly SceneId[]
   name: string
   back?: string
   size: Readonly<{ w: number; d: number }>
@@ -371,7 +376,7 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets that are built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the

@@ -16,8 +16,9 @@ const FLIGHT_SHOT = 22
 // heat, when set, overrides the story's heat for the frame, so one shot can show each moral-weather band; ride, when
 // set, holds a boat at that many seconds into its ride, so the frame does not depend on how fast the page ran; flight,
 // likewise, holds the plane that many seconds into the flight north (flight.ts); fight puts the barfight on, that many
-// seconds after the shove (fightAt), and stands the player where it has Wade, whatever pos says.
-export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number; flight?: number; fight?: number }>
+// seconds after the shove (fightAt), and stands the player where it has Wade, whatever pos says; stop holds the roadside
+// stop that many seconds into its stage (roadsideStop.ts).
+export type Pose = Readonly<{ space: SpaceId; pos: Vec; facing: number; t: number; shot: Shot; heat?: number; ride?: number; flight?: number; fight?: number; stop?: number }>
 
 // The barfight at its peak (#177): 16 s after the shove every patron has come in (barfight.ts, JOINERS) and none has
 // had enough yet, so all ten men in the Pan are in it, Wade on his feet among them.
@@ -93,6 +94,11 @@ export const poses: Readonly<Record<string, Pose>> = {
   steak: { space: 'steak', pos: vec(1.6, 0.8), facing: 0, t: 0, shot: { eye: [0, 2.3, 4.2], at: [3.2, 0.8, 0.2] } },
   // Outside the base hangar: Jake in the personnel door he has to duck under.
   hangar: { space: 'hangar', pos: vec(0.2, 1.5), facing: 0, t: 0, shot: { eye: [-2.5, 2.0, 4.5], at: [0.2, 1.3, -2.5] } },
+  // Dottie's café: Wade in from the door off Second, the counter and his poured cup ahead, Dottie behind it.
+  cafe: { space: 'cafe', pos: vec(-2.5, -2.7), facing: 0, t: 0, shot: { eye: [-3.8, 2.1, -3.0], at: [0.2, 1.0, 2.4] } },
+  // The Richardson Highway at the end of the stage: the truck parked at the turnout and, where Barnette stops Wade,
+  // the cruiser behind it with its lights going and Barnette at the window; from the road, looking north up it.
+  highway: { space: 'highway', pos: vec(4.6, -18.5), facing: Math.PI, t: 0, stop: 30, shot: { eye: [-0.5, 2.4, -4.5], at: [5.4, 1.0, -16] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
@@ -141,7 +147,7 @@ export const freezeAnims = (anims: readonly AnimLike[]): number => {
 export const posed = (g: Game, p: Pose): Game => {
   if (g.space !== p.space) throw new Error(`pose is for ${p.space}, the game is in ${g.space}`)
   const story = p.heat === undefined ? g.story : { ...g.story, heat: p.heat }
-  const held = { ...g, story, pos: p.pos, facing: p.facing, t: p.t, vel: vec(0, 0), holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }) }
+  const held = { ...g, story, pos: p.pos, facing: p.facing, t: p.t, vel: vec(0, 0), holding: undefined, watch: undefined, ...(p.ride === undefined ? {} : { ride: p.ride }), ...(p.flight === undefined ? {} : { flight: p.flight }), ...(p.stop === undefined ? {} : { stop: p.stop }) }
   if (p.fight === undefined) return held
   const brawl = fightAt(p.fight)
   return { ...held, brawl, pos: wade(brawl).pos, facing: wade(brawl).facing }

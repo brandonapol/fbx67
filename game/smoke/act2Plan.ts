@@ -40,8 +40,9 @@ export const ACT2_PATH = '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1'
 export const ACT3_FIRST: SceneId = 'a3_camp'
 
 // The Act 2 spaces are levels.ts's spaces of that act. The photo lab and its records room route to the Eielson blockout
-// (photoLab.ts), Lucy's kitchen to its room (kitchen.ts), and the bush strip, the Pan's booth and the base hangar's door
-// to theirs (bushStrip.ts); the rest of the act plays as panels over the story
+// (photoLab.ts), Lucy's kitchen to its room (kitchen.ts), the bush strip, the Pan's booth and the base hangar's door
+// to theirs (bushStrip.ts), the café's gossip visits to the café (dottiesCafe.ts), and a2_heat to the highway
+// (roadsideStop.ts); the rest of the act plays as panels over the story
 // backdrop, and the run also visits each space from the Act 2 start to sample it.
 export const act2Spaces: readonly SpaceId[] = Object.values(spaces)
   .filter((s) => s.act === 'Act 2: Freeze-up')
@@ -69,9 +70,12 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   strip: 'strip',
   steak: 'steak',
   hangar: 'hangar',
+  cafe: 'cafe',
+  highway: 'highway',
 }
 
-// The beats of the run, in order: the first scene at each place on the path, and the photo lab again on the base.
+// The beats of the run, in order: the first scene at each place on the path, the photo lab again on the base, and
+// a2_heat again on the highway once the letter home is written.
 export const act2Beats: readonly string[] = [
   'a2_major',
   'a2_photos',
@@ -91,4 +95,5 @@ export const act2Beats: readonly string[] = [
   'a2_flight',
   'a2_letter_work',
   'a2_heat',
+  'a2_heat_highway',
 ]
