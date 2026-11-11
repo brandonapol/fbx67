@@ -17,8 +17,10 @@ import {
   midiHz,
   mulberry,
   noiseSamples,
+  playTake,
   strumAt,
 } from './synth.ts'
+import type { Recorded } from './synth.ts'
 import { fakeContext } from './fake-audio.ts'
 import { vec } from './world.ts'
 
@@ -179,4 +181,83 @@ test('boots peak mid-corridor and match at both ends; each search call is quiete
   g.forEach((x) => assert.ok(x > 0 && x <= 1))
   assert.equal(callGain(0), 1)
   Array.from({ length: CALLS - 1 }, (_, i) => assert.ok(callGain(i + 1) < callGain(i)))
+})
+
+const fakeBuffer = (duration: number) => ({ duration }) as AudioBuffer
+
+// A fake context whose buffer sources count their own stops, to prove each is stopped once.
+const counted = () => {
+  const { ctx, times } = fakeContext()
+  const sources: { stops: number; node: AudioBufferSourceNode }[] = []
+  const make = ctx.createBufferSource.bind(ctx)
+  ;(ctx as unknown as { createBufferSource: () => AudioBufferSourceNode }).createBufferSource = () => {
+    const node = make()
+    const entry = { stops: 0, node }
+    const stop = node.stop.bind(node)
+    node.stop = (t?: number) => {
+      entry.stops += 1
+      stop(t)
+    }
+    sources.push(entry)
+    return node
+  }
+  return { ctx, times, sources }
+}
+
+const creek: Layer = {
+  kind: 'recording',
+  bus: 'ambience',
+  clip: 'creek',
+  gain: 0.5,
+  fallback: [{ kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 1400, q: 0.9, gain: 0.5 }],
+}
+
+test('a recorded bed plays its fallback until the file decodes, then crossfades and stops each source once', () => {
+  const { ctx, sources } = counted()
+  const buffers = makeBuffers(ctx)
+  const loaded: { b?: AudioBuffer } = {}
+  const recorded: Recorded = (c) => (c === 'creek' ? loaded.b : undefined)
+  const voice = layerVoice(ctx, buffers, creek, mulberry(1), recorded)
+  assert.equal(sources.length, 1, 'only the fallback noise is playing')
+  voice.tick?.(2)
+  assert.equal(sources.length, 1, 'nothing changes before the file arrives')
+  loaded.b = fakeBuffer(40)
+  voice.tick?.(3)
+  assert.equal(sources.length, 2, 'the recording starts')
+  const rec = sources[1].node
+  assert.equal(rec.buffer, loaded.b)
+  assert.equal(rec.loop, true)
+  assert.equal(rec.loopEnd, 33, 'loops over the cut length, not the padded decode')
+  assert.equal(sources[0].stops, 1, 'the fallback is stopped at the end of the crossfade')
+  voice.tick?.(4)
+  assert.equal(sources.length, 2, 'the recording starts once')
+  voice.stop(10)
+  assert.deepEqual(sources.map((s) => s.stops), [1, 1], 'each source stopped exactly once')
+})
+
+test('a recorded bed already decoded starts at once at full gain and builds no fallback', () => {
+  const { ctx, sources } = counted()
+  const voice = layerVoice(ctx, makeBuffers(ctx), creek, mulberry(1), () => fakeBuffer(20))
+  assert.equal(sources.length, 1)
+  assert.equal(sources[0].node.loopEnd, 20, 'a short decode bounds the loop')
+  voice.stop(5)
+  assert.equal(sources[0].stops, 1)
+})
+
+test('a recorded bed that never loads keeps playing its fallback and stops it once', () => {
+  const { ctx, sources } = counted()
+  const voice = layerVoice(ctx, makeBuffers(ctx), creek, mulberry(1))
+  Array.from({ length: 5 }, (_, i) => voice.tick?.(i + 2))
+  assert.equal(sources.length, 1)
+  voice.stop(9)
+  assert.equal(sources[0].stops, 1)
+})
+
+test('a take plays its slice from its offset for its length, at its rate', () => {
+  const { ctx, times, sources } = counted()
+  const end = playTake(ctx, fakeBuffer(9), [2.25, 0.7], ctx.createGain(), 0.3, 2)
+  const src = sources[0].node
+  assert.equal(src.playbackRate.value, 2)
+  near(end, ctx.currentTime + 0.005 + 0.35, 'ends after length / rate')
+  assert.ok(times.t.includes(2.25), 'starts at the slice offset')
 })

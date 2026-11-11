@@ -1,7 +1,9 @@
 import type { Surface } from './footsteps.ts'
 import { glideAt, snowAt } from './footsteps.ts'
 import type { Tread } from './cast.ts'
-import type { Color, Layer, Noise, Spot } from './soundscape.ts'
+import type { Color, Layer, Noise, Recording, Spot } from './soundscape.ts'
+import type { Clip, Slice } from './recordings.ts'
+import { loopEnd } from './recordings.ts'
 
 export type Rand = () => number
 
@@ -338,7 +340,75 @@ const outboardVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Extract<Layer
   return { out: g, stop: (at) => nodes.forEach((n) => n.stop(at)) }
 }
 
-export const layerVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Layer, rand: Rand): Voice => {
+// A loaded recording by name, or nothing yet.
+export type Recorded = (clip: Clip) => AudioBuffer | undefined
+
+const unrecorded: Recorded = () => undefined
+
+export const XFADE = 1.5
+
+// A recorded bed: the loop when its file is already decoded, otherwise the procedural fallback until it is, then a
+// crossfade from one to the other. Each source is stopped once and only once.
+const recordingVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Recording, rand: Rand, recorded: Recorded): Voice => {
+  const out = gainNode(ctx, 1)
+  const s: { src?: AudioBufferSourceNode; fallback?: Readonly<{ voices: readonly Voice[]; g: GainNode }>; stopped: boolean } = { stopped: false }
+  const play = (buffer: AudioBuffer, fade: number): void => {
+    const now = ctx.currentTime
+    const src = loop(ctx, buffer)
+    src.loopStart = 0
+    src.loopEnd = loopEnd(l.clip, buffer.duration)
+    const g = gainNode(ctx, l.gain)
+    if (fade) {
+      g.gain.setValueAtTime(0, now)
+      g.gain.linearRampToValueAtTime(l.gain, now + fade)
+    }
+    src.connect(g).connect(out)
+    src.start(now, between(rand, 0, src.loopEnd))
+    s.src = src
+  }
+  const ready = recorded(l.clip)
+  if (ready) play(ready, 0)
+  else {
+    const g = gainNode(ctx, 1)
+    const voices = l.fallback.map((f) => layerVoice(ctx, buffers, f, rand))
+    voices.forEach((v) => v.out.connect(g))
+    g.connect(out)
+    s.fallback = { voices, g }
+  }
+  const tick = (now: number): void => {
+    s.fallback?.voices.forEach((v) => v.tick?.(now))
+    const buffer = s.src || s.stopped ? undefined : recorded(l.clip)
+    if (!buffer || !s.fallback) return
+    play(buffer, XFADE)
+    s.fallback.g.gain.setValueAtTime(1, now)
+    s.fallback.g.gain.linearRampToValueAtTime(0, now + XFADE)
+    s.fallback.voices.forEach((v) => v.stop(now + XFADE + 0.05))
+    s.fallback = undefined
+  }
+  return {
+    out,
+    tick,
+    stop: (at) => {
+      s.stopped = true
+      s.src?.stop(at)
+      s.fallback?.voices.forEach((v) => v.stop(at))
+    },
+  }
+}
+
+// One take from a recorded set: a slice of the file at a gain and a playback rate. Returns when it ends.
+export const playTake = (ctx: BaseAudioContext, buffer: AudioBuffer, [start, length]: Slice, dest: AudioNode, gain: number, rate = 1): number => {
+  const at = ctx.currentTime + 0.005
+  const src = ctx.createBufferSource()
+  src.buffer = buffer
+  src.playbackRate.value = rate
+  src.connect(gainNode(ctx, gain)).connect(dest)
+  src.start(at, start, length)
+  return at + length / rate
+}
+
+export const layerVoice = (ctx: BaseAudioContext, buffers: Buffers, l: Layer, rand: Rand, recorded: Recorded = unrecorded): Voice => {
+  if (l.kind === 'recording') return recordingVoice(ctx, buffers, l, rand, recorded)
   if (l.kind === 'noise') return noiseVoice(ctx, buffers, l, rand)
   if (l.kind === 'walla') return wallaVoice(ctx, buffers, l, rand)
   if (l.kind === 'jukebox') return jukeboxVoice(ctx, l)

@@ -25,6 +25,7 @@ export const fakeContext = (): { ctx: BaseAudioContext; times: Scheduled } => {
       frequency: param(),
       Q: param(),
       offset: param(),
+      playbackRate: param(),
       type: '',
       buffer: null,
       loop: false,

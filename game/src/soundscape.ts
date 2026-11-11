@@ -11,6 +11,7 @@ import { vec } from './world.ts'
 import { PORCH, WALKWAY } from './highwater.ts'
 import { LINE_Z } from './searchEli.ts'
 import type { Rect } from './downtown.ts'
+import type { Bed } from './recordings.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
 
@@ -40,6 +41,19 @@ export type Layer =
   | Readonly<{ kind: 'hum'; bus: Bus; gain: number; at?: Vec; buzz: number }>
   | Readonly<{ kind: 'guitar'; bus: Bus; gain: number }>
   | Readonly<{ kind: 'outboard'; bus: Bus; gain: number; at: Vec; rpm: number }>
+  | Recording
+
+// A recorded bed (recordings.ts). Its procedural layers play until the file has loaded, then it crossfades in; they
+// carry no position of their own, since the recording's panner places the whole bed.
+export type Recording = Readonly<{
+  kind: 'recording'
+  bus: Bus
+  clip: Bed
+  gain: number
+  at?: Vec
+  alongX?: boolean
+  fallback: readonly Layer[]
+}>
 
 export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'glug' | 'door' | 'raven' | 'perk'
   | 'sandbag'
@@ -58,6 +72,7 @@ export type Spot = 'clink' | 'crackle' | 'mosquito' | 'car' | 'typewriter' | 'gl
   | 'snap'
   | 'calls'
   | 'fall'
+  | 'screen'
 
 export type Condition = 'writing' | 'refueling'
 
@@ -77,6 +92,15 @@ export type Soundscape = Readonly<{
   arrival?: Spot
 }>
 
+// A recording's gain against its procedural fallback, per unit of the fallback's own gain. tools/audio.ts normalizes
+// every bed to 0.1 RMS (BED_RMS there); each number here is the fallback's RMS at unit gain over that, measured
+// offline on the same noise buffers and filters (docs/audio/sources.md, Levels). Swapping in a recording keeps the mix.
+export const WALLA_GAIN = 0.18
+export const CREEK_GAIN = 0.52
+export const SPRUCE_GAIN = 0.38
+export const RAIN_GAIN = 1.74
+export const FLOOD_GAIN = 1.89
+
 export const JUKEBOX_AT = vec(-5.4, -1.6)
 export const STOVE_AT = vec(5.1, -3.8)
 export { REEL_AT }
@@ -84,10 +108,20 @@ export const RADIO_AT = vec(-7.4, 3.4)
 export const DRUM_AT = DRUM
 export const CREEK_Z = 9.2
 
+export const BAR_DOOR_AT = vec(0, 4.8)
+
+const walla = (gain: number, voices: number): Layer => ({
+  kind: 'recording',
+  bus: 'voice',
+  clip: 'walla',
+  gain: gain * WALLA_GAIN,
+  fallback: [{ kind: 'walla', bus: 'voice', gain, voices }],
+})
+
 const bar: Soundscape = {
   ground: { surface: 'wood', regions: [] },
   layers: [
-    { kind: 'walla', bus: 'voice', gain: 1.6, voices: 7 },
+    walla(1.6, 7),
     { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 160, gain: 0.25 },
     { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 90, gain: 0.2, at: STOVE_AT, wobble: { rate: 0.3, depth: 0.2, on: 'gain' } },
     { kind: 'jukebox', bus: 'music', gain: 1.2, at: JUKEBOX_AT },
@@ -95,6 +129,7 @@ const bar: Soundscape = {
   events: [
     { spot: 'clink', bus: 'ambience', every: [0.8, 3.5], at: vec(-1.5, -3.6), spread: 3 },
     { spot: 'crackle', bus: 'ambience', every: [0.05, 0.6], at: STOVE_AT, spread: 0.2 },
+    { spot: 'screen', bus: 'sfx', every: [30, 75], at: BAR_DOOR_AT, spread: 0.3 },
   ],
 }
 
@@ -129,16 +164,57 @@ const camp: Soundscape = {
     regions: [{ box: { x: 0, z: 7.4, w: 28, d: 1.6 }, surface: 'mud' }],
   },
   layers: [
-    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 1400, q: 0.9, gain: 0.5, at: vec(0, CREEK_Z), alongX: true, wobble: { rate: 0.7, depth: 0.35, on: 'freq' } },
-    { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 3200, q: 1.4, gain: 0.18, at: vec(0, CREEK_Z), alongX: true, wobble: { rate: 1.3, depth: 0.4, on: 'gain' } },
-    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 320, gain: 0.18, wobble: { rate: 0.07, depth: 0.7, on: 'gain' } },
-    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 900, q: 0.7, gain: 0.08, wobble: { rate: 0.11, depth: 0.8, on: 'gain' } },
+    {
+      kind: 'recording',
+      bus: 'ambience',
+      clip: 'creek',
+      gain: CREEK_GAIN,
+      at: vec(0, CREEK_Z),
+      alongX: true,
+      fallback: [
+        { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 1400, q: 0.9, gain: 0.5, wobble: { rate: 0.7, depth: 0.35, on: 'freq' } },
+        { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 3200, q: 1.4, gain: 0.18, wobble: { rate: 1.3, depth: 0.4, on: 'gain' } },
+      ],
+    },
+    {
+      kind: 'recording',
+      bus: 'ambience',
+      clip: 'spruce',
+      gain: SPRUCE_GAIN,
+      fallback: [
+        { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 320, gain: 0.18, wobble: { rate: 0.07, depth: 0.7, on: 'gain' } },
+        { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 900, q: 0.7, gain: 0.08, wobble: { rate: 0.11, depth: 0.8, on: 'gain' } },
+      ],
+    },
   ],
   events: [
     { spot: 'mosquito', bus: 'ambience', every: [2.5, 7], spread: 2.5 },
     { spot: 'glug', bus: 'sfx', every: [0.35, 0.9], at: DRUM_AT, spread: 0.1, when: 'refueling' },
   ],
 }
+
+// Rain and moving water are recorded; each keeps the procedural version underneath as its fallback, scaled with it.
+const rain = (gain: number): readonly Layer[] => [
+  {
+    kind: 'recording',
+    bus: 'ambience',
+    clip: 'rain',
+    gain: gain * RAIN_GAIN,
+    fallback: [
+      { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain, wobble: { rate: 0.09, depth: 0.6, on: 'gain' } },
+      { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 4200, q: 0.5, gain: gain * 0.35, wobble: { rate: 0.23, depth: 0.6, on: 'gain' } },
+    ],
+  },
+]
+
+const rushing = (gain: number, freq: number, rate: number, at?: Vec): Layer => ({
+  kind: 'recording',
+  bus: 'ambience',
+  clip: 'flood',
+  gain: gain * FLOOD_GAIN,
+  ...(at ? { at, alongX: true } : {}),
+  fallback: [{ kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq, gain, wobble: { rate, depth: 0.4, on: 'freq' } }],
+})
 
 const boxOf = (r: Rect) => ({ x: (r[0] + r[1]) / 2, z: (r[2] + r[3]) / 2, w: r[1] - r[0], d: r[3] - r[2] })
 
@@ -148,11 +224,7 @@ const flood: Soundscape = {
     surface: 'water',
     regions: [PORCH, WALKWAY].map((r) => ({ box: boxOf(r), surface: 'wood' as const })),
   },
-  layers: [
-    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain: 0.55, wobble: { rate: 0.09, depth: 0.6, on: 'gain' } },
-    { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 4200, q: 0.5, gain: 0.2, wobble: { rate: 0.23, depth: 0.6, on: 'gain' } },
-    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 520, gain: 0.15, wobble: { rate: 0.21, depth: 0.4, on: 'freq' } },
-  ],
+  layers: [...rain(0.55), rushing(0.15, 520, 0.21)],
   events: [],
 }
 
@@ -198,7 +270,7 @@ const base: Soundscape = {
 const hotel: Soundscape = {
   ground: { surface: 'wood', regions: [] },
   layers: [
-    { kind: 'walla', bus: 'voice', gain: 1.3, voices: 5 },
+    walla(1.3, 5),
     { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 150, gain: 0.25 },
     { kind: 'guitar', bus: 'music', gain: 0.9 },
   ],
@@ -228,11 +300,6 @@ export const RACK_AT = vec(-6.5, 2.4)
 export const RADIATOR_AT = vec(-1.8, -1.6)
 export const CORRIDOR_AT = vec(0, 4)
 
-const rain = (gain: number): readonly Layer[] => [
-  { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'highpass', freq: 900, gain, wobble: { rate: 0.09, depth: 0.6, on: 'gain' } },
-  { kind: 'noise', bus: 'ambience', color: 'white', filter: 'bandpass', freq: 4200, q: 0.5, gain: gain * 0.35, wobble: { rate: 0.23, depth: 0.6, on: 'gain' } },
-]
-
 const line: Soundscape = {
   ground: {
     surface: 'mud',
@@ -240,7 +307,7 @@ const line: Soundscape = {
   },
   layers: [
     ...rain(0.5),
-    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 480, gain: 0.3, at: vec(0, RIVER_Z), alongX: true, wobble: { rate: 0.17, depth: 0.4, on: 'freq' } },
+    rushing(0.3, 480, 0.17, vec(0, RIVER_Z)),
     ...BOATS_AT.map((at, i): Layer => ({ kind: 'outboard', bus: 'ambience', gain: 0.12, at, rpm: 4200 + 700 * i })),
   ],
   events: [

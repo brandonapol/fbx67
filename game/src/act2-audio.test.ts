@@ -79,7 +79,7 @@ test('every Act 2 space has an ambience bed; the town is snow, the hotel has the
   assert.ok(act2Soundscapes.town.layers.some((l) => l.kind === 'idle'))
   assert.ok(act2Soundscapes.base.layers.some((l) => l.kind === 'hum'))
   assert.ok(act2Soundscapes.hotel.layers.some((l) => l.kind === 'guitar' && l.bus === 'music'))
-  assert.ok(act2Soundscapes.hotel.layers.some((l) => l.kind === 'walla' && l.bus === 'voice'))
+  assert.ok(act2Soundscapes.hotel.layers.some((l) => l.kind === 'recording' && l.clip === 'walla' && l.bus === 'voice'))
   assert.ok(act2Soundscapes.hall.events.some((e) => e.spot === 'perk'))
 })
 
