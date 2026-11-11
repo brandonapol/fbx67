@@ -21,7 +21,9 @@ test('every Act 1 space has an ambience bed', () => {
 
 test('the flood work: rain, outboards on the river, sandbags on the line, shouting across water', () => {
   const { line } = act1Soundscapes
-  assert.ok(line.layers.some((l) => l.kind === 'noise' && l.filter === 'highpass' && l.bus === 'ambience'), 'no rain')
+  assert.ok(line.layers.some((l) => l.kind === 'recording' && l.clip === 'rain' && l.bus === 'ambience'), 'no rain')
+  const river = line.layers.find((l) => l.kind === 'recording' && l.clip === 'flood')
+  assert.ok(river?.kind === 'recording' && river.alongX && river.at?.z === RIVER_Z, 'the river runs along the line')
   const boats = line.layers.filter((l) => l.kind === 'outboard')
   assert.equal(boats.length, BOATS_AT.length)
   boats.forEach((b) => assert.ok('at' in b && b.at.z < RIVER_Z && b.bus === 'ambience'))

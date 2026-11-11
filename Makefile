@@ -118,7 +118,7 @@ test/text/matrix: ## Decision matrix matches routes/matrix-summary.json
 test/text/explore: ## Exhaustive sweep of every reachable state (~15 s, 1.5 GB)
 	cd $(TEXT) && npm run -s explore
 
-.PHONY: generate/routes generate/characters generate/assets test/assets
+.PHONY: generate/routes generate/characters generate/assets generate/audio test/assets
 generate/routes: ## Regenerate golden transcripts and the matrix summary
 	cd $(TEXT) && npm run -s golden
 
@@ -127,6 +127,9 @@ generate/characters: ## Rebuild game/public/characters from game/assets/characte
 
 generate/assets: ## Rebuild game/public/props (CC0 props, procedural buildings) from game/assets/environment.json
 	cd $(GAME) && NODE_USE_ENV_PROXY=1 node tools/assets.ts
+
+generate/audio: ## Rebuild game/public/audio and game/src/takes.ts from the CC0 freesound recordings in game/tools/audio.ts (needs ffmpeg)
+	cd $(GAME) && NODE_USE_ENV_PROXY=1 node tools/audio.ts
 
 test/assets: ## Load the generated assets in headless Chromium; print load times, draw calls, memory (SHOT=file.png)
 	cd $(GAME) && node tools/measure.ts

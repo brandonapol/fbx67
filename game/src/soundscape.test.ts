@@ -75,9 +75,9 @@ test('the story space is silent and the room announces itself with a door', () =
 })
 
 test('per-space placement: the creek and the line follow the map, a plugged car and a boat per entry', () => {
-  const creek = soundscapes.camp.layers.filter((l) => l.kind === 'noise' && l.alongX)
-  assert.ok(creek.length > 0)
-  creek.forEach((l) => assert.equal(l.kind === 'noise' && l.at?.z, CREEK_Z))
+  const creek = soundscapes.camp.layers.filter((l) => l.kind === 'recording' && l.clip === 'creek')
+  assert.equal(creek.length, 1)
+  creek.forEach((l) => assert.ok(l.kind === 'recording' && l.alongX && l.at?.z === CREEK_Z))
   assert.equal(LINE_AT.z, LINE_Z)
   assert.ok(RIVER_Z < LINE_Z, 'the river runs north of the line')
   assert.equal(act1Soundscapes.line.layers.filter((l) => l.kind === 'outboard').length, BOATS_AT.length)
