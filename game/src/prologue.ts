@@ -36,6 +36,7 @@ import { FACING_HANK, begin, done as fought, hankSpot, noteOf, openedOf, opening
 import type { Intent } from './combat.ts'
 import { baseEntry, labSpot } from './photoLab.ts'
 import { LAB_SPOT } from './eielson.ts'
+import { TABLE_SPOT, tableSpot } from './kitchen.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -213,6 +214,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'cabin') return knotSpot(g.story, i.id)
     if (g.space === 'pan') return hankSpot(g.story, g.brawl !== undefined, i.id)
     if (g.space === 'eielson') return labSpot(g.story, i.id)
+    if (g.space === 'kitchen') return tableSpot(g.story, i.id)
     return true
   })
 
@@ -276,9 +278,10 @@ const arrive = (g: Game): Game => {
   const walking = walkFrom(g)
   if (walking) return walking
   const r = route(g.story, g.space)
-  // Off the base to a place with no space yet, Wade leaves the blockout: the rest of Act 2 plays over the story backdrop,
-  // as it did before the base had a place, and goes on into Act 3 there rather than to the text build.
-  if (r.to !== 'space' && g.space === 'eielson') return arrive(enter(g, 'story'))
+  // Off the base or out of Lucy's kitchen to a place with no space yet, Wade leaves the space: the rest of Act 2 plays
+  // over the story backdrop, as it did before those places had spaces, and goes on into Act 3 there rather than to the
+  // text build.
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -494,6 +497,8 @@ export const interact = (g: Game): Game => {
   if (g.space === 'pan' && id === 'hank') return opening(g)
   // In the photo lab the scene's own menu asks when Wade goes back to the records room, or whether he does.
   if (g.space === 'eielson' && id === LAB_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  // At Lucy's table the scene's own menu asks what Wade does for her: the hotel bar, or the Major's cabinet.
+  if (g.space === 'kitchen' && id === TABLE_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   return g
 }

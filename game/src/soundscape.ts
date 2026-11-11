@@ -240,6 +240,13 @@ const downtown: Soundscape = {
   events: [{ spot: 'car', bus: 'ambience', every: [6, 18], spread: 8 }],
 }
 
+// Lucy's kitchen in the fall: the stove ticking over, the wind at the window.
+const kitchen: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [{ kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 220, gain: 0.08, at: vec(-2.5, 2) }],
+  events: [],
+}
+
 const story: Soundscape = { ground: { surface: 'wood', regions: [] }, layers: [], events: [] }
 
 
@@ -462,7 +469,7 @@ const cabin: Soundscape = {
 }
 
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, story }
 
 // Curly's routine clock at the camp (curly.ts): refueling is its first beat.
 export const refueling = (t: number): boolean => beatOf(t) === 'refuel'

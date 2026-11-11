@@ -94,8 +94,8 @@ test('every way through the photo lab lands where its mission note does, on the 
   Object.entries(ways).forEach(([note, notes]) => {
     const g = play(notes)
     assert.equal(g.story.scene, 'a2_hotel', note)
-    assert.equal(g.space, 'story', 'off the base, Lucy\'s kitchen plays over the story backdrop')
-    assert.equal(g.panel?.title, menu(g.story).title)
+    assert.equal(g.space, 'kitchen', 'off the base, Wade comes into Lucy\'s kitchen')
+    assert.equal(g.panel, undefined, 'he walks to her table for the hotel bar\'s menu')
     assert.deepEqual(g.story, sendMission(arrived.story, note), note)
   })
 })
