@@ -13,6 +13,7 @@ import { angleTo, distance, sub, vec } from './world.ts'
 import type { Method, Way } from './photoLab.ts'
 import { CLERK_BACK, SEARCH_TIME, WATCH, WAY_NOTE, figuresOf, labOccluders, looks, poseAt, roundTime, spotter } from './photoLab.ts'
 import { AT_DRAWERS, HIDE, act, labNext, playLab } from './photoLabBot.ts'
+import { stealthOf } from './stealthView.ts'
 
 // The photo lab on the base (docs/acts/act2-missions.md, section 1): the story's photo lab and records room route to
 // the Eielson blockout. Wade comes in at the lab's front door and picks his way in at the counter's open end; the run
@@ -135,6 +136,26 @@ test('slipping past the counter while the clerk is still behind it is busted: re
   assert.equal(again.lab?.phase, 'in')
   assert.ok(distance(again.pos, vec(161.4, 36.8)) < 0.3, 'back where he picked his way in')
   assert.deepEqual(again.story, arrived.story)
+})
+
+test("the stealth eye reads the lab's people: shut where Wade may stand, open and filling once one sees him past the counter", () => {
+  const g = goes('lunch')
+  assert.deepEqual(stealthOf(g), { shown: true, eye: 'shut', aware: 0, who: 'Nobody', line: undefined })
+  const past = walkThrough(g, [[164.2, 37.0], [164.6, 39.1]])
+  assert.equal(stealthOf(past).eye, 'open')
+  assert.equal(stealthOf(past).who, 'The clerk')
+  assert.ok(stealthOf(past).aware > 0)
+  const caught = wait(past, 1)
+  assert.equal(stealthOf(caught).line, 'The clerk: "Airman? You can\'t be back here."')
+  assert.equal(stealthOf(wait(caught, 3)).shown, false, 'the busted panel is up')
+})
+
+test('the eye half opens when someone is about to see where Wade stands', () => {
+  const g = goes('lunch')
+  const at = vec(164.6, 39.1)
+  const clock = Array.from({ length: 400 }, (_, i) => i / 10).find((c) => !spotter('lunch', c, at) && spotter('lunch', c + 1, at))
+  assert.ok(clock !== undefined)
+  assert.equal(stealthOf({ ...g, pos: at, lab: { ...g.lab!, clock } }).eye, 'turning')
 })
 
 // Into the records room by the scripted player, then straight to the drawers with the method picked.
