@@ -30,12 +30,16 @@ Generated from parameters by committed code; no third-party content except the m
 | `storefront` | `falseFrontPieces` in `game/tools/procedural.ts` | `buildings.storefront` in `environment.json` |
 | Silver Pan dressing | `pieces` in `game/src/silverPan.ts` | Gray-box primitives (box, cylinder, cone) in flat colors, no textures or meshes |
 | Help tent dressing (St. Joseph's in the flood) | `pieces` and the furniture in `game/src/hospital.ts` | Gray-box primitives (box, cylinder) in flat colors, no textures or meshes |
+| Land office dressing (Act 1, after the water) | `pieces` in `game/src/landoffice.ts` | Gray-box primitives (box, cylinder) in flat colors, no textures or meshes |
 
 The Silver Pan's neon and tin signs advertise made-up brands and carry no lettering, logos or real trade dress. Its
 photographs of dredges and riverboats are blank framed slabs until they get original art.
 
 The help tent's dressing is original, ours: the hospital's crates, records boxes and the crucifix carry no
 lettering, names or marks. It has no target frame yet (#120 adds one); real art waits for the art pass.
+
+The land office's dressing is original, ours: its ledgers, plats, notices, flags and framed photographs are blank
+slabs in flat color with no lettering, seals or marks. It has no target frame; real art waits for the art pass.
 
 ## Characters
 
