@@ -238,7 +238,10 @@ const hangarProps: readonly Prop[] = [
   { box: { x: 0, z: HANGAR_D / 2 - 1, w: HANGAR_W, d: 1.2 }, h: 0.8, color: snow, solid: true },
 ]
 
-const jake: Figure = { id: 'jake', at: JAKE_AT, facing: 0, height: JAKE_HEIGHT, coat: '#5b4a32', skin: '#d8a880', hair: '#8a5a32', activity: 'stand' }
+// How Jake looks, here and at the wreck in Act 3 (engineOut.ts).
+export const jakeLook = { coat: '#5b4a32', skin: '#d8a880', hair: '#8a5a32' } as const
+
+const jake: Figure = { ...jakeLook, id: 'jake', at: JAKE_AT, facing: 0, height: JAKE_HEIGHT, activity: 'stand' }
 
 export const JAKE_SPOT: Interactable = { id: 'jake', x: JAKE_AT.x, z: JAKE_AT.z, r: 2.0, prompt: 'Hear Jake out' }
 

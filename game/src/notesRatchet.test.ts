@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { missions } from '../../text-game/src/missions.ts'
-import { LETTER, TRAIL, engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
+import { LETTER, NIGHT, TRAIL, engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
 
 const ALLOWLIST = 'game/notes-allowlist.txt'
 
@@ -121,4 +121,16 @@ test('the engine sends both search for Eli notes by walking the trail, and witho
   assert.ok(viaTrail.every((s) => s.space === 'line'), 'from the sandbag line')
   const lost = new Set(engineSenders(stops, (_space, spot) => spot === TRAIL).map((s) => s.key))
   assert.deepEqual([...failures({ story, sent: lost, allowed: allowed.filter((k) => !search.includes(k)) })].sort(), search.map((k) => `${k}: on a story menu, but no engine path sends it`))
+})
+
+// Regression (#140): once a3_crash routed to the wreck's hillside, the night's sender was asked only off the story
+// backdrop, and the long night's six notes went unsent.
+test('the engine sends the long night’s six notes on the wreck’s hillside, and without the night each one fails', () => {
+  const night = [...story].filter((k) => k.startsWith('theLongNight:')).sort()
+  assert.equal(night.length, 6, 'two orders by three signals')
+  const viaNight = engineSenders(stops).filter((s) => s.spot === NIGHT)
+  assert.deepEqual([...new Set(viaNight.map((s) => s.key))].sort(), night)
+  assert.ok(viaNight.every((s) => s.space === 'wreck'), 'on the wreck’s hillside')
+  const lost = new Set(engineSenders(stops, (_space, spot) => spot === NIGHT).map((s) => s.key))
+  assert.deepEqual([...failures({ story, sent: lost, allowed })].sort(), night.map((k) => `${k}: on a story menu, but no engine path sends it`))
 })

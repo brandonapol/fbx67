@@ -52,6 +52,8 @@ import { ARRIVE_NOTE, ROUTE_NOTES, heightAt, routeOf, setOff, skiFrame } from '.
 import type { RouteId } from './skiing.ts'
 import type { Night } from './survivalPlay.ts'
 import * as night from './survivalPlay.ts'
+import { burning } from './survival.ts'
+import { COME_TO, COME_TO_FACING, CRASH_TIME, crashing, gliding, lucySeat, skipSpot as skipCrash, standOf } from './engineOut.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -127,8 +129,10 @@ export type Game = Readonly<{
   // Wade on skis on the search, from setting off on the route he picked to the top of the slope above the wreck
   // (skiing.ts); `pos` and `facing` are the skier's.
   ski?: Ski
+  // Seconds into the crash, from the engine's first cough to Lucy coming to in the wreck (engineOut.ts).
+  crash?: number
   // Lucy's long night at the wreck, from the order prompt to first light (survivalPlay.ts), played as a live panel over
-  // the story backdrop until the crash site has a space.
+  // the wreck's hillside, Lucy walking between its places as its tasks go (engineOut.ts).
   night?: Night
 }>
 
@@ -196,6 +200,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   bar: undefined,
   stop: undefined,
   ski: undefined,
+  crash: undefined,
   night: undefined,
 })
 
@@ -235,7 +240,7 @@ const doorOpen = (g: Game, id: string): boolean => doors.some((d) => d.id === id
 const talked = (g: Game): boolean => g.story.scene.startsWith('p_talk_')
 
 export const available = (g: Game): readonly Interactable[] =>
-  flying(g.flight) || g.brawl ? [] : spaces[g.space].spots.filter((i) => {
+  flying(g.flight) || crashing(g.crash) || g.brawl ? [] : spaces[g.space].spots.filter((i) => {
     if (g.space === 'bar') return i.id === 'door' ? talked(g) : i.id === 'hank' ? g.story.scene === 'p_bar' : true
     if (g.space === 'camp') return i.id === 'plane' ? g.hidden !== undefined : g.hidden === undefined
     if (g.space === 'flood') return g.story.scene === 'p_end'
@@ -260,7 +265,7 @@ export const available = (g: Game): readonly Interactable[] =>
 
 // In the air the one thing to do is skip to the camp.
 export const focus = (g: Game): Interactable | undefined =>
-  g.panel ? undefined : flying(g.flight) ? skipSpot(g.pos) : g.space === 'highway' && staged(g.story, g.stop) ? skipAt(g.pos) : pick(g.pos, g.view, g.facing, available(g))
+  g.panel ? undefined : flying(g.flight) ? skipSpot(g.pos) : crashing(g.crash) ? skipCrash(g.pos) : g.space === 'highway' && staged(g.story, g.stop) ? skipAt(g.pos) : pick(g.pos, g.view, g.facing, available(g))
 
 export const label = (g: Game, i: Interactable): string =>
   (i.note ? menu(g.story).options.find((o) => o.note === i.note)?.label : i.prompt) ?? i.id
@@ -324,7 +329,7 @@ const arrive = (g: Game): Game => {
   // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
   const cab = cabinetArrival(g.story)
   if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
-  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'street' || g.space === 'search')) return arrive(enter(g, 'story'))
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'street' || g.space === 'search' || g.space === 'wreck')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -359,6 +364,9 @@ const arrive = (g: Game): Game => {
   if (r.space === 'highway' && g.space !== 'highway') return atWheel(enter(g, 'highway'), 0)
   // On the search the prompt (which way: the ridge or the creek) plays as its menu on the slope; once a route is picked
   // Wade is on skis where the team split, and the top of the slope sends the scene's `follow` (skiing.ts).
+  // Engine out: at the night's start the crash plays from the engine's first cough, and Lucy comes to in the wreck to
+  // the story's order prompt (engineOut.ts).
+  if (r.space === 'wreck' && g.space !== 'wreck' && night.starts(g.story)) return inCrash({ ...enter(g, 'wreck'), crash: 0 }, 0)
   if (r.space === 'search') {
     const into = g.space === 'search' ? g : enter(g, 'search')
     const way = routeOf(g.path)
@@ -402,17 +410,32 @@ const skied = (g: Game, ski: Ski, input: Input, dt: number): Game => {
 // buttons every frame; the text it shows is read live through panelText.
 const sameButtons = (a: readonly Button[], b: readonly Button[]): boolean => a.length === b.length && a.every((x, i) => x.id === b[i]!.id && x.label === b[i]!.label)
 
+// On the wreck's hillside Lucy stands where the night has her, or walks to her next place (engineOut.ts).
 const withNight = (g: Game, n: Night): Game => {
   const p = night.panelOf(g.story, n)
   const kept = g.panel && g.night && g.panel.title === p.title && sameButtons(g.panel.buttons, p.buttons)
-  return { ...g, night: n, vel: zero, panel: kept ? g.panel : { kind: 'story', title: p.title, text: p.text, buttons: p.buttons } }
+  const at = g.space === 'wreck' ? standOf(n) : undefined
+  const stand = at ? { pos: at.at, facing: at.facing, view: at.facing, vel: at.vel } : { vel: zero }
+  return { ...g, ...stand, night: n, panel: kept ? g.panel : { kind: 'story', title: p.title, text: p.text, buttons: p.buttons } }
 }
+
+// The crash `t` seconds in: Lucy in the right seat while the plane comes down; at the impact the screen goes black,
+// and when she comes to, at the cabin over Jake, the order prompt is the story's own menu (engineOut.ts).
+const inCrash = (g: Game, t: number): Game => {
+  if (t >= CRASH_TIME) return comeTo(g)
+  const seat = lucySeat(t)
+  return { ...g, crash: t, pos: seat.at, facing: seat.heading, view: seat.heading, vel: zero, panel: undefined, holding: undefined }
+}
+
+const comeTo = (g: Game): Game => menuPanel({ ...g, crash: undefined, pos: COME_TO, facing: COME_TO_FACING, view: COME_TO_FACING, vel: zero })
 
 // A night button: the verb, the signal or the retry. Faded back past the first checkpoint, the night is gone and the
 // story's own order prompt comes up again.
 const nightPressed = (g: Game, n: Night, button: string): Game => {
   const next = night.press(n, button)
-  return next ? withNight(g, next) : menuPanel({ ...g, night: undefined, panel: undefined })
+  if (next) return withNight(g, next)
+  const back = g.space === 'wreck' ? { pos: COME_TO, facing: COME_TO_FACING, view: COME_TO_FACING, vel: zero } : {}
+  return menuPanel({ ...g, ...back, night: undefined, panel: undefined })
 }
 
 // One frame of the night. At first light the mission's note goes as the scene notes it applies, one per menu, as the
@@ -647,10 +670,17 @@ export const shows = (g: Game, w: Mark | undefined): boolean =>
             ? pried(g.cabinet)
             : w === 'roll'
               ? rollOut(g.story)
-            : (w === 'folded') === (g.letter === 'folded'))
+              : w === 'wrecked'
+                ? !gliding(g.crash)
+                : w === 'burning'
+                  ? g.night?.run.fire !== undefined && burning(g.night.run.fire)
+                  : w === 'stamped'
+                    ? g.night?.run.carried.signal === 'stampX' && g.night.run.carried.signalled
+                    : (w === 'folded') === (g.letter === 'folded'))
 
 export const interact = (g: Game): Game => {
   if (flying(g.flight)) return touchDown(g)
+  if (crashing(g.crash)) return comeTo(g)
   // In the hotel bar, mid-song, interact is the strum (hotelBar.ts).
   if (g.space === 'hotelBar' && g.bar?.song) return { ...g, bar: strum(g.bar) }
   const target = focus(g)
@@ -894,6 +924,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
   if (g.night) return nightTick({ ...g, t }, g.night, dt)
+  if (crashing(g.crash)) return inCrash({ ...g, t }, g.crash + dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   if (flying(g.flight)) return fly({ ...g, t }, dt)
   if (riding(g.ride)) return ride({ ...g, t }, dt)
@@ -920,17 +951,17 @@ export const playerBody = (g: Game): Body => bodyFor(g.story, g.space === 'flood
 export const inWorld = (g: Game): boolean =>
   riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act || (spaces[g.space].scenes?.includes(g.story.scene) ?? false)
 
-const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || g.space === 'highway' || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated')) || (g.space === 'hotelBar' && g.bar?.song !== undefined)
+const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || gliding(g.crash) || g.space === 'highway' || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated')) || (g.space === 'hotelBar' && g.bar?.song !== undefined)
 
 export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: sitting(g) ? 'sit' : 'stand', talking: false })
 
 // How high Owen's feet are: on the plane's cabin floor in the air, on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
 export const footY = (g: Game): number =>
-  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : g.space === 'search' ? heightAt(g.pos) : standAt(spaces[g.space], g.pos)
+  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : gliding(g.crash) ? lucySeat(g.crash ?? 0).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : g.space === 'search' ? heightAt(g.pos) : standAt(spaces[g.space], g.pos)
 
 // The heading the camera is held behind on the ride and the flight (skiff.ts, keepBehind); none on foot.
-export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) || (g.space === 'highway' && staged(g.story, g.stop)) ? g.facing : undefined)
+export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) || gliding(g.crash) || (g.space === 'highway' && staged(g.story, g.stop)) ? g.facing : undefined)
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
 

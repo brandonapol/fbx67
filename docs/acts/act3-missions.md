@@ -108,7 +108,17 @@ From the engine's cough in `a3_crash` until first light, when the night ends and
 hillside of black spruce forty minutes out from the camp. Playing Lucy.
 
 - **The crash.** A cutscene: the cough, Jake on the primer, "Fuel's icing," the engine quits and he puts the plane into
-  the spruce. Nothing in it is played.
+  the spruce. Nothing in it is played. Built (`game/src/engineOut.ts`, issue #186): from the engine's first cough, Lucy
+  in the right seat, the plane loses height after each cough and goes down into the stand with a wing dropping; the
+  impact, black, and Lucy comes to at the cabin door over Jake, where the order prompt opens as the story's own menu.
+  The coughs and the impact are the crash's sound beats (`soundscape.ts`, `cues`). Interact skips it. A path start at
+  `a3_crash` plays it; the story hears nothing of it.
+- **The space.** `wreck` (`levels.ts`, from `engineOut.ts`): the hillside of black spruce, the fuselage on its side
+  with its wing torn off across the slope, the fire ring in its lee, and the open slope below. It routes Lucy's scenes
+  there (`a3_crash`, `a3_survive_*`); Wade's morning at the wreck (`a3_arm`, `theWreck`) is not built and still plays
+  over the story backdrop. During the night Lucy stands at the night's place (the cabin door, a meter from the fire, the
+  edge of the spruce, out on the slope) and walks between them as its walks run; the fire's glow shows while it burns
+  and the X once it is stamped.
 - **Way in.** When Lucy comes to, Jake is pinned and bleeding, the cabin is on its side, and the light is going. The
   prompt is *Build a fire first* or *Get Jake free first* (`fire`, `jake`). It is a deliberate two-way prompt with no
   timer (Rule 3): neither choice can kill Jake, and neither is read off where the player walks.
@@ -139,11 +149,11 @@ hillside of black spruce forty minutes out from the camp. Playing Lucy.
   (3, 5 or 7 hours until the rest of the team reaches the wreck), both covered by the sweep and in `liveness.ts`. The
   menu adds none: how well the night is played (warmth, the fire, frostbite on Lucy's hands) stays inside the mission.
 - **Wiring (built).** `survivalPlay.ts` is the whole mission as pure functions, and the game loop plays it as a live
-  panel over the story backdrop until a space is built for the crash site (`prologue.ts`):
+  panel over the wreck's hillside (`prologue.ts`):
   1. `Game` carries `night?: Night`.
   2. `press`: the order prompt's `note:fire` or `note:jake` at `a3_crash` sets `night` from `begins` instead of sending
      the note. `night:*` buttons go to `survivalPlay.press`; an `undefined` result clears `night` and reopens the story's
-     menu (the first checkpoint is before the prompt).
+     menu (the first checkpoint is before the prompt), Lucy back where she came to; the crash does not play again.
   3. `tick`: before the open-panel early return, `night` steps with `survivalPlay.step` and the panel comes from
      `panelOf`, the old panel object kept while its title and buttons are unchanged so `main.ts` does not rebuild them
      every frame; `panelText` reads the text live. At `dawned`, `sceneNotes(story, noteOf(night))` go one note at a
@@ -155,8 +165,10 @@ hillside of black spruce forty minutes out from the camp. Playing Lucy.
   5. Still to do, the view (issue #185): draw `tells(body, wet, access)` with `access.reduced` from `frontEnd.ts`'s
      `reduced`. High contrast needs a preference that does not exist yet: whether it is a game-wide option is the
      owner's call.
-- **Tests.** `game/src/act3Play.test.ts` plays every order with every signal through the wired game and checks the
-  story lands where `sendMission` and the `--choices` path do; the parity ratchet sends the six notes
+- **Tests.** `game/src/act3Play.test.ts` plays the crash from a path start at `a3_crash` and from `a3_found`'s note,
+  then every order with every signal through the wired game, and checks the story lands where `sendMission` and the
+  `--choices` path do, with the same notes one per menu; `game/src/engineOut.test.ts` covers the crash's beats, fade,
+  sound cues and glide, and where Lucy stands; the parity ratchet sends the six notes
   (`notesRatchet.ts`, the night's sender).
 
 ## 3. The ski search

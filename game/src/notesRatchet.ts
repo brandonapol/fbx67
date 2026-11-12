@@ -201,8 +201,9 @@ const barSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: 'hotelBar', spot: SET }))
 }
 
-// The long night is played, not picked (survivalPlay.ts): over the story backdrop, the order prompt starts it, and its
-// steady player (nightBot.ts) plays each order with each signal to first light, the spot being the night itself.
+// The long night is played, not picked (survivalPlay.ts): on the wreck's hillside, once the crash is played out
+// (engineOut.ts), the order prompt starts it, and its steady player (nightBot.ts) plays each order with each signal to
+// first light, the spot being the night itself.
 export const NIGHT = 'night'
 const nightSenders = (stop: Stop): readonly Sender[] => {
   if (mission(stop.state)?.id !== LONG_NIGHT) return []
@@ -231,7 +232,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   const g = resume(stop.state, [0])
   // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
   const space = g.space
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, SLOPE) ? [] : skiSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, NIGHT) ? [] : nightSenders(stop)), ...(without(space, SLOPE) ? [] : skiSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
     .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)

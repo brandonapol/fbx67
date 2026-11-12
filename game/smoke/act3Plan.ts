@@ -3,6 +3,7 @@ import type { SpaceId } from '../src/levels.ts'
 import { spaces } from '../src/levels.ts'
 import type { Game } from '../src/prologue.ts'
 import { nextPress } from '../src/survivalPlay.ts'
+import { CRASH_TIME } from '../src/engineOut.ts'
 import { skiTarget } from '../src/skiBot.ts'
 import type { Step } from './act2Plan.ts'
 import { nextStep as act2Step } from './act2Plan.ts'
@@ -17,8 +18,10 @@ export const NIGHT_WAIT = 1
 // What a player does next: Act 2's planner (act2Plan.ts), but on the long night the button its steady player presses
 // next (survivalPlay.ts, nextPress) as that button's key, or a wait while it lets the night run (to the end of the task
 // under way); and on skis, steering for the next point along the route (skiBot.ts). The run still takes every first
-// choice: fire first, smoke, and the ridge.
+// choice: fire first, smoke, and the ridge. The crash before the night plays out: a wait to its end, nothing in it is
+// played (engineOut.ts).
 export const nextStep = (g: Game): Step => {
+  if (g.crash !== undefined) return { kind: 'wait', seconds: Math.max(CRASH_TIME - g.crash, 1 / 30) }
   if (g.night) {
     const id = nextPress(g.night)
     const i = id === undefined ? -1 : (g.panel?.buttons.findIndex((b) => b.id === id) ?? -1)
@@ -42,8 +45,9 @@ export const ACT3_PATH = Array.from({ length: 47 }, () => 1).join(',')
 
 export const ACT4_FIRST: SceneId = 'a4_news'
 
-// The Act 3 spaces are levels.ts's spaces of that act. The search's ridge has one (`search`, skiing.ts); the rest of the
-// act plays as panels over the story backdrop, the long night among them (survivalPlay.ts), and its beats are its places
+// The Act 3 spaces are levels.ts's spaces of that act. The crash and the long night play on the wreck's hillside
+// (`wreck`, engineOut.ts), the search's ridge on its slope (`search`, skiing.ts); the rest of the act plays as panels
+// over the story backdrop, and its beats are its places
 // (act2Plan.ts, isBeat). A space built for an Act 3 place joins this list, the run visits it, and docs/perf.md budgets
 // it.
 export const act3Spaces: readonly SpaceId[] = Object.values(spaces)
@@ -53,6 +57,7 @@ export const act3Spaces: readonly SpaceId[] = Object.values(spaces)
 // The probe pose each space Act 3 plays in has its frame taken from (src/probe.ts).
 export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   story: 'story',
+  wreck: 'wreck',
   search: 'search',
 }
 

@@ -28,8 +28,9 @@ import { camp } from './camp.ts'
 import { COUNTER, dressing } from './silverPan.ts'
 import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 import { searchSpace } from './skiing.ts'
+import { wreckSpace } from './engineOut.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'wreck' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -44,7 +45,8 @@ export type Prop = Readonly<{
   // Drawn only while the letter is in the typewriter, or only once it is folded and left by the door; or only once
   // Lucy has dropped Wade's cigarette in the water; or only while Owen holds the letter in the post box's slot; or
   // only while the plane at the camp is parked, not landing (flight.ts); or only once Wade is pulling everything out of
-  // the photo lab's drawers (photoLab.ts).
+  // the photo lab's drawers (photoLab.ts); or, at the wreck, only once the plane is down, while the night's fire burns,
+  // or once Lucy has stamped the X (engineOut.ts).
   while?: Mark
   // A floor the player stands on, at its top, while over it (the flood's porch and walkway).
   deck?: true
@@ -54,7 +56,7 @@ export type Prop = Readonly<{
 
 export type Letter = 'unfolded' | 'folded'
 
-export type Mark = Letter | 'doused' | 'posting' | 'parked' | 'mess' | 'pried' | 'roll'
+export type Mark = Letter | 'doused' | 'posting' | 'parked' | 'mess' | 'pried' | 'roll' | 'wrecked' | 'burning' | 'stamped'
 
 // A figure either wears a cast model (cast.ts), which it names even when its id is one, or is a gray box in a look.
 type Wears = Readonly<{ cast: CastId; coat?: never; skin?: never; hair?: never; hood?: never }>
@@ -382,7 +384,11 @@ export const story: Space = {
 // heightAt, drawn by skiView.ts.
 const search: Space = { id: 'search', ...searchSpace }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, story }
+// The hillside where Jake put the plane into the spruce (engineOut.ts, docs/acts/act3-missions.md section 2): the crash
+// comes down onto it, and the long night plays over it.
+const wreck: Space = { id: 'wreck', ...wreckSpace }
+
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, wreck, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets and the officer's stop on Second (officerStop.ts) that are built from it, the help tent's dressing

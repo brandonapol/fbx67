@@ -28,3 +28,12 @@ test('every Act 1 space has a smoke start that opens in it', () => {
     .filter((sp) => sp.act === 'Act 1: Flood')
     .forEach((sp) => assert.ok(opened.has(sp.id), `${sp.id} has no start`))
 })
+
+// Regression: the wreck (engineOut.ts) had no start, and the prologue run failed with "wreck: no frames recorded". Each
+// Act 3 space needs a start that opens in it.
+test('every Act 3 space has a smoke start that opens in it', () => {
+  const opened = new Set(starts.map((s) => startFrom(`#path=${s.path}`, '').space))
+  Object.values(spaces)
+    .filter((sp) => sp.act === 'Act 3: Deep Winter')
+    .forEach((sp) => assert.ok(opened.has(sp.id), `${sp.id} has no start`))
+})
