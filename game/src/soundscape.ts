@@ -17,6 +17,7 @@ import { LAB } from './eielson.ts'
 import { CRUISER } from './officerStop.ts'
 import { FIRE_AT, SPRUCE_AT, crashCues } from './engineOut.ts'
 import { PLANE } from './owensCamp.ts'
+import type { AudioKnobs } from './audioTier.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
 
@@ -547,3 +548,14 @@ export const walked = (prev: Game | undefined, next: Game): number =>
 
 export const sourceAt = (at: Vec, alongX: boolean | undefined, listener: Vec, halfWidth: number): Vec =>
   alongX ? vec(Math.max(-halfWidth, Math.min(halfWidth, listener.x)), at.z) : at
+
+// A bed as the quality tier builds it (audioTier.ts): every walla, the one under a recording included, capped at the
+// tier's voices. Nothing else in the bed changes.
+const tierLayer = (l: Layer, k: AudioKnobs): Layer =>
+  l.kind === 'walla'
+    ? { ...l, voices: Math.min(l.voices, k.wallaVoices) }
+    : l.kind === 'recording'
+      ? { ...l, fallback: l.fallback.map((f) => tierLayer(f, k)) }
+      : l
+
+export const tiered = (s: Soundscape, k: AudioKnobs): Soundscape => ({ ...s, layers: s.layers.map((l) => tierLayer(l, k)) })

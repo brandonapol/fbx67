@@ -4,6 +4,8 @@ import type { Tread } from './cast.ts'
 import type { Color, Layer, Noise, Recording, Spot } from './soundscape.ts'
 import type { Clip, Slice } from './recordings.ts'
 import { loopEnd } from './recordings.ts'
+import type { AudioKnobs } from './audioTier.ts'
+import { AUDIO_TIERS, DEFAULT_QUALITY } from './audioTier.ts'
 
 export type Rand = () => number
 
@@ -671,7 +673,8 @@ export const spot = (ctx: BaseAudioContext, buffers: Buffers, which: Spot, dest:
   return Math.max(thump, tone(ctx, dest, 'square', 1800, creak + 0.02, 0.03, 0.001, 0.02))
 }
 
-// tread is the walker's voice: pitch scales every band, weight the level (a lighter body, a lighter step).
+// tread is the walker's voice: pitch scales every band, weight the level (a lighter body, a lighter step). tier is
+// the quality tier's grain count on gravel (audioTier.ts).
 export const footstep = (
   ctx: BaseAudioContext,
   buffers: Buffers,
@@ -680,6 +683,7 @@ export const footstep = (
   rand: Rand,
   tempF?: number,
   tread: Tread = { pitch: 1, weight: 1 },
+  tier: AudioKnobs = AUDIO_TIERS[DEFAULT_QUALITY],
 ): number => {
   const at = ctx.currentTime + 0.005
   const p = tread.pitch
@@ -710,7 +714,7 @@ export const footstep = (
       burst(ctx, buffers, dest, 'white', 'lowpass', 1400 * k, 0.7, at, 0.06, 0.001, 0.03, rand),
     )
   if (surface === 'gravel')
-    return Array.from({ length: 7 }, (_, i) =>
+    return Array.from({ length: tier.gravelGrains }, (_, i) =>
       burst(ctx, buffers, dest, 'white', 'bandpass', between(rand, 2200, 5200) * p, 1.2, at + i * between(rand, 0.008, 0.018), between(rand, 0.06, 0.2), 0.001, 0.02, rand),
     ).reduce((a, b) => Math.max(a, b), at)
   if (surface === 'mud')

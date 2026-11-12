@@ -185,6 +185,15 @@ test('with storage blocked and no Web Audio, the engine starts locked, gives up 
   assert.equal(audio.status(), 'unavailable')
 })
 
+test('the engine starts on medium and takes a new tier at once, even before it is unlocked', () => {
+  const audio = createAudio(undefined)
+  assert.equal(audio.quality(), 'medium')
+  audio.setQuality('low')
+  assert.equal(audio.quality(), 'low')
+  audio.sync(start(), DT)
+  assert.equal(audio.quality(), 'low')
+})
+
 test('saved volumes are read back on start', () => {
   const saved = new Map<string, string>()
   const store = { getItem: (k: string) => saved.get(k) ?? null, setItem: (k: string, v: string) => void saved.set(k, v) } as unknown as Storage
