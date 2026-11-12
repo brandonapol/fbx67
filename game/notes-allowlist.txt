@@ -1,6 +1,7 @@
-# Act 1-3 story notes the engine build cannot send yet, one per line: `scene:note` for a scene's menu, `missionId:note`
+# Act 1-4 story notes the engine build cannot send yet, one per line: `scene:note` for a scene's menu, `missionId:note`
 # for a mission's ending. game/src/notesRatchet.test.ts checks this list against the story and the engine. It may only
-# shrink: when the engine starts sending a note, delete its line; a pull request that adds a line fails.
+# shrink: when the engine starts sending a note, delete its line; a pull request that adds a line fails, unless its scene,
+# mission or act is new to the ratchet since main.
 a2_chiefs:listen
 a2_chiefs:offerHelp
 a2_chiefs:slipOut
@@ -40,3 +41,29 @@ theRashPlan:safe
 theRashPlan:stayedOut
 theWreck:notShown
 theWreck:shown
+a4_news:continue
+a4_offer:take
+a4_offer:refuse
+a4_offer:fake
+a4_curly:continue
+a4_wire:continue
+a4_jake:continue
+a4_icejam:continue
+a4_icejam:chase
+a4_testify:silent
+a4_testify:testify
+a4_chase:jump
+a4_chase:logs
+a4_chase_jump:continue
+a4_chase_logs:continue
+a4_struggle:shoulder
+a4_struggle:talk
+a4_struggle_shoulder:continue
+a4_struggle_talk:continue
+a4_defuse:cap
+a4_defuse:cut
+a4_defuse:freeze
+a4_defuse_cap:continue
+a4_defuse_cut:continue
+a4_defuse_freeze:continue
+a4_aftermath:continue
