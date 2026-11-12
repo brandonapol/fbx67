@@ -423,7 +423,7 @@ const headOf = (e: pc.Entity): pc.GraphNode | null => {
 }
 
 // `winter` is the season laid over the camp in Act 3 (owensCamp.ts): snow on the ground, ice on the creek, and no
-// fireweed, mosquitoes or Curly's sight.
+// willow, alder, fireweed or tussocks above the snow, no mosquitoes and no Curly's sight.
 export const buildCamp = (app: pc.Application, root: pc.Entity, base: string, winter?: Season): CampView => {
   const device = app.graphicsDevice
   const materials: pc.Material[] = []
@@ -453,7 +453,8 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string, wi
   root.addChild(meshEntity('camp', toMesh(device, b), keep(vertexMaterial()), { cast: true, receive: true }))
 
   const leaf = keep(vertexMaterial({ twoSided: true }))
-  const kinds: readonly Kind[] = winter ? ['spruce', 'willow', 'alder', 'tussock'] : ['spruce', 'willow', 'alder', 'fireweed', 'tussock']
+  // In winter the willow, alder, fireweed and tussocks are bare and under the snow: only the spruce stand out of it.
+  const kinds: readonly Kind[] = winter ? ['spruce'] : ['spruce', 'willow', 'alder', 'fireweed', 'tussock']
   const groves = kinds.map((k) => instanced(device, root, k, leaf))
   const haze = winter ? undefined : specks(device, root)
 
