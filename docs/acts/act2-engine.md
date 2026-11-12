@@ -21,6 +21,7 @@ what is intended. The engine never decides a story outcome: it sends the story's
 | `hangar`  | `src/bushStrip.ts` | `baseHangar`                   | Jake at the hangar door (`a2_jake`)         |
 | `cafe`    | `src/dottiesCafe.ts` | `nlCafe`, the gossip visits only | Dottie's counter (`a2_co_gossip`, `a2_heat_gossip`) |
 | `highway` | `src/roadsideStop.ts` | `richardsonHighway`         | Barnette's roadside stop (`a2_heat`)        |
+| `hall`    | `src/chiefsMeeting.ts` | `communityHall`           | none: the Chiefs meeting's own three notes  |
 
 The Major's cabinet (`theMajorsCabinet`) plays on the base, in the squadron hall and the Major's office
 (`src/majorsCabinet.ts`, `eielson.ts`). Every other Act 2 scene plays as a menu panel over the `story` backdrop, each
@@ -28,7 +29,7 @@ option a note button.
 
 Each of these spaces opens the scene's own menu at a spot and sends the note the menu offers; none decides an outcome.
 The hotel bar's set (`hotelBar.ts`), the bush strip, the steak and the hangar (`bushStrip.ts`), the café, the officer's
-stop and the roadside stop are gray-box rooms and staged beats, each with its own `*.test.ts` that checks the story
+stop, the roadside stop and the Chiefs meeting's hall are gray-box rooms and staged beats, each with its own `*.test.ts` that checks the story
 lands where the text build's `--choices` path does.
 
 ## Lucy's kitchen (`kitchen.ts`)
@@ -53,6 +54,23 @@ heat is tiered by the story (`officerTier` in `text-game/src/scenes/act2.ts`), a
 button to step back. The engine reads no heat and offers no deal. `src/officerStop.test.ts` plays each tier's
 `--choices` path headless and checks the state and the path against the text build's, and that the ratchet counts the
 officer as the sender of `a2_officer:walkOn`.
+
+## The Tanana Chiefs meeting (`chiefsMeeting.ts`)
+
+**Draft, for consultant review** (`docs/consultant-review.md`, items 10 and 11). A gray-box community hall (14 by
+11 m): the door at the back, rows of folding chairs either side of an aisle, the map of the Interior with colored pins
+on the front wall, the front table, the coffee urn. The people are staged only from the scene's text, each with their
+own look and activity: the old man from Nenana speaking at the front, Eli on his feet at his chair, the woman writing
+it down, delegates listening (two with coffee, one at the urn), Lucy at the back wall, Ashby by the back row with his
+cards (gone once the meeting is over).
+
+- **`a2_chiefs`**: the scene's text comes up as Wade comes in at the door, with no choice on it. Its three notes are
+  places in the room, labeled by the story's menu: staying at the back wall by Lucy is held through the speeches
+  (`listen`); walking up the aisle to the front is standing up (`offerHelp`); the door is slipping out (`slipOut`).
+- **`a2_chiefs_spoke`, `a2_chiefs_after`**: the scene's text comes up where Wade stands (at the door, after he stood
+  up), and the door with Lucy (`Go out with Lucy`) sends `continue` to her kitchen.
+- `chiefsMeeting.test.ts` plays each way by walking and holding, checks parity with the text build, and holds the
+  people to distinct looks and places.
 
 ## The photo lab (`photoLab.ts`, `photoLabBot.ts`, `eielson.ts`)
 
@@ -127,5 +145,5 @@ Run `make test/game/unit` for all of the above.
   such scene exists in the engine. Refusing sends its note and the story moves on.
 - **The rest of the base.** The Eielson blockout is a gray box with roofless one-storey buildings; the barracks and
   most of the rest are walkable but no scene routes to them.
-- **Everything else in Act 2** (the chiefs, Minto, the land office search, the flight, the letters) plays as menus; the
+- **Everything else in Act 2** (Minto, the land office search, the flight, the letters) plays as menus; the
   unbuilt notes are the `a2_*` lines of `game/notes-allowlist.txt`.
