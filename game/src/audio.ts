@@ -9,7 +9,9 @@ import type { Game } from './prologue.ts'
 import { curlyNow, playerBody } from './prologue.ts'
 import { season } from '../../text-game/src/story.ts'
 import type { Event } from './soundscape.ts'
-import { arrivals, cues, ducked, holds, soundscapes, sourceAt, walked } from './soundscape.ts'
+import { arrivals, cues, ducked, holds, soundscapes, sourceAt, tiered, walked } from './soundscape.ts'
+import type { Quality } from './audioTier.ts'
+import { AUDIO_TIERS, DEFAULT_QUALITY, rebuilds } from './audioTier.ts'
 import type { Buffers, Rand, Voice } from './synth.ts'
 import { between, footstep, layerVoice, makeBuffers, mulberry, playTake, spot } from './synth.ts'
 import type { Clip, Library, Shot } from './recordings.ts'
@@ -29,11 +31,13 @@ export type Audio = Readonly<{
   status: () => Status
   cover: () => number
   setCover: (v: number) => void
+  quality: () => Quality
+  setQuality: (q: Quality) => void
 }>
 
 type Placed = Readonly<{ voice: Voice; panner?: PannerNode; at?: Vec; alongX?: boolean }>
 
-type Scene = Readonly<{ space: SpaceId; fades: readonly GainNode[]; placed: readonly Placed[]; next: number[] }>
+type Scene = Readonly<{ space: SpaceId; quality: Quality; fades: readonly GainNode[]; placed: readonly Placed[]; next: number[] }>
 
 type Graph = Readonly<{ ctx: AudioContext; buffers: Buffers; buses: Readonly<Record<Bus, GainNode>>; clips: Library }>
 
@@ -149,9 +153,10 @@ export const createAudio = (store: Storage | undefined): Audio => {
   const play = (gr: Graph, which: Spot, dest: AudioNode): number =>
     take(gr, SPOT_TAKES[which], dest, between(rand, 0.7, 1.1), between(rand, 0.95, 1.05)) ?? spot(gr.ctx, gr.buffers, which, dest, rand)
 
-  const live: { volumes: Volumes; graph?: Graph; scene?: Scene; prev?: Game; gains?: Volumes; gait: Gait; failed: boolean; cover: number } = {
+  const live: { volumes: Volumes; graph?: Graph; scene?: Scene; prev?: Game; gains?: Volumes; gait: Gait; failed: boolean; cover: number; quality: Quality } = {
     volumes: parseVolumes(saved.get()),
     cover: 0,
+    quality: DEFAULT_QUALITY,
     gait: standing,
     failed: false,
   }
@@ -194,10 +199,11 @@ export const createAudio = (store: Storage | undefined): Audio => {
     whenDone(gr.ctx, p, play(p) + 0.25, () => p.disconnect())
   }
 
-  const enter = (gr: Graph, space: SpaceId, listener: Vec): Scene => {
+  // The beds of a space, built for the quality tier (audioTier.ts).
+  const enter = (gr: Graph, space: SpaceId, quality: Quality, listener: Vec): Scene => {
     const { ctx } = gr
     const now = ctx.currentTime
-    const scape = soundscapes[space]
+    const scape = tiered(soundscapes[space], AUDIO_TIERS[quality])
     gr.clips.want(clipsOf(scape))
     const fades = Object.fromEntries(
       BUSES.map((b) => {
@@ -217,7 +223,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
       voice.out.connect(p ?? fades[l.bus])
       return { voice, panner: p, at, alongX }
     })
-    return { space, fades: Object.values(fades), placed, next: scape.events.map((e) => now + delay(rand, e)) }
+    return { space, quality, fades: Object.values(fades), placed, next: scape.events.map((e) => now + delay(rand, e)) }
   }
 
   const leave = (gr: Graph, s: Scene): void => {
@@ -255,7 +261,7 @@ export const createAudio = (store: Storage | undefined): Audio => {
     const surface = surfaceAt(ground, at)
     return (
       take(gr, STEP_TAKES[surface], dest, tread.weight, tread.pitch * between(rand, 0.92, 1.08)) ??
-      footstep(gr.ctx, gr.buffers, surface, dest, rand, stepTempF(ground, season(g.story)), tread)
+      footstep(gr.ctx, gr.buffers, surface, dest, rand, stepTempF(ground, season(g.story)), tread, AUDIO_TIERS[live.quality])
     )
   }
 
@@ -273,11 +279,11 @@ export const createAudio = (store: Storage | undefined): Audio => {
     const gains = busGains(live.volumes, ducked(g), live.cover)
     BUSES.filter((b) => live.gains?.[b] !== gains[b]).forEach((b) => gr.buses[b].gain.setTargetAtTime(gains[b], now, SMOOTH))
     live.gains = gains
-    if (live.scene?.space !== g.space) {
-      if (live.scene) leave(gr, live.scene)
-      live.scene = enter(gr, g.space, g.pos)
-    }
-    const s = live.scene
+    // A change of tier crossfades the space into its new beds, as a change of space does; no restart.
+    const was = live.scene
+    if (was && rebuilds(was, g.space, live.quality)) leave(gr, was)
+    const s = was && !rebuilds(was, g.space, live.quality) ? was : enter(gr, g.space, live.quality, g.pos)
+    live.scene = s
     const half = spaces[g.space].size.w / 2
     s.placed.forEach((p) => {
       p.voice.tick?.(now)
@@ -322,6 +328,10 @@ export const createAudio = (store: Storage | undefined): Audio => {
     cover: () => live.cover,
     setCover: (v) => {
       live.cover = clamp01(v)
+    },
+    quality: () => live.quality,
+    setQuality: (q) => {
+      live.quality = q
     },
     status: () => (live.failed ? 'unavailable' : !live.graph ? 'locked' : live.graph.ctx.state === 'running' ? 'running' : 'suspended'),
   }
