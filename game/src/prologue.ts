@@ -46,6 +46,11 @@ import type { TieLook } from './bushStrip.ts'
 import { isStripSpace, rollOut, stripSpot, useSpot } from './bushStrip.ts'
 import { COUNTER_SPOT, counterSpot } from './dottiesCafe.ts'
 import { WHEEL, seatAt as wheelSeat, skipAt, stageTime, staged } from './roadsideStop.ts'
+import type { Ski } from './skiing.ts'
+import { ARRIVE_NOTE, ROUTE_NOTES, heightAt, routeOf, setOff, skiFrame } from './skiing.ts'
+import type { RouteId } from './skiing.ts'
+import type { Night } from './survivalPlay.ts'
+import * as night from './survivalPlay.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -118,6 +123,12 @@ export type Game = Readonly<{
   bar?: Bar
   // Seconds into Barnette's roadside stop on the highway, or the quiet drive there (roadsideStop.ts); held at its end.
   stop?: number
+  // Wade on skis on the search, from setting off on the route he picked to the top of the slope above the wreck
+  // (skiing.ts); `pos` and `facing` are the skier's.
+  ski?: Ski
+  // Lucy's long night at the wreck, from the order prompt to first light (survivalPlay.ts), played as a live panel over
+  // the story backdrop until the crash site has a space.
+  night?: Night
 }>
 
 // The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
@@ -183,6 +194,8 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   cabinet: undefined,
   bar: undefined,
   stop: undefined,
+  ski: undefined,
+  night: undefined,
 })
 
 export const start = (): Game => ({
@@ -310,7 +323,7 @@ const arrive = (g: Game): Game => {
   // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
   const cab = cabinetArrival(g.story)
   if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
-  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway')) return arrive(enter(g, 'story'))
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'search')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -341,6 +354,13 @@ const arrive = (g: Game): Game => {
   // On the Richardson Highway Wade is at the wheel of the borrowed truck from the first frame: the stop, or the quiet
   // drive, plays before the scene's menu comes up (roadsideStop.ts).
   if (r.space === 'highway' && g.space !== 'highway') return atWheel(enter(g, 'highway'), 0)
+  // On the search the prompt (which way: the ridge or the creek) plays as its menu on the slope; once a route is picked
+  // Wade is on skis where the team split, and the top of the slope sends the scene's `follow` (skiing.ts).
+  if (r.space === 'search') {
+    const into = g.space === 'search' ? g : enter(g, 'search')
+    const way = routeOf(g.path)
+    return way ? skiOff(into, way) : menuPanel(into)
+  }
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
     // the town where he went up.
@@ -358,6 +378,46 @@ const arrive = (g: Game): Game => {
   const back = spaces[r.space].back
   if (back) return { ...g, panel: storyPanel(g.story, [], [close(back)]) }
   return menuPanel(g)
+}
+
+const routeOfNote = (note: string): RouteId | undefined => (Object.keys(ROUTE_NOTES) as RouteId[]).find((r) => ROUTE_NOTES[r] === note)
+
+const skiOff = (g: Game, way: RouteId): Game => {
+  const sk = setOff(way)
+  return { ...g, ski: sk.ski, pos: sk.pos, facing: sk.facing, view: sk.facing, vel: zero, panel: undefined, holding: undefined }
+}
+
+// One frame on skis: the walk's input moves him by the ski rules; reaching the top of the slope sends the scene's
+// note. Frozen too long, he is back where the team split (skiFrame); the story never hears of it.
+const skied = (g: Game, ski: Ski, input: Input, dt: number): Game => {
+  const f = skiFrame({ pos: g.pos, facing: g.facing, ski }, input.dir, dt, solids(spaces[g.space], g.story, g.path))
+  const next = { ...g, pos: f.skier.pos, facing: f.skier.facing, view: input.view ?? f.skier.facing, vel: f.vel, ski: f.skier.ski }
+  return f.outcome === 'arrived' ? press({ ...next, ski: undefined }, `note:${ARRIVE_NOTE}`) : next
+}
+
+// The night's panel. Its object is kept while its title and buttons are unchanged, so main.ts does not rebuild the
+// buttons every frame; the text it shows is read live through panelText.
+const sameButtons = (a: readonly Button[], b: readonly Button[]): boolean => a.length === b.length && a.every((x, i) => x.id === b[i]!.id && x.label === b[i]!.label)
+
+const withNight = (g: Game, n: Night): Game => {
+  const p = night.panelOf(g.story, n)
+  const kept = g.panel && g.night && g.panel.title === p.title && sameButtons(g.panel.buttons, p.buttons)
+  return { ...g, night: n, vel: zero, panel: kept ? g.panel : { kind: 'story', title: p.title, text: p.text, buttons: p.buttons } }
+}
+
+// A night button: the verb, the signal or the retry. Faded back past the first checkpoint, the night is gone and the
+// story's own order prompt comes up again.
+const nightPressed = (g: Game, n: Night, button: string): Game => {
+  const next = night.press(n, button)
+  return next ? withNight(g, next) : menuPanel({ ...g, night: undefined, panel: undefined })
+}
+
+// One frame of the night. At first light the mission's note goes as the scene notes it applies, one per menu, as the
+// barfight's report does, and the search begins.
+const nightTick = (g: Game, n: Night, dt: number): Game => {
+  const next = night.step(n, dt)
+  if (!night.dawned(next)) return withNight(g, next)
+  return arrive(night.sceneNotes(g.story, night.noteOf(next)).reduce(sendNote, { ...g, night: undefined, panel: undefined }))
 }
 
 const opening = (g: Game): Game => {
@@ -567,7 +627,7 @@ const typed = (g: Game, n: number): Game => {
 
 // The panel's text as shown: the letter as far as it is typed, any other panel whole.
 export const panelText = (g: Game): string =>
-  g.panel?.kind === 'letter' ? g.panel.text.slice(0, Math.floor(g.typed ?? 0)) : (g.panel?.text ?? '')
+  g.night && g.panel ? night.panelOf(g.story, g.night).text : g.panel?.kind === 'letter' ? g.panel.text.slice(0, Math.floor(g.typed ?? 0)) : (g.panel?.text ?? '')
 
 // Whether a prop that shows the letter's state, or the cigarette Lucy dropped, is drawn.
 export const shows = (g: Game, w: Mark | undefined): boolean =>
@@ -667,6 +727,10 @@ export const interact = (g: Game): Game => {
 }
 
 export const press = (g: Game, button: string): Game => {
+  if (g.night) return button.startsWith('night:') ? nightPressed(g, g.night, button) : g
+  // The order prompt after the crash starts the night instead of sending the note: the night sends it at first light.
+  const begun = button.startsWith('note:') ? night.begins(g.story, button.slice(5)) : undefined
+  if (begun) return withNight({ ...g, panel: undefined }, begun)
   if (button === 'close') return { ...g, panel: undefined, look: undefined }
   if (button === 'retry') return g.lab ? retryLab(g, g.lab) : g.cabinet ? retryCabinet(g, g.cabinet) : g.bar ? retryBar(g, g.bar) : enter(g, g.space)
   if (button.startsWith('dial:') && g.cabinet) return dialed(g, g.cabinet, button)
@@ -687,6 +751,9 @@ export const press = (g: Game, button: string): Game => {
     const lab = g.space === 'eielson' ? pickLab(g.story, g.lab, button.slice(5), g.pos, g.facing) : undefined
     if (lab) return { ...g, panel: undefined, lab }
     const next = sendNote(g, button.slice(5))
+    // Picking a way at the search's prompt puts Wade on skis on that route where the team split (skiing.ts).
+    const way = g.space === 'search' ? routeOfNote(button.slice(5)) : undefined
+    if (way) return skiOff(next, way)
     // Climbing into the plane at the float sends the story to the camp; the flight plays out before Owen is there.
     if (takesOff(g.story, next.story)) return takeOff(next)
     if (!leftPrologue(g.story, next.story)) return arrive(next)
@@ -820,6 +887,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.sleeping !== undefined) return slumber({ ...g, t }, dt)
   if (g.home?.writing) return pen({ ...g, vel: zero, t }, g.home, dt)
   if (typing(g)) return typed({ ...g, vel: zero, t }, (g.typed ?? 0) + TYPE_RATE * dt)
+  if (g.night) return nightTick({ ...g, t }, g.night, dt)
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   if (flying(g.flight)) return fly({ ...g, t }, dt)
   if (riding(g.ride)) return ride({ ...g, t }, dt)
@@ -832,6 +900,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.bar?.caught !== undefined) return barStared({ ...g, t }, g.bar, dt)
   if (g.bar?.song) return played({ ...g, t }, g.bar, dt)
   if (g.brawl) return brawling({ ...g, t }, g.brawl, input, dt)
+  if (g.ski) return skied({ ...g, t }, g.ski, input, dt)
   const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
   const after = hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
   return cabinetWatch(labWatch(douse(after), dt), dt)
@@ -852,7 +921,7 @@ export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaki
 // How high Owen's feet are: on the plane's cabin floor in the air, on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
 export const footY = (g: Game): number =>
-  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : standAt(spaces[g.space], g.pos)
+  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : g.space === 'search' ? heightAt(g.pos) : standAt(spaces[g.space], g.pos)
 
 // The heading the camera is held behind on the ride and the flight (skiff.ts, keepBehind); none on foot.
 export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) || (g.space === 'highway' && staged(g.story, g.stop)) ? g.facing : undefined)

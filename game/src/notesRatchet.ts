@@ -22,6 +22,10 @@ import { DIAL_SPOT } from './majorsCabinet.ts'
 import type { GotIn } from './majorsCabinet.ts'
 import { seats } from './hotelBar.ts'
 import { playBar } from './hotelBarBot.ts'
+import { ORDERS, SIGNALS, MISSION as LONG_NIGHT } from './survivalPlay.ts'
+import { nightOut } from './nightBot.ts'
+import { ROUTE_NOTES } from './skiing.ts'
+import { skiOut } from './skiBot.ts'
 import type { SpaceId } from './levels.ts'
 import { playSearch, start as startWalk } from './trailDrive.ts'
 import type { Interactable } from './world.ts'
@@ -197,17 +201,37 @@ const barSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: 'hotelBar', spot: SET }))
 }
 
+// The long night is played, not picked (survivalPlay.ts): over the story backdrop, the order prompt starts it, and its
+// steady player (nightBot.ts) plays each order with each signal to first light, the spot being the night itself.
+export const NIGHT = 'night'
+const nightSenders = (stop: Stop): readonly Sender[] => {
+  if (mission(stop.state)?.id !== LONG_NIGHT) return []
+  const g = resume(stop.state, [0])
+  const landed = ORDERS.flatMap((o) => SIGNALS.map((sig) => nightOut(press(g, `note:${o}`), sig).story))
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: NIGHT }))
+}
+
+// The ski search is skied (skiing.ts): on the slope, each route's note at the prompt puts Wade on skis, and its steady
+// skier (skiBot.ts) skis it to the top of the slope, the spot being the slope itself.
+export const SLOPE = 'slope'
+const SKI = 'theSkiSearch'
+const skiSenders = (stop: Stop, g: Game): readonly Sender[] => {
+  if (mission(stop.state)?.id !== SKI || g.space !== 'search') return []
+  const landed = Object.values(ROUTE_NOTES).map((n) => skiOut(press(g, `note:${n}`)).story)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: SLOPE }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
     const g = resume(stop.state, [0])
     return without(g.space, LETTER) ? [] : letterSenders(stop, g)
   }
-  if (r.to !== 'space') return []
+  if (r.to !== 'space') return without('story', NIGHT) ? [] : nightSenders(stop)
   const g = resume(stop.state, [0])
   // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
   const space = g.space
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, SLOPE) ? [] : skiSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
     .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)

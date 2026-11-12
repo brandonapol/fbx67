@@ -10,9 +10,9 @@ import { stallContext, stallMessage } from './stall.ts'
 // Act 3's smoke run, its own job beside Act 2's (make test/game/smoke/act3): from where the Act 2 run reaches Act 3 to
 // Act 4's first scene, in headless Chromium, every choice the first. At the start of each beat (each place the story
 // moves to) it captures the frame of the space it plays in, in each moral-weather band, into
-// game/smoke/baselines/act3. No Act 3 scene routes to a space yet and levels.ts has no Act 3 space; when one is built,
-// the run visits it from the Act 3 start and samples it against docs/perf.md. act3Plan.test.ts proves the same steps
-// headless.
+// game/smoke/baselines/act3. The search plays on its slope (`search`), Wade on skis; the long night plays as its panel
+// over the story backdrop. The run also visits each Act 3 space from the Act 3 start and samples it against
+// docs/perf.md. act3Plan.test.ts proves the same steps headless.
 
 const run = smoke({ baselines: 'act3', played: act3Spaces, port: 4323, report: 'smoke-report-act3' })
 
@@ -29,7 +29,7 @@ const VISIT_FRAMES = 40
 const where = (p: Page): Promise<string> =>
   p.evaluate(() => {
     const g = (window as any).__prologue.game()
-    return JSON.stringify([g.story.scene, g.space, g.panel?.title, g.panel?.buttons.length, g.home?.writing !== undefined, g.home?.page?.length, g.holding?.id, g.look, g.path.length])
+    return JSON.stringify([g.story.scene, g.space, g.panel?.title, g.panel?.buttons.length, g.home?.writing !== undefined, g.home?.page?.length, g.holding?.id, g.look, g.path.length, g.night?.doing?.verb, g.night?.run.carried.signal])
   })
 
 const changed = async (p: Page, from: string, what: string): Promise<void> => {
@@ -69,6 +69,17 @@ const take = async (p: Page, s: Step): Promise<void> => {
     await p.keyboard.down('e')
     await p.waitForFunction(() => (window as any).__prologue.game().holding === undefined, null, { timeout: STEP_MS })
     await p.keyboard.up('e')
+    return
+  }
+  // On skis: head for the point a moment with the walk-to, the push held, as act3Plan.test.ts does.
+  if (s.kind === 'steer') {
+    await p.evaluate(([x, z]) => (window as any).__prologue.walkTo(x, z), [s.x, s.z] as const)
+    return frames(p, 2)
+  }
+  // On the long night a wait is the night's own seconds, played on by the probe: under its panel the page draws one
+  // tick a frame whatever its pace.
+  if ('seconds' in s) {
+    await p.evaluate((n) => (window as any).__prologue.advance(n), s.seconds)
     return
   }
   if (s.kind === 'walk') {
@@ -120,8 +131,8 @@ test('Act 3 plays from its start to Act 4’s first scene, a frame per beat in e
   }
 })
 
-// No Act 3 scene routes to a space yet: the probe puts Wade in each Act 3 space from the Act 3 start, in its season, to
-// sample it and capture its frame in each band. levels.ts has none yet, so this waits for the first.
+// The probe puts Wade in each Act 3 space from the Act 3 start, in its season, to sample it and capture its frame in
+// each band.
 test('every Act 3 space renders from the Act 3 start, a frame in each band', { timeout: 600000, skip: act3Spaces.length === 0 && 'no Act 3 space in levels.ts yet' }, async () => {
   const { page, errors, close } = await run.open(ACT3_PATH)
   try {

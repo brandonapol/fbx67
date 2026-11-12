@@ -5,6 +5,7 @@ import type { Brawl } from './barfight.ts'
 import { WADE_STOOL, begin, play, roomOf, wade } from './barfight.ts'
 import { idle } from './combat.ts'
 import type { Game } from './prologue.ts'
+import { still, tick } from './prologue.ts'
 import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
@@ -99,6 +100,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // The Richardson Highway at the end of the stage: the truck parked at the turnout and, where Barnette stops Wade,
   // the cruiser behind it with its lights going and Barnette at the window; from the road, looking north up it.
   highway: { space: 'highway', pos: vec(5, -18.5), facing: Math.PI, t: 0, stop: 30, shot: { eye: [-1.5, 3.2, 2.5], at: [5.2, 1.0, -15] } },
+  // The ski search (skiing.ts): Wade where the team split at the top of the ridge, the run down it ahead between the
+  // spruce, the flats and the creek's drainage beyond.
+  search: { space: 'search', pos: vec(-40, 40), facing: Math.PI, t: 0, shot: { eye: [-37, 29.5, 47], at: [-38, 12, -10] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
@@ -242,6 +246,16 @@ export const installProbe = (view: View, live: Live): void => {
     return frames(1)
   }
 
+  // Plays the live game on for so many seconds with no input, ticked here rather than one tick a drawn frame: the long
+  // night runs under its panel, where the page draws one tick a frame whatever its pace (survivalPlay.ts).
+  const advance = (seconds: number): Promise<void> => {
+    const dt = 1 / 30
+    const n = Math.round(seconds / dt)
+    const run = (g: Game, k: number): Game => (k <= 0 ? g : run(tick(g, still, dt), k - 1))
+    live.set(run(live.get(), n))
+    return frames(1)
+  }
+
   const record = (on: boolean): void => {
     rec.on = on
     rec.age = 0
@@ -270,5 +284,5 @@ export const installProbe = (view: View, live: Live): void => {
     return app.root.findByName(name)?.enabled ?? false
   }
 
-  w.__prologue = { ...w.__prologue, capture, release, visit, record, sampleMoment, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
+  w.__prologue = { ...w.__prologue, capture, release, visit, advance, record, sampleMoment, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
 }

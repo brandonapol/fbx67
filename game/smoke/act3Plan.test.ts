@@ -14,6 +14,9 @@ import { ACT3_FIRST, ACT3_PATH, ACT4_FIRST, act3Beats, act3Spaces, bands, isBeat
 
 const DT = 1 / 30
 
+// A steer on skis lasts this many ticks before the planner looks again.
+const STEER_TICKS = 15
+
 const walkTo = (g: Game, to: Vec): Game => {
   let cur = g
   for (let n = 0; distance(cur.pos, to) >= 0.15 && !cur.panel && cur.space === g.space; n++) {
@@ -40,8 +43,14 @@ const act = (g: Game, s: Step): Game => {
     const there = s.points.reduce((cur, [x, z]) => (cur.space === g.space ? walkTo(cur, vec(x, z)) : cur), g)
     return there.panel || there.space !== g.space ? there : tick(there, { ...still, view: s.yaw }, DT)
   }
+  if (s.kind === 'steer') {
+    // On skis: head for the point a moment with the push held, as the browser's walk-to does.
+    const toward = (cur: Game, n: number): Game => (n === 0 || !cur.ski ? cur : toward(tick(cur, { dir: sub(vec(s.x, s.z), cur.pos), hold: false }, DT), n - 1))
+    return toward(g, STEER_TICKS)
+  }
   if ('seconds' in s) {
-    const wait = (cur: Game, n: number): Game => (n <= 0 || cur.panel ? cur : wait(tick(cur, still, DT), n - 1))
+    // The long night runs under its own panel: a wait there lasts its seconds or until the night is over.
+    const wait = (cur: Game, n: number): Game => (n <= 0 || (cur.panel && !cur.night) ? cur : wait(tick(cur, still, DT), n - 1))
     return wait(g, Math.round(s.seconds / DT))
   }
   return tick(g, still, DT)

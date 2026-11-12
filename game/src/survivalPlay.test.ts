@@ -156,7 +156,8 @@ test('the signal prompt’s labels are the story’s own; saving the fire has no
   const done = doAll(night('fire'), ['go:trees', 'cut:deadfall', 'cut:deadfall', 'cut:boughs', 'go:fire', 'light', 'go:cabin', 'free', 'tie', 'bed'])
   const p = panelOf(CRASH, done)
   const story = menu(send(CRASH, 'fire')).options
-  assert.deepEqual(p.buttons.map((b) => b.label), SIGNALS.map((s) => story.find((o) => o.note === s)!.label))
+  assert.deepEqual(p.buttons.slice(0, SIGNALS.length).map((b) => b.label), SIGNALS.map((s) => story.find((o) => o.note === s)!.label))
+  assert.ok(p.buttons.slice(SIGNALS.length).every((b) => !b.id.startsWith('night:signal:')), 'the tasks follow the signals')
   assert.equal(stageOf(press(done, 'night:signal:saveFire')!.run.carried), 'night')
   const smoke = press(done, 'night:signal:smoke')!
   assert.equal(stageOf(smoke.run.carried), 'signalling')
@@ -231,4 +232,24 @@ test('reduced motion stills the breath and the shiver; high contrast drops the f
   assert.match(sharp.words ?? '', /white/)
   assert.match(sharp.words ?? '', /sweat/)
   assert.equal(tells(freezing, true).words, undefined)
+})
+
+// Regression (#138 wiring): at the signal prompt the panel showed only the three signals, while the steady player
+// banks the fire and cuts wood first, so the wired game, which can only press what the panel shows, stalled there
+// until Lucy froze. Every button the steady player presses must be on the panel when it presses it.
+test('every button the steady player presses is on the night’s panel at that moment, for each order and signal', () => {
+  ORDERS.forEach((order) =>
+    SIGNALS.forEach((signal) => {
+      let cur = night(order)
+      for (let k = 0; !dawned(cur) && k < 200000; k++) {
+        const id = nextPress(cur, signal)
+        if (id) {
+          const shown = panelOf(CRASH, cur).buttons.map((b) => b.id)
+          assert.ok(shown.includes(id), `${order}.${signal}: ${id} not on the panel (${shown.join(', ')}) at ${stageOf(cur.run.carried)}`)
+          cur = press(cur, id)!
+        } else cur = step(cur, DT)
+      }
+      assert.ok(dawned(cur), `${order}.${signal} reaches first light`)
+    }),
+  )
 })

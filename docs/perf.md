@@ -49,11 +49,13 @@ Act 2 space with no frames. `make generate/baselines/act2` regenerates only its 
 
 Act 3 has its own run and CI job the same way (`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). It opens
 `a3_camp` where the Act 2 run reaches it (every choice the first, so the three act runs are one playthrough) and plays
-to Act 4's first scene, every choice the first, with the steps `game/smoke/act3Plan.test.ts` plays headless. No Act 3
-scene's place has a space yet and `game/src/levels.ts` has no Act 3 space, so the act plays as panels over `story` (the five mission menus, `lucysDig`, `theLongNight`, `theSkiSearch`, `theWreck` and `theRashPlan`, all show there as panels),
-and its beats are the story's places: at the first scene at each place it captures the frame of the space it plays
-in, in each moral-weather band, into `game/smoke/baselines/act3/`. When an Act 3 space is built, the run visits it
-from the Act 3 start, samples it and captures its frame in each band, and fails on it with no frames or no row below.
+to Act 4's first scene, every choice the first, with the steps `game/smoke/act3Plan.test.ts` plays headless. The ski
+search has a space, `search` (the slope, `game/src/skiing.ts`), which the run skis by the ridge; the rest of the act
+plays as panels over `story`, the long night among them (played as its live panel, `game/src/survivalPlay.ts`), and the
+dig, the wreck and the rash plans as their mission menus. Its beats are the story's places: at the first scene at each
+place it captures the frame of the space it plays in, in each moral-weather band, into `game/smoke/baselines/act3/`.
+It then visits each Act 3 space (`search`) from the Act 3 start, samples it and captures its frame in each band, and
+fails on it with no frames or no row below. The prologue run samples `search` from the `a3_ski_down` start, Wade on skis on the ridge.
 `make generate/baselines/act3` regenerates only its baselines.
 
 `game/smoke/budget.test.ts` fails, per act, when a space in `game/src/levels.ts` has no row below, so a new space in
@@ -97,6 +99,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `hangar` |     1,500 | 1,500,000 |                 512 |
 | `cafe`  |      1,500 | 1,500,000 |                 512 |
 | `highway` |    1,500 | 1,500,000 |                 512 |
+| `search` |     1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 | `panPeak` |    1,500 | 1,500,000 |                 512 |
 

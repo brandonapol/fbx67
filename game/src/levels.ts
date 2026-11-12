@@ -26,8 +26,9 @@ import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
 import { COUNTER, dressing } from './silverPan.ts'
 import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
+import { searchSpace } from './skiing.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'search' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -376,7 +377,11 @@ export const story: Space = {
   spots: [],
 }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, story }
+// Wade's ski search above the wreck (skiing.ts, docs/acts/act3-missions.md section 3): the slope's ground is skiing.ts's
+// heightAt, drawn by skiView.ts.
+const search: Space = { id: 'search', ...searchSpace }
+
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, search, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets that are built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the

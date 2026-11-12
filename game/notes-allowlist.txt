@@ -38,17 +38,9 @@ a3_walk:continue
 lucysDig:cache
 lucysDig:marker
 lucysDig:stove
-theLongNight:fire.saveFire
-theLongNight:fire.smoke
-theLongNight:fire.stampX
-theLongNight:jake.saveFire
-theLongNight:jake.smoke
-theLongNight:jake.stampX
 theRashPlan:burn
 theRashPlan:gunpoint
 theRashPlan:safe
 theRashPlan:stayedOut
-theSkiSearch:creek
-theSkiSearch:ridge
 theWreck:notShown
 theWreck:shown

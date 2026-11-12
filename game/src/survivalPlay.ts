@@ -453,8 +453,9 @@ export const panelOf = (s: State, n: Night): NightPanel => {
     .filter(Boolean)
     .join('\n\n')
   if (n.doing) return { title, text, buttons: [] }
-  if (stage === 'signal') return { title, text, buttons: signalButtons(s, n) }
-  return { title, text, buttons: verbs(n).map((v) => ({ id: `night:${v}`, label: labelOf(v) })) }
+  const tasks = verbs(n).map((v) => ({ id: `night:${v}`, label: labelOf(v) }))
+  // The signal prompt has no timer, but the fire burns while she decides: the tasks stay open under the signals.
+  return { title, text, buttons: stage === 'signal' ? [...signalButtons(s, n), ...tasks] : tasks }
 }
 
 // A night button pressed: the verb, the signal, or the retry. `undefined` is the night given up for the prompt again.

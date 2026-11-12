@@ -9,7 +9,8 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); all 
 **Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. Section 1's menu,
 `lucysDig`, section 2's, `theLongNight`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's,
 `theRashPlan`, are in `missions.ts`, and Act 3 plays through them as panels over `story` in its own smoke run
-(`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). The mission spaces and their play are not built yet.
+(`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). The long night (section 2) and the ski search (section 3)
+are played in the engine; the dig, the wreck and the rash plans are still their menus.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:
@@ -39,7 +40,7 @@ declares whether it works one-handed; climbing, driving a stick shift and shooti
 night's play over them is `game/src/survivalPlay.ts` (section 2): where Lucy is, the tasks and how long they take, the
 order's gate, sweat that makes her wet, the fire, the checkpoints, and what the cold looks like (breath, white fingers,
 a slower walk, frost at the edge of the screen; reduced motion stills the breath and the shiver, high contrast trades
-the frost haze for words). It is not wired into the game loop yet. The numbers in `survival.ts` and `survivalPlay.ts`
+the frost haze for words). The game loop plays it (`prologue.ts`, the `night` field); drawing the tells is #185. The numbers in `survival.ts` and `survivalPlay.ts`
 other than the clock rate are their own tuning. Hands held to a burning fire warm back: the bare-handed count starts
 again there, which is how *fire first* keeps Lucy's fingers and *Jake first* does not.
 
@@ -137,20 +138,26 @@ hillside of black spruce forty minutes out from the camp. Playing Lucy.
   (fire first leaves Jake frostbitten), and `nightSignal` (`smoke`, `stampX` or `saveFire`), read by `searchHours`
   (3, 5 or 7 hours until the rest of the team reaches the wreck), both covered by the sweep and in `liveness.ts`. The
   menu adds none: how well the night is played (warmth, the fire, frostbite on Lucy's hands) stays inside the mission.
-- **Wiring (to do).** `survivalPlay.ts` is the whole mission as pure functions; the game loop does not call it yet.
-  Until a space is built for the crash site it plays as a live panel over the story backdrop. The steps, all additive:
-  1. `prologue.ts`: a `night?: Night` field on `Game`.
-  2. `press`: on `note:fire` or `note:jake` while `survivalPlay.starts(story)` holds, set `night` to
-     `begins(story, note)` instead of sending the note. Route `night:*` buttons to `survivalPlay.press`; an `undefined`
-     result clears `night` and reopens the story's menu panel (the first checkpoint is before the prompt).
-  3. `tick`: before the open-panel early return, step `night` with `survivalPlay.step` and set the panel from
-     `panelOf(story, night)`, keeping the old panel object while its buttons are unchanged so `main.ts` does not
-     rebuild them every frame (its text is read every frame). At `dawned(night)`, send
-     `sceneNotes(story, noteOf(night))` one note at a time, as the barfight's `report` does, clear `night` and `arrive`.
-  4. `smoke/act3Plan.ts`: when `g.night` is set, the next step is `nextPress(g.night)` as a key for that button, or a
-     wait while it is `undefined`. The run still takes every first choice (fire first, smoke).
-  5. The view (issue #185): draw `tells(body, wet, access)` with `access.reduced` from `frontEnd.ts`'s `reduced`.
-     High contrast needs a preference that does not exist yet: whether it is a game-wide option is the owner's call.
+- **Wiring (built).** `survivalPlay.ts` is the whole mission as pure functions, and the game loop plays it as a live
+  panel over the story backdrop until a space is built for the crash site (`prologue.ts`):
+  1. `Game` carries `night?: Night`.
+  2. `press`: the order prompt's `note:fire` or `note:jake` at `a3_crash` sets `night` from `begins` instead of sending
+     the note. `night:*` buttons go to `survivalPlay.press`; an `undefined` result clears `night` and reopens the story's
+     menu (the first checkpoint is before the prompt).
+  3. `tick`: before the open-panel early return, `night` steps with `survivalPlay.step` and the panel comes from
+     `panelOf`, the old panel object kept while its title and buttons are unchanged so `main.ts` does not rebuild them
+     every frame; `panelText` reads the text live. At `dawned`, `sceneNotes(story, noteOf(night))` go one note at a
+     time, as the barfight's `report` does, and the search sets out on its slope.
+  4. `smoke/act3Plan.ts`: while `g.night` is set, the next step is `nextPress(g.night)` as that button's key, or a wait
+     to the end of the task under way. The run takes every first choice (fire first, smoke). The browser run waits on
+     the night through the probe's `advance`, since under a panel the page draws one tick a frame. The steady player
+     banks the fire before it signals, so the signal prompt keeps the night's tasks under the three signals.
+  5. Still to do, the view (issue #185): draw `tells(body, wet, access)` with `access.reduced` from `frontEnd.ts`'s
+     `reduced`. High contrast needs a preference that does not exist yet: whether it is a game-wide option is the
+     owner's call.
+- **Tests.** `game/src/act3Play.test.ts` plays every order with every signal through the wired game and checks the
+  story lands where `sendMission` and the `--choices` path do; the parity ratchet sends the six notes
+  (`notesRatchet.ts`, the night's sender).
 
 ## 3. The ski search
 
@@ -191,13 +198,14 @@ near the last known heading. Playing Wade, two-handed.
   second while he staggers falls him; the climb is slow, holds where he stops and soaks him in sweat that the survival
   rules count as wet), and the space's props (`searchSpace`). `game/src/skiView.ts` draws the slope. The headless
   test skis both routes and checks the story lands where `sendMission` and the `--choices` path do.
-- **Not wired yet.** The controller and the space registry were claimed by other work when this landed. To play it:
-  add `'search'` to `SpaceId` and `search: { id: 'search', ...searchSpace }` to `spaces` (`levels.ts`) and to
-  `soundscapes` (its bed is `slope`); in `prologue.ts` carry `ski?: Ski` on `Game`, clear it in `enter`, and in
-  `arrive` for the search space start `setOff(routeOf(story))` when a route scene is current (the a3_search prompt
-  plays as its menu); in `tick`, before the walk, run `skiFrame` with `input.dir` and the space's solids, sending
-  `ARRIVE_NOTE` on `'arrived'`; `footY` is `skiFootY` on skis; in `render.ts` call `buildSlope` instead of the flat
-  ground box. The smoke at the follow-the-smoke signal and the act's smoke plan for the new space come after.
+- **Wired.** The search has its own space, `search` (`levels.ts`, `searchSpace`), its bed is `slope`
+  (`soundscape.ts`) and `render.ts` draws its ground with `buildSlope`. The `a3_search` prompt plays as its menu on the
+  slope; picking a route puts Wade on skis where the team split (`Game.ski`, `setOff`), and a link straight to a route
+  scene starts him there (`routeOf`). Each frame `skiFrame` moves him by the walk's input against the space's solids,
+  `footY` is the slope's height, and the top of the slope sends `ARRIVE_NOTE`; the wreck then plays over the story
+  backdrop. Freezing puts him back where the team split, which the story never hears. The Act 3 smoke run skis the
+  ridge (`skiBot.ts`), `act3Play.test.ts` skis both routes through the wired game, and the parity ratchet sends both
+  notes. Still to do: the smoke at the follow-the-smoke signal, and the wreck's own space.
 
 ## 4. The wreck
 

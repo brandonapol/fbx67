@@ -17,6 +17,7 @@ import { footY, hiding, inWorld, playerBody, playerMotion, shows } from './prolo
 import { OFFICER, placed } from './barfight.ts'
 import type { CampView } from './campView.ts'
 import { buildCamp } from './campView.ts'
+import { buildSlope } from './skiView.ts'
 import { boatIn } from './cabinRide.ts'
 import { CRUISER_HULL, LIGHT_BAR, TRUCK_HULL, barnetteAt, cruiserAt, lightColor, truckAt } from './roadsideStop.ts'
 import { closeUp } from './knot.ts'
@@ -350,7 +351,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const space = spaces[g.space]
     const root = new pc.Entity(space.id)
     const c = centerOf(space)
-    if (space.id !== 'camp') primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
+    // The camp draws its own ground (campView.ts); the search's is the slope's own shape (skiView.ts).
+    if (space.id === 'search') buildSlope(app, root)
+    else if (space.id !== 'camp') primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
     const toggles = propsIn(space, t.season, t.clock).flatMap((p) => {
       const e = addProp(root, p)
       return e && p.while ? [[e, p.while] as const] : []
