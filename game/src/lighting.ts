@@ -201,6 +201,8 @@ const indoorLamp: Readonly<Partial<Record<SpaceId, Lamp>>> = {
   steak: { color: '#ffb877', intensity: 2.2, range: 14, at: [0, 2.6, 0] },
   // The café: the lamps over Dottie's counter.
   cafe: { color: '#ffcf8a', intensity: 1.9, range: 12, at: [-0.7, 2.4, 2.0] },
+  // The community hall: the bulbs over the chairs.
+  hall: { color: '#ffb877', intensity: 2.0, range: 14, at: [-1.0, 2.6, 0] },
   story: { color: '#8a93a6', intensity: 0.6, range: 10, at: [0, 3, 0] },
 }
 

@@ -73,6 +73,7 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   cafe: 'cafe',
   highway: 'highway',
   street: 'street',
+  hall: 'hall',
 }
 
 // The beats of the run, in order: the first scene at each place on the path, the photo lab again on the base, and

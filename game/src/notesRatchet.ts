@@ -90,11 +90,12 @@ export const storyNotes = (stops: readonly Stop[]): ReadonlySet<string> => new S
 
 export type Sender = Readonly<{ key: string; space: SpaceId; spot: string }>
 
-// Stands just short of a spot, looking at it, so the engine's own focus picks it.
+// Stands just short of a spot, looking at it, so the engine's own focus picks it. A scene's text that came up on
+// arrival (the Chiefs meeting's, chiefsMeeting.ts) is put away first, as a player does before walking.
 const facing = (g: Game, i: Interactable): Game => {
   const pos = vec(i.x, i.z - Math.min(0.2, i.r / 2))
   const view = angleTo(pos, i)
-  return { ...g, pos, facing: view, view, vel: vec(0, 0) }
+  return { ...g, panel: g.panel?.buttons.some((b) => b.id.startsWith('note:')) ? g.panel : undefined, pos, facing: view, view, vel: vec(0, 0) }
 }
 
 // Everything one spot leads to: the game after using it, after holding it to the end, and after each button on the

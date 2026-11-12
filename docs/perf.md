@@ -115,6 +115,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `search` |     1,500 | 1,500,000 |                 512 |
 | `wreck` |      1,500 | 1,500,000 |                 512 |
 | `owensCamp` |  1,500 | 1,500,000 |                 512 |
+| `hall`  |      1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 | `panPeak` |    1,500 | 1,500,000 |                 512 |
 
