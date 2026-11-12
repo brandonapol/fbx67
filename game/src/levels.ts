@@ -21,6 +21,7 @@ import { hotelBar } from './hotelBar.ts'
 import { hangar, steak, strip } from './bushStrip.ts'
 import { cafe } from './dottiesCafe.ts'
 import { highway } from './roadsideStop.ts'
+import { street } from './officerStop.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
@@ -28,7 +29,7 @@ import { COUNTER, dressing } from './silverPan.ts'
 import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 import { searchSpace } from './skiing.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'search' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -381,15 +382,15 @@ export const story: Space = {
 // heightAt, drawn by skiView.ts.
 const search: Space = { id: 'search', ...searchSpace }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, search, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
-// flooded streets that are built from it, the help tent's dressing (hospital.ts), and in the flood the water inside the
-// boarding house (highwater.ts). The season is the story's, never the space's (timeOf in lighting.ts). Season layers
+// flooded streets and the officer's stop on Second (officerStop.ts) that are built from it, the help tent's dressing
+// (hospital.ts), and in the flood the water inside the boarding house (highwater.ts). The season is the story's, never the space's (timeOf in lighting.ts). Season layers
 // add nothing solid, so collision reads s.props.
 export const propsIn = (s: Space, season: Season, clock?: Clock): readonly Prop[] => {
   if (s.id === 'helpTent') return tentProps(s.props, season, clock)
-  if (s.id === 'downtown' || s.id === 'flood' || s.id === 'line') return [...s.props, ...townLayer(season, clock)]
+  if (s.id === 'downtown' || s.id === 'flood' || s.id === 'line' || s.id === 'street') return [...s.props, ...townLayer(season, clock)]
   if (season === 'flood' && (s.id === 'room' || s.id === 'boarding')) return [...s.props, ...(indoors[s.id] ?? [])]
   return s.props
 }

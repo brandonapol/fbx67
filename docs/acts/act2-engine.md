@@ -7,13 +7,14 @@ what is intended. The engine never decides a story outcome: it sends the story's
 
 ## Where Act 2 plays
 
-`src/router.ts` routes each scene by the story's `place(state)`. Act 2 has two spaces of its own, both declared in
+`src/router.ts` routes each scene by the story's `place(state)`. Act 2's spaces include these, declared in
 `src/levels.ts`:
 
 | Space     | File             | Places it takes over            | Missions that play in it                    |
 | --------- | ---------------- | ------------------------------- | ------------------------------------------- |
 | `eielson` | `src/eielson.ts` | `photoLab`, `photoRecords`      | the photo lab (`thePhotoLab`)               |
 | `kitchen` | `src/kitchen.ts` | `lucysKitchen`                  | the hotel bar (`theHotelBar`), the Major's cabinet (`theMajorsCabinet`) |
+| `street`  | `src/officerStop.ts` | `nlCafe` (outside the gossip visits) | the officer's stop (`a2_officer`)    |
 
 Every other Act 2 scene plays as a menu panel over the `story` backdrop, each option a note button. The base map has
 spawns for the squadron building, the Major's office, the hangar and the rest, but no scene routes to them yet.
@@ -29,6 +30,17 @@ comes in at the door.
   one note per menu, until it lands where its mission note does, and Wade is back on the `story` backdrop.
 - **Every other kitchen scene** (for instance `a2_minto`) opens its menu where Wade comes in, with no spot to use.
 - Nothing in the room decides what a choice does. It is a place to stand and a table to walk to.
+
+## The officer's stop on Second (`officerStop.ts`)
+
+`a2_officer` is at `nlCafe` in Act 2, and the café's own space plays only the gossip visits (`dottiesCafe.ts`), so the
+scene routes to `street`: downtown's own data with the freeze-up layer, Wade out of the café's door onto Second's south
+walk, a Fairbanks PD cruiser idling at the curb and the officer (`N.cop`, the barfight's look) leaning on its fender
+under a streetlight. Nothing comes up until Wade walks to him. His spot opens the scene's own text, whose read of the
+heat is tiered by the story (`officerTier` in `text-game/src/scenes/act2.ts`), and its one note, `walkOn`, with no
+button to step back. The engine reads no heat and offers no deal. `src/officerStop.test.ts` plays each tier's
+`--choices` path headless and checks the state and the path against the text build's, and that the ratchet counts the
+officer as the sender of `a2_officer:walkOn`.
 
 ## The photo lab (`photoLab.ts`, `photoLabBot.ts`, `eielson.ts`)
 
@@ -107,5 +119,5 @@ Run `make test/game/unit` for all of the above.
   `act2Soundscapes` (a hum); the stealth beats have no cues of their own.
 - **The rest of the base.** The Eielson blockout is a gray box with roofless one-storey buildings; the squadron
   building, the Major's office, the hangar and the barracks are walkable but no scene routes to them.
-- **Everything else in Act 2** (the chiefs, the steak, Minto, the land office search, Jake, the officer, the flight,
+- **Everything else in Act 2** (the chiefs, the steak, Minto, the land office search, Jake, the flight,
   the letters, the heat) plays as menus; the unbuilt notes are the `a2_*` lines of `game/notes-allowlist.txt`.

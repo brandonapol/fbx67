@@ -22,6 +22,9 @@ export const starts: readonly Start[] = [
   { scene: 'a2_curly', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'strip' },
   { scene: 'a2_steak', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'steak' },
   { scene: 'a2_jake', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'hangar' },
+  // The same path to the officer's stop, on Second outside the café (officerStop.ts): the start the prologue run samples
+  // the street from.
+  { scene: 'a2_officer', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'street' },
   // Every choice the first on to a2_heat, at the wheel on the Richardson Highway, and from there the café: the starts
   // the prologue run samples the highway and Dottie's café from.
   { scene: 'a2_heat', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'highway' },

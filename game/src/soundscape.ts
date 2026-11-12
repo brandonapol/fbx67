@@ -14,6 +14,7 @@ import { LINE_Z } from './searchEli.ts'
 import type { Rect } from './downtown.ts'
 import type { Bed } from './recordings.ts'
 import { LAB } from './eielson.ts'
+import { CRUISER } from './officerStop.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
 
@@ -494,9 +495,17 @@ const cabin: Soundscape = {
 // The bush strip and the base hangar's door in November: packed snow underfoot and the wind (bushStrip.ts).
 const strip: Soundscape = { ground: { surface: 'snow', regions: [], tempF: SEASON_F.freezeup }, layers: [...wind(0.2)], events: [] }
 
+// Second Avenue at thirty below, the officer's stop (officerStop.ts): snow underfoot, the wind down the street and the
+// cruiser idling at the curb.
+const street: Soundscape = {
+  ground: { surface: 'snow', regions: [], tempF: SEASON_F.freezeup },
+  layers: [...wind(0.14), { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 110, gain: 0.12, at: CRUISER }],
+  events: [],
+}
+
 // The hotel bar downtown has the bar room's bed: talk, glasses, a stove, the jukebox under the guitar.
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, search: slope, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, street, search: slope, story }
 
 // Curly's routine clock at the camp (curly.ts): refueling is its first beat.
 export const refueling = (t: number): boolean => beatOf(t) === 'refuel'
