@@ -92,7 +92,7 @@ test('no prompt the game shows in her scenes names Wade', () => {
 test('the switch reads pov(state), never a scene id: lucy* and pov* name none', () => {
   const dir = new URL('./', import.meta.url)
   const files = readdirSync(dir).filter((f) => /^(lucy|pov).*\.ts$/.test(f) && !f.endsWith('.test.ts'))
-  assert.deepEqual(files.sort(), ['lucy.ts', 'pov.ts'])
+  assert.deepEqual(files.sort(), ['lucy.ts', 'lucyAid.ts', 'pov.ts'])
   files.forEach((f) => {
     const src = readFileSync(new URL(f, dir), 'utf8')
     sceneIds.forEach((id) => assert.ok(!src.includes(`'${id}'`), `${f} names ${id}`))

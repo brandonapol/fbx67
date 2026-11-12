@@ -6,6 +6,7 @@ import { replayPath } from './start.ts'
 import { ACT3_PATH } from '../smoke/act3Plan.ts'
 import { BARE_LIMIT, FREEZE_LIMIT, FUMBLE, LIGHTING, NUMB_PACE, fresh } from './survival.ts'
 import type { Night, Signal, Verb } from './survivalPlay.ts'
+import { HANDS_AT_FIRE } from './lucyAid.ts'
 import {
   NIGHT,
   ORDERS,
@@ -136,6 +137,40 @@ test('Jake first: her fingers are white by the time she lights the fire, so it i
   assert.equal(tied.run.body.hands, 'white')
   const ready = doAll(tied, ['go:trees', 'cut:deadfall', 'go:fire'])
   assert.equal(act(ready, 'light').doing?.total, LIGHTING * FUMBLE)
+})
+
+test('her first aid at the fire (lucyAid.ts): white fingers held to it come back, and the fire burns the while', () => {
+  const tied = doAll(night('jake'), ['free', 'tie', 'go:trees', 'cut:deadfall', 'cut:deadfall', 'go:fire', 'light'])
+  assert.equal(tied.run.body.hands, 'white')
+  assert.ok(!verbs({ ...tied, run: { ...tied.run, carried: { ...tied.run.carried, at: 'cabin' } } }).includes('warm'), 'only at the fire')
+  assert.ok(verbs(tied).includes('warm'))
+  assert.ok(!verbs(tied).includes('wrap'), 'her feet are fine: nothing to wrap')
+  const started = act(tied, 'warm')
+  assert.equal(started.doing?.total, HANDS_AT_FIRE)
+  const fuel = tied.run.fire!.fuel
+  const warmed = doing(tied, 'warm')
+  assert.equal(warmed.run.body.hands, 'fine')
+  assert.ok(Math.abs(warmed.run.fire!.fuel - (fuel - HANDS_AT_FIRE)) < 1e-6, 'it spends the fire’s time')
+  assert.ok(!verbs(warmed).includes('warm'), 'once warm, the verb is gone')
+})
+
+test('her numb feet, warmed at the fire and wrapped in her scarf, walk at her own pace again', () => {
+  const lit = doAll(night('fire'), ['go:trees', 'cut:deadfall', 'cut:deadfall', 'go:fire', 'light'])
+  const numb = { ...lit, run: { ...lit.run, body: { ...lit.run.body, feet: 'numb' as const } } }
+  assert.equal(secondsFor(numb.run.body, 'go:cabin'), WALK / NUMB_PACE)
+  assert.ok(verbs(numb).includes('wrap'))
+  const wrapped = doing(numb, 'wrap')
+  assert.equal(wrapped.run.body.feet, 'fine')
+  assert.equal(secondsFor(wrapped.run.body, 'go:cabin'), WALK)
+})
+
+test('her first aid names no one but her', () => {
+  const lit = doAll(night('fire'), ['go:trees', 'cut:deadfall', 'cut:deadfall', 'go:fire', 'light'])
+  const hurt = { ...lit, run: { ...lit.run, body: { ...lit.run.body, hands: 'white' as const, feet: 'numb' as const } } }
+  const labels = panelOf(CRASH, hurt).buttons.filter((b) => b.id === 'night:warm' || b.id === 'night:wrap')
+  assert.equal(labels.length, 2)
+  assert.ok(labels.every((b) => !/Wade/.test(b.label)))
+  assert.doesNotMatch(panelOf(CRASH, act(hurt, 'wrap')).text, /Wade/)
 })
 
 test('fire first: she warms her hands at the fire between the frame and the knot, and keeps them', () => {

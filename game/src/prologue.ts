@@ -52,7 +52,7 @@ import { ARRIVE_NOTE, ROUTE_NOTES, heightAt, routeOf, setOff, skiFrame } from '.
 import type { RouteId } from './skiing.ts'
 import type { Night } from './survivalPlay.ts'
 import type { Dig } from './owensCamp.ts'
-import { FAILED, JAKE, LETTER_TITLE, READ_TIME, SPAWN as DIG_SPAWN, SPAWN_FACING as DIG_FACING, arrival as digArrival, campSpot, digTime, digging, dug as dugAt, exposure as digExposure, letterLine, reread, step as digStep } from './owensCamp.ts'
+import { FAILED, JAKE, LETTER_TITLE, READ_TIME, SPAWN as DIG_SPAWN, SPAWN_FACING as DIG_FACING, WARM_HANDS, arrival as digArrival, campSpot, canWarm, digTime, digging, dug as dugAt, exposure as digExposure, letterLine, reread, step as digStep, warmTime, warmed } from './owensCamp.ts'
 import * as night from './survivalPlay.ts'
 import { burning } from './survival.ts'
 import { COME_TO, COME_TO_FACING, CRASH_TIME, crashing, gliding, lucySeat, skipSpot as skipCrash, standOf } from './engineOut.ts'
@@ -491,6 +491,9 @@ export const READ_LETTER = 'letter'
 
 export const canRead = (g: Game): boolean => g.space === 'owensCamp' && !g.panel && !g.holding && digging(g.story) && !focus(g)
 
+// With white fingers, the same held interact warms them inside her parka first (owensCamp.ts, lucyAid.ts).
+export const canWarmHands = (g: Game): boolean => canRead(g) && g.dig !== undefined && canWarm(g.dig)
+
 export const canLight = (g: Game): boolean => !g.brawl && !g.panel && !g.holding && !g.lit && !riding(g.ride) && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
 
 // Lucy takes a lit cigarette out of Wade's mouth as soon as he is near her, and drops it in the water.
@@ -699,6 +702,7 @@ export const interact = (g: Game): Game => {
   // In the hotel bar, mid-song, interact is the strum (hotelBar.ts).
   if (g.space === 'hotelBar' && g.bar?.song) return { ...g, bar: strum(g.bar) }
   const target = focus(g)
+  if (!target && canWarmHands(g)) return { ...g, vel: zero, holding: { id: WARM_HANDS, progress: 0, time: warmTime(g.dig!) } }
   if (!target) return canRead(g) ? { ...g, vel: zero, holding: { id: READ_LETTER, progress: 0, time: READ_TIME } } : canLight(g) ? { ...g, vel: zero, holding: { id: CIGARETTE, progress: 0, time: LIGHT_TIME } } : g
   const id = target.id
   // A dig at Owen's camp takes twice as long with white hands (owensCamp.ts).
@@ -887,7 +891,7 @@ const dugOut = (g: Game, d: Dig, spot: CacheSpot): Game => {
 // light gone is a fade to the last checkpoint, with what she had dug then; the story never hears of it (Rule 4).
 const campCold = (g: Game, dt: number): Game => {
   if (g.space !== 'owensCamp' || !g.dig || !digging(g.story)) return g
-  const working = g.holding !== undefined
+  const working = g.holding !== undefined && g.holding.id !== WARM_HANDS
   const r = digStep(g.dig, digExposure(length(g.vel) > 0.1 || (working && g.holding?.id !== READ_LETTER), working), dt)
   if (!r.failed) return { ...g, dig: r.dig }
   const c = r.dig.carried
@@ -898,6 +902,7 @@ const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
   if (h.id === CIGARETTE) return { ...done, lit: true }
   if (h.id === POST_BOX) return { ...done, mailed: true }
+  if (g.space === 'owensCamp' && g.dig && h.id === WARM_HANDS) return { ...done, dig: warmed(g.dig) }
   if (g.space === 'owensCamp' && g.dig) return h.id === READ_LETTER ? { ...done, panel: owenLetterPanel(g.story) } : dugOut(done, g.dig, h.id as CacheSpot)
   if (h.id === DRAWERS.id && g.lab) return { ...done, lab: searched(g.lab) }
   if (g.cabinet && cabinetSpot(g.cabinet, h.id)) {
@@ -917,7 +922,7 @@ export const inReach = (g: Game, id: string): boolean => {
 const hold = (g: Game, input: Input, dt: number): Game => {
   const h = g.holding
   if (!h) return g
-  if (!input.hold || (h.id !== CIGARETTE && h.id !== READ_LETTER && !inReach(g, h.id))) return { ...g, holding: undefined }
+  if (!input.hold || (h.id !== CIGARETTE && h.id !== READ_LETTER && h.id !== WARM_HANDS && !inReach(g, h.id))) return { ...g, holding: undefined }
   if (isSpot(h.id) && watchOf(g).aware >= 1) return caught(g)
   const progress = h.progress + dt
   return progress < h.time ? { ...g, holding: { ...h, progress } } : finish(g, h)
