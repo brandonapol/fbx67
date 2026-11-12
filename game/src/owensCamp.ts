@@ -11,6 +11,7 @@ import type { Exposure, Failure, Run } from './survival.ts'
 import { begin, expose, failure, handTime, reach, retry } from './survival.ts'
 import type { Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
+import { aidSeconds, canTend, cured } from './lucyAid.ts'
 
 // Lucy's dig at Owen's survey camp (docs/acts/act3-missions.md, section 1; #139): 12 December, thirty-eight below. The
 // space is the prologue's camp (camp.ts), the same ground and the same three places Owen could hide his notes, with the
@@ -170,6 +171,15 @@ export const reread = (d: Dig): Dig => ({ ...d, body: expose(d.body, exposure(fa
 // The read of Owen's second letter, mitts off: the one line in it about where he put things, for the spot he chose.
 export const LETTER_TITLE = `${N.owenShort}'s second letter`
 export const letterLine = (s: State): string => (s.owenCache ? digLabels[s.owenCache] : '')
+
+// Her white fingers warmed inside her parka against her skin (lucyAid.ts): no fire at the camp, so it costs a minute
+// of light standing still, mitts not off. Held, with nothing in front of her, in place of reading the letter.
+export const WARM_HANDS = 'warmHands'
+export const WARM_PROMPT = 'Warm your hands inside your parka'
+
+export const canWarm = (d: Dig): boolean => canTend(d.body, 'hands')
+export const warmTime = (d: Dig): number => aidSeconds(d.body, 'hands', false)
+export const warmed = (d: Dig): Dig => ({ ...d, body: cured(d.body, 'hands') })
 
 // What the fade says before the checkpoint.
 export const FAILED: Readonly<Record<Failure, string>> = {

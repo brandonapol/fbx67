@@ -18,6 +18,8 @@ import {
   stepOf,
   tick,
 } from './survival.ts'
+import type { Aid } from './lucyAid.ts'
+import { aidSeconds, canTend, cured } from './lucyAid.ts'
 
 // The long night played in the engine (docs/acts/act3-missions.md, section 2; issue #138): the survival rules of
 // survival.ts run frame by frame over the night's tasks. Lucy cuts boughs and deadfall, lights and feeds the fire,
@@ -69,6 +71,8 @@ export type Verb =
   | 'eat'
   | 'rags'
   | 'stamp'
+  | 'warm'
+  | 'wrap'
   | `go:${Place}`
 
 // A task under way: the verb and the play seconds left of it.
@@ -98,8 +102,11 @@ export const SECONDS = {
 // Assumed: a walk between any two places; numb feet stretch it (survival.ts pace).
 export const WALK = 8
 
-// The tasks done bare-handed (mitts off): lighting, the frame, the knot, the rags.
-const BARE: ReadonlySet<Verb> = new Set(['light', 'free', 'tie', 'rags'])
+// The tasks done bare-handed (mitts off): lighting, the frame, the knot, the rags, and her first aid at the fire.
+const BARE: ReadonlySet<Verb> = new Set(['light', 'free', 'tie', 'rags', 'warm', 'wrap'])
+
+// Her first aid on herself at the fire (lucyAid.ts): her hands held to it, her feet warmed and wrapped in her scarf.
+const AID: Readonly<Partial<Record<Verb, Aid>>> = { warm: 'hands', wrap: 'feet' }
 
 // The hard work that makes her sweat: the axe, carrying Jake, stamping the X.
 const HARD: ReadonlySet<Verb> = new Set(['cut:boughs', 'cut:deadfall', 'bed', 'stamp'])
@@ -127,6 +134,8 @@ const PLACE_OF: Readonly<Partial<Record<Verb, Place>>> = {
   bed: 'cabin',
   rags: 'cabin',
   stamp: 'slope',
+  warm: 'fire',
+  wrap: 'fire',
 }
 
 // --- The night's stages ----------------------------------------------------------------------------------------------
@@ -173,6 +182,9 @@ export const ready = (n: Night, v: Verb): boolean => {
       return stage === 'signalling' && c.signal === 'smoke'
     case 'stamp':
       return stage === 'signalling' && c.signal === 'stampX'
+    case 'warm':
+    case 'wrap':
+      return lit && canTend(n.run.body, AID[v]!, fire)
   }
   return false
 }
@@ -231,7 +243,7 @@ export const sweatAfter = (c: Camp, fire: Fire | undefined, verb: Verb | undefin
 
 // How long a verb takes this body: hand tasks fumble with white hands, walks drag on numb feet (survival.ts).
 export const secondsFor = (b: Body, v: Verb): number =>
-  v.startsWith('go:') ? WALK / pace(b) : v === 'light' ? handTime(b, LIGHTING) : v === 'eat' ? SECONDS.eat : handTime(b, SECONDS[v as keyof typeof SECONDS])
+  v.startsWith('go:') ? WALK / pace(b) : AID[v] !== undefined ? aidSeconds(b, AID[v], true) : v === 'light' ? handTime(b, LIGHTING) : v === 'eat' ? SECONDS.eat : handTime(b, SECONDS[v as keyof typeof SECONDS])
 
 // The player picks a verb: it starts, if it can. A task under way or a fade takes no new one.
 export const act = (n: Night, v: Verb): Night =>
@@ -275,6 +287,9 @@ const finish = (r: Run<Camp>, v: Verb): Run<Camp> => {
     case 'rags':
     case 'stamp':
       return { ...r, carried: { ...c, signalled: true } }
+    case 'warm':
+    case 'wrap':
+      return { ...r, body: cured(r.body, AID[v]!) }
   }
   return r
 }
@@ -341,6 +356,8 @@ const LABELS: Readonly<Record<Exclude<Verb, `go:${Place}`>, string>> = {
   eat: 'Eat from the kit',
   rags: 'Soak rags in a cowling panel for the smoke',
   stamp: 'Stamp the X',
+  warm: 'Hold your hands to the fire',
+  wrap: 'Boots off: warm your feet and wrap them in your scarf',
 }
 
 export const labelOf = (v: Verb): string => (v.startsWith('go:') ? `Go to ${PLACE_NAMES[v.slice(3) as Place]}` : LABELS[v as keyof typeof LABELS])
@@ -356,6 +373,8 @@ const DOING: Readonly<Record<Exclude<Verb, `go:${Place}`>, string>> = {
   eat: 'Eating',
   rags: 'Soaking rags',
   stamp: 'Stamping',
+  warm: 'Warming your hands',
+  wrap: 'Wrapping your feet',
 }
 
 const doingText = (d: Doing): string => {
