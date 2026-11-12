@@ -13,9 +13,13 @@ import { openedOf } from './barfight.ts'
 import { PLANS, listen, playOut } from './barfightBot.ts'
 import { LAB_SPOT } from './eielson.ts'
 import { WAY_NOTE } from './photoLab.ts'
-import { GO, asks } from './kitchen.ts'
+import { GO, TABLE_SPOT, asks } from './kitchen.ts'
 import type { Method } from './photoLab.ts'
 import { playLab } from './photoLabBot.ts'
+import { playCabinet } from './majorsCabinetBot.ts'
+import type { Seen } from './majorsCabinetBot.ts'
+import { DIAL_SPOT } from './majorsCabinet.ts'
+import type { GotIn } from './majorsCabinet.ts'
 import type { SpaceId } from './levels.ts'
 import { playSearch, start as startWalk } from './trailDrive.ts'
 import type { Interactable } from './world.ts'
@@ -152,6 +156,23 @@ const trailSenders = (stop: Stop, g: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: TRAIL }))
 }
 
+// The Major's cabinet plays on the base (majorsCabinet.ts): searching tonight at Lucy's table takes Wade to the hall
+// outside the Major's office, and its notes go as the run plays. Every way in with every getaway is played by the
+// cabinet's scripted player (majorsCabinetBot.ts), the spot being the cabinet's dial.
+const CABINET = 'theMajorsCabinet'
+const GOT_IN: readonly GotIn[] = ['combo', 'forced']
+const SEEN: readonly Seen[] = ['seen', 'unseen']
+const cabineted = new WeakMap<Stop, readonly State[]>()
+const cabinetSenders = (stop: Stop, g: Game): readonly Sender[] => {
+  const table = available(g).find((i) => i.id === TABLE_SPOT.id)
+  if (mission(stop.state)?.id !== CABINET || !table) return []
+  const landed =
+    cabineted.get(stop) ??
+    GOT_IN.flatMap((how) => SEEN.map((seen) => playCabinet(press(interact(facing(g, table)), 'note:search'), how, seen).story))
+  cabineted.set(stop, landed)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: 'eielson', spot: DIAL_SPOT.id }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -162,7 +183,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   const g = resume(stop.state, [0])
   // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
   const space = g.space
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...available(g)
     .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)

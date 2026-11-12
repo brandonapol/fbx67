@@ -226,6 +226,13 @@ export const MESS: readonly Prop[] = [
   ...[[166.2, 56.4], [167.1, 55.9], [168.4, 56.2], [169.1, 55.4], [167.7, 54.9], [170.3, 56.1], [165.6, 55.3]].map(([x, z]) => print(x!, z!)),
 ]
 
+// The screwdriver's marks on the Major's cabinet (majorsCabinet.ts): bright metal gouged along the top drawer's seam,
+// drawn from the moment it is forced and left there.
+export const PRY_MARKS: readonly Prop[] = [
+  { box: box([185.65, 186.35, -77.69, -77.66]), h: 0.03, y: FLOOR + 1.0, color: '#d9d6cc', while: 'pried' },
+  { box: box([185.9, 186.1, -77.69, -77.66]), h: 0.1, y: FLOOR + 0.95, color: '#d9d6cc', while: 'pried' },
+]
+
 // The hangar, x 262..302, z -130..-100: the big doors shut on the south face, the personnel door on the west; the
 // light plane up on jacks with its cowling off, the workbench and the parts racks on the west wall, the heater.
 export const HANGAR: Rect = [262, 302, -130, -100]
@@ -298,6 +305,7 @@ export const pieces: readonly Prop[] = [
   ...lab,
   ...MESS,
   ...hangar,
+  ...PRY_MARKS,
   ...doors.flatMap(doorDressing),
 ]
 
@@ -331,6 +339,15 @@ export const LAB_SPOT: Interactable = { id: 'recordsWay', x: 163.5, z: 38, r: 3,
 // The index card's three drawers, on the north face of the first row in from the door (photoLab.ts).
 export const DRAWERS: Interactable = { id: 'drawers', x: 168, z: 57.3, r: 1.5, prompt: 'Open the drawers on the index card' }
 
+// The Major's office (majorsCabinet.ts): his desk with the calendar on it, and the cabinet against the north wall, where
+// Wade dials, pries, photographs and puts back. Holds are seconds.
+export const DESK_SPOT = { id: 'majorsDesk', x: 182, z: -69.4, r: 1.6, prompt: "Look over the Major's desk" } as const satisfies Interactable
+const AT_CABINET = { x: 186, z: -77.4, r: 1.4 } as const
+export const DIAL_SPOT = { id: 'cabinetDial', ...AT_CABINET, prompt: 'Try the combination lock' } as const satisfies Interactable
+export const PRY_SPOT = { id: 'cabinetPry', ...AT_CABINET, prompt: 'Pry the drawer with the screwdriver', hold: 6 } as const satisfies Interactable
+export const PAGE_SPOT = { id: 'cabinetPage', ...AT_CABINET, prompt: 'Photograph the next page', hold: 1.2 } as const satisfies Interactable
+export const BACK_SPOT = { id: 'cabinetBack', ...AT_CABINET, prompt: 'Put everything back as it was', hold: 2 } as const satisfies Interactable
+
 export const eielson: Space = {
   id: 'eielson',
   act: 'Act 2: Freeze-up',
@@ -343,7 +360,7 @@ export const eielson: Space = {
   spawn: vec(barracks.x, barracks.z),
   props: pieces,
   figures: [],
-  spots: [LAB_SPOT, DRAWERS],
+  spots: [LAB_SPOT, DRAWERS, DESK_SPOT, DIAL_SPOT, PRY_SPOT, PAGE_SPOT, BACK_SPOT],
 }
 
 // The nav graph: the base's walkable network as nodes on the base map's routes, through the doors, and the straight

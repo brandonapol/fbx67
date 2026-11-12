@@ -8,7 +8,8 @@ import { available, focus, interact, label, press, still, tick } from './prologu
 import { startFrom } from './start.ts'
 import { route } from './router.ts'
 import { GO, SPAWN, TABLE_SPOT } from './kitchen.ts'
-import { LAB_SPOT, spawnAt } from './eielson.ts'
+import { DIAL_SPOT, LAB_SPOT, spawnAt } from './eielson.ts'
+import type { MissionEnding } from '../../text-game/src/missions.ts'
 import { engineSenders, walk } from './notesRatchet.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
 import { angleTo, distance, sub, vec } from './world.ts'
@@ -57,6 +58,9 @@ const play = (arrived: Game, notes: readonly string[]): Game =>
 
 const starts = { theHotelBar: 'a2_hotel', theMajorsCabinet: 'a2_co_ask' } as const
 
+// The endings played through menus at the table: all but the cabinet searched, which is the base's run.
+const atTheTable = (e: MissionEnding): boolean => e.applies[0] !== 'search'
+
 Object.entries(starts).forEach(([id, scene]) => {
   const arrived = startFrom(hash(pathTo(scene)), '')
 
@@ -80,11 +84,13 @@ Object.entries(starts).forEach(([id, scene]) => {
     assert.deepEqual(asked.story, arrived.story)
   })
 
-  // Each of the mission's notes, played as the scene notes it applies, one per menu: the text build's path for it.
-  test(`every way through ${id} lands where its mission note does, on the text build's path`, () => {
+  // Each of the mission's notes played at the table, as the scene notes it applies, one per menu: the text build's path
+  // for it. Searching the Major's cabinet tonight takes Wade to the base, where the run sends its notes
+  // (majorsCabinet.test.ts); at the table only refusing plays on as menus.
+  test(`every way through ${id} from the table lands where its mission note does, on the text build's path`, () => {
     const m = mission(arrived.story)
     assert.equal(m?.id, id)
-    m!.endings.forEach((e) => {
+    m!.endings.filter(atTheTable).forEach((e) => {
       const g = play(arrived, e.applies)
       assert.deepEqual(g.story, sendMission(arrived.story, e.note), e.note)
       assert.equal(g.space, 'story', `out of the kitchen, ${g.story.scene} plays over the story backdrop`)
@@ -100,12 +106,13 @@ test("Lucy's other kitchen scenes open their menus where Wade comes in: the tabl
   assert.equal(g.panel?.title, menu(g.story).title)
 })
 
-test("the ratchet counts Lucy's table as the sender of every hotel bar and Major's cabinet note, and only there", () => {
+test("the ratchet counts Lucy's table as the sender of every hotel bar note and the cabinet refused, the base's run the rest", () => {
   const ids = Object.keys(starts)
   const at = engineSenders(walk()).filter((s) => ids.some((id) => s.key.startsWith(`${id}:`)))
   const all = walk().flatMap((s) => s.offers.map((o) => o.key)).filter((k) => ids.some((id) => k.startsWith(`${id}:`)))
   assert.deepEqual([...new Set(at.map((s) => s.key))].sort(), [...new Set(all)].sort())
-  at.forEach((s) => assert.deepEqual([s.space, s.spot], ['kitchen', TABLE_SPOT.id]))
+  const searched = (key: string): boolean => key.startsWith('theMajorsCabinet:') && key !== 'theMajorsCabinet:refused'
+  at.forEach((s) => assert.deepEqual([s.space, s.spot], searched(s.key) ? ['eielson', DIAL_SPOT.id] : ['kitchen', TABLE_SPOT.id], s.key))
 })
 
 // The photo lab (a2_photos) is Lucy's ask before it is the base's: Wade comes into her kitchen, and at her table

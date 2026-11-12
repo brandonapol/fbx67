@@ -27,6 +27,7 @@ import { curlyAt } from './floatDock.ts'
 import type { CrowdView } from './crowdView.ts'
 import { crowdFor, syncCrowd } from './crowdView.ts'
 import { figuresOf, walkers } from './photoLab.ts'
+import { poseAt as dutyPose } from './majorsCabinet.ts'
 
 const FAR_CLIP = 200
 
@@ -107,7 +108,7 @@ const addProp = (root: pc.Entity, p: Prop): pc.Entity | undefined => {
 }
 
 // The lab's people in Air Force blue, the duty sergeant's darker under his parka.
-const UNIFORM: Readonly<Record<string, string>> = { clerk: '#4a5a78', airman: '#56688a', sergeant: '#2f3a4e' }
+const UNIFORM: Readonly<Record<string, string>> = { clerk: '#4a5a78', airman: '#56688a', sergeant: '#2f3a4e', duty: '#56688a' }
 
 const addFigure = (root: pc.Entity, f: Figure, cast: Cast): pc.Entity => {
   if (f.cast !== undefined) {
@@ -333,7 +334,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     })
     const figures = new Map(space.figures.map((f) => [f.id, addFigure(root, f, cast)] as const))
     const labMen = new Map(
-      space.id === 'eielson' ? walkers.map((w) => [w.id, addFigure(root, { id: `lab-${w.id}`, at: w.from, facing: 0, coat: UNIFORM[w.id], skin: '#c99b7a', hair: '#3a2c22', height: 1.78 }, cast)] as const) : [],
+      space.id === 'eielson' ? [...walkers.map((w) => w.id), 'duty'].map((id) => [id, addFigure(root, { id: `lab-${id}`, at: { x: 0, z: 0 }, facing: 0, coat: UNIFORM[id], skin: '#c99b7a', hair: '#3a2c22', height: 1.78 }, cast)] as const) : [],
     )
     const camp = space.id === 'camp' ? buildCamp(app, root, base) : undefined
     const boat = space.id === 'flood' || space.id === 'cabin' ? new pc.Entity('boat') : undefined
@@ -475,7 +476,8 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       player.enabled = inWorld(g) && (!cam.close || state.held !== undefined)
     }
     b.camp?.sync(g, flying(g.flight) ? undefined : b.figures.get('curly'), cast, state.cone)
-    const lab = figuresOf(g.lab)
+    // The duty airman walks his round while the Major's cabinet run is on (majorsCabinet.ts).
+    const lab = [...figuresOf(g.lab), ...(g.cabinet ? [{ id: 'duty', pose: dutyPose(g.cabinet.clock) }] : [])]
     b.labMen.forEach((e, id) => {
       const f = lab.find((x) => x.id === id)
       e.enabled = f !== undefined

@@ -48,7 +48,7 @@ export type Prop = Readonly<{
 
 export type Letter = 'unfolded' | 'folded'
 
-export type Mark = Letter | 'doused' | 'posting' | 'parked' | 'mess'
+export type Mark = Letter | 'doused' | 'posting' | 'parked' | 'mess' | 'pried'
 
 // A figure either wears a cast model (cast.ts), which it names even when its id is one, or is a gray box in a look.
 type Wears = Readonly<{ cast: CastId; coat?: never; skin?: never; hair?: never; hood?: never }>
