@@ -166,12 +166,12 @@ test('decision 3 is deliberate and untimed: its three notes and no way to walk o
   assert.deepEqual(later.panel, asked.panel)
 })
 
-test('warning Lucy and letting it go go on to the officer over the story backdrop, on the text build\'s path', () => {
+test('warning Lucy and letting it go go on to the officer on Second Avenue, on the text build\'s path', () => {
   ;['warn', 'ignore'].forEach((note) => {
     const g = pressNote(interact(atJake(jake)), note)
     assert.equal(g.story.scene, 'a2_officer')
-    assert.equal(g.space, 'story')
-    assert.equal(g.panel?.title, menu(g.story).title)
+    assert.equal(g.space, 'street', 'out of the café onto Second, where the officer waits (officerStop.ts)')
+    assert.equal(g.panel, undefined, 'his say comes up when Wade walks to him')
   })
 })
 

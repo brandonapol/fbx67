@@ -4,6 +4,7 @@ import type { Fight, Fighter, Intent, Room, Side, Thing } from './combat.ts'
 import { STAGGER, details, fighter, haul, idle, join, sitOut, start, step } from './combat.ts'
 import type { Figure, Prop } from './levels.ts'
 import { COUNTER, MOOSE_RACK, STOVE } from './silverPan.ts'
+import { OFFICER, OFFICER_LOOK } from './officerStop.ts'
 import type { Vec } from './world.ts'
 import { add, angleTo, vec } from './world.ts'
 
@@ -195,7 +196,7 @@ const looks = {
 // The patrons sit drinking until they come in.
 const sitting = new Set(JOINERS.map((j) => j.id))
 
-export const OFFICER = 'cop'
+export { OFFICER }
 
 export const figures: readonly Figure[] = [
   ...fighters('gotUp')
@@ -203,7 +204,7 @@ export const figures: readonly Figure[] = [
     .map((x): Figure => ({ id: x.id, at: x.pos, facing: x.facing, ...looks[x.id as keyof typeof looks], ...(sitting.has(x.id) ? { activity: 'sitDrink' as const } : {}) })),
   { id: 'hank', cast: 'hank', at: HANK_AT, facing: 0, height: 1.8, activity: 'stand' },
   { id: 'jake', at: vec(4.9, 4.35), facing: N, coat: '#5a4a32', skin: '#d8a880', hair: '#6a5a40', height: 1.8, activity: 'sitDrink' },
-  { id: OFFICER, at: DOOR, facing: N, coat: '#27304a', skin: '#e0b48f', hair: '#3a2c20', height: 1.85, when: () => false },
+  { id: OFFICER, at: DOOR, facing: N, ...OFFICER_LOOK, when: () => false },
 ]
 
 // Where a figure stands this frame: a fighter where the fight has him, the officer in the door once the law is in.

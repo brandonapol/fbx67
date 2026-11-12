@@ -17,8 +17,9 @@ const best: readonly number[] = (
 test('each space answers to the act and place the story names for it, or only to the scenes it names', () => {
   Object.values(spaces).forEach((s) => s.act && s.place && !s.scenes && assert.equal(spaceFor(s.act, s.place), s.id))
   assert.equal(spaces.downtown.place, undefined, 'downtown is walked through, never routed to')
-  // The café plays the gossip visits only: its place alone routes nothing (dottiesCafe.ts).
-  assert.equal(spaceFor(spaces.cafe.act!, spaces.cafe.place), undefined)
+  // The café plays the gossip visits only (dottiesCafe.ts): its place alone routes to Second Avenue outside it, where
+  // the officer's stop plays (officerStop.ts).
+  assert.equal(spaceFor(spaces.cafe.act!, spaces.cafe.place), 'street')
   spaces.cafe.scenes!.forEach((id) => assert.equal(sceneSpace({ ...initialState, scene: id }), 'cafe', id))
 })
 

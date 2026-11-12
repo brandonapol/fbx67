@@ -45,6 +45,7 @@ import { SPAWN as BAR_DOOR, SPAWN_FACING as BAR_FACING, arrival as barArrival, b
 import type { TieLook } from './bushStrip.ts'
 import { isStripSpace, rollOut, stripSpot, useSpot } from './bushStrip.ts'
 import { COUNTER_SPOT, counterSpot } from './dottiesCafe.ts'
+import { OFFICER_SPOT, SPAWN_FACING as STREET_FACING } from './officerStop.ts'
 import { WHEEL, seatAt as wheelSeat, skipAt, stageTime, staged } from './roadsideStop.ts'
 import type { Ski } from './skiing.ts'
 import { ARRIVE_NOTE, ROUTE_NOTES, heightAt, routeOf, setOff, skiFrame } from './skiing.ts'
@@ -323,7 +324,7 @@ const arrive = (g: Game): Game => {
   // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
   const cab = cabinetArrival(g.story)
   if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
-  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'search')) return arrive(enter(g, 'story'))
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'street' || g.space === 'search')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -351,6 +352,8 @@ const arrive = (g: Game): Game => {
     const into = { ...enter(g, 'hotelBar', BAR_DOOR, BAR_FACING), bar: barArrival(g.story) }
     return available(into).length ? into : menuPanel(into)
   }
+  // On Second Avenue Wade comes out of the café's door onto the walk, the officer at the curb (officerStop.ts).
+  if (r.space === 'street' && g.space !== 'street') return enter(g, 'street', spaces.street.spawn, STREET_FACING)
   // On the Richardson Highway Wade is at the wheel of the borrowed truck from the first frame: the stop, or the quiet
   // drive, plays before the scene's menu comes up (roadsideStop.ts).
   if (r.space === 'highway' && g.space !== 'highway') return atWheel(enter(g, 'highway'), 0)
@@ -715,6 +718,9 @@ export const interact = (g: Game): Game => {
   }
   // At the café counter Dottie's read and the scene's menu come up (dottiesCafe.ts).
   if (g.space === 'cafe' && id === COUNTER_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  // At the officer the scene's own text is his read of Wade's heat, and its menu is walking on. He has his say whatever
+  // Wade does: there is no stepping back from it.
+  if (g.space === 'street' && id === OFFICER_SPOT.id) return { ...g, vel: zero, panel: storyPanel(g.story, allNotes(g.story)) }
   // At the wheel the scene's menu asks what Wade does now; during the stage, interact skips to its end first.
   if (g.space === 'highway' && id === WHEEL.id) return { ...atWheel(g, stageTime(g.story)), panel: storyPanel(g.story, allNotes(g.story), [close('Sit a minute.')]) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
