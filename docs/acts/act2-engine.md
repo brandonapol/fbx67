@@ -15,9 +15,21 @@ what is intended. The engine never decides a story outcome: it sends the story's
 | `eielson` | `src/eielson.ts` | `photoLab`, `photoRecords`      | the photo lab (`thePhotoLab`)               |
 | `kitchen` | `src/kitchen.ts` | `lucysKitchen`                  | the hotel bar (`theHotelBar`), the Major's cabinet (`theMajorsCabinet`) |
 | `street`  | `src/officerStop.ts` | `nlCafe` (outside the gossip visits) | the officer's stop (`a2_officer`)    |
+| `hotelBar` | `src/hotelBar.ts` | `hotelBar`                    | the hotel bar (`theHotelBar`): the guitar as cover |
+| `strip`   | `src/bushStrip.ts` | `bushStrip`                    | Curly at the bush strip (`a2_curly`)        |
+| `steak`   | `src/bushStrip.ts` | `silverPan` (Act 2)            | the steak with Curly (`a2_steak`, `a2_confront`) |
+| `hangar`  | `src/bushStrip.ts` | `baseHangar`                   | Jake at the hangar door (`a2_jake`)         |
+| `cafe`    | `src/dottiesCafe.ts` | `nlCafe`, the gossip visits only | Dottie's counter (`a2_co_gossip`, `a2_heat_gossip`) |
+| `highway` | `src/roadsideStop.ts` | `richardsonHighway`         | Barnette's roadside stop (`a2_heat`)        |
 
-Every other Act 2 scene plays as a menu panel over the `story` backdrop, each option a note button. The base map has
-spawns for the squadron building, the Major's office, the hangar and the rest, but no scene routes to them yet.
+The Major's cabinet (`theMajorsCabinet`) plays on the base, in the squadron hall and the Major's office
+(`src/majorsCabinet.ts`, `eielson.ts`). Every other Act 2 scene plays as a menu panel over the `story` backdrop, each
+option a note button.
+
+Each of these spaces opens the scene's own menu at a spot and sends the note the menu offers; none decides an outcome.
+The hotel bar's set (`hotelBar.ts`), the bush strip, the steak and the hangar (`bushStrip.ts`), the café, the officer's
+stop and the roadside stop are gray-box rooms and staged beats, each with its own `*.test.ts` that checks the story
+lands where the text build's `--choices` path does.
 
 ## Lucy's kitchen (`kitchen.ts`)
 
@@ -111,13 +123,9 @@ Run `make test/game/unit` for all of the above.
 ## What is not built
 
 - **Refusing is still a button at the counter.** The photo lab's `refuse` is the third button on the counter menu, and
-  the hotel bar's and the cabinet's `refuse` are buttons on the table's menu. The spec's deliberate prompt is a
-  conversation with Lucy; no such scene exists in the engine. Refusing sends its note and the story moves on.
-- **The Major's cabinet is a menu, not a mission.** `theMajorsCabinet` is played only through the kitchen's menus. The
-  spec's search (the desk, the lock, the photographing, the duty sergeant) has no space.
-- **No photo lab audio.** There is no `photoLabAudio.ts`. The only base sound in `audio.ts` is the `base` bed in
-  `act2Soundscapes` (a hum); the stealth beats have no cues of their own.
-- **The rest of the base.** The Eielson blockout is a gray box with roofless one-storey buildings; the squadron
-  building, the Major's office, the hangar and the barracks are walkable but no scene routes to them.
-- **Everything else in Act 2** (the chiefs, the steak, Minto, the land office search, Jake, the flight,
-  the letters, the heat) plays as menus; the unbuilt notes are the `a2_*` lines of `game/notes-allowlist.txt`.
+  the hotel bar's `refuse` is a button on the table's menu. The spec's deliberate prompt is a conversation with Lucy; no
+  such scene exists in the engine. Refusing sends its note and the story moves on.
+- **The rest of the base.** The Eielson blockout is a gray box with roofless one-storey buildings; the barracks and
+  most of the rest are walkable but no scene routes to them.
+- **Everything else in Act 2** (the chiefs, Minto, the land office search, the flight, the letters) plays as menus; the
+  unbuilt notes are the `a2_*` lines of `game/notes-allowlist.txt`.
