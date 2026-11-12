@@ -17,6 +17,11 @@ export const starts: readonly Start[] = [
   { scene: 'a2_major', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1', pose: 'story' },
   // The photo lab refused, straight on to Lucy's kitchen: the start the prologue run samples the kitchen from.
   { scene: 'a2_hotel', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3', pose: 'kitchen' },
+  // Curly's November (bushStrip.ts), every choice the first: the starts the prologue run samples the bush strip, the
+  // Pan's booth and the base hangar from.
+  { scene: 'a2_curly', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'strip' },
+  { scene: 'a2_steak', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'steak' },
+  { scene: 'a2_jake', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'hangar' },
   { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1', pose: 'story' },
   {
     scene: 'a4_news',
