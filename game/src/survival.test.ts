@@ -29,6 +29,7 @@ import {
   feed,
   fresh,
   handTime,
+  kindle,
   light,
   lightLeft,
   lightOf,
@@ -189,6 +190,22 @@ test('lighting a fire takes bare hands and costs warmth, slower with white hands
   assert.equal(lit.body.warmth, 4 - LIGHTING * SHARE - LIGHT_COST)
   assert.equal(lit.body.bare, LIGHTING)
   assert.equal(light({ ...fresh, hands: 'white' }, BOUGHS).seconds, LIGHTING * FUMBLE, 'Jake first: the fire is slow')
+})
+
+// Regression: the bare-hand count only cleared at a checkpoint, so warming at a fire did nothing for Lucy's fingers and
+// fire first left her hands as white as Jake first did (docs/acts/act3-missions.md, section 2: she "warms her hands").
+test('warming at a burning fire brings bare hands back, but white hands stay white until the checkpoint', () => {
+  const chilled: Body = { ...fresh, bare: BARE_LIMIT - 5 }
+  assert.equal(expose(chilled, { ...sheltered, fire: 1 }, 1).bare, 0, 'by the fire the count starts again')
+  assert.equal(expose(chilled, { ...sheltered, mittsOff: true, fire: 1 }, 10).hands, 'fine', 'bare hands by a fire do not go white')
+  assert.equal(expose({ ...chilled, hands: 'white' }, { ...sheltered, fire: 1 }, 1).hands, 'white')
+  assert.equal(expose(chilled, { ...sheltered, fire: FIRE_REACH + 1 }, 1).bare, BARE_LIMIT - 5, 'out of reach it does not')
+})
+
+test('a lit fire is the first load and a quarter step of warmth', () => {
+  const k = kindle(fresh, BOUGHS)
+  assert.equal(k.fire.fuel, BOUGHS)
+  assert.equal(k.body.warmth, 4 - LIGHT_COST)
 })
 
 test('a fire that has burned out warms no one', () => {
