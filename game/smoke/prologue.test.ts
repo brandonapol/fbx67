@@ -164,7 +164,7 @@ const snap = async (p: Page, name: string, settle = 0): Promise<void> => {
   if (!shots) return
   mkdirSync(shots, { recursive: true })
   await frames(p, settle)
-  await p.screenshot({ path: `${shots}/${name}.png` })
+  await p.screenshot({ path: `${shots}/${name}.png`, timeout: 120000 })
 }
 
 const checked: FrameResult[] = []
@@ -499,12 +499,12 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
   assert.deepEqual(errors, [])
 }
 
-// The keyboard run's budget in seconds, under software rendering. It took about 1,030 s locally and 1,650 s on a
-// GitHub runner before the walks and the ride were paced, about 510 s locally after; a runner is about 1.6 times
-// slower, so about 830 s there. CI's check-game job has 40 minutes for this, the other cases (about 10 minutes) and the
-// build; past the budget the case fails here, naming it, rather than the job being cancelled. The laps it logs show
-// which stretch grew.
-const KEYBOARD_BUDGET_S = 1080
+// The keyboard run's budget in seconds, under software rendering. GitHub hosts two speeds of runner: the run took about
+// 520-540 s on a fast one and 989-1,031 s on a slow one (5 of 11 passing runs on 2026-11-12 were slow). The budget
+// leaves about 1.4 times the slow time as margin. CI's check-game job has 40 minutes for this, the other cases (about
+// 10 minutes) and the build; past the budget the case fails here, naming it, rather than the job being cancelled. The
+// laps it logs show which stretch grew.
+const KEYBOARD_BUDGET_S = 1440
 
 test('the prologue plays end to end with the keyboard', { timeout: KEYBOARD_BUDGET_S * 1000 }, async () => {
   const opened = await open()
