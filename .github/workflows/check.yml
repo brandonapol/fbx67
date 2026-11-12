@@ -108,7 +108,8 @@ jobs:
     runs-on: ubuntu-latest
     # The smoke test walks the prologue's two legs downtown and rides the skiff under software rendering, several game
     # ticks a frame (main.ts, pace); its keyboard case fails past its own budget (KEYBOARD_BUDGET_S) inside this limit.
-    timeout-minutes: 30
+    # The starts and probes after it take about 10 minutes and grow by about 25 s with each new start.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
