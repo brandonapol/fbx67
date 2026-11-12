@@ -103,6 +103,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // The ski search (skiing.ts): Wade where the team split at the top of the ridge, the run down it ahead between the
   // spruce, the flats and the creek's drainage beyond.
   search: { space: 'search', pos: vec(-40, 40), facing: Math.PI, t: 0, shot: { eye: [-37, 29.5, 47], at: [-38, 12, -10] } },
+  // The wreck's hillside (engineOut.ts): from up the slope past the fire ring, the fuselage on its side in the snow
+  // below the stand of black spruce it went into, Lucy at the cabin door over Jake.
+  wreck: { space: 'wreck', pos: vec(-0.4, 0.5), facing: Math.PI, t: 0, shot: { eye: [7.5, 3.4, 9.5], at: [-1.5, 0.8, -2.5] } },
   // Second Avenue at the officer's stop: out of the café's door, the cruiser at the curb ahead and the officer leaning
   // on its fender under the streetlight.
   street: { space: 'street', pos: vec(12, 61.6), facing: Math.PI / 2, t: 0, shot: { eye: [9.5, 2.0, 63.2], at: [17.5, 1.1, 59.6] } },

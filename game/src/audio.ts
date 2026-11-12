@@ -285,7 +285,8 @@ export const createAudio = (store: Storage | undefined): Audio => {
     })
     events(gr, s, g)
     arrivals(live.prev, g).forEach((a) => oneShot(gr, 'sfx', g.pos, (dest) => play(gr, a, dest)))
-    cues(live.prev, g).forEach((c) => oneShot(gr, 'sfx', curlyNow(g).at, (dest) => play(gr, c, dest)))
+    // Curly's lighter is where he is; the crash's beats are in the plane with Lucy.
+    cues(live.prev, g).forEach((c) => oneShot(gr, 'sfx', g.space === 'camp' ? curlyNow(g).at : g.pos, (dest) => play(gr, c, dest)))
     lab(gr, g)
     steps(gr, g, dt)
   }

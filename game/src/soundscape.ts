@@ -15,6 +15,7 @@ import type { Rect } from './downtown.ts'
 import type { Bed } from './recordings.ts'
 import { LAB } from './eielson.ts'
 import { CRUISER } from './officerStop.ts'
+import { FIRE_AT, SPRUCE_AT, crashCues } from './engineOut.ts'
 
 export type Color = 'white' | 'pink' | 'brown'
 
@@ -409,8 +410,8 @@ export const act1Soundscapes: Readonly<Record<Act1Space, Soundscape>> = { line, 
 // Act 3, deep winter: the town at forty below, the flight home, Lucy's night at the wreck, and Wade's search on skis.
 export type Act3Space = 'icefog' | 'cockpit' | 'crash' | 'slope'
 
-export const FIRE_AT = vec(1.5, 2)
-export const SPRUCE_AT = vec(-6, -8)
+// The fire and the spruce at the wreck are its own (engineOut.ts).
+export { FIRE_AT, SPRUCE_AT }
 export const SEARCHERS_AT = vec(0, -30)
 
 const deepWinter = SEASON_F.winter
@@ -505,7 +506,7 @@ const street: Soundscape = {
 
 // The hotel bar downtown has the bar room's bed: talk, glasses, a stove, the jukebox under the guitar.
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, street, search: slope, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, street, search: slope, wreck: crash, story }
 
 // Curly's routine clock at the camp (curly.ts): refueling is its first beat.
 export const refueling = (t: number): boolean => beatOf(t) === 'refuel'
@@ -518,9 +519,12 @@ export const holds = (when: Condition | undefined, g: Game): boolean => {
   return true
 }
 
-// Curly's lighter as he finishes a task, just before he looks over the camp: the stealth cue (curly.ts).
-export const cues = (prev: Game | undefined, next: Game): readonly Spot[] =>
-  prev && prev.space === 'camp' && next.space === 'camp' && !next.panel && cueBetween(curlyClock(prev), curlyClock(next)) ? ['snap'] : []
+// Curly's lighter as he finishes a task, just before he looks over the camp: the stealth cue (curly.ts). The crash's
+// beats, the engine's coughs and the impact, as the plane comes down onto the wreck's hillside (engineOut.ts).
+export const cues = (prev: Game | undefined, next: Game): readonly Spot[] => [
+  ...(prev && prev.space === 'camp' && next.space === 'camp' && !next.panel && cueBetween(curlyClock(prev), curlyClock(next)) ? (['snap'] as const) : []),
+  ...(next.space === 'wreck' ? crashCues(prev?.space === 'wreck' ? prev.crash : undefined, next.crash) : []),
+]
 
 export const ducked = (g: Game): boolean => g.panel !== undefined
 

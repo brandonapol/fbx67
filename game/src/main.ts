@@ -4,6 +4,7 @@ import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, lab
 import { fade } from './skiff.ts'
 import { sweepFade } from './hazards.ts'
 import { flightFade } from './flight.ts'
+import { crashFade } from './engineOut.ts'
 import { sleepCard, sleepFade } from './boardingHouseSleep.ts'
 import { mapSheet, mapsPanel } from './room.ts'
 import { startFrom } from './start.ts'
@@ -423,7 +424,7 @@ const renderHud = (g: Game): void => {
   }
   renderSubtitle(g)
   renderPanel(g)
-  fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept), flightFade(g.flight), sleepFade(g)))
+  fadeEl.style.opacity = String(Math.max(fade(g.space === 'flood' ? g.ride : undefined), sweepFade(g.swept), flightFade(g.flight), crashFade(g.crash), sleepFade(g)))
   const card = sleepCard(g) ?? ''
   if (cardEl.textContent !== card) cardEl.textContent = card
 }

@@ -26,6 +26,7 @@ import type { Debris } from './hazards.ts'
 import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
 import { flightLight, flying, litGold, planeAt, planeHull, restingIn } from './flight.ts'
+import { CRASH_TIME, JAKE_ID, gliding, planeIn } from './engineOut.ts'
 import { curlyAt } from './floatDock.ts'
 import type { CrowdView } from './crowdView.ts'
 import { crowdFor, syncCrowd } from './crowdView.ts'
@@ -368,7 +369,8 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       boatIn(space.id).hull.forEach((p) => addProp(boat, p))
       root.addChild(boat)
     }
-    const plane = space.id === 'downtown' || space.id === 'camp' ? new pc.Entity('plane') : undefined
+    // The plane over town and at the camp; at the wreck, the plane coming down before it is the wreck (engineOut.ts).
+    const plane = space.id === 'downtown' || space.id === 'camp' || space.id === 'wreck' ? new pc.Entity('plane') : undefined
     if (plane) {
       planeHull.forEach((p) => addProp(plane, p))
       root.addChild(plane)
@@ -499,7 +501,17 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
         if (on) put(man, on)
       }
     }
-    if (b.plane) {
+    if (b.plane && g.space === 'wreck') {
+      // The crash: the plane flies its glide into the spruce, Jake in it at the stick; once it is down the wreck's props
+      // are the plane, and Jake is pinned at the cabin door.
+      const p = planeIn(g.crash ?? CRASH_TIME)
+      const air = gliding(g.crash)
+      b.plane.enabled = air
+      b.plane.setLocalPosition(p.at.x, p.y, p.at.z)
+      b.plane.setLocalEulerAngles(0, (p.heading * 180) / Math.PI, (p.roll * 180) / Math.PI)
+      const jake = b.figures.get(JAKE_ID)
+      if (jake) jake.enabled = !air
+    } else if (b.plane) {
       // At the camp the plane is drawn only while it comes in; parked, the camp's own plane stands there.
       const air = flying(g.flight)
       const p = air ? planeAt(g.flight) : restingIn(g.space === 'camp' ? 'camp' : 'downtown')
