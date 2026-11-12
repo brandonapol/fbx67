@@ -20,6 +20,8 @@ import { playCabinet } from './majorsCabinetBot.ts'
 import type { Seen } from './majorsCabinetBot.ts'
 import { DIAL_SPOT } from './majorsCabinet.ts'
 import type { GotIn } from './majorsCabinet.ts'
+import { seats } from './hotelBar.ts'
+import { playBar } from './hotelBarBot.ts'
 import type { SpaceId } from './levels.ts'
 import { playSearch, start as startWalk } from './trailDrive.ts'
 import type { Interactable } from './world.ts'
@@ -173,6 +175,28 @@ const cabinetSenders = (stop: Stop, g: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: 'eielson', spot: DIAL_SPOT.id }))
 }
 
+// The hotel bar's set is played, not picked (hotelBar.ts): at Lucy's table, the note that brings the guitar takes Wade
+// to the bar's door, and its scripted player (hotelBarBot.ts) plays the set on every stool to the end, then tells Lucy,
+// the spot being the set itself.
+export const SET = 'set'
+const BAR = 'theHotelBar'
+const barred = new WeakMap<Stop, readonly State[]>()
+const barSenders = (stop: Stop, arrived: Game): readonly Sender[] => {
+  const m = mission(stop.state)
+  const table = m?.id === BAR && arrived.space === 'kitchen' ? available(arrived).find((i) => i.id === TABLE_SPOT.id) : undefined
+  if (!m || !table) return []
+  const going = m.endings.flatMap((e) => e.applies.slice(0, 1)).find((n) => press(interact(facing(arrived, table)), `note:${n}`).bar)
+  if (!going) return []
+  const landed =
+    barred.get(stop) ??
+    seats.flatMap((s) => {
+      const played = playBar(press(interact(facing(arrived, table)), `note:${going}`), s.id)
+      return (played.panel?.buttons ?? []).map((b) => press(played, b.id).story)
+    })
+  barred.set(stop, landed)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: 'hotelBar', spot: SET }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -183,7 +207,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   const g = resume(stop.state, [0])
   // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
   const space = g.space
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
     .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)

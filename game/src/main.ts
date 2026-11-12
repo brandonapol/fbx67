@@ -12,6 +12,7 @@ import { sheet } from './letters.ts'
 import { renderLetter } from './letterView.ts'
 import { createView } from './render.ts'
 import { createAudio } from './audio.ts'
+import { cover, overheard } from './hotelBar.ts'
 import { mountSoundPanel } from './sound-panel.ts'
 import { spaces } from './levels.ts'
 import type { Placed, Rig } from './camera.ts'
@@ -361,7 +362,25 @@ const lighting = (g: Game): boolean => canLight(g) || g.holding?.id === CIGARETT
 const smoke = { id: CIGARETTE, hold: 1 } as const
 
 // The line a townsperson is saying now, over their head; nothing once they are done or out of the space.
+// In the hotel bar, what has come through from the booth so far, over the booth (hotelBar.ts).
+const renderOverheard = (g: Game): boolean => {
+  const heard = g.space === 'hotelBar' ? overheard(g.story, g.bar) : []
+  const at = heard.length ? view.screenAt(heard.at(-1)!.at.x, 2.0, heard.at(-1)!.at.z) : undefined
+  if (!at) return false
+  const text = heard.map((h) => `"${h.text}"`).join('   ')
+  if (live.shownLine !== text) {
+    live.shownLine = text
+    subtitleEl.dataset.who = 'booth'
+    subtitleEl.textContent = text
+  }
+  subtitleEl.hidden = false
+  subtitleEl.style.left = `${Math.max(16, Math.min(window.innerWidth - 16, at.x))}px`
+  subtitleEl.style.top = `${Math.max(16, at.y)}px`
+  return true
+}
+
 const renderSubtitle = (g: Game): void => {
+  if (renderOverheard(g)) return
   const line = showing(live.talk, live.now).at(-1)
   const who = line && townsfolk(g).find((f) => f.id === line.who)
   const at = who && view.screenAt(who.at.x, 2.3, who.at.z)
@@ -771,6 +790,8 @@ view.app.on('update', (dtRaw: number) => {
   live.rig = next.rig
   view.sync(g, dt, next.pose)
   audio.sync(g, dt)
+  // The guitar in the hotel bar covers the room's voices by how well it is played (mixer.ts, coverGain).
+  audio.setCover(cover(g.bar))
   renderHud(g)
   syncStealth(g)
   syncSigns(g, view.screenAt)

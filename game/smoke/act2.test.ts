@@ -6,11 +6,12 @@ import { ACT2_PATH, ACT3_FIRST, act2Beats, act2Spaces, bands, beatName, isBeat, 
 import type { Page } from './browser.ts'
 import { frames, game, smoke } from './browser.ts'
 import { stallContext, stallMessage } from './stall.ts'
+import { BEATS, beatAt, isSeat } from '../src/hotelBar.ts'
 
 // Act 2's smoke run, its own job beside Act 1's (make test/game/smoke/act2): from where the Act 1 run reaches Act 2 to
 // Act 3's first scene, in headless Chromium, every choice the first. At the start of each beat (each place the
 // story moves to) it captures the frame of the space it plays in, in each moral-weather band, into
-// game/smoke/baselines/act2. Only the photo lab and Lucy's kitchen route to spaces yet, so it also visits each Act 2
+// game/smoke/baselines/act2. Only the photo lab, Lucy's kitchen and the hotel bar route to spaces yet, so it also visits each Act 2
 // space from the Act 2 start, and samples every Act 2 space against docs/perf.md. act2Plan.test.ts proves the same steps headless.
 
 const run = smoke({ baselines: 'act2', played: act2Spaces, port: 4322, report: 'smoke-report-act2' })
@@ -84,6 +85,32 @@ const take = async (p: Page, s: Step): Promise<void> => {
   await frames(p, 10)
 }
 
+// The hotel bar's song is played by the clock, not by the steps (hotelBar.ts): at the game's own pace, a drawn frame is
+// at most 0.1 s of it, so a strum pressed when the next beat is within STRUM_AHEAD lands inside the beat's window.
+const STRUM_AHEAD = 0.12
+
+const playSong = async (p: Page): Promise<void> => {
+  await p.evaluate(() => (window as any).__prologue.pace(1))
+  const end = Date.now() + STEP_MS * 3
+  for (;;) {
+    const s = await p.evaluate(() => {
+      const song = (window as any).__prologue.game().bar?.song
+      return song ? { t: song.t as number, judged: song.judged as number } : undefined
+    })
+    if (!s) break
+    if (Date.now() > end) throw new Error(`the hotel bar's song never ended: beat ${s.judged} at ${s.t.toFixed(2)} s`)
+    if (s.judged < BEATS && beatAt(s.judged) - s.t <= STRUM_AHEAD) await p.keyboard.press('e')
+    await frames(p, 1)
+  }
+  await p.evaluate((n) => (window as any).__prologue.pace(n), FAST)
+}
+
+// Sitting on a stool changes nothing the run watches but the song starting.
+const sitDown = async (p: Page): Promise<void> => {
+  await p.keyboard.press('e')
+  await p.waitForFunction(() => (window as any).__prologue.game().bar?.song !== undefined, null, { timeout: STEP_MS })
+}
+
 const MAX_STEPS = 1500
 
 test('Act 2 plays from its start to Act 3’s first scene, a frame per beat in each band', { timeout: 1500000 }, async () => {
@@ -105,7 +132,10 @@ test('Act 2 plays from its start to Act 3’s first scene, a frame per beat in e
         for (const b of bands) await run.capture(page, `${name}${b.suffix}`, poseFor[g.space as keyof typeof poseFor]!, b.heat)
       }
       before = g
-      await take(page, nextStep(g))
+      const step = nextStep(g)
+      if (g.space === 'hotelBar' && g.bar?.song) await playSong(page)
+      else if (g.space === 'hotelBar' && step.kind === 'interact' && isSeat(step.spot)) await sitDown(page)
+      else await take(page, step)
     }
     await page.evaluate(() => (window as any).__prologue.record(false))
     const end = await game(page)

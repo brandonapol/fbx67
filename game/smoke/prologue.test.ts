@@ -566,6 +566,25 @@ test('the Eielson blockout renders inside its budget', { timeout: 300000 }, asyn
   }
 })
 
+// The hotel bar (hotelBar.ts) is reached only by bringing the guitar in Act 2: the probe puts Wade in at its door to
+// sample it and capture its frame, so the prologue run's budget covers it.
+test('the hotel bar renders inside its budget', { timeout: 300000 }, async () => {
+  const opened = await open()
+  const { page, errors } = opened
+  try {
+    await page.evaluate(() => (window as any).__prologue.visit('hotelBar'))
+    assert.equal((await game(page)).space, 'hotelBar')
+    await page.evaluate(() => (window as any).__prologue.record(true))
+    await frames(page, START_FRAMES)
+    await page.evaluate(() => (window as any).__prologue.record(false))
+    await capture(page, 'hotelBar')
+    assert.deepEqual(errors, [])
+  } finally {
+    await collect(page)
+    await opened.close()
+  }
+})
+
 const setPad = (p: Page, axes: readonly number[], buttons: readonly number[]) =>
   p.evaluate(
     ([axes, buttons]) => {

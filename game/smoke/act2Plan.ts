@@ -8,6 +8,7 @@ import type { Step as Act1Step } from './act1Plan.ts'
 import { nextStep as act1Step } from './act1Plan.ts'
 import { labNext } from '../src/photoLabBot.ts'
 import { cabinetNext } from '../src/majorsCabinetBot.ts'
+import { barNext } from '../src/hotelBarBot.ts'
 
 export { bands, label } from './act1Plan.ts'
 
@@ -15,10 +16,17 @@ export { bands, label } from './act1Plan.ts'
 export type Step = Act1Step | Readonly<{ kind: 'wait'; seconds: number }>
 
 // What a player does next: Act 1's planner, but in the photo lab run its own player (photoLabBot.ts), which times the
-// lab's people and searches the drawers by the records room's first choice, and in the Major's cabinet its own
-// (majorsCabinetBot.ts), by the first choices: the combination, and waiting out the duty airman's round.
+// lab's people and searches the drawers by the records room's first choice, in the Major's cabinet its own
+// (majorsCabinetBot.ts), by the first choices: the combination, and waiting out the duty airman's round, and in the
+// hotel bar its own (hotelBarBot.ts), playing the set on the stool by the booth, the first choice's.
 export const nextStep = (g: Game): Step =>
-  g.space === 'eielson' && g.lab ? labNext(g, 'crossCheck') : g.space === 'eielson' && g.cabinet ? cabinetNext(g, 'combo', 'unseen') : act1Step(g)
+  g.space === 'eielson' && g.lab
+    ? labNext(g, 'crossCheck')
+    : g.space === 'eielson' && g.cabinet
+      ? cabinetNext(g, 'combo', 'unseen')
+      : g.space === 'hotelBar' && g.bar
+        ? barNext(g, 'boothStool')
+        : act1Step(g)
 
 // Act 2 played as the smoke test plays it: from where the Act 1 run reaches Act 2's first scene to Act 3's first
 // scene, every choice the first. Act 1's planner says what a player does next (act1Plan.ts, nextStep); act2Plan.test.ts
@@ -56,6 +64,7 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   story: 'story',
   eielson: 'base',
   kitchen: 'kitchen',
+  hotelBar: 'hotelBar',
 }
 
 // The beats of the run, in order: the first scene at each place on the path, and the photo lab again on the base.

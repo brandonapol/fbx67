@@ -40,6 +40,8 @@ import { LAB_SPOT } from './eielson.ts'
 import { GO, TABLE_SPOT, asks, tableNotes, tableSpot } from './kitchen.ts'
 import type { Cabinet, Turn } from './majorsCabinet.ts'
 import { AIRMAN, DESK_LOOK, DESK_SPOT, DIAL_SPOT, PRY_SPOT, arrival as cabinetArrival, cabinetSpot, dialText, held as cabinetHeld, look as lookDesk, pried, pry, restart as restartCabinet, scold as scoldCabinet, step as cabinetStep, tryHandle, turn as turnDial } from './majorsCabinet.ts'
+import type { Bar } from './hotelBar.ts'
+import { SPAWN as BAR_DOOR, SPAWN_FACING as BAR_FACING, arrival as barArrival, barSpot, finished as setDone, isSeat, restart as restartBar, seatOf, setNote, sit, stared, step as barStep, strum } from './hotelBar.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -108,6 +110,8 @@ export type Game = Readonly<{
   // The Major's cabinet after hours, from the hall outside his office to stepping out of it with the files photographed
   // (majorsCabinet.ts).
   cabinet?: Cabinet
+  // The hotel bar's set, from Wade coming in with his guitar to the last song (hotelBar.ts).
+  bar?: Bar
 }>
 
 // The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
@@ -171,6 +175,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   brawl: undefined,
   lab: undefined,
   cabinet: undefined,
+  bar: undefined,
 })
 
 export const start = (): Game => ({
@@ -226,6 +231,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'pan') return hankSpot(g.story, g.brawl !== undefined, i.id)
     if (g.space === 'eielson') return labSpot(g.story, g.lab, i.id) || cabinetSpot(g.cabinet, i.id)
     if (g.space === 'kitchen') return tableSpot(g.story, i.id)
+    if (g.space === 'hotelBar') return barSpot(g.story, g.bar, i.id)
     return true
   })
 
@@ -295,7 +301,7 @@ const arrive = (g: Game): Game => {
   // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
   const cab = cabinetArrival(g.story)
   if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
-  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen')) return arrive(enter(g, 'story'))
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -315,6 +321,12 @@ const arrive = (g: Game): Game => {
   if (r.space === 'eielson') {
     const e = baseEntry(g.story)
     const into = { ...enter(g, 'eielson', e.at, e.facing), lab: arrival(g.story, e.at, e.facing) }
+    return available(into).length ? into : menuPanel(into)
+  }
+  // With his guitar Wade comes in at the hotel bar's door, the stools to choose from (hotelBar.ts); a link to what he
+  // heard there opens its menu.
+  if (r.space === 'hotelBar' && g.space !== 'hotelBar') {
+    const into = { ...enter(g, 'hotelBar', BAR_DOOR, BAR_FACING), bar: barArrival(g.story) }
     return available(into).length ? into : menuPanel(into)
   }
   if (r.space !== g.space) {
@@ -471,6 +483,28 @@ const dialed = (g: Game, c: Cabinet, button: string): Game => {
   return t.send ? { ...sendNote(g, t.send), panel: undefined, cabinet: t.cabinet } : { ...g, cabinet: t.cabinet, panel: dialPanel(t.cabinet) }
 }
 
+// The hotel bar's set, once a frame while a song is on (hotelBar.ts): Wade sits and plays, and when the last song ends
+// the note his hearing earned goes, and the story says what he heard.
+const played = (g: Game, bar: Bar, dt: number): Game => {
+  const next = barStep(bar, dt)
+  if (setDone(next)) return press({ ...g, vel: zero, bar: undefined }, `note:${setNote(g.story, next)}`)
+  return { ...g, vel: zero, bar: next }
+}
+
+// Stared at in the hotel bar: Tolliver's look holds, then the retry from the start of the song. The story never hears
+// of it (Rule 4).
+const barStared = (g: Game, bar: Bar, dt: number): Game => {
+  const next = stared(bar, dt)
+  if (next !== 'busted') return { ...g, vel: zero, bar: next }
+  return { ...g, vel: zero, busts: g.busts + 1, panel: { kind: 'busted', title: 'Busted', text: 'That was way too obvious.', buttons: [{ id: 'retry', label: 'Try again' }] } }
+}
+
+const retryBar = (g: Game, bar: Bar): Game => {
+  const back = restartBar(bar)
+  const s = back.seat ? seatOf(back.seat) : undefined
+  return { ...g, pos: s?.at ?? BAR_DOOR, facing: s?.facing ?? BAR_FACING, view: s?.facing ?? BAR_FACING, vel: zero, panel: undefined, holding: undefined, bar: back }
+}
+
 const endCard: Panel = {
   kind: 'end',
   title: 'End of the prologue',
@@ -540,6 +574,8 @@ export const shows = (g: Game, w: Mark | undefined): boolean =>
 
 export const interact = (g: Game): Game => {
   if (flying(g.flight)) return touchDown(g)
+  // In the hotel bar, mid-song, interact is the strum (hotelBar.ts).
+  if (g.space === 'hotelBar' && g.bar?.song) return { ...g, bar: strum(g.bar) }
   const target = focus(g)
   if (!target) return canLight(g) ? { ...g, vel: zero, holding: { id: CIGARETTE, progress: 0, time: LIGHT_TIME } } : g
   const id = target.id
@@ -597,12 +633,17 @@ export const interact = (g: Game): Game => {
   if (g.space === 'eielson' && id === DESK_SPOT.id && g.cabinet) return { ...g, cabinet: lookDesk(g.cabinet), panel: { kind: 'story', title: "The Major's desk", text: DESK_LOOK, buttons: [close('Step back.')] } }
   if (g.space === 'eielson' && id === DIAL_SPOT.id && g.cabinet) return { ...g, vel: zero, panel: dialPanel(g.cabinet) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
+  // A stool in the hotel bar: Wade sits and the next song starts.
+  if (g.space === 'hotelBar' && g.bar && isSeat(id)) {
+    const s = seatOf(id)
+    return { ...g, pos: s.at, facing: s.facing, view: s.facing, vel: zero, bar: sit(g.bar, id) }
+  }
   return g
 }
 
 export const press = (g: Game, button: string): Game => {
   if (button === 'close') return { ...g, panel: undefined }
-  if (button === 'retry') return g.lab ? retryLab(g, g.lab) : g.cabinet ? retryCabinet(g, g.cabinet) : enter(g, g.space)
+  if (button === 'retry') return g.lab ? retryLab(g, g.lab) : g.cabinet ? retryCabinet(g, g.cabinet) : g.bar ? retryBar(g, g.bar) : enter(g, g.space)
   if (button.startsWith('dial:') && g.cabinet) return dialed(g, g.cabinet, button)
   if (button === 'restart') return start()
   if (button === 'continue') return arrive(g)
@@ -748,6 +789,8 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (beingCaught(g)) return scolded({ ...g, t }, dt)
   if (g.lab?.caught !== undefined) return labScolded({ ...g, t }, g.lab, dt)
   if (g.cabinet?.caught !== undefined) return cabinetScolded({ ...g, t }, g.cabinet, dt)
+  if (g.bar?.caught !== undefined) return barStared({ ...g, t }, g.bar, dt)
+  if (g.bar?.song) return played({ ...g, t }, g.bar, dt)
   if (g.brawl) return brawling({ ...g, t }, g.brawl, input, dt)
   const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
   const after = hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
@@ -761,7 +804,7 @@ export const playerBody = (g: Game): Body => bodyFor(g.story, g.space === 'flood
 // prologue's flood under the end card, where the story has already moved on to Wade.
 export const inWorld = (g: Game): boolean => (riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act)
 
-const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated'))
+const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated')) || (g.space === 'hotelBar' && g.bar?.song !== undefined)
 
 export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: sitting(g) ? 'sit' : 'stand', talking: false })
 
