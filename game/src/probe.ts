@@ -87,6 +87,12 @@ export const poses: Readonly<Record<string, Pose>> = {
   kitchen: { space: 'kitchen', pos: vec(-1.6, -1.8), facing: 0, t: 0, shot: { eye: [-2.4, 2.1, -2.0], at: [0.8, 0.8, 1.2] } },
   // The hotel bar: Wade in at the door with his guitar, the bar down the left, Tolliver's booth in the far corner.
   hotelBar: { space: 'hotelBar', pos: vec(-4, -4.2), facing: 0, t: 0, shot: { eye: [-4.6, 2.3, -4.6], at: [4.5, 0.9, 3.6] } },
+  // The bush strip in November (bushStrip.ts): Wade on the snow, Curly at the tie-down post under the tarped wing.
+  strip: { space: 'strip', pos: vec(-5, 6.5), facing: Math.PI / 2, t: 0, shot: { eye: [-7, 2.4, 9], at: [1.5, 1.2, 2] } },
+  // The Silver Pan in Act 2: the booth, Curly at it, the counter beyond.
+  steak: { space: 'steak', pos: vec(1.6, 0.8), facing: 0, t: 0, shot: { eye: [0, 2.3, 4.2], at: [3.2, 0.8, 0.2] } },
+  // Outside the base hangar: Jake in the personnel door he has to duck under.
+  hangar: { space: 'hangar', pos: vec(0.2, 1.5), facing: 0, t: 0, shot: { eye: [-2.5, 2.0, 4.5], at: [0.2, 1.3, -2.5] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 

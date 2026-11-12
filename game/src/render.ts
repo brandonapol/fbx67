@@ -19,6 +19,7 @@ import type { CampView } from './campView.ts'
 import { buildCamp } from './campView.ts'
 import { boatIn } from './cabinRide.ts'
 import { closeUp } from './knot.ts'
+import { tieShot } from './bushStrip.ts'
 import type { Debris } from './hazards.ts'
 import { DEBRIS, afloat, debrisAt } from './hazards.ts'
 import { WATER_Y } from './highwater.ts'
@@ -494,7 +495,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
       r.setLocalPosition(p.x, y < 0 ? 9 : y, p.z)
     })
     // A held shot wins; then a close-up Wade is leaning in for (the knot at the cabin); then the follow camera.
-    const shot = state.held ?? closeUp(g.look, g.space)
+    const shot = state.held ?? closeUp(g.look, g.space) ?? tieShot(g.look, g.space)
     if (shot) {
       place(shot)
       return

@@ -67,4 +67,4 @@ export const KNOT_SHOT: Shot = { eye: [KNOT_AT.x - 0.55, 0.85, KNOT_AT.z + 0.75]
 export type Look = 'knot'
 
 // The shot the camera holds while Wade is looking, if he is.
-export const closeUp = (look: Look | undefined, space: string): Shot | undefined => (look === 'knot' && space === 'cabin' ? KNOT_SHOT : undefined)
+export const closeUp = (look: string | undefined, space: string): Shot | undefined => (look === 'knot' && space === 'cabin' ? KNOT_SHOT : undefined)

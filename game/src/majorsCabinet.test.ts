@@ -5,6 +5,7 @@ import { menu, mission, sendMission } from '../../text-game/src/story.ts'
 import type { SceneId } from '../../text-game/src/types.ts'
 import type { Game } from './prologue.ts'
 import { available, focus, interact, label, press, shows, still, tick } from './prologue.ts'
+import { route } from './router.ts'
 import { startFrom } from './start.ts'
 import { ACT2_PATH } from '../smoke/act2Plan.ts'
 import { TABLE_SPOT } from './kitchen.ts'
@@ -163,7 +164,10 @@ test('every way in and getaway lands where its mission note does, on the text bu
     assert.deepEqual(g.story, textBuild(g), `${note}: parity on the path`)
     assert.equal(g.busts, 0, `${note}: never busted`)
     assert.equal(g.cabinet, undefined, 'the run is over')
-    assert.equal(g.panel?.title, menu(g.story).title)
+    // Out of the cabinet the next scene plays where it routes: a space of its own, or its menu over the story.
+    const r = route(g.story, 'story')
+    assert.equal(g.space, r.to === 'space' ? r.space : 'story', `${note}: ${g.story.scene} plays where it routes`)
+    if (r.to !== 'space') assert.equal(g.panel?.title, menu(g.story).title)
   })
 })
 
