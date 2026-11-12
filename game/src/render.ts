@@ -17,6 +17,7 @@ import { footY, hiding, inWorld, playerBody, playerMotion, shows } from './prolo
 import { OFFICER, placed } from './barfight.ts'
 import type { CampView } from './campView.ts'
 import { buildCamp } from './campView.ts'
+import { SEASON as CAMP_WINTER } from './owensCamp.ts'
 import { buildSlope } from './skiView.ts'
 import { boatIn } from './cabinRide.ts'
 import { CRUISER_HULL, LIGHT_BAR, TRUCK_HULL, barnetteAt, cruiserAt, lightColor, truckAt } from './roadsideStop.ts'
@@ -352,9 +353,9 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const space = spaces[g.space]
     const root = new pc.Entity(space.id)
     const c = centerOf(space)
-    // The camp draws its own ground (campView.ts); the search's is the slope's own shape (skiView.ts).
+    // The camp, summer or winter, draws its own ground (campView.ts); the search's is the slope's own shape (skiView.ts).
     if (space.id === 'search') buildSlope(app, root)
-    else if (space.id !== 'camp') primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
+    else if (space.id !== 'camp' && space.id !== 'owensCamp') primitive(root, 'box', space.ground, [c.x, -0.05, c.z], [space.size.w + 40, 0.1, space.size.d + 40], { shadows: false })
     const toggles = propsIn(space, t.season, t.clock).flatMap((p) => {
       const e = addProp(root, p)
       return e && p.while ? [[e, p.while] as const] : []
@@ -363,7 +364,7 @@ export const createView = async (canvas: HTMLCanvasElement, base: string): Promi
     const labMen = new Map(
       space.id === 'eielson' ? [...walkers.map((w) => w.id), 'duty'].map((id) => [id, addFigure(root, { id: `lab-${id}`, at: { x: 0, z: 0 }, facing: 0, coat: UNIFORM[id], skin: '#c99b7a', hair: '#3a2c22', height: 1.78 }, cast)] as const) : [],
     )
-    const camp = space.id === 'camp' ? buildCamp(app, root, base) : undefined
+    const camp = space.id === 'camp' ? buildCamp(app, root, base) : space.id === 'owensCamp' ? buildCamp(app, root, base, CAMP_WINTER) : undefined
     const boat = space.id === 'flood' || space.id === 'cabin' ? new pc.Entity('boat') : undefined
     if (boat) {
       boatIn(space.id).hull.forEach((p) => addProp(boat, p))

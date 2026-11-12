@@ -1,6 +1,7 @@
 import './style.css'
 import type { Game, Input } from './prologue.ts'
-import { CIGARETTE, canLight, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
+import { LETTER_TITLE } from './owensCamp.ts'
+import { CIGARETTE, READ_LETTER, canLight, canRead, focus, footY, handedOff, heldBehind, interact, label, panelText, playerBody, press, start, tick, textBuildHash, topSpeed } from './prologue.ts'
 import { fade } from './skiff.ts'
 import { sweepFade } from './hazards.ts'
 import { flightFade } from './flight.ts'
@@ -362,6 +363,11 @@ const lighting = (g: Game): boolean => canLight(g) || g.holding?.id === CIGARETT
 
 const smoke = { id: CIGARETTE, hold: 1 } as const
 
+// At Owen's camp, with nothing in front of her, Lucy can hold interact to read his second letter (owensCamp.ts).
+const reading = (g: Game): boolean => canRead(g) || g.holding?.id === READ_LETTER
+
+const letter = { id: READ_LETTER, hold: 1 } as const
+
 // The line a townsperson is saying now, over their head; nothing once they are done or out of the space.
 // In the hotel bar, what has come through from the booth so far, over the booth (hotelBar.ts).
 const renderOverheard = (g: Game): boolean => {
@@ -400,13 +406,13 @@ const renderSubtitle = (g: Game): void => {
 const renderHud = (g: Game): void => {
   const target = focus(g)
   const passer = target ? undefined : asker(here())
-  const f: Pick<Interactable, 'id' | 'hold'> | undefined = target ?? (passer ? { id: passer.id } : lighting(g) ? smoke : undefined)
+  const f: Pick<Interactable, 'id' | 'hold'> | undefined = target ?? (passer ? { id: passer.id } : reading(g) ? letter : lighting(g) ? smoke : undefined)
   promptEl.hidden = !f
   placeEl.textContent = spaces[g.space].name
   if (f) {
     const hold = f.hold !== undefined
     const key = glyph(live.device, live.controls)
-    const text = target ? label(g, target) : passer ? ASK_PROMPT : 'Light a cigarette'
+    const text = target ? label(g, target) : passer ? ASK_PROMPT : f.id === READ_LETTER ? `Read ${LETTER_TITLE}, mitts off` : 'Light a cigarette'
     const said = hold ? `Hold: ${text}` : text
     const id = `${f.id}|${key}|${said}`
     if (live.promptKey !== id) {

@@ -34,9 +34,6 @@ a3_home:police
 a3_home:tellEli
 a3_turn:continue
 a3_walk:continue
-lucysDig:cache
-lucysDig:marker
-lucysDig:stove
 theRashPlan:burn
 theRashPlan:gunpoint
 theRashPlan:safe

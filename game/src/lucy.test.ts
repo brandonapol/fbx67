@@ -10,6 +10,8 @@ import type { Pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, interact, label, playerBody, press } from './prologue.ts'
 import { nightOut } from './nightBot.ts'
+import { digOut, nextSpot } from './digBot.ts'
+import type { CacheSpot } from '../../text-game/src/types.ts'
 import { startFrom } from './start.ts'
 import { starts } from '../smoke/starts.ts'
 import { bodies } from './cast.ts'
@@ -30,6 +32,8 @@ const playWhile = (g: Game, from: Pov, seen: readonly Game[] = []): readonly Gam
   if (g.night) return playWhile(nightOut(g), from, all)
   // The crash before it is a cutscene (engineOut.ts): interact skips it to her coming to.
   if (g.crash !== undefined) return playWhile(interact(g), from, all)
+  // So is the dig at Owen's camp (owensCamp.ts): its steady player digs the first choice's spot and goes home.
+  if (g.space === 'owensCamp' && !g.panel) return playWhile(digOut(g, nextSpot(g) as CacheSpot), from, all)
   const note = g.panel?.buttons.find((b) => b.id.startsWith('note:'))
   assert.ok(note, `${g.story.scene} offers no note`)
   return playWhile(press(g, note.id), from, all)

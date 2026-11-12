@@ -51,6 +51,8 @@ import type { Ski } from './skiing.ts'
 import { ARRIVE_NOTE, ROUTE_NOTES, heightAt, routeOf, setOff, skiFrame } from './skiing.ts'
 import type { RouteId } from './skiing.ts'
 import type { Night } from './survivalPlay.ts'
+import type { Dig } from './owensCamp.ts'
+import { FAILED, JAKE, LETTER_TITLE, READ_TIME, SPAWN as DIG_SPAWN, SPAWN_FACING as DIG_FACING, arrival as digArrival, campSpot, digTime, digging, dug as dugAt, exposure as digExposure, letterLine, reread, step as digStep } from './owensCamp.ts'
 import * as night from './survivalPlay.ts'
 import { burning } from './survival.ts'
 import { COME_TO, COME_TO_FACING, CRASH_TIME, crashing, gliding, lucySeat, skipSpot as skipCrash, standOf } from './engineOut.ts'
@@ -134,6 +136,9 @@ export type Game = Readonly<{
   // Lucy's long night at the wreck, from the order prompt to first light (survivalPlay.ts), played as a live panel over
   // the wreck's hillside, Lucy walking between its places as its tasks go (engineOut.ts).
   night?: Night
+  // Lucy's dig at Owen's camp in winter, from stepping off Jake's plane to the bundle found (owensCamp.ts): the light,
+  // her body, the spots dug and the checkpoints.
+  dig?: Dig
 }>
 
 // The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
@@ -202,6 +207,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   ski: undefined,
   crash: undefined,
   night: undefined,
+  dig: undefined,
 })
 
 export const start = (): Game => ({
@@ -260,6 +266,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'hotelBar') return barSpot(g.story, g.bar, i.id)
     if (isStripSpace(g.space)) return stripSpot(g.story, g.space, i.id)
     if (g.space === 'cafe') return counterSpot(g.story, i.id)
+    if (g.space === 'owensCamp') return campSpot(g.story, g.dig, i.id)
     return true
   })
 
@@ -329,7 +336,7 @@ const arrive = (g: Game): Game => {
   // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
   const cab = cabinetArrival(g.story)
   if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
-  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'street' || g.space === 'search' || g.space === 'wreck')) return arrive(enter(g, 'story'))
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway' || g.space === 'street' || g.space === 'search' || g.space === 'wreck' || g.space === 'owensCamp')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -359,6 +366,9 @@ const arrive = (g: Game): Game => {
   }
   // On Second Avenue Wade comes out of the café's door onto the walk, the officer at the curb (officerStop.ts).
   if (r.space === 'street' && g.space !== 'street') return enter(g, 'street', spaces.street.spawn, STREET_FACING)
+  // At Owen's camp Lucy steps off Jake's plane onto the bar, three hours of grey light ahead (owensCamp.ts). In the camp
+  // the story moving on (a wrong spot, the bundle found) opens nothing: she walks to the next spot, or back to Jake.
+  if (r.space === 'owensCamp') return g.space === 'owensCamp' ? { ...g, panel: undefined } : { ...enter(g, 'owensCamp', DIG_SPAWN, DIG_FACING), dig: digArrival(g.story) }
   // On the Richardson Highway Wade is at the wheel of the borrowed truck from the first frame: the stop, or the quiet
   // drive, plays before the scene's menu comes up (roadsideStop.ts).
   if (r.space === 'highway' && g.space !== 'highway') return atWheel(enter(g, 'highway'), 0)
@@ -475,6 +485,11 @@ export const resume = (story: State, path: readonly number[]): Game => (path.len
 // light one. Not in a boat, where the ride ticks before any hold.
 export const CIGARETTE = 'cigarette'
 export const LIGHT_TIME = 1.5
+
+// At Owen's camp, with nothing in front of her, Lucy can hold interact to read Owen's second letter, mitts off.
+export const READ_LETTER = 'letter'
+
+export const canRead = (g: Game): boolean => g.space === 'owensCamp' && !g.panel && !g.holding && digging(g.story) && !focus(g)
 
 export const canLight = (g: Game): boolean => !g.brawl && !g.panel && !g.holding && !g.lit && !riding(g.ride) && pov(g.story) === 'wade' && inWorld(g) && !focus(g)
 
@@ -684,8 +699,10 @@ export const interact = (g: Game): Game => {
   // In the hotel bar, mid-song, interact is the strum (hotelBar.ts).
   if (g.space === 'hotelBar' && g.bar?.song) return { ...g, bar: strum(g.bar) }
   const target = focus(g)
-  if (!target) return canLight(g) ? { ...g, vel: zero, holding: { id: CIGARETTE, progress: 0, time: LIGHT_TIME } } : g
+  if (!target) return canRead(g) ? { ...g, vel: zero, holding: { id: READ_LETTER, progress: 0, time: READ_TIME } } : canLight(g) ? { ...g, vel: zero, holding: { id: CIGARETTE, progress: 0, time: LIGHT_TIME } } : g
   const id = target.id
+  // A dig at Owen's camp takes twice as long with white hands (owensCamp.ts).
+  if (g.space === 'owensCamp' && g.dig && target.hold) return { ...g, vel: zero, holding: { id, progress: 0, time: digTime(g.dig) } }
   if (target.hold) return { ...g, vel: zero, holding: { id, note: target.note, progress: 0, time: target.hold } }
   if (g.space === 'bar') {
     if (id === 'wade') return { ...g, panel: g.story.scene === 'p_bar' ? storyPanel(g.story, ['texas', 'munitions'], [close('Not yet.')]) : storyPanel(g.story, [], [close('Back to the table.')]) }
@@ -748,6 +765,8 @@ export const interact = (g: Game): Game => {
   }
   // At the café counter Dottie's read and the scene's menu come up (dottiesCafe.ts).
   if (g.space === 'cafe' && id === COUNTER_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  // At Jake, once the bundle is found, the scene's own text and its way home come up.
+  if (g.space === 'owensCamp' && id === JAKE) return { ...g, vel: zero, panel: storyPanel(g.story, allNotes(g.story), [close('Not yet.')]) }
   // At the officer the scene's own text is his read of Wade's heat, and its menu is walking on. He has his say whatever
   // Wade does: there is no stepping back from it.
   if (g.space === 'street' && id === OFFICER_SPOT.id) return { ...g, vel: zero, panel: storyPanel(g.story, allNotes(g.story)) }
@@ -851,10 +870,35 @@ const roadside = (g: Game, dt: number): Game => {
   return t < stageTime(g.story) ? at : menuPanel(at, [close('Sit a minute.')])
 }
 
+// Owen's second letter, read mitts off: the line about where he put things.
+const owenLetterPanel = (story: State): Panel => ({ kind: 'story', title: LETTER_TITLE, text: letterLine(story), buttons: [close('Mitts back on.')] })
+
+// A spot dug to the bottom (owensCamp.ts): its note, if the story takes one, goes. A wrong first spot is the scene's own
+// beat, the reread: twenty minutes of light mitts off for the line, which comes up under the scene's text.
+const dugOut = (g: Game, d: Dig, spot: CacheSpot): Game => {
+  const r = dugAt(g.story, d, spot, g.pos, g.facing)
+  const sent = r.send ? sendNote({ ...g, dig: r.dig }, r.send) : { ...g, dig: r.dig }
+  if (!r.send || !digging(sent.story)) return sent
+  const m = menu(sent.story)
+  return { ...sent, dig: reread(r.dig), panel: { kind: 'story', title: m.title, text: `${m.text}\n\n${letterLine(sent.story)}`, buttons: [close('Mitts back on.')] } }
+}
+
+// The cold and the light at Owen's camp, once a frame: mitts off while she digs or reads. Freezing too long or the
+// light gone is a fade to the last checkpoint, with what she had dug then; the story never hears of it (Rule 4).
+const campCold = (g: Game, dt: number): Game => {
+  if (g.space !== 'owensCamp' || !g.dig || !digging(g.story)) return g
+  const working = g.holding !== undefined
+  const r = digStep(g.dig, digExposure(length(g.vel) > 0.1 || (working && g.holding?.id !== READ_LETTER), working), dt)
+  if (!r.failed) return { ...g, dig: r.dig }
+  const c = r.dig.carried
+  return { ...g, dig: r.dig, pos: c.at, facing: c.facing, view: c.facing, vel: zero, holding: undefined, busts: g.busts + 1, panel: { kind: 'busted', title: FAILED[r.failed], text: '', buttons: [close('Try again')] } }
+}
+
 const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
   if (h.id === CIGARETTE) return { ...done, lit: true }
   if (h.id === POST_BOX) return { ...done, mailed: true }
+  if (g.space === 'owensCamp' && g.dig) return h.id === READ_LETTER ? { ...done, panel: owenLetterPanel(g.story) } : dugOut(done, g.dig, h.id as CacheSpot)
   if (h.id === DRAWERS.id && g.lab) return { ...done, lab: searched(g.lab) }
   if (g.cabinet && cabinetSpot(g.cabinet, h.id)) {
     const t = cabinetHeld(g.cabinet, h.id, g.pos, g.facing)
@@ -873,7 +917,7 @@ export const inReach = (g: Game, id: string): boolean => {
 const hold = (g: Game, input: Input, dt: number): Game => {
   const h = g.holding
   if (!h) return g
-  if (!input.hold || (h.id !== CIGARETTE && !inReach(g, h.id))) return { ...g, holding: undefined }
+  if (!input.hold || (h.id !== CIGARETTE && h.id !== READ_LETTER && !inReach(g, h.id))) return { ...g, holding: undefined }
   if (isSpot(h.id) && watchOf(g).aware >= 1) return caught(g)
   const progress = h.progress + dt
   return progress < h.time ? { ...g, holding: { ...h, progress } } : finish(g, h)
@@ -940,7 +984,7 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.ski) return skied({ ...g, t }, g.ski, input, dt)
   const walked = attend(water(walk({ ...g, t }, input, dt), dt), dt)
   const after = hold({ ...walked, view: input.view ?? walked.facing }, input, dt)
-  return cabinetWatch(labWatch(douse(after), dt), dt)
+  return campCold(cabinetWatch(labWatch(douse(after), dt), dt), dt)
 }
 
 // The player is whoever the story's pov(state) says (pov.ts).
@@ -958,7 +1002,7 @@ export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaki
 // How high Owen's feet are: on the plane's cabin floor in the air, on the skiff's floor while riding, else on whatever deck he stands on (the flood's porch
 // and walkway), else the ground.
 export const footY = (g: Game): number =>
-  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : gliding(g.crash) ? lucySeat(g.crash ?? 0).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : g.space === 'search' ? heightAt(g.pos) : standAt(spaces[g.space], g.pos)
+  flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : gliding(g.crash) ? lucySeat(g.crash ?? 0).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' || g.space === 'owensCamp' ? groundY(g.pos.x, g.pos.z) : g.space === 'search' ? heightAt(g.pos) : standAt(spaces[g.space], g.pos)
 
 // The heading the camera is held behind on the ride and the flight (skiff.ts, keepBehind); none on foot.
 export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) || gliding(g.crash) || (g.space === 'highway' && staged(g.story, g.stop)) ? g.facing : undefined)
