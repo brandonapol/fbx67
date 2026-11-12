@@ -137,6 +137,20 @@ hillside of black spruce forty minutes out from the camp. Playing Lucy.
   (fire first leaves Jake frostbitten), and `nightSignal` (`smoke`, `stampX` or `saveFire`), read by `searchHours`
   (3, 5 or 7 hours until the rest of the team reaches the wreck), both covered by the sweep and in `liveness.ts`. The
   menu adds none: how well the night is played (warmth, the fire, frostbite on Lucy's hands) stays inside the mission.
+- **Wiring (to do).** `survivalPlay.ts` is the whole mission as pure functions; the game loop does not call it yet.
+  Until a space is built for the crash site it plays as a live panel over the story backdrop. The steps, all additive:
+  1. `prologue.ts`: a `night?: Night` field on `Game`.
+  2. `press`: on `note:fire` or `note:jake` while `survivalPlay.starts(story)` holds, set `night` to
+     `begins(story, note)` instead of sending the note. Route `night:*` buttons to `survivalPlay.press`; an `undefined`
+     result clears `night` and reopens the story's menu panel (the first checkpoint is before the prompt).
+  3. `tick`: before the open-panel early return, step `night` with `survivalPlay.step` and set the panel from
+     `panelOf(story, night)`, keeping the old panel object while its buttons are unchanged so `main.ts` does not
+     rebuild them every frame (its text is read every frame). At `dawned(night)`, send
+     `sceneNotes(story, noteOf(night))` one note at a time, as the barfight's `report` does, clear `night` and `arrive`.
+  4. `smoke/act3Plan.ts`: when `g.night` is set, the next step is `nextPress(g.night)` as a key for that button, or a
+     wait while it is `undefined`. The run still takes every first choice (fire first, smoke).
+  5. The view (issue #185): draw `tells(body, wet, access)` with `access.reduced` from `frontEnd.ts`'s `reduced`.
+     High contrast needs a preference that does not exist yet: whether it is a game-wide option is the owner's call.
 
 ## 3. The ski search
 
