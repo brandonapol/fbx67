@@ -99,7 +99,7 @@ export const sceneIds = [
   'a4_chase_jump',
   'a4_chase_logs',
   'a4_struggle',
-  'a4_struggle_cast',
+  'a4_struggle_shoulder',
   'a4_struggle_talk',
   'a4_defuse',
   'a4_defuse_cap',
