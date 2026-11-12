@@ -532,6 +532,9 @@ starts.forEach((s) =>
       if (g.space === 'story') {
         assert.equal(g.panel?.kind, 'story')
         assert.equal(await page.locator('#panel-title').textContent(), g.panel.title)
+      } else if (g.panel) {
+        // A space whose scene text comes up as Wade comes in (the Chiefs meeting's hall) has nothing to choose on it.
+        assert.deepEqual(g.panel.buttons.map((b: { id: string }) => b.id), ['close'])
       } else assert.equal(g.panel, undefined)
       assert.match(await page.evaluate(() => (window as any).__prologue.textBuild()), new RegExp(`#path=${s.path}$`))
       await page.evaluate(() => (window as any).__prologue.record(true))

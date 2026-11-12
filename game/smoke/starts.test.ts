@@ -37,3 +37,12 @@ test('every Act 3 space has a smoke start that opens in it', () => {
     .filter((sp) => sp.act === 'Act 3: Deep Winter')
     .forEach((sp) => assert.ok(opened.has(sp.id), `${sp.id} has no start`))
 })
+
+// Regression: the same for Act 2. The prologue run visits the Eielson blockout on its own; every other Act 2 space
+// needs a start, and the Chiefs meeting's hall had none, so the run failed with "hall: no frames recorded".
+test('every Act 2 space but the base the run visits has a smoke start that opens in it', () => {
+  const opened = new Set(starts.map((s) => startFrom(`#path=${s.path}`, '').space))
+  Object.values(spaces)
+    .filter((sp) => sp.act === 'Act 2: Freeze-up' && sp.id !== 'eielson')
+    .forEach((sp) => assert.ok(opened.has(sp.id), `${sp.id} has no start`))
+})
