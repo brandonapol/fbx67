@@ -30,6 +30,9 @@ export const starts: readonly Start[] = [
   { scene: 'a2_heat', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'highway' },
   { scene: 'a2_heat_gossip', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3', pose: 'cafe' },
   { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1', pose: 'story' },
+  // The same path on to the crash: the plane coming down onto the wreck's hillside, the start the prologue run samples
+  // the wreck from (engineOut.ts).
+  { scene: 'a3_crash', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1,1,1', pose: 'wreck' },
   // Every choice the first from there on to the search and down the ridge: Wade on skis on the slope, the start the
   // prologue run samples the search from (skiing.ts).
   { scene: 'a3_ski_down', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1', pose: 'search' },
