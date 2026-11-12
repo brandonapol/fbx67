@@ -2,7 +2,7 @@ import { mamaReply } from './mama.ts'
 import type { CacheSpot, Choice, Clock, NightSignal, Place, Scene, SceneId, State } from '../types.ts'
 import { askGossip, gossip } from './gossip.ts'
 import { N } from '../names.ts'
-import { jakeFrostbitten, lucyLetGo, nightSignal, searchHours } from '../logic.ts'
+import { cacheIsAt, jakeFrostbitten, lucyLetGo, nightSignal, searchHours } from '../logic.ts'
 import { addEvidence, eliTrust, has, heat, joan, mom, pipe, set, texan } from '../state.ts'
 
 const act = 'Act 3: Deep Winter' as const
@@ -115,7 +115,15 @@ ${confessionBody(s)}`,
   choices: () => confessionChoices,
 })
 
-const dig = (spot: CacheSpot) => (s: State): SceneId => (s.owenCache === spot ? 'a3_found' : 'a3_wrong_spot')
+const dig = (spot: CacheSpot) => (s: State): SceneId => (cacheIsAt(s, spot) ? 'a3_found' : 'a3_wrong_spot')
+
+// The three places Lucy can dig, as a3_camp offers them. The engine's reread of Owen's second letter shows the line for
+// the spot he chose (game/src/owensCamp.ts).
+export const digLabels: Readonly<Record<CacheSpot, string>> = {
+  stove: 'Under the floorboards behind the cook-tent stove.',
+  cache: 'The old meat cache up on stilts.',
+  marker: 'Under the survey marker.',
+}
 
 export const act3: readonly Scene[] = [
   {
@@ -129,11 +137,7 @@ export const act3: readonly Scene[] = [
 You are ${N.lucy}. December 12th, thirty-eight below. Jake sets the plane down on the frozen creek below Owen's camp, and you have three hours of grey light.
 
 The camp has been torn apart: tent slashed, crates emptied, stove kicked over. Whoever did this was looking for something. ${N.owenShort}'s second letter told you where to look.`,
-    choices: () => [
-      { label: 'Under the floorboards behind the cook-tent stove.', note: 'stove', next: dig('stove') },
-      { label: 'The old meat cache up on stilts.', note: 'cache', next: dig('cache') },
-      { label: 'Under the survey marker.', note: 'marker', next: dig('marker') },
-    ],
+    choices: () => (['stove', 'cache', 'marker'] as const).map((spot) => ({ label: digLabels[spot], note: spot, next: dig(spot) })),
   },
   {
     id: 'a3_wrong_spot',
