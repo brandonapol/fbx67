@@ -6,6 +6,9 @@ const visits = ['a2_co_gossip', 'a2_heat_gossip', 'a3_rash_gossip'] as const sat
 
 export type GossipId = (typeof visits)[number]
 
+// The café visits, in story order: the engine plays these, and only these, in the café (game/src/dottiesCafe.ts).
+export const GOSSIP_VISITS: readonly GossipId[] = visits
+
 const tiers: readonly (readonly string[])[] = [
   [
     `"You're not on anybody's list, hon. Not the Troopers, not the city boys. Just another airman who tips bad."`,

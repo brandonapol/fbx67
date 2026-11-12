@@ -501,7 +501,7 @@ const play = async ({ page, errors, initial }: Opened): Promise<void> => {
 
 // The keyboard run's budget in seconds, under software rendering. It took about 1,030 s locally and 1,650 s on a
 // GitHub runner before the walks and the ride were paced, about 510 s locally after; a runner is about 1.6 times
-// slower, so about 830 s there. CI's check-game job has 30 minutes for this, the other cases (about 4 minutes) and the
+// slower, so about 830 s there. CI's check-game job has 40 minutes for this, the other cases (about 10 minutes) and the
 // build; past the budget the case fails here, naming it, rather than the job being cancelled. The laps it logs show
 // which stretch grew.
 const KEYBOARD_BUDGET_S = 1080

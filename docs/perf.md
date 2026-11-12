@@ -41,10 +41,10 @@ Act 3's `a3_camp` start (`game/smoke/starts.ts`) is also sampled in the prologue
 
 Act 2 has its own run and CI job the same way (`make test/game/smoke/act2`, `game/smoke/act2.test.ts`). It opens `a2_major`
 where the Act 1 run reaches it (every choice the first, so Eli still trusts Wade and the heat alone sets the band) and
-plays to Act 3's first scene, every choice the first, with the steps `game/smoke/act2Plan.test.ts` plays headless. The photo lab and its records room (on `eielson`), Lucy's kitchen (`kitchen`), the hotel bar (`hotelBar`), the bush strip (`strip`), the Silver Pan's booth (`steak`) and the base hangar's door (`hangar`) have spaces; the rest of the act plays as panels
+plays to Act 3's first scene, every choice the first, with the steps `game/smoke/act2Plan.test.ts` plays headless. The photo lab and its records room (on `eielson`), Lucy's kitchen (`kitchen`), the hotel bar (`hotelBar`), the bush strip (`strip`), the Silver Pan's booth (`steak`), the base hangar's door (`hangar`), Dottie's café at the gossip visits (`cafe`) and Barnette's roadside stop at `a2_heat` (`highway`) have spaces; the rest of the act plays as panels
 over `story`, and its beats are the story's places: at the first scene at each place it captures the frame of the
 space it plays in, in each moral-weather band, into `game/smoke/baselines/act2/`. It then visits each Act 2 space
-(`eielson`, the base blockout, `kitchen`, Lucy's kitchen, `hotelBar`, the hotel bar, `strip`, `steak` and `hangar`) from the Act 2 start, samples it and captures its frame in each band. It fails on an
+(`eielson`, the base blockout, `kitchen`, Lucy's kitchen, `hotelBar`, the hotel bar, `strip`, `steak`, `hangar`, `cafe` and `highway`) from the Act 2 start, samples it and captures its frame in each band. It fails on an
 Act 2 space with no frames. `make generate/baselines/act2` regenerates only its baselines.
 
 Act 3 has its own run and CI job the same way (`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). It opens
@@ -95,6 +95,8 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `strip` |      1,500 | 1,500,000 |                 512 |
 | `steak` |      1,500 | 1,500,000 |                 512 |
 | `hangar` |     1,500 | 1,500,000 |                 512 |
+| `cafe`  |      1,500 | 1,500,000 |                 512 |
+| `highway` |    1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 | `panPeak` |    1,500 | 1,500,000 |                 512 |
 

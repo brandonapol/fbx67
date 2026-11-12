@@ -249,6 +249,26 @@ const kitchen: Soundscape = {
   events: [],
 }
 
+// The Northern Lights Café: the oil heater's low roar in the west corner, the coffee on the burner behind the counter.
+const cafe: Soundscape = {
+  ground: { surface: 'wood', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 200, gain: 0.08, at: vec(-4.4, 1.6) },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 1400, q: 1.2, gain: 0.02, at: vec(1.7, 3.15) },
+  ],
+  events: [],
+}
+
+// The Richardson Highway at thirty below: the truck's engine and the tires on packed snow, the wind over the banks.
+const highway: Soundscape = {
+  ground: { surface: 'snow', regions: [] },
+  layers: [
+    { kind: 'noise', bus: 'ambience', color: 'brown', filter: 'lowpass', freq: 140, gain: 0.1 },
+    { kind: 'noise', bus: 'ambience', color: 'pink', filter: 'bandpass', freq: 700, q: 0.7, gain: 0.05, wobble: { rate: 0.09, depth: 0.7, on: 'gain' } },
+  ],
+  events: [],
+}
+
 const story: Soundscape = { ground: { surface: 'wood', regions: [] }, layers: [], events: [] }
 
 
@@ -476,7 +496,7 @@ const strip: Soundscape = { ground: { surface: 'snow', regions: [], tempF: SEASO
 
 // The hotel bar downtown has the bar room's bed: talk, glasses, a stove, the jukebox under the guitar.
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, story }
 
 // Curly's routine clock at the camp (curly.ts): refueling is its first beat.
 export const refueling = (t: number): boolean => beatOf(t) === 'refuel'

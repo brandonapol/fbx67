@@ -44,6 +44,8 @@ import type { Bar } from './hotelBar.ts'
 import { SPAWN as BAR_DOOR, SPAWN_FACING as BAR_FACING, arrival as barArrival, barSpot, finished as setDone, isSeat, restart as restartBar, seatOf, setNote, sit, stared, step as barStep, strum } from './hotelBar.ts'
 import type { TieLook } from './bushStrip.ts'
 import { isStripSpace, rollOut, stripSpot, useSpot } from './bushStrip.ts'
+import { COUNTER_SPOT, counterSpot } from './dottiesCafe.ts'
+import { WHEEL, seatAt as wheelSeat, skipAt, stageTime, staged } from './roadsideStop.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -114,6 +116,8 @@ export type Game = Readonly<{
   cabinet?: Cabinet
   // The hotel bar's set, from Wade coming in with his guitar to the last song (hotelBar.ts).
   bar?: Bar
+  // Seconds into Barnette's roadside stop on the highway, or the quiet drive there (roadsideStop.ts); held at its end.
+  stop?: number
 }>
 
 // The fight's verbs, pressed this frame (fightControls.ts); only the barfight reads them.
@@ -178,6 +182,7 @@ const enter = (g: Game, space: SpaceId, pos: Vec = spaces[space].spawn, facing: 
   lab: undefined,
   cabinet: undefined,
   bar: undefined,
+  stop: undefined,
 })
 
 export const start = (): Game => ({
@@ -235,12 +240,13 @@ export const available = (g: Game): readonly Interactable[] =>
     if (g.space === 'kitchen') return tableSpot(g.story, i.id)
     if (g.space === 'hotelBar') return barSpot(g.story, g.bar, i.id)
     if (isStripSpace(g.space)) return stripSpot(g.story, g.space, i.id)
+    if (g.space === 'cafe') return counterSpot(g.story, i.id)
     return true
   })
 
 // In the air the one thing to do is skip to the camp.
 export const focus = (g: Game): Interactable | undefined =>
-  g.panel ? undefined : flying(g.flight) ? skipSpot(g.pos) : pick(g.pos, g.view, g.facing, available(g))
+  g.panel ? undefined : flying(g.flight) ? skipSpot(g.pos) : g.space === 'highway' && staged(g.story, g.stop) ? skipAt(g.pos) : pick(g.pos, g.view, g.facing, available(g))
 
 export const label = (g: Game, i: Interactable): string =>
   (i.note ? menu(g.story).options.find((o) => o.note === i.note)?.label : i.prompt) ?? i.id
@@ -304,7 +310,7 @@ const arrive = (g: Game): Game => {
   // The Major's cabinet plays on the base: in the hall outside his office, or at the cabinet already open.
   const cab = cabinetArrival(g.story)
   if (cab) return { ...enter(g, 'eielson', cab.at, cab.facing), cabinet: cab.cabinet }
-  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space))) return arrive(enter(g, 'story'))
+  if (r.to !== 'space' && (g.space === 'eielson' || g.space === 'kitchen' || g.space === 'hotelBar' || isStripSpace(g.space) || g.space === 'cafe' || g.space === 'highway')) return arrive(enter(g, 'story'))
   if (r.to === 'text') return { ...g, panel: undefined, holding: undefined, handoff: true }
   if (r.to === 'menu') return menuPanel(g, allNotes(g.story).length ? [] : [restart])
   // The flood is reached through the house: from anywhere else Owen starts in his room, rain on the window, and comes
@@ -332,6 +338,9 @@ const arrive = (g: Game): Game => {
     const into = { ...enter(g, 'hotelBar', BAR_DOOR, BAR_FACING), bar: barArrival(g.story) }
     return available(into).length ? into : menuPanel(into)
   }
+  // On the Richardson Highway Wade is at the wheel of the borrowed truck from the first frame: the stop, or the quiet
+  // drive, plays before the scene's menu comes up (roadsideStop.ts).
+  if (r.space === 'highway' && g.space !== 'highway') return atWheel(enter(g, 'highway'), 0)
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
     // the town where he went up.
@@ -644,6 +653,10 @@ export const interact = (g: Game): Game => {
     if (u?.quiet) return { ...g, vel: zero, look: u.look, panel: { kind: 'talk', title: menu(g.story).title, text: '', buttons: u.back ? [close(u.back)] : [] } }
     if (u) return { ...g, panel: storyPanel(g.story, u.notes, u.back ? [close(u.back)] : []) }
   }
+  // At the café counter Dottie's read and the scene's menu come up (dottiesCafe.ts).
+  if (g.space === 'cafe' && id === COUNTER_SPOT.id) return { ...g, panel: storyPanel(g.story, allNotes(g.story), [close('Step back.')]) }
+  // At the wheel the scene's menu asks what Wade does now; during the stage, interact skips to its end first.
+  if (g.space === 'highway' && id === WHEEL.id) return { ...atWheel(g, stageTime(g.story)), panel: storyPanel(g.story, allNotes(g.story), [close('Sit a minute.')]) }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   // A stool in the hotel bar: Wade sits and the next song starts.
   if (g.space === 'hotelBar' && g.bar && isSeat(id)) {
@@ -722,6 +735,19 @@ const fly = (g: Game, dt: number): Game => {
   return t >= FLIGHT_TIME ? touchDown(g) : inFlight(g, t)
 }
 
+// The roadside stop: Wade at the wheel `stop` seconds in, the truck going on along its track whatever the player does;
+// at the end the scene's menu comes up.
+const atWheel = (g: Game, stop: number): Game => {
+  const seat = wheelSeat(g.story, stop)
+  return { ...g, stop, pos: seat.at, facing: seat.heading, view: seat.heading, vel: zero }
+}
+
+const roadside = (g: Game, dt: number): Game => {
+  const t = Math.min((g.stop ?? 0) + dt, stageTime(g.story))
+  const at = atWheel(g, t)
+  return t < stageTime(g.story) ? at : menuPanel(at, [close('Sit a minute.')])
+}
+
 const finish = (g: Game, h: Holding): Game => {
   const done = { ...g, holding: undefined }
   if (h.id === CIGARETTE) return { ...done, lit: true }
@@ -797,6 +823,8 @@ export const tick = (g: Game, input: Input, dt: number): Game => {
   if (g.panel) return { ...g, vel: zero, t: g.space === 'camp' ? g.t : t }
   if (flying(g.flight)) return fly({ ...g, t }, dt)
   if (riding(g.ride)) return ride({ ...g, t }, dt)
+  // On the highway Wade stays at the wheel: the stage plays, then he sits parked and only looks around.
+  if (g.space === 'highway') return staged(g.story, g.stop) ? roadside({ ...g, t }, dt) : { ...g, t, vel: zero, view: input.view ?? g.view }
   if (g.swept !== undefined) return wash({ ...g, t }, dt, 0, [])
   if (beingCaught(g)) return scolded({ ...g, t }, dt)
   if (g.lab?.caught !== undefined) return labScolded({ ...g, t }, g.lab, dt)
@@ -814,9 +842,10 @@ export const playerBody = (g: Game): Body => bodyFor(g.story, g.space === 'flood
 
 // The player stands in the world only in a space of the story's act: not over the story backdrop, and not in the
 // prologue's flood under the end card, where the story has already moved on to Wade.
-export const inWorld = (g: Game): boolean => (riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act)
+export const inWorld = (g: Game): boolean =>
+  riding(g.ride) ? !ended(g) : spaces[g.space].act === menu(g.story).act || (spaces[g.space].scenes?.includes(g.story.scene) ?? false)
 
-const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated')) || (g.space === 'hotelBar' && g.bar?.song !== undefined)
+const sitting = (g: Game): boolean => riding(g.ride) || flying(g.flight) || g.space === 'highway' || (g.space === 'pan' && (!g.brawl || wade(g.brawl).stance === 'seated')) || (g.space === 'hotelBar' && g.bar?.song !== undefined)
 
 export const playerMotion = (g: Game): Motion => ({ speed: length(g.vel), sneaking: g.space === 'camp', activity: sitting(g) ? 'sit' : 'stand', talking: false })
 
@@ -826,7 +855,7 @@ export const footY = (g: Game): number =>
   flying(g.flight) ? seatAt(g.flight, OWEN_SEAT).y : riding(g.ride) ? boatIn(g.space).deck : g.space === 'camp' ? groundY(g.pos.x, g.pos.z) : standAt(spaces[g.space], g.pos)
 
 // The heading the camera is held behind on the ride and the flight (skiff.ts, keepBehind); none on foot.
-export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) ? g.facing : undefined)
+export const heldBehind = (g: Game): number | undefined => (riding(g.ride) || flying(g.flight) || (g.space === 'highway' && staged(g.story, g.stop)) ? g.facing : undefined)
 
 export const ended = (g: Game): boolean => g.panel?.kind === 'end'
 

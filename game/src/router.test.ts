@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { replay } from '../../text-game/src/engine.ts'
 import { menu, place } from '../../text-game/src/story.ts'
-import { route, spaceFor } from './router.ts'
+import { route, sceneSpace, spaceFor } from './router.ts'
+import { initialState } from '../../text-game/src/state.ts'
 import { spaces } from './levels.ts'
 
 const best: readonly number[] = (
@@ -13,9 +14,12 @@ const best: readonly number[] = (
   .path.split(',')
   .map(Number)
 
-test('each space answers to the act and place the story names for it', () => {
-  Object.values(spaces).forEach((s) => s.act && s.place && assert.equal(spaceFor(s.act, s.place), s.id))
+test('each space answers to the act and place the story names for it, or only to the scenes it names', () => {
+  Object.values(spaces).forEach((s) => s.act && s.place && !s.scenes && assert.equal(spaceFor(s.act, s.place), s.id))
   assert.equal(spaces.downtown.place, undefined, 'downtown is walked through, never routed to')
+  // The café plays the gossip visits only: its place alone routes nothing (dottiesCafe.ts).
+  assert.equal(spaceFor(spaces.cafe.act!, spaces.cafe.place), undefined)
+  spaces.cafe.scenes!.forEach((id) => assert.equal(sceneSpace({ ...initialState, scene: id }), 'cafe', id))
 })
 
 // a1_letter: Act 1's letter home, at no place with a space.

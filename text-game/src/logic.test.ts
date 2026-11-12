@@ -4,6 +4,8 @@ import { initialState } from './state.ts'
 import {
   HEAT_LIMIT,
   LUCY_LET_GO,
+  barnetteStops,
+  barnetteTrustsWade,
   claimWon,
   recordsOpen,
   curlyFate,
@@ -23,6 +25,8 @@ import {
   paperRouteComplete,
 } from './logic.ts'
 import type { State } from './types.ts'
+import { menu } from './story.ts'
+import { N } from './names.ts'
 
 const base: State = {
   ...initialState,
@@ -271,4 +275,16 @@ test('outside bad, good and best are exactly the paper route: stayed and testifi
   decisionStates
     .filter((s) => ending(s) !== 'bad')
     .forEach((s) => assert.equal(ending(s) !== 'middle', s.afterConfession === 'stay' && s.testified === true, JSON.stringify(s)))
+})
+
+// Barnette's roadside stop (a2_heat): the scene pulls Wade over exactly when barnetteStops holds, and leans in the
+// window exactly when Barnette no longer trusts him. The engine stages the stop from these gates (#209).
+test('the roadside stop plays in a2_heat at heat 3 and up, and the lean only above the limit', () => {
+  for (let heat = 0; heat <= 6; heat++) {
+    const s: State = { ...initialState, scene: 'a2_heat', heat }
+    const text = menu(s).text
+    assert.equal(barnetteStops(s), heat >= 3, `stops at heat ${heat}`)
+    assert.equal(text.includes(`${N.barnette} pulls you over`), barnetteStops(s), `the stop's text at heat ${heat}`)
+    assert.equal(text.includes('leans in the window'), !barnetteTrustsWade(s), `the lean's text at heat ${heat}`)
+  }
 })
