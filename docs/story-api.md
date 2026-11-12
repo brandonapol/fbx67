@@ -163,6 +163,116 @@ The game never changes story facts directly. It only sends notes (Rule 1) and as
 
 **The ice jam.** A breakup sequence on the river with Eli: reading the ice, reaching the jam, confronting the Major. Allowed endings: stopped it, caught the Major, or it blew. If Wade has burned his friends, Eli isn't there to get him across the ice in time, so only "it blew" is possible. That keeps the moral choice in charge, per Rule 3.
 
+## Proposed: what issue #4 still needs
+
+**Status: Proposed.** Nothing in this section is decided. The five rules above are the agreement and stand as written.
+This section checks the issue's "Remaining to build" list against the code on `main`. It proposes how to close each
+gap and leaves every choice to the owner as a question (Q1 to Q6 below). Where it and `design.md` disagree, the design
+wins.
+
+### Where #4 stands
+
+| Remaining in #4 | State on `main` | Gap |
+|---|---|---|
+| Notes and menus in the core | `menu`, `send`, `mission` and `sendMission` in `text-game/src/story.ts`. Eleven mission menus are data in `missions.ts` (Acts 1 to 3). | The wire and the ice jam (Act 4) have no menu. Their specs are in [`acts/act4-missions.md`](acts/act4-missions.md), also Proposed. |
+| The text build's buttons send notes | `cli.ts` and `web/` step by choice number through `follow` in `engine.ts`. `send` maps a note to that same number, so the two agree. | Nothing forces them to stay the same; see P2. |
+| The explorer walks every menu option | `explore.ts` walks every choice. `missions.test.ts` proves each mission's notes and the ways through its scenes land on the same states, so the sweep covers the menus. | None for Acts 1 to 3. An Act 4 menu gets the same test when it lands. |
+| Read-only questions, including moral weather | `weather(state)` in `story.ts` is the moral weather, read by `game/src/lighting.ts` and `web/src/stills.ts`. `place`, `clock`, `season`, `goal`, `pov`, `oneHanded` and `notebook` are listed above. | `weather` is not named in Rule 5 and reads fewer inputs than the design lists (P1). There is no query for "who trusts Wade" (P3). |
+| Split into core / story / tools packages | Not started. `text-game/` is one package. `game/` and `web/` import about twenty of its modules by relative path. | Everything; see P4. |
+| (from "Still to decide") Retry checkpoints | Proposed in [`design/saves-and-checkpoints.md`](design/saves-and-checkpoints.md). | That document's own open questions. |
+
+`#4` closes when the Act 4 menus are data, the queries in P1 and P3 are settled, and the package split is done or
+dropped by the owner.
+
+### P1. Moral weather is `weather(state)`
+
+Rule 5's "Weather and light" is `weather(state)` in `text-game/src/story.ts`. It returns `'clear'`, `'dusk'` or
+`'night'`, the design's clean, strained and danger:
+
+- `'night'` when `heat` is above `HEAT_LIMIT` (3), or `eliTrust` is at its floor (-3).
+- `'dusk'` when `heat` is at least `HEAT_LIMIT - 1`, or `eliTrust` is below 0.
+- `'clear'` otherwise.
+
+The engine picks the light from it and from `clock(state)`. Proposed: list `weather(state)` by name in Rule 5's list,
+next to the other queries, with this rule.
+
+The design ("Moral weather") says the function reads "heat, trust, betrayals". Today it reads heat and Eli's trust
+only. Lucy's heat (`lucyHeat`) and the betrayal decisions (telling Eli's secret, leaving Lucy, taking Ashby's money)
+do not move it. See Q1.
+
+### P2. Buttons send notes, not numbers
+
+Each text build button already maps one to one to a named note, so nothing breaks today. But the CLI and the web
+build pick by position (`follow(s, choicesOf(s), n)`), and only the engine sends by name. If a scene's choices are
+reordered, a `--choices` path and a saved web path would silently change meaning, while the engine would not. Two
+options:
+
+- **A. Leave as is.** Choice numbers stay the text build's interface. The golden routes catch a reorder as a
+  transcript diff.
+- **B. Notes at the edges.** The web build saves and replays paths as notes (`send`), and the CLI takes
+  `--notes a,b,c` beside `--choices`. Numbers stay as the typed shorthand. The golden routes stay numeric.
+
+See Q2.
+
+### P3. "Who trusts Wade" as queries, not fields
+
+Rule 5 says the game asks who's around and how they feel, and never reads story facts directly. Today the engine
+reaches past `story.ts` in a few places:
+
+- It imports gates from `logic.ts`: `barnetteStops` and `barnetteTrustsWade` in `game/src/roadsideStop.ts`,
+  `cacheIsAt`, and `ending`.
+- It reads raw state fields, such as `s.curlyPlan` in `game/src/bushStrip.ts`.
+- `notesRatchet.ts` compares counters (`heat`, `eliTrust`, `lucyHeat`, ...). That is a test of parity, not staging,
+  so it is out of scope here.
+
+Proposed: `story.ts` becomes the one module the engine imports for reads. It re-exports, by name, every gate the
+engine stages from, so the list of what the game may ask is short and visible in one file. Two shapes:
+
+- **A. Re-export the gates.** `barnetteStops`, `barnetteTrustsWade`, `cacheIsAt` and the rest are re-exported from
+  `story.ts`, as `notebook` and `pov` already are. Nothing new to name.
+- **B. One standing query.** `standing(state)` returns
+  `{ eli: 'trusts' | 'wary' | 'gone', lucy: ..., barnette: 'easy' | 'watching' | 'hunting' }`, banded from the counters
+  the way `weather` is. The engine stages faces and lines from the bands and never sees a number.
+
+Under either shape, a rule (a typecheck boundary or a lint over `game/src`) would stop new imports of `logic.ts`,
+`state.ts` internals and raw fields. See Q3 and Q4.
+
+### P4. The package split
+
+The issue asks for core / story / tools in the same pass as the notes. The notes are done, so the split is now a
+change of its own, and AGENTS.md asks for options before a new layer. As the modules stand:
+
+- **core**: `types.ts`, `state.ts`, `engine.ts`, `logic.ts`, `clock.ts`, `queries.ts`, `story.ts`, `missions.ts`.
+- **story**: `scenes/`, `names.ts`, `sceneIds.ts`, `ambient/`.
+- **tools**: `explore.ts`, `matrix.ts`, `verify.ts`, `liveness.ts`, `budget.ts`, `missionCover.ts`, `storyLint.ts`,
+  `cli.ts`.
+
+`logic.ts` holds gates that read story outcomes, and `scenes/` imports them. So "core" here means the stepping and the
+queries, not something free of the story.
+
+- **A. Folders and a boundary lint, one package.** Move the files into `src/core`, `src/story` and `src/tools`, and add
+  a check that `core` never imports `tools` and `game/`/`web/` import only `core/story.ts` and `core/types.ts`. No new
+  dependency; one PR that touches many imports, so it ships as its own PR.
+- **B. npm workspaces, three packages.** Real package boundaries and `exports` maps. Costs a workspace setup, a change
+  to both `npm ci` targets and the Makefile, and a rewrite of every relative import in `game/` and `web/`.
+- **C. Drop the split.** Keep P3's single import door and its lint, which gives the engine the boundary it needs, and
+  close the split as not needed.
+
+See Q5.
+
+### Open questions for the owner
+
+1. **Q1.** Should `weather(state)` also read Lucy's heat and the betrayal decisions (Eli's secret told, Lucy left,
+   Ashby's money taken)? If so, should a betrayal set a floor of `'dusk'` for the rest of the game, or count like a
+   point of heat? This moves Act 2 to 4 lighting on many routes, but no ending.
+2. **Q2.** Should the text build save and replay by note (P2 B), or keep choice numbers (P2 A)?
+3. **Q3.** Should "who trusts Wade" be the gates re-exported by name (P3 A) or banded standings (P3 B)?
+4. **Q4.** Should the import boundary be enforced by a check in `make check`, or only written down here?
+5. **Q5.** Should the package split be folders with a lint (P4 A), workspaces (P4 B), or dropped (P4 C)? Should it
+   stay under #4 or move to its own ticket?
+6. **Q6.** Does #4 close when Acts 1 to 3 and the queries are settled, with the Act 4 menus tracked under epic #5,
+   or only once the wire and the ice jam are data too?
+
 ## Still to decide when we build it
 
 - Exactly which details each mission's note carries (we'll write those as we build each mission).
