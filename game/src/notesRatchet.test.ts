@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { missions } from '../../text-game/src/missions.ts'
-import { LETTER, NIGHT, TRAIL, engineSenders, failures, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
+import { ACTS, LETTER, NIGHT, TRAIL, engineSenders, failures, keyAct, parseAllowlist, storyNotes, walk } from './notesRatchet.ts'
 
 const ALLOWLIST = 'game/notes-allowlist.txt'
 
@@ -41,11 +41,20 @@ const mainMenus = (): ReadonlySet<string> | undefined => {
   return new Set([...quoted(ids, /^\s*'([a-z0-9_]+)',$/gm), ...quoted(ms, /^\s*id: '([A-Za-z0-9]+)',$/gm)])
 }
 
-test('the walk reaches every Act 1-3 menu, missions as their notes', () => {
+// The acts main's ratchet covered, read from its notesRatchet.ts at the same ref.
+const mainActs = (): ReadonlySet<string> | undefined => {
+  const ref = git('merge-base', 'HEAD', 'origin/main') ?? git('rev-parse', '-q', '--verify', 'origin/main')
+  const text = ref === undefined ? undefined : git('show', `${ref}:game/src/notesRatchet.ts`)
+  const line = text?.match(/^export const ACTS\b.*$/m)?.[0]
+  return line === undefined ? undefined : new Set(quoted(line, /'([^']+)'/g).filter((a) => a.startsWith('Act ')))
+}
+
+test('the walk reaches every Act 1-4 menu, missions as their notes', () => {
   assert.ok(story.has('a1_flood:findEli'))
   assert.ok(story.has('theBarfight:gotUp.shove.stoodWithEli.clean'), 'a mission is its ending notes')
   missions.forEach((m) => assert.ok(![...story].some((k) => k.startsWith(`${m.start}:`)), `${m.id} sends its note, not its first menu's`))
-  assert.ok(![...story].some((k) => /^(p|a4|ep)_/.test(k)), 'only Acts 1 to 3')
+  assert.ok([...story].some((k) => k.startsWith('a4_')), 'Act 4 is walked')
+  assert.ok(![...story].some((k) => /^(p|ep)_/.test(k)), 'Acts 1 to 4, no prologue or epilogue key')
 })
 
 test('the engine sends the sandbag line notes from the woman from Minto', () => {
@@ -53,7 +62,7 @@ test('the engine sends the sandbag line notes from the woman from Minto', () => 
   assert.deepEqual([...new Set(woman.map((s) => s.key))].sort(), ['a1_flood:findEli', 'a1_flood:stayOnLine'])
 })
 
-test('every Act 1-3 note has an engine sender or is on the allowlist, and every listed note is still unbuilt', () => {
+test('every Act 1-4 note has an engine sender or is on the allowlist, and every listed note is still unbuilt', () => {
   assert.deepEqual(failures({ story, sent, allowed }), [])
 })
 
@@ -61,7 +70,30 @@ test('the allowlist only shrinks against main', (t) => {
   const base = mainAllowlist()
   if (base === undefined) return t.skip('no origin/main to compare with')
   if (base === null) return t.diagnostic(`main has no ${ALLOWLIST} yet`)
-  assert.deepEqual(failures({ story, sent, allowed, base, baseMenus: mainMenus() }), [])
+  assert.deepEqual(failures({ story, sent, allowed, base, baseMenus: mainMenus(), baseActs: mainActs() }), [])
+})
+
+test('main\'s ratchet acts are read from its source', (t) => {
+  const acts = mainActs()
+  if (acts === undefined) return t.skip('no origin/main to compare with')
+  assert.ok(acts.has('Act 1: Flood') && acts.has('Act 3: Deep Winter'))
+  assert.ok([...acts].every((a) => ACTS.includes(a as (typeof ACTS)[number])))
+})
+
+test('an act new to the ratchet may start on the allowlist; an act main covers may not be re-added', () => {
+  const story = new Set(['a3_old:x', 'a4_new:y'])
+  const actOf = (k: string): string => (k.startsWith('a3_') ? 'Act 3: Deep Winter' : 'Act 4: Breakup')
+  const menus = new Set(['a3_old', 'a4_new'])
+  const ratchet = { story, sent: new Set<string>(), allowed: ['a3_old:x', 'a4_new:y'], base: [], baseMenus: menus, actOf }
+  const shrinks = (k: string): string => `${k}: not on main's allowlist, which may only shrink`
+  assert.deepEqual(failures({ ...ratchet, baseActs: new Set(['Act 3: Deep Winter']) }), [shrinks('a3_old:x')], 'Act 4 new to ACTS')
+  assert.deepEqual(failures({ ...ratchet, baseActs: new Set(['Act 3: Deep Winter', 'Act 4: Breakup']) }), [shrinks('a3_old:x'), shrinks('a4_new:y')], 'Act 4 on main')
+})
+
+test('a key\'s act is its scene\'s, or its mission\'s first scene\'s', () => {
+  assert.equal(keyAct('a4_offer:fake'), 'Act 4: Breakup')
+  assert.equal(keyAct('theBarfight:gotUp.shove.stoodWithEli.clean'), 'Act 1: Flood')
+  assert.equal(keyAct('nowhere:x'), undefined)
 })
 
 test('main\'s scenes and missions are read from its source', (t) => {
@@ -96,7 +128,7 @@ test('a listed note the engine sends, one no menu offers, or one listed twice fa
   const story = new Set(['a:x', 'b:y'])
   assert.deepEqual(failures({ story, sent: new Set(['a:x']), allowed: ['a:x', 'b:y', 'c:z', 'b:y'] }), [
     'a:x: the engine sends it now; delete it from the allowlist',
-    'c:z: no Act 1-3 menu offers it; delete it from the allowlist',
+    'c:z: no Act 1-4 menu offers it; delete it from the allowlist',
     'b:y: listed twice',
   ])
 })
