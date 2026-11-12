@@ -276,7 +276,7 @@ Object.entries(ends).forEach(([seat, note]) => {
     const told = press(played, `note:${played.panel!.buttons[0]!.id.slice(5)}`)
     assert.deepEqual(told.story, sendMission(hotel, note))
     assert.deepEqual(told.story, textBuild(told), 'parity with the text build')
-    assert.equal(told.space, 'story', 'out of the bar, the Chiefs play over the story backdrop')
+    assert.equal(told.space, 'hall', 'out of the bar, Wade goes on to the Chiefs meeting in its hall (chiefsMeeting.ts)')
   })
 })
 
