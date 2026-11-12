@@ -34,8 +34,8 @@ export type Lamp = Readonly<{
   halo?: number
 }>
 
-// The story's seasons the engine has light for (season(state) in text-game/src/story.ts). Breakup has no row yet.
-export type LitSeason = Exclude<Season, 'breakup'>
+// The story's seasons the engine has light for: all of them (season(state) in text-game/src/story.ts).
+export type LitSeason = Season
 
 export type Lighting = Readonly<{
   grade: Band | 'summer'
@@ -94,8 +94,7 @@ const summer: Lighting = {
 }
 
 // docs/art/README.md, "Band by season": each cell's sun (absent where the cell says "sun none") and fog range in
-// meters. This is the table's one copy in code; lighting.test.ts reads the README and holds these rows to it. The
-// Act 4 breakup row comes with its season layer.
+// meters. This is the table's one copy in code; lighting.test.ts reads the README and holds these rows to it..
 export type Arc = Readonly<{ elevation: readonly [number, number]; azimuth: readonly [number, number] }>
 export type Cell = Readonly<{ sun?: Arc; fog: readonly [number, number] }>
 export type BandedSeason = Exclude<LitSeason, 'summer'>
@@ -115,9 +114,17 @@ export const bandBySeason: Readonly<Record<BandedSeason, Readonly<Record<Band, C
     blueHour: { fog: [30, 160] },
     sodium: { fog: [6, 70] },
   },
+  // Act 4, breakup (spring 1968): a clear spring sun well above winter's, blue hour, sodium lamps in river mist.
+  breakup: {
+    alpenglow: { sun: { elevation: [15, 40], azimuth: [150, 250] }, fog: [80, 240] },
+    blueHour: { fog: [30, 160] },
+    sodium: { fog: [10, 80] },
+  },
 }
 
 // Each band's palette, the same in every banded season: sky, ambient, the key's color and strength, and the haze.
+// Breakup's row reuses these provisional values, as docs/art/README.md says it does until #54 (the alpenglow resample,
+// blocked on a photo) retunes them: no breakup-only color exists yet, and the grey-brown snowmelt is not in them.
 // Where the cell has no sun the directional light is a soft overhead sky fill, so its place is fixed.
 type Palette = Omit<Lighting, 'grade' | 'sunUp' | 'fogStart' | 'fogEnd' | 'lamp' | 'rain' | 'breath' | 'snowLoad'>
 const SKY_FILL = { sunAzimuth: 200, sunElevation: 55 } as const
@@ -155,6 +162,8 @@ const AIR: Readonly<Record<BandedSeason, Pick<Lighting, 'rain' | 'breath' | 'sno
   flood: { rain: true, breath: false, snowLoad: false },
   freezeup: { rain: false, breath: false, snowLoad: false },
   winter: { rain: false, breath: true, snowLoad: true },
+  // March to May: the cold has broken, so no breath fog and no snow load; the melt is on the ground, not in the air.
+  breakup: { rain: false, breath: false, snowLoad: false },
 }
 
 // The band's key where it is not the sun: streetlights at blue hour, sodium lamps at danger.
@@ -219,6 +228,9 @@ export const MIDNIGHT_SUN = { elevation: 3, azimuth: [330, 350] } as const
 export const WINTER_SUN: Arc = bandBySeason.winter.alpenglow.sun!
 const WINTER_NOON = { sunAzimuth: 185, sunElevation: 2 } as const
 const WINTER_SUN_INTENSITY = 1.4
+// Breakup's clean-band disc without a clock: due south at noon, a little under the row's midpoint, as the noon sun
+// passes 20 degrees by mid-March and nears 40 by early May. Its intensity is winter's, the one provisional value.
+const BREAKUP_NOON = { sunAzimuth: 185, sunElevation: 25 } as const
 
 // In ice fog each sodium lamp reads as a halo about 4 m across.
 export const ICE_FOG_HALO = 4
@@ -259,7 +271,8 @@ const banded = (season: BandedSeason, band: Band, when?: Clock): Lighting => {
   const [fogStart, fogEnd] = cell.fog
   const base: Lighting = { ...palette[band], grade: band, sunUp: false, fogStart, fogEnd, ...AIR[season] }
   if (!cell.sun) return base
-  const at = when === undefined ? WINTER_NOON : heldSun(cell.sun, when)
+  const noon = season === 'breakup' ? BREAKUP_NOON : WINTER_NOON
+  const at = when === undefined ? noon : heldSun(cell.sun, when)
   return { ...base, sunUp: true, sunIntensity: WINTER_SUN_INTENSITY, ...at }
 }
 
@@ -287,9 +300,6 @@ export const lighting = (space: SpaceId, season: LitSeason, weather: Weather, wh
   if (!lamp) return base
   return { ...base, ...INDOOR, ...(space === 'story' ? STORY : {}), lamp }
 }
-
-// Breakup has no light of its own yet; March is still snow and ice, so it is lit as winter until its row lands.
-const litAs = (x: Season): LitSeason => (x === 'breakup' ? 'winter' : x)
 
 // The story backdrop belongs to no place and no hour.
 const BACKDROP: LitSeason = 'summer'
@@ -324,13 +334,13 @@ export const timeOf = (space: Space, s: State, path: readonly number[] = []): Ti
   if (space.id === 'story') return { season: BACKDROP }
   const here = sceneHere(space, s, path)
   const dated = here ? lastDated(here) : space.place && firstAt(space.place)
-  const lit = litAs((dated && season(dated)) ?? 'summer')
+  const lit = (dated && season(dated)) ?? 'summer'
   const at = here && clock(here)
   return at === undefined ? { season: lit } : { season: lit, clock: at }
 }
 
 // A date's time, its season from the story's own ranges (seasonOn in text-game/src/queries.ts).
-export const timeAt = (c: Clock): Time => ({ season: litAs(seasonOn(c)), clock: c })
+export const timeAt = (c: Clock): Time => ({ season: seasonOn(c), clock: c })
 
 export const lightingFor = (space: Space, s: State, path: readonly number[] = []): Lighting => {
   const t = timeOf(space, s, path)
