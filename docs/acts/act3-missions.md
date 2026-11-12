@@ -9,8 +9,8 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); all 
 **Status: Proposed.** Every section below is a proposal; the owner approves the specs in review. Section 1's menu,
 `lucysDig`, section 2's, `theLongNight`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's,
 `theRashPlan`, are in `missions.ts`, and Act 3 plays through them as panels over `story` in its own smoke run
-(`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). The long night (section 2) and the ski search (section 3)
-are played in the engine; the dig, the wreck and the rash plans are still their menus.
+(`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). Lucy's dig (section 1), the long night (section 2) and
+the ski search (section 3) are played in the engine; the wreck and the rash plans are still their menus.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:
@@ -99,6 +99,15 @@ From Jake's landing at `a3_camp` until Lucy has the bundle inside her parka and 
   `a3_crash` with the `tapes` evidence, and `owenCache` cleared.
 - **What shades heat or trust.** Nothing.
 - **New state.** None. Lucy's fingers stay inside the mission.
+- **In the engine.** Built (#139): `game/src/owensCamp.ts`, the space `owensCamp` that `a3_camp`, `a3_wrong_spot` and
+  `a3_found` route to. It is the prologue's camp (`camp.ts`, drawn by `campView.ts`) with the winter as data: a season
+  palette (snow, creek ice, no fireweed or mosquitoes) and props for the slashed tent, the emptied crates, the kicked
+  stove and Jake's plane on the ice. The first spot dug (held, mitts off) is sent as `a3_camp`'s note, so the story picks
+  `a3_found` or `a3_wrong_spot`; the wrong spot's own text comes up with the letter's line, and costs twenty minutes and
+  white hands. After that only the spot `cacheIsAt` names (in `logic.ts`, over `owenCache`) sends the scene's `dig`;
+  other spots cost light. Holding interact with nothing in front reads the letter. Jake's panel is `a3_found`'s, and
+  `home` leaves for the crash. The light and the cold are `survival.ts`'s with the two checkpoints above. Its headless
+  test is `owensCampPlay.test.ts`, its steady player `digBot.ts`.
 
 ## 2. The crash and the long night
 

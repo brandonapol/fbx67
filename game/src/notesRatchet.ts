@@ -26,6 +26,7 @@ import { ORDERS, SIGNALS, MISSION as LONG_NIGHT } from './survivalPlay.ts'
 import { nightOut } from './nightBot.ts'
 import { ROUTE_NOTES } from './skiing.ts'
 import { skiOut } from './skiBot.ts'
+import { digOut } from './digBot.ts'
 import type { SpaceId } from './levels.ts'
 import { playSearch, start as startWalk } from './trailDrive.ts'
 import type { Interactable } from './world.ts'
@@ -222,6 +223,17 @@ const skiSenders = (stop: Stop, g: Game): readonly Sender[] => {
   return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: SLOPE }))
 }
 
+// Lucy's dig is dug (owensCamp.ts): at the camp, its steady player (digBot.ts) digs each place first, rereads after a
+// wrong one and digs the right one, then goes home with Jake, the spot being the dig itself.
+export const DIG = 'dig'
+const DIG_MISSION = 'lucysDig'
+const FIRST_DIGS = ['stove', 'cache', 'marker'] as const
+const digSenders = (stop: Stop, g: Game): readonly Sender[] => {
+  if (mission(stop.state)?.id !== DIG_MISSION || g.space !== 'owensCamp') return []
+  const landed = FIRST_DIGS.map((first) => digOut(g, first).story)
+  return stop.offers.filter((o) => landed.some((s) => isDeepStrictEqual(s, o.to))).map((o) => ({ key: o.key, space: g.space, spot: DIG }))
+}
+
 export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) => boolean = () => false): readonly Sender[] => {
   const r = route(stop.state, 'story')
   if (openLetter(stop.state)) {
@@ -232,7 +244,7 @@ export const sendersAt = (stop: Stop, without: (space: SpaceId, spot: string) =>
   const g = resume(stop.state, [0])
   // The space Wade is in, which is not always the one the story routes to: the photo lab is asked in Lucy's kitchen.
   const space = g.space
-  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, NIGHT) ? [] : nightSenders(stop)), ...(without(space, SLOPE) ? [] : skiSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
+  return [...(without(r.space, FIGHT) ? [] : fightSenders(stop, g)), ...(without(space, NIGHT) ? [] : nightSenders(stop)), ...(without(space, SLOPE) ? [] : skiSenders(stop, g)), ...(without(space, DIG) ? [] : digSenders(stop, g)), ...(without(space, TRAIL) ? [] : trailSenders(stop, g)), ...(without('eielson', LAB_SPOT.id) ? [] : labSenders(stop, g)), ...(without('eielson', DIAL_SPOT.id) ? [] : cabinetSenders(stop, g)), ...(without('hotelBar', SET) ? [] : barSenders(stop, g)), ...available(g)
     .filter((i) => !without(space, i.id))
     .flatMap((i) => {
       const at = facing(g, i)

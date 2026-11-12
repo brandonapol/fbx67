@@ -1,4 +1,4 @@
-import type { BarfightMove, NightSignal, State } from './types.ts'
+import type { BarfightMove, CacheSpot, NightSignal, State } from './types.ts'
 import { honesty } from './state.ts'
 
 export type Ending = 'best' | 'good' | 'middle' | 'bad'
@@ -19,6 +19,9 @@ export const lettersTogether = (s: State): boolean => s.owenLetter === 'kept'
 
 // The photo lab's spare key is missed in November if Wade borrowed it to go in after lockup (design: photo-lab method).
 export const keyMissed = (s: State): boolean => s.photoLab === 'key'
+
+// Owen's notes are where he hid them in the prologue (owenCache): Lucy's dig finds them at that spot and nowhere else.
+export const cacheIsAt = (s: State, spot: CacheSpot): boolean => s.owenCache === spot
 
 // Fire first leaves Jake pinned in the cold while Lucy builds it: his foot freezes, and he loses toes (design:
 // survival-night order). Jake first costs Lucy her fingertips for a week and Jake nothing he keeps.

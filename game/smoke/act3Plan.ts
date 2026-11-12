@@ -5,6 +5,9 @@ import type { Game } from '../src/prologue.ts'
 import { nextPress } from '../src/survivalPlay.ts'
 import { CRASH_TIME } from '../src/engineOut.ts'
 import { skiTarget } from '../src/skiBot.ts'
+import { nextSpot, wayTo } from '../src/digBot.ts'
+import { available, focus } from '../src/prologue.ts'
+import { yawTo } from './act1Plan.ts'
 import type { Step } from './act2Plan.ts'
 import { nextStep as act2Step } from './act2Plan.ts'
 
@@ -30,6 +33,18 @@ export const nextStep = (g: Game): Step => {
   if (g.ski) {
     const to = skiTarget(g.ski.route, g.pos)
     return { kind: 'steer', x: to.x, z: to.z, getUp: false }
+  }
+  // At Owen's camp Lucy walks the camp's ways (digBot.ts) to the first choice's spot, the stove; after a wrong dig to
+  // the spot the letter names; then back to Jake.
+  if (g.space === 'owensCamp' && !g.panel && !g.holding) {
+    const id = nextSpot(g)
+    const spot = available(g).find((i) => i.id === id)
+    if (spot && focus(g)?.id === spot.id) return { kind: 'interact', spot: spot.id, hold: spot.hold !== undefined }
+    if (spot) {
+      const points = wayTo(g.pos, id!).map((p) => [p.x, p.z] as const)
+      const end = points.at(-1)!
+      return { kind: 'walk', spot: spot.id, points, yaw: yawTo({ x: end[0], z: end[1] }, spot) }
+    }
   }
   return act2Step(g)
 }
@@ -59,6 +74,7 @@ export const poseFor: Readonly<Partial<Record<SpaceId, string>>> = {
   story: 'story',
   wreck: 'wreck',
   search: 'search',
+  owensCamp: 'owensCamp',
 }
 
 // The beats of the run, in order: the first scene at each place on the path.

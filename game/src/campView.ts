@@ -7,6 +7,7 @@ import { playbackRate } from './cast.ts'
 import { CURLY_HALF_ANGLE, CURLY_RANGE, gaze } from './curly.ts'
 import type { Game } from './prologue.ts'
 import { curlyNow, hiding, seen } from './prologue.ts'
+import type { Season } from './owensCamp.ts'
 import { loadContainer, propUrl, spawnProp } from './props.ts'
 
 // The survey camp drawn for real (#49): the bar's terrain from its heightmap (campGround.ts), painted from splat
@@ -179,7 +180,10 @@ const grain = (device: pc.GraphicsDevice): pc.Texture => {
   return tex
 }
 
-const terrain = (device: pc.GraphicsDevice): pc.Mesh => {
+// In winter the snow lies over every layer, thinnest where the bar's relief shows through.
+const SNOW_COVER = 0.88
+
+const terrain = (device: pc.GraphicsDevice, winter?: Season): pc.Mesh => {
   const h = heightmap()
   const { x0, x1, z0, z1 } = EXTENT
   const dx = (x1 - x0) / (GRID - 1)
@@ -198,7 +202,8 @@ const terrain = (device: pc.GraphicsDevice): pc.Mesh => {
       const n = new pc.Vec3(-(y(i + 1, j) - y(i - 1, j)) / (2 * dx), 1, -(y(i, j + 1) - y(i, j - 1)) / (2 * dz)).normalize()
       normals.push(n.x, n.y, n.z)
       const s = splatAt(x, z)
-      const c = linear([0, 1, 2].map((k) => s.gravel * LAYER.gravel[k] + s.sand * LAYER.sand[k] + s.moss * LAYER.moss[k] + s.silt * LAYER.silt[k]) as unknown as Rgb)
+      const bare = [0, 1, 2].map((k) => s.gravel * LAYER.gravel[k] + s.sand * LAYER.sand[k] + s.moss * LAYER.moss[k] + s.silt * LAYER.silt[k]) as unknown as Rgb
+      const c = linear(winter ? mix(bare, rgb(winter.snow), SNOW_COVER) : bare)
       colors.push(c[0], c[1], c[2], 1)
       uvs.push(x / 3, z / 3)
     }
@@ -417,7 +422,9 @@ const headOf = (e: pc.Entity): pc.GraphNode | null => {
   return heads.get(e) ?? null
 }
 
-export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): CampView => {
+// `winter` is the season laid over the camp in Act 3 (owensCamp.ts): snow on the ground, ice on the creek, and no
+// willow, alder, fireweed or tussocks above the snow, no mosquitoes and no Curly's sight.
+export const buildCamp = (app: pc.Application, root: pc.Entity, base: string, winter?: Season): CampView => {
   const device = app.graphicsDevice
   const materials: pc.Material[] = []
   const keep = <M extends pc.Material>(m: M): M => {
@@ -428,13 +435,13 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): C
 
   const g = grain(device)
   textures.push(g)
-  const ground = meshEntity('terrain', terrain(device), keep(vertexMaterial({ map: g, tiling: 1 })), { cast: false, receive: true })
+  const ground = meshEntity('terrain', terrain(device, winter), keep(vertexMaterial({ map: g, tiling: 1 })), { cast: false, receive: true })
   root.addChild(ground)
 
   const water = new pc.Entity('creek')
   water.addComponent('render', { type: 'plane', castShadows: false, receiveShadows: true })
-  const wm = keep(flat('#46616a', { opacity: 0.82 }))
-  wm.gloss = 0.8
+  const wm = keep(winter ? flat(winter.ice) : flat('#46616a', { opacity: 0.82 }))
+  wm.gloss = winter ? 0.9 : 0.8
   wm.update()
   if (water.render) water.render.material = wm
   water.setLocalPosition(5, WATER_Y, 10.4)
@@ -446,9 +453,10 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): C
   root.addChild(meshEntity('camp', toMesh(device, b), keep(vertexMaterial()), { cast: true, receive: true }))
 
   const leaf = keep(vertexMaterial({ twoSided: true }))
-  const kinds: readonly Kind[] = ['spruce', 'willow', 'alder', 'fireweed', 'tussock']
+  // In winter the willow, alder, fireweed and tussocks are bare and under the snow: only the spruce stand out of it.
+  const kinds: readonly Kind[] = winter ? ['spruce'] : ['spruce', 'willow', 'alder', 'fireweed', 'tussock']
   const groves = kinds.map((k) => instanced(device, root, k, leaf))
-  const haze = specks(device, root)
+  const haze = winter ? undefined : specks(device, root)
 
   // What moves when Owen hides: the loose floorboard behind the stove, the cache's hatch, the trenching tool.
   const part = (name: string, w: number, h: number, d: number, hex: string, pivot: readonly [number, number, number], offset: readonly [number, number, number]): pc.Entity => {
@@ -506,14 +514,16 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): C
       gr.plants.forEach((p, i) => writePlant(gr.data, i, p, sway(p, gr.kind, t), m4, q, s, v))
       gr.vb.setData(gr.data)
     })
-    SWARMS.forEach((_, sw) =>
-      Array.from({ length: SPECKS }).forEach((__, i) => {
-        const [x, y, z] = speckAt(sw, i, t)
-        m4.setTranslate(x, y, z)
-        haze.data.set(m4.data, (sw * SPECKS + i) * 16)
-      }),
-    )
-    haze.vb.setData(haze.data)
+    if (haze) {
+      SWARMS.forEach((_, sw) =>
+        Array.from({ length: SPECKS }).forEach((__, i) => {
+          const [x, y, z] = speckAt(sw, i, t)
+          m4.setTranslate(x, y, z)
+          haze.data.set(m4.data, (sw * SPECKS + i) * 16)
+        }),
+      )
+      haze.vb.setData(haze.data)
+    }
 
     const pose = curlyNow(gm)
     if (curly) {
@@ -528,8 +538,8 @@ export const buildCamp = (app: pc.Application, root: pc.Entity, base: string): C
       }
     }
 
-    cone.enabled = coneOn
-    if (coneOn) {
+    cone.enabled = coneOn && !winter
+    if (cone.enabled) {
       cone.setLocalPosition(pose.at.x, groundY(pose.at.x, pose.at.z), pose.at.z)
       cone.setLocalEulerAngles(0, (gaze(pose) * 180) / Math.PI, 0)
       const mi = cone.render?.meshInstances[0]

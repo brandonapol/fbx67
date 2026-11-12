@@ -14,6 +14,7 @@ import {
   ending,
   hankRemembers,
   iceJam,
+  cacheIsAt,
   jakeFrostbitten,
   nightSignal,
   searchHours,
@@ -178,6 +179,12 @@ test('only the borrowed key is missed', () => {
     [false, false, true],
   )
   assert.deepEqual([pendingHeat({ ...initialState, photoLab: 'lunch' }), pendingHeat({ ...initialState, photoLab: 'key' })], [0, 1])
+})
+
+test("the cache is only where Owen hid it", () => {
+  const spots = ['stove', 'cache', 'marker'] as const
+  spots.forEach((hid) => assert.deepEqual(spots.map((spot) => cacheIsAt({ ...initialState, owenCache: hid }, spot)), spots.map((s) => s === hid)))
+  assert.deepEqual(spots.map((spot) => cacheIsAt(initialState, spot)), [false, false, false])
 })
 
 test('only fire first leaves Jake frostbitten', () => {

@@ -29,8 +29,9 @@ import { COUNTER, dressing } from './silverPan.ts'
 import { HANK_SPOT, WADE_STOOL, figures as panFigures } from './barfight.ts'
 import { searchSpace } from './skiing.ts'
 import { wreckSpace } from './engineOut.ts'
+import { owensCamp as owensCampSpace } from './owensCamp.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'wreck' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'wreck' | 'owensCamp' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -384,11 +385,14 @@ export const story: Space = {
 // heightAt, drawn by skiView.ts.
 const search: Space = { id: 'search', ...searchSpace }
 
+// Owen's survey camp in winter, where Lucy digs for his notes (owensCamp.ts, docs/acts/act3-missions.md section 1).
+const owensCamp: Space = { id: 'owensCamp', ...owensCampSpace }
+
 // The hillside where Jake put the plane into the spruce (engineOut.ts, docs/acts/act3-missions.md section 2): the crash
 // comes down onto it, and the long night plays over it.
 const wreck: Space = { id: 'wreck', ...wreckSpace }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, wreck, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, wreck, owensCamp, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets and the officer's stop on Second (officerStop.ts) that are built from it, the help tent's dressing
