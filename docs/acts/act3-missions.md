@@ -10,7 +10,8 @@ is in [`text-game/src/scenes/act3.ts`](../../text-game/src/scenes/act3.ts); all 
 `lucysDig`, section 2's, `theLongNight`, sections 3 and 4's, `theSkiSearch` and `theWreck`, and section 5's,
 `theRashPlan`, are in `missions.ts`, and Act 3 plays through them as panels over `story` in its own smoke run
 (`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). Lucy's dig (section 1), the long night (section 2) and
-the ski search (section 3) are played in the engine; the wreck and the rash plans are still their menus.
+the ski search (section 3) are played in the engine, and the crash and the night play in the `wreck` space (section 2);
+Wade's morning at the wreck (section 4) and the rash plans (section 5) are still their menus.
 
 **Ground rules for all five.** The ones in [`act1-missions.md`](act1-missions.md) and
 [`act2-missions.md`](act2-missions.md) hold, plus:
@@ -224,9 +225,9 @@ near the last known heading. Playing Wade, two-handed.
   slope; picking a route puts Wade on skis where the team split (`Game.ski`, `setOff`), and a link straight to a route
   scene starts him there (`routeOf`). Each frame `skiFrame` moves him by the walk's input against the space's solids,
   `footY` is the slope's height, and the top of the slope sends `ARRIVE_NOTE`; the wreck then plays over the story
-  backdrop. Freezing puts him back where the team split, which the story never hears. The Act 3 smoke run skis the
+  backdrop (`wreck` is Lucy's space; Wade's morning there is not built). Freezing puts him back where the team split, which the story never hears. The Act 3 smoke run skis the
   ridge (`skiBot.ts`), `act3Play.test.ts` skis both routes through the wired game, and the parity ratchet sends both
-  notes. Still to do: the smoke at the follow-the-smoke signal, and the wreck's own space.
+  notes. Still to do: the smoke at the follow-the-smoke signal.
 
 ## 4. The wreck
 

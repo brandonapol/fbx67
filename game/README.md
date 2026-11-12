@@ -10,10 +10,11 @@ survey camp while Curly works (he looks over the camp after he lights a cigarett
 eye at the top of the screen says when he is looking), and the skiff in the flood. "Continue as Wade" on the end card
 puts the player on the sandbag line on Cushman as Wade, where Act 1 opens. Act 1 has a space for the line (the flooded
 street), the help tent, the flooded cabin (the boat ride and the knot), the land office and the jail; the barfight plays in
-the Silver Pan, and the scenes between spaces play as menus. Act 2 plays as menus over the `story` backdrop (`eielson`, the base
-blockout, is built and sampled but no scene routes to it yet), and so does Act 3, whose five missions are each one menu
-of notes: Lucy's dig (`lucysDig`), the long night (`theLongNight`), the ski search (`theSkiSearch`), the wreck (`theWreck`)
-and the rash plans (`theRashPlan`). The text build is where the rest of each act is read in full.
+the Silver Pan, and the scenes between spaces play as menus. Act 2 has spaces for the base (the photo lab and the Major's cabinet), Lucy's kitchen, the hotel bar, the bush strip, the
+steak at the Pan, the hangar door, Dottie's café at the gossip visits, the officer's stop on Second and Barnette's
+roadside stop; its other scenes play as menus over the `story` backdrop. Act 3 has the camp in winter (`owensCamp`,
+Lucy's dig), the wreck (`wreck`, the crash and the long night) and the ski slope (`search`); Wade at the wreck and the rash
+plans are each one menu of notes (`theWreck`, `theRashPlan`). The text build is where the rest of each act is read in full.
 Act 2's engine spaces and what is not built: [`docs/acts/act2-engine.md`](../docs/acts/act2-engine.md).
 
 The player is whoever the story's `pov(state)` says, never a scene id: `bodies` in `src/cast.ts` gives each point of
@@ -104,7 +105,19 @@ src/hospital.ts   Act 1's help tent (St. Joseph's patients and nurses on the hig
 src/cabinRide.ts  Act 1's flooded cabin: the boat ride to the knot
 src/landoffice.ts Act 1's land office: two floors, the river in the ground floor, wet ledgers and Lucy on the stair
 src/jail.ts       Act 1's cell and front desk
-src/eielson.ts    Eielson Air Force Base as a blockout (docs/base-map.md); no scene routes to it yet
+src/eielson.ts    Eielson Air Force Base as a blockout (docs/base-map.md): the photo lab, records room and the Major's cabinet play on it
+src/kitchen.ts    Act 2's Lucy's kitchen: the table where the hotel bar and the Major's cabinet missions start
+src/photoLab.ts   Act 2's photo lab run: the way in, the drawers, the clerk's and sergeant's rounds (photoLabBot.ts, photoLabAudio.ts)
+src/majorsCabinet.ts Act 2's Major's cabinet: the dial or the pry, the duty airman's rounds (majorsCabinetBot.ts)
+src/hotelBar.ts   Act 2's hotel bar: the guitar as cover for the eavesdrop (hotelBarBot.ts)
+src/bushStrip.ts  Act 2's bush strip, the steak at the Pan and the hangar door
+src/dottiesCafe.ts Act 2's café at the story's gossip visits
+src/officerStop.ts Act 2's officer on Second Avenue
+src/roadsideStop.ts Act 2's Barnette on the Richardson Highway: a staged drive
+src/owensCamp.ts  Act 3's camp in winter: Lucy's dig at the stove, the cache or the marker (digBot.ts)
+src/engineOut.ts  Act 3's crash and the `wreck` hillside
+src/survivalPlay.ts Act 3's long night as a live panel over the wreck: tasks, the fire, the order, the signal
+src/skiing.ts     Act 3's ski search: the slope, downhill, the flats and the climb (skiView.ts draws it, skiBot.ts plays it)
 src/downtown.ts   downtown Fairbanks as data (docs/town-map.md)
 src/camp.ts       the survey camp as data: its props, the three hiding spots and how Owen looks hiding at each
 src/campGround.ts the camp's heightmap, surfaces underfoot, splat weights and where every plant grows; pure
@@ -117,8 +130,8 @@ src/silverPan.ts  the Silver Pan's dressing and the look of the patrons the ambi
 src/ambient.ts    who is in town and the bar, and when; src/barTalk.ts is what Owen can do in the bar (order, jukebox, cards)
 src/letters.ts    the letter view's sheet: every letter to Mama as one page, in Wade's or Joan's hand; pure
 src/letterView.ts draws a letter's sheet in the DOM (a1_letter, a2_letter_work, a2_letter_friends, a3_curly, a3_joan)
-src/survival.ts   Act 3's survival rules (light from the clock, warmth steps, fire, food, hands); pure, not wired in yet
-src/oneHand.ts    what one hand rules out per engine interaction (climb, stick shift, rifle); pure, not wired in yet
+src/survival.ts   Act 3's survival rules (light from the clock, warmth steps, fire, food, hands); pure, played by survivalPlay.ts and skiing.ts
+src/oneHand.ts    what one hand rules out per engine interaction (climb, stick shift, rifle); pure
 src/prologue.ts   the mission layer: game state, interact, press, tick; pure
 src/lighting.ts   sun, sky, fog and grade per space, season and moral-weather band; pure
 src/render.ts     PlayCanvas: draws the game state, owns nothing
@@ -166,10 +179,10 @@ a story panel ducks voices and music. The hotel mission's eavesdrop drives the g
 is clear. The mission sets it back to 0 when the eavesdrop ends. Spot effects and some beds are positional through
 Web Audio panners with the listener on Owen. Footsteps fall once per stride, which lengthens with speed (about 0.7 m
 at a walk, 1.2 m at a jog), on the surface under Owen; snow goes from a soft crunch near freezing to a squeak in
-deep cold, from the space's temperature; the hospital hallway and the cell are concrete. `soundscapes` has one entry
-per space in `levels.ts`. The Act 1 line, help tent (`hospital`), land office and cell are in it; the barfight bed in
-`act1Soundscapes`, the town, hotel and hall beds in `act2Soundscapes` and the four Act 3 beds in `act3Soundscapes` wait
-until their spaces land. Escape closes the sound panel.
+deep cold, from the space's temperature; the hospital hallway and the cell are concrete. `soundscapes` has one entry per space in `levels.ts`, so a new space has a bed before it is played. The Act 1, 2 and 3
+beds are in `act1Soundscapes`, `act2Soundscapes` and `act3Soundscapes`; the ones a space shares (the steak and the hotel
+bar use the bar's, the hangar the strip's, the wreck the crash's, `search` the slope's) are mapped there. The icefog and
+cockpit beds wait for their spaces. Escape closes the sound panel.
 
 ## Tests
 
