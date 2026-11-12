@@ -496,7 +496,7 @@ const strip: Soundscape = { ground: { surface: 'snow', regions: [], tempF: SEASO
 
 // The hotel bar downtown has the bar room's bed: talk, glasses, a stove, the jukebox under the guitar.
 // The spaces built so far. An Act 1, 2 or 3 bed joins here when its space is added to levels.ts.
-export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, story }
+export const soundscapes: Readonly<Record<SpaceId, Soundscape>> = { bar, pan: barfight, boarding, room, camp, flood, line, downtown, jail: cell, helpTent: hospital, office, eielson: airbase, cabin, kitchen, hotelBar: bar, strip, steak: bar, hangar: strip, cafe, highway, search: slope, story }
 
 // Curly's routine clock at the camp (curly.ts): refueling is its first beat.
 export const refueling = (t: number): boolean => beatOf(t) === 'refuel'

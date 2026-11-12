@@ -97,6 +97,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `hangar` |     1,500 | 1,500,000 |                 512 |
 | `cafe`  |      1,500 | 1,500,000 |                 512 |
 | `highway` |    1,500 | 1,500,000 |                 512 |
+| `search` |     1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 | `panPeak` |    1,500 | 1,500,000 |                 512 |
 

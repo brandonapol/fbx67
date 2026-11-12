@@ -9,6 +9,7 @@ import { N } from '../../text-game/src/names.ts'
 import type { Pov } from '../../text-game/src/story.ts'
 import type { Game } from './prologue.ts'
 import { available, label, playerBody, press } from './prologue.ts'
+import { nightOut } from './nightBot.ts'
 import { startFrom } from './start.ts'
 import { starts } from '../smoke/starts.ts'
 import { bodies } from './cast.ts'
@@ -25,6 +26,8 @@ const playWhile = (g: Game, from: Pov, seen: readonly Game[] = []): readonly Gam
   const all = [...seen, g]
   if (pov(g.story) !== from) return all
   assert.ok(all.length < 40, `no way out of ${from}'s scenes from ${g.story.scene}`)
+  // The long night is played, not picked (survivalPlay.ts): its steady player presses on to first light.
+  if (g.night) return playWhile(nightOut(g), from, all)
   const note = g.panel?.buttons.find((b) => b.id.startsWith('note:'))
   assert.ok(note, `${g.story.scene} offers no note`)
   return playWhile(press(g, note.id), from, all)

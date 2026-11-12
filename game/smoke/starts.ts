@@ -27,6 +27,9 @@ export const starts: readonly Start[] = [
   { scene: 'a2_heat', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'highway' },
   { scene: 'a2_heat_gossip', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3', pose: 'cafe' },
   { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1', pose: 'story' },
+  // Every choice the first from there on to the search: the ridge's prompt on the slope, the start the prologue run
+  // samples the search from (skiing.ts).
+  { scene: 'a3_search', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1,1,1,1,1', pose: 'search' },
   {
     scene: 'a4_news',
     path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1',

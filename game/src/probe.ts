@@ -99,6 +99,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   // The Richardson Highway at the end of the stage: the truck parked at the turnout and, where Barnette stops Wade,
   // the cruiser behind it with its lights going and Barnette at the window; from the road, looking north up it.
   highway: { space: 'highway', pos: vec(5, -18.5), facing: Math.PI, t: 0, stop: 30, shot: { eye: [-1.5, 3.2, 2.5], at: [5.2, 1.0, -15] } },
+  // The ski search (skiing.ts): Wade where the team split at the top of the ridge, the run down it ahead between the
+  // spruce, the flats and the creek's drainage beyond.
+  search: { space: 'search', pos: vec(-40, 40), facing: Math.PI, t: 0, shot: { eye: [-37, 29.5, 47], at: [-38, 12, -10] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 
