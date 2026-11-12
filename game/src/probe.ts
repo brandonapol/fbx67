@@ -108,6 +108,9 @@ export const poses: Readonly<Record<string, Pose>> = {
   wreck: { space: 'wreck', pos: vec(-0.4, 0.5), facing: Math.PI, t: 0, shot: { eye: [7.5, 3.4, 9.5], at: [-1.5, 0.8, -2.5] } },
   // Second Avenue at the officer's stop: out of the café's door, the cruiser at the curb ahead and the officer leaning
   // on its fender under the streetlight.
+  // Owen's camp in winter (owensCamp.ts): Lucy stepped off Jake's plane, looking up the snowed-over bar at the slashed
+  // cook tent and the cache on its stilts, the plane on the creek ice behind her.
+  owensCamp: { space: 'owensCamp', pos: vec(-7.0, 5.4), facing: 2.67, t: 0, shot: { eye: [-10.5, 2.3, 8.6], at: [4, 1.0, -1.5] } },
   street: { space: 'street', pos: vec(12, 61.6), facing: Math.PI / 2, t: 0, shot: { eye: [9.5, 2.0, 63.2], at: [17.5, 1.1, 59.6] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }

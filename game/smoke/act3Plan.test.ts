@@ -14,6 +14,9 @@ import { ACT3_FIRST, ACT3_PATH, ACT4_FIRST, act3Beats, act3Spaces, bands, isBeat
 
 const DT = 1 / 30
 
+// The longest hold a step waits out: Lucy's dig with white hands, a minute of play (owensCamp.ts).
+const HOLD_TICKS = 30 * 90
+
 // A steer on skis lasts this many ticks before the planner looks again.
 const STEER_TICKS = 15
 
@@ -35,7 +38,7 @@ const act = (g: Game, s: Step): Game => {
   }
   if (s.kind === 'interact') {
     const started = interact(g)
-    const fill = (cur: Game, n: number): Game => (cur.holding && n < 600 ? fill(tick(cur, { dir: vec(0, 0), hold: true }, DT), n + 1) : cur)
+    const fill = (cur: Game, n: number): Game => (cur.holding && n < HOLD_TICKS ? fill(tick(cur, { dir: vec(0, 0), hold: true }, DT), n + 1) : cur)
     return s.hold ? fill(started, 0) : started
   }
   if (s.kind === 'walk') {

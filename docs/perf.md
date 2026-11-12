@@ -49,14 +49,17 @@ Act 2 space with no frames. `make generate/baselines/act2` regenerates only its 
 
 Act 3 has its own run and CI job the same way (`make test/game/smoke/act3`, `game/smoke/act3.test.ts`). It opens
 `a3_camp` where the Act 2 run reaches it (every choice the first, so the three act runs are one playthrough) and plays
-to Act 4's first scene, every choice the first, with the steps `game/smoke/act3Plan.test.ts` plays headless. The crash
+to Act 4's first scene, every choice the first, with the steps `game/smoke/act3Plan.test.ts` plays headless. Lucy's
+dig has a space, `owensCamp` (the prologue's camp in winter, `game/src/owensCamp.ts`), which the run digs at the stove
+and, where Owen hid his notes elsewhere, at the spot his letter names. The crash
 and the long night have a space, `wreck` (the hillside, `game/src/engineOut.ts`), where the run plays the crash out and
 the night as its live panel (`game/src/survivalPlay.ts`), Lucy walking between its places; the ski search has one,
 `search` (the slope, `game/src/skiing.ts`), which the run skis by the ridge; the rest of the act plays as panels over
-`story`, the dig, Wade at the wreck and the rash plans as their mission menus. Its beats are the story's places: at the first scene at each
+`story`, Wade at the wreck and the rash plans as their mission menus. Its beats are the story's places: at the first scene at each
 place it captures the frame of the space it plays in, in each moral-weather band, into `game/smoke/baselines/act3/`.
-It then visits each Act 3 space (`wreck`, `search`) from the Act 3 start, samples it and captures its frame in each band, and
-fails on it with no frames or no row below. The prologue run samples `search` from the `a3_ski_down` start, Wade on skis on the ridge.
+It then visits each Act 3 space (`owensCamp`, `wreck`, `search`) from the Act 3 start, samples it and captures its frame in each band, and
+fails on it with no frames or no row below. The prologue run samples `search` from the `a3_ski_down` start, Wade on skis on the ridge,
+and `owensCamp` from the `a3_camp` start, Lucy stepping off Jake's plane.
 `make generate/baselines/act3` regenerates only its baselines.
 
 `game/smoke/budget.test.ts` fails, per act, when a space in `game/src/levels.ts` has no row below, so a new space in
@@ -103,6 +106,7 @@ job summary. The smoke test reads only the two tables under this heading, and ch
 | `street` |     1,500 | 1,500,000 |                 512 |
 | `search` |     1,500 | 1,500,000 |                 512 |
 | `wreck` |      1,500 | 1,500,000 |                 512 |
+| `owensCamp` |  1,500 | 1,500,000 |                 512 |
 | `story` |      1,500 | 1,500,000 |                 512 |
 | `panPeak` |    1,500 | 1,500,000 |                 512 |
 

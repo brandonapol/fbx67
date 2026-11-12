@@ -29,7 +29,7 @@ export const starts: readonly Start[] = [
   // the prologue run samples the highway and Dottie's café from.
   { scene: 'a2_heat', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'highway' },
   { scene: 'a2_heat_gossip', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3', pose: 'cafe' },
-  { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1', pose: 'story' },
+  { scene: 'a3_camp', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1', pose: 'owensCamp' },
   // The same path on to the crash: the plane coming down onto the wreck's hillside, the start the prologue run samples
   // the wreck from (engineOut.ts).
   { scene: 'a3_crash', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,2,1,1,2,1,2,1,1,1,1,1,1,2,1,1,1', pose: 'wreck' },
