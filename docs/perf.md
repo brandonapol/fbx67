@@ -55,7 +55,7 @@ plays as panels over `story`, the long night among them (played as its live pane
 dig, the wreck and the rash plans as their mission menus. Its beats are the story's places: at the first scene at each
 place it captures the frame of the space it plays in, in each moral-weather band, into `game/smoke/baselines/act3/`.
 It then visits each Act 3 space (`search`) from the Act 3 start, samples it and captures its frame in each band, and
-fails on it with no frames or no row below. The prologue run samples `search` from the `a3_search` start.
+fails on it with no frames or no row below. The prologue run samples `search` from the `a3_ski_down` start, Wade on skis on the ridge.
 `make generate/baselines/act3` regenerates only its baselines.
 
 `game/smoke/budget.test.ts` fails, per act, when a space in `game/src/levels.ts` has no row below, so a new space in

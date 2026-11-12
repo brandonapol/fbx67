@@ -20,7 +20,8 @@ import { vec } from './world.ts'
 
 const DT = 1 / 30
 
-const SEARCH = starts.find((s) => s.scene === 'a3_search')!.path.split(',').map(Number)
+// The search's prompt: the slope's smoke start, one choice back (the ridge).
+const SEARCH = starts.find((s) => s.scene === 'a3_ski_down')!.path.split(',').map(Number).slice(0, -1)
 
 // The game at a3_crash: the search's start, one scene back past the night's two choices and the dig.
 const crashPath = (): readonly number[] => {
