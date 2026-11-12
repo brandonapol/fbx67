@@ -35,8 +35,13 @@ both are things in the world, not bars on the screen.
 
 The rules exist as pure code in `game/src/survival.ts` (the sky's light from the clock, the four warmth steps, the fire,
 the meal, hands and feet) with unit tests, and the arm's rules in `game/src/oneHand.ts` (every engine interaction
-declares whether it works one-handed; climbing, driving a stick shift and shooting a rifle are ruled out). Neither is
-wired into a mission or a space yet; the numbers in `survival.ts` other than the clock rate are its own tuning.
+declares whether it works one-handed; climbing, driving a stick shift and shooting a rifle are ruled out). The long
+night's play over them is `game/src/survivalPlay.ts` (section 2): where Lucy is, the tasks and how long they take, the
+order's gate, sweat that makes her wet, the fire, the checkpoints, and what the cold looks like (breath, white fingers,
+a slower walk, frost at the edge of the screen; reduced motion stills the breath and the shiver, high contrast trades
+the frost haze for words). It is not wired into the game loop yet. The numbers in `survival.ts` and `survivalPlay.ts`
+other than the clock rate are their own tuning. Hands held to a burning fire warm back: the bare-handed count starts
+again there, which is how *fire first* keeps Lucy's fingers and *Jake first* does not.
 
 - **Light.** The sky is the clock. In a survival mission the game clock runs at about twenty times real time, so the
   dig's three hours of grey light are about nine minutes of play, and the engine lights each moment from the date and
