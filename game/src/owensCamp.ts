@@ -32,17 +32,17 @@ export const JAKE_AT = vec(-7.6, CREEK_NEAR - 0.7)
 export const SPAWN = vec(-7.0, CREEK_NEAR - 2.8)
 export const SPAWN_FACING = Math.PI * 0.85
 
-const snow = '#dfe3e6'
+// The ground's winter, which the camp's own view paints over the bar's terrain (campView.ts): snow over the gravel and
+// the tussocks, the creek frozen bank to bank, and the summer's fireweed and mosquitoes gone.
+export type Season = Readonly<{ snow: string; ice: string }>
+export const SEASON: Season = { snow: '#dfe3e6', ice: '#b4c4cc' }
+
 const drift = '#cfd6dc'
-const ice = '#a9bcc6'
 const canvas = '#a39a80'
 
-// The winter over the camp. Flat cover adds nothing solid, so the prologue's collision holds; the kicked-over stove and
-// the plane on the ice stop Lucy.
+// The winter over the camp, on top of the prologue's props. The kicked-over stove and the plane on the ice stop Lucy;
+// the rest is cover.
 export const winter: readonly Prop[] = [
-  // Snow over the bar and the tussocks, and the creek frozen bank to bank.
-  { box: { x: 0, z: -2, w: 28, d: 20 }, h: 0.02, y: 0.03, color: snow, flat: true },
-  { box: { x: 0, z: (CREEK_NEAR + CREEK_FAR) / 2, w: 28, d: CREEK_FAR - CREEK_NEAR }, h: 0.02, color: ice, flat: true },
   // Drifts in the lee of the tent and the crates.
   { box: { x: TENT.x - TENT.w / 2 - 0.4, z: TENT.z, w: 0.8, d: TENT.d + 0.6 }, h: 0.35, color: drift },
   { box: { x: TENT.x + TENT.w / 2 + 0.3, z: TENT.z - 0.6, w: 0.6, d: 2.0 }, h: 0.25, color: drift },
@@ -57,11 +57,11 @@ export const winter: readonly Prop[] = [
   { box: { x: 7.3, z: -0.7, w: 0.5, d: 0.35 }, h: 0.05, color: '#c9c0a8', flat: true },
   { box: { x: 7.9, z: -0.3, w: 0.3, d: 0.4 }, h: 0.05, color: '#8a7c5a', flat: true },
   // Jake's plane on the ice: on skis, high wing, the cowling's exhaust smoking in the cold.
-  { box: { x: PLANE.x, z: PLANE.z, w: 1.0, d: 6.4 }, h: 1.1, y: 0.6, color: '#b8432f', solid: true, occludes: true },
-  { box: { x: PLANE.x, z: PLANE.z - 0.6, w: 10.4, d: 1.5 }, h: 0.12, y: 1.9, color: '#e3d9c2' },
-  { box: { x: PLANE.x - 0.7, z: PLANE.z - 0.4, w: 0.25, d: 2.2 }, h: 0.12, color: '#8a8478' },
-  { box: { x: PLANE.x + 0.7, z: PLANE.z - 0.4, w: 0.25, d: 2.2 }, h: 0.12, color: '#8a8478' },
-  { box: { x: PLANE.x + 0.4, z: PLANE.z - 3.0, w: 0.2, d: 0.2 }, h: 0.25, y: 0.9, color: '#e4e8ea', shape: 'cylinder' },
+  { box: { x: PLANE.x, z: PLANE.z, w: 1.0, d: 6.4 }, h: 1.1, y: 0.45, color: '#b8432f', solid: true, occludes: true },
+  { box: { x: PLANE.x, z: PLANE.z - 0.6, w: 10.4, d: 1.5 }, h: 0.12, y: 1.75, color: '#e3d9c2' },
+  { box: { x: PLANE.x - 0.7, z: PLANE.z - 0.4, w: 0.25, d: 2.2 }, h: 0.12, y: -0.1, color: '#8a8478' },
+  { box: { x: PLANE.x + 0.7, z: PLANE.z - 0.4, w: 0.25, d: 2.2 }, h: 0.12, y: -0.1, color: '#8a8478' },
+  { box: { x: PLANE.x + 0.4, z: PLANE.z - 3.0, w: 0.2, d: 0.2 }, h: 0.25, y: 0.75, color: '#e4e8ea', shape: 'cylinder' },
 ]
 
 // The prologue's camp without its summer things that the winter replaces: Curly's floatplane on the bar.
