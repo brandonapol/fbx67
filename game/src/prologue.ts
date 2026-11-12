@@ -52,7 +52,7 @@ import { ARRIVE_NOTE, ROUTE_NOTES, heightAt, routeOf, setOff, skiFrame } from '.
 import type { RouteId } from './skiing.ts'
 import type { Night } from './survivalPlay.ts'
 import type { Dig } from './owensCamp.ts'
-import { FAILED, JAKE, LETTER_TITLE, READ_TIME, SPAWN as DIG_SPAWN, SPAWN_FACING as DIG_FACING, WARM_HANDS, arrival as digArrival, campSpot, canWarm, digTime, digging, dug as dugAt, exposure as digExposure, letterLine, reread, step as digStep, warmTime, warmed } from './owensCamp.ts'
+import { FAILED, JAKE, LETTER_TITLE, READ_TIME, SPAWN as DIG_SPAWN, SPAWN_FACING as DIG_FACING, WARM_HANDS, arrival as digArrival, campFooting, campSpot, canWarm, digTime, digging, dug as dugAt, exposure as digExposure, letterLine, reread, step as digStep, warmTime, warmed } from './owensCamp.ts'
 import * as night from './survivalPlay.ts'
 import { burning } from './survival.ts'
 import { COME_TO, COME_TO_FACING, CRASH_TIME, crashing, gliding, lucySeat, skipSpot as skipCrash, standOf } from './engineOut.ts'
@@ -949,8 +949,10 @@ const walk = (g: Game, input: Input, dt: number): Game => {
   const off = angleBetween(facing, heading)
   const space = spaces[g.space]
   const interior = space.interior
-  const pace = space.id === 'line' ? paceThrough(g.pos, standAt(space, g.pos)) : 1
-  const want = off <= TURN_GO ? topSpeed(input, interior) * push * Math.cos(off) * pace : 0
+  // At Owen's camp in winter the snow underfoot sets the pace, and whether there is a run on it (lucyFooting.ts).
+  const foot = space.id === 'owensCamp' ? campFooting(pov(g.story), g.pos) : undefined
+  const pace = space.id === 'line' ? paceThrough(g.pos, standAt(space, g.pos)) : (foot?.pace ?? 1)
+  const want = off <= TURN_GO ? topSpeed({ ...input, run: input.run === true && (foot?.run ?? true) }, interior) * push * Math.cos(off) * pace : 0
   const vel = toward(g.vel, scale(ahead(facing), want), (want >= length(g.vel) ? (interior ? INDOOR_ACCEL : ACCEL) : DECEL) * dt)
   const arriving = push > 0 && input.limit !== undefined && length(vel) * dt >= input.limit
   const step = arriving ? scale(normalize(input.dir), input.limit ?? 0) : scale(vel, dt)

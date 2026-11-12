@@ -4,14 +4,18 @@ import { digLabels } from '../../text-game/src/scenes/act3.ts'
 import { clock, menu } from '../../text-game/src/story.ts'
 import { N } from '../../text-game/src/names.ts'
 import { CACHE, CRATES, MARKER, STOVE, STOVE_AT, TENT, campProps } from './camp.ts'
-import { CREEK_FAR, CREEK_NEAR } from './campGround.ts'
+import type { Surface } from './campGround.ts'
+import { CREEK_FAR, CREEK_NEAR, groundY, surfaceAt } from './campGround.ts'
 import type { Figure, Prop, Space } from './levels.ts'
 import { JAKE_HEIGHT } from './bushStrip.ts'
 import type { Exposure, Failure, Run } from './survival.ts'
 import { begin, expose, failure, handTime, reach, retry } from './survival.ts'
-import type { Interactable, Vec } from './world.ts'
+import type { Box, Interactable, Vec } from './world.ts'
 import { vec } from './world.ts'
 import { aidSeconds, canTend, cured } from './lucyAid.ts'
+import type { Pov } from '../../text-game/src/story.ts'
+import type { Footing, Ground } from './lucyFooting.ts'
+import { footing, sureFooted } from './lucyFooting.ts'
 
 // Lucy's dig at Owen's survey camp (docs/acts/act3-missions.md, section 1; #139): 12 December, thirty-eight below. The
 // space is the prologue's camp (camp.ts), the same ground and the same three places Owen could hide his notes, with the
@@ -41,12 +45,18 @@ export const SEASON: Season = { snow: '#dfe3e6', ice: '#b4c4cc' }
 const drift = '#cfd6dc'
 const canvas = '#a39a80'
 
+// The drifts in the lee of the tent and the crates: drawn below, and waded (groundAt).
+export const DRIFTS: readonly Box[] = [
+  { x: TENT.x - TENT.w / 2 - 0.4, z: TENT.z, w: 0.8, d: TENT.d + 0.6 },
+  { x: TENT.x + TENT.w / 2 + 0.3, z: TENT.z - 0.6, w: 0.6, d: 2.0 },
+]
+
 // The winter over the camp, on top of the prologue's props. The kicked-over stove and the plane on the ice stop Lucy;
 // the rest is cover.
 export const winter: readonly Prop[] = [
   // Drifts in the lee of the tent and the crates.
-  { box: { x: TENT.x - TENT.w / 2 - 0.4, z: TENT.z, w: 0.8, d: TENT.d + 0.6 }, h: 0.35, color: drift },
-  { box: { x: TENT.x + TENT.w / 2 + 0.3, z: TENT.z - 0.6, w: 0.6, d: 2.0 }, h: 0.25, color: drift },
+  { box: DRIFTS[0]!, h: 0.35, color: drift },
+  { box: DRIFTS[1]!, h: 0.25, color: drift },
   // The tent slashed: its south wall hangs open in two flaps either side of the door.
   { box: { x: TENT.x - 1.1, z: TENT.z + TENT.d / 2 + 0.2, w: 1.0, d: 0.06 }, h: 0.9, color: canvas },
   { box: { x: TENT.x + 1.2, z: TENT.z + TENT.d / 2 + 0.25, w: 0.9, d: 0.06 }, h: 0.7, color: canvas },
@@ -112,6 +122,27 @@ export const owensCamp: Omit<Space, 'id'> = {
   figures,
   spots: [...DIG_SPOTS, JAKE_SPOT],
 }
+
+// --- The snow underfoot ---------------------------------------------------------------------------------------------
+
+// The bar's summer ground under the winter (campGround.ts surfaceAt): the gravel under wind crust, the tussocks and the
+// willow under rough snow, the creek under ice.
+const WINTER: Readonly<Record<Surface, Ground>> = { gravel: 'crust', tussock: 'rough', willow: 'rough', water: 'ice' }
+
+// Assumed: a rise of more than one in eight is a slope a stranger slips on: the flanks of the marker's rise and the
+// bank down to the creek ice.
+export const GRADE = 1 / 8
+const H = 0.25
+const grade = (p: Vec): number =>
+  Math.hypot(groundY(p.x + H, p.z) - groundY(p.x - H, p.z), groundY(p.x, p.z + H) - groundY(p.x, p.z - H)) / (2 * H)
+
+const inBox = (p: Vec, b: Box): boolean => Math.abs(p.x - b.x) <= b.w / 2 && Math.abs(p.z - b.z) <= b.d / 2
+
+// The ground under a point of the camp in winter.
+export const groundAt = (p: Vec): Ground => (DRIFTS.some((b) => inBox(p, b)) ? 'drift' : grade(p) > GRADE ? 'slope' : WINTER[surfaceAt(p)])
+
+// How whoever the story's pov is moves at a point of the camp (lucyFooting.ts): Lucy keeps her footing.
+export const campFooting = (who: Pov, p: Vec): Footing => footing(sureFooted(who), groundAt(p))
 
 // --- The dig ---------------------------------------------------------------------------------------------------------
 
