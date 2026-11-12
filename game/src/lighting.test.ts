@@ -9,7 +9,7 @@ import { replay } from '../../text-game/src/engine.ts'
 import type { Clock, SceneId, State } from '../../text-game/src/types.ts'
 import { spaces } from './levels.ts'
 import type { Band, BandedSeason, Cell, LitSeason, Lighting } from './lighting.ts'
-import { MIDNIGHT_SUN, summerExposure, bandBySeason, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeOf } from './lighting.ts'
+import { MIDNIGHT_SUN, summerExposure, bandBySeason, bandOf, grades, lighting, lightingFor, skyColor, summerSun, sunDirection, timeAt, timeOf } from './lighting.ts'
 import { sunAt } from './sun.ts'
 
 const weathers: readonly Weather[] = ['clear', 'dusk', 'night']
@@ -74,7 +74,7 @@ test('each space is lit at its scene: the bar at eleven, the flood on 14 August,
   const before = sceneIds.slice(0, sceneIds.indexOf('a4_news')).map(at).findLast((x) => clock(x) !== undefined)!
   const was = season(before)!
   assert.notEqual(was, 'summer', 'the story is past July by Act 4')
-  assert.deepEqual(lightingFor(spaces.downtown, at('a4_news')), of('downtown', 'clear', undefined, was === 'breakup' ? 'winter' : was))
+  assert.deepEqual(lightingFor(spaces.downtown, at('a4_news')), of('downtown', 'clear', undefined, was))
 })
 
 test('summer fog is 30-220 m outdoors and 2-60 m indoors', () => {
@@ -227,7 +227,7 @@ test('breath fog and snow load are outdoors in winter only', () => {
 // docs/art/README.md, "Band by season", read from the README itself so the code's one copy of the table cannot drift.
 // A cell is "<key>; sun none; fog **a-b m**" or "<key>; sun **lo to +hi degrees**, azimuth **lo-hi**; fog **a-b m**".
 const readme = readFileSync(new URL('../../docs/art/README.md', import.meta.url), 'utf8')
-const rowTitle: Readonly<Record<BandedSeason, string>> = { flood: 'Act 1, flood', freezeup: 'Act 2, fall', winter: 'Act 3, winter' }
+const rowTitle: Readonly<Record<BandedSeason, string>> = { flood: 'Act 1, flood', freezeup: 'Act 2, fall', winter: 'Act 3, winter', breakup: 'Act 4, breakup' }
 const columns: readonly Band[] = ['alpenglow', 'blueHour', 'sodium']
 
 const parseCell = (cell: string): Cell => {
@@ -235,7 +235,7 @@ const parseCell = (cell: string): Cell => {
   assert.ok(fog, `no fog range in "${cell}"`)
   const range = [Number(fog[1]), Number(fog[2])] as const
   if (/sun none/.test(cell)) return { fog: range }
-  const sun = /sun \*\*(-?\d+) to \+(\d+) degrees\*\*, azimuth \*\*(\d+)-(\d+)\*\*/.exec(cell)
+  const sun = /sun \*\*(-?\d+) to \+?(\d+) degrees\*\*, azimuth \*\*(\d+)-(\d+)\*\*/.exec(cell)
   assert.ok(sun, `no sun in "${cell}"`)
   const [lo, hi, west, east] = sun.slice(1).map(Number) as [number, number, number, number]
   return { sun: { elevation: [lo, hi], azimuth: [west, east] }, fog: range }
@@ -318,4 +318,54 @@ test('freeze-up holds a low southern sun in the clean band, and its danger has n
   )
   assert.equal(lighting('line', 'freezeup', 'night').lamp?.halo, undefined, 'frost haze, not ice fog')
   assert.deepEqual([lighting('line', 'freezeup', 'night').fogStart, lighting('line', 'freezeup', 'night').fogEnd], [15, 100])
+})
+
+// docs/art/README.md, "Band by season", the Act 4 breakup row: the clean band's sun 15 to 40 degrees at azimuth 150-250
+// (the real spring sun held inside it), fog 80-240 / 30-160 / 10-80. Colors are the provisional band palette until #54.
+const SPRING: readonly Clock[] = ['1968-03-20T12:00', '1968-04-15T09:00', '1968-05-05T13:00', '1968-04-28T20:00']
+
+test('breakup takes each band from the Act 4 row, outdoors at any hour', () => {
+  const fog: Readonly<Record<Weather, readonly [number, number]>> = { clear: [80, 240], dusk: [30, 160], night: [10, 80] }
+  outside.forEach((id) =>
+    [undefined, ...SPRING].forEach((c) =>
+      weathers.forEach((w) => {
+        const l = lighting(id, 'breakup', w, c)
+        assert.equal(l.grade, bandOf[w])
+        assert.deepEqual([l.fogStart, l.fogEnd], fog[w], `${id} ${w} ${c}`)
+        assert.equal(l.sunUp, w === 'clear', `${id} ${w} ${c}: only the clean band has a sun`)
+        if (w !== 'clear') return
+        assert.ok(l.sunElevation >= 15 && l.sunElevation <= 40, `${id} ${c} elevation ${l.sunElevation}`)
+        assert.ok(l.sunAzimuth >= 150 && l.sunAzimuth <= 250, `${id} ${c} azimuth ${l.sunAzimuth}`)
+      }),
+    ),
+  )
+})
+
+test('breakup is lit as neither winter nor summer', () => {
+  outside.forEach((id) =>
+    weathers.forEach((w) => {
+      const l = lighting(id, 'breakup', w, SPRING[0])
+      assert.notDeepEqual(l, lighting(id, 'winter', w, SPRING[0]), `${id} ${w}: not winter`)
+      assert.notDeepEqual(l, lighting(id, 'summer', w, SPRING[0]), `${id} ${w}: not summer`)
+      assert.notEqual(l.grade, 'summer')
+    }),
+  )
+  // The clean band's sun is the difference the row names: well above winter's 12 degrees, with no clock either.
+  assert.ok(lighting('downtown', 'breakup', 'clear').sunElevation > 12)
+  assert.ok(lighting('downtown', 'winter', 'clear').sunElevation <= 12)
+})
+
+test('breakup air is the thaw: no rain, no breath fog, no snow load, no ice-fog halo', () => {
+  weathers.forEach((w) =>
+    outside.forEach((id) => {
+      const l = lighting(id, 'breakup', w)
+      assert.deepEqual([l.rain, l.breath, l.snowLoad], [false, false, false], `${id} ${w}`)
+      assert.equal(l.lamp?.halo, undefined, `${id} ${w}`)
+    }),
+  )
+})
+
+test('the story lights a breakup date and a breakup scene from the breakup row, not winter', () => {
+  assert.equal(timeAt('1968-04-15T09:00').season, 'breakup')
+  assert.deepEqual(timeAt('1968-04-15T09:00'), { season: 'breakup', clock: '1968-04-15T09:00' })
 })
