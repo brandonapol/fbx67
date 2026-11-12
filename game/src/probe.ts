@@ -5,6 +5,7 @@ import type { Brawl } from './barfight.ts'
 import { WADE_STOOL, begin, play, roomOf, wade } from './barfight.ts'
 import { idle } from './combat.ts'
 import type { Game } from './prologue.ts'
+import { still, tick } from './prologue.ts'
 import type { Shot, View } from './render.ts'
 import type { Vec } from './world.ts'
 import { vec } from './world.ts'
@@ -245,6 +246,16 @@ export const installProbe = (view: View, live: Live): void => {
     return frames(1)
   }
 
+  // Plays the live game on for so many seconds with no input, ticked here rather than one tick a drawn frame: the long
+  // night runs under its panel, where the page draws one tick a frame whatever its pace (survivalPlay.ts).
+  const advance = (seconds: number): Promise<void> => {
+    const dt = 1 / 30
+    const n = Math.round(seconds / dt)
+    const run = (g: Game, k: number): Game => (k <= 0 ? g : run(tick(g, still, dt), k - 1))
+    live.set(run(live.get(), n))
+    return frames(1)
+  }
+
   const record = (on: boolean): void => {
     rec.on = on
     rec.age = 0
@@ -273,5 +284,5 @@ export const installProbe = (view: View, live: Live): void => {
     return app.root.findByName(name)?.enabled ?? false
   }
 
-  w.__prologue = { ...w.__prologue, capture, release, visit, record, sampleMoment, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
+  w.__prologue = { ...w.__prologue, capture, release, visit, advance, record, sampleMoment, shown, samples: () => rec.samples, poses: () => Object.keys(poses) }
 }
