@@ -29,8 +29,8 @@ option a note button.
 
 Each of these spaces opens the scene's own menu at a spot and sends the note the menu offers; none decides an outcome.
 The hotel bar's set (`hotelBar.ts`), the bush strip, the steak and the hangar (`bushStrip.ts`), the café, the officer's
-stop, the roadside stop and the Chiefs meeting's hall are gray-box rooms and staged beats, each with its own `*.test.ts` that checks the story
-lands where the text build's `--choices` path does.
+stop, the roadside stop and the Chiefs meeting's hall are gray-box rooms and staged beats, each with its own
+`*.test.ts` that checks the story lands where the text build's `--choices` path does.
 
 ## Lucy's kitchen (`kitchen.ts`)
 
