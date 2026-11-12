@@ -22,6 +22,7 @@ import { hangar, steak, strip } from './bushStrip.ts'
 import { cafe } from './dottiesCafe.ts'
 import { highway } from './roadsideStop.ts'
 import { street } from './officerStop.ts'
+import { hall } from './chiefsMeeting.ts'
 import { cabin } from './cabinRide.ts'
 import { dockFigures, dockProps, postBoxSpot } from './floatDock.ts'
 import { camp } from './camp.ts'
@@ -31,7 +32,7 @@ import { searchSpace } from './skiing.ts'
 import { wreckSpace } from './engineOut.ts'
 import { owensCamp as owensCampSpace } from './owensCamp.ts'
 
-export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'wreck' | 'owensCamp' | 'story'
+export type SpaceId = 'bar' | 'pan' | 'boarding' | 'room' | 'camp' | 'flood' | 'line' | 'downtown' | 'jail' | 'helpTent' | 'office' | 'eielson' | 'cabin' | 'kitchen' | 'hotelBar' | 'strip' | 'steak' | 'hangar' | 'cafe' | 'highway' | 'street' | 'search' | 'wreck' | 'owensCamp' | 'hall' | 'story'
 
 export type Prop = Readonly<{
   box: Box
@@ -392,7 +393,7 @@ const owensCamp: Space = { id: 'owensCamp', ...owensCampSpace }
 // comes down onto it, and the long night plays over it.
 const wreck: Space = { id: 'wreck', ...wreckSpace }
 
-export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, wreck, owensCamp, story }
+export const spaces: Readonly<Record<SpaceId, Space>> = { bar, pan, boarding, room, camp, flood, line, downtown, jail, helpTent, office, eielson, cabin, kitchen, hotelBar, strip, steak, hangar, cafe, highway, street, search, wreck, owensCamp, hall, story }
 
 // What a space shows in a season: its own props, the town's seasonal layer (freezeup.ts) on downtown and on the
 // flooded streets and the officer's stop on Second (officerStop.ts) that are built from it, the help tent's dressing

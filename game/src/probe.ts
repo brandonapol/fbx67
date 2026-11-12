@@ -112,6 +112,8 @@ export const poses: Readonly<Record<string, Pose>> = {
   // kicked-over stove ahead, the cache on its stilts to the left, the plane on the creek ice behind her.
   owensCamp: { space: 'owensCamp', pos: vec(0.5, 4.0), facing: 2.6, t: 0, shot: { eye: [-2.5, 2.4, 6.5], at: [6.5, 0.9, -1.8] } },
   street: { space: 'street', pos: vec(12, 61.6), facing: Math.PI / 2, t: 0, shot: { eye: [9.5, 2.0, 63.2], at: [17.5, 1.1, 59.6] } },
+  // The Chiefs meeting's hall: from the back corner by the door, over the rows of chairs to the map and the front table.
+  hall: { space: 'hall', pos: vec(-5.5, 4.6), facing: Math.PI, t: 0, shot: { eye: [-6.0, 2.6, 5.0], at: [-0.5, 0.9, -3.5] } },
   story: { space: 'story', pos: vec(0, 0), facing: Math.PI, t: 0, shot: { eye: [0, 5, 6], at: [0, 0, 0] } },
 }
 

@@ -2,7 +2,8 @@ import type { SceneId } from '../../text-game/src/types.ts'
 
 // One engine start per act, and per Act 1 space past the line, from a text-build path. The smoke test opens each at /play/#path=…, records its perf
 // samples and captures frame `<scene>.png` from the probe pose named `pose`. A later act ticket adds its scene here.
-// A start whose scene has a space puts the player in it with no panel; one without shows its menu over `story`.
+// A start whose scene has a space puts the player in it with no panel, or with only its scene's text to put away (the
+// Chiefs meeting's hall); one without shows its menu over `story`.
 // `also` names more poses captured from the same start, each as frame `<pose>.png` (the knot close-up at the cabin, in
 // each moral-weather band).
 export type Start = Readonly<{ scene: SceneId; path: string; pose: string; also?: readonly string[] }>
@@ -17,6 +18,8 @@ export const starts: readonly Start[] = [
   { scene: 'a2_major', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1', pose: 'story' },
   // The photo lab refused, straight on to Lucy's kitchen: the start the prologue run samples the kitchen from.
   { scene: 'a2_hotel', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3', pose: 'kitchen' },
+  // On from the kitchen to the Chiefs meeting: the start the prologue run samples the hall from (chiefsMeeting.ts).
+  { scene: 'a2_chiefs', path: '1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,3,1,1,1', pose: 'hall' },
   // Curly's November (bushStrip.ts), every choice the first: the starts the prologue run samples the bush strip, the
   // Pan's booth and the base hangar from.
   { scene: 'a2_curly', path: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1', pose: 'strip' },

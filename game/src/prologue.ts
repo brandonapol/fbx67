@@ -56,6 +56,7 @@ import { FAILED, JAKE, LETTER_TITLE, READ_TIME, SPAWN as DIG_SPAWN, SPAWN_FACING
 import * as night from './survivalPlay.ts'
 import { burning } from './survival.ts'
 import { COME_TO, COME_TO_FACING, CRASH_TIME, crashing, gliding, lucySeat, skipSpot as skipCrash, standOf } from './engineOut.ts'
+import { hallClose, hallNote, hallSpot, standFor } from './chiefsMeeting.ts'
 
 import type { Body, Motion } from './cast.ts'
 import { INDOOR_PACE, JOG_SPEED, WALK_SPEED } from './cast.ts'
@@ -267,6 +268,7 @@ export const available = (g: Game): readonly Interactable[] =>
     if (isStripSpace(g.space)) return stripSpot(g.story, g.space, i.id)
     if (g.space === 'cafe') return counterSpot(g.story, i.id)
     if (g.space === 'owensCamp') return campSpot(g.story, g.dig, i.id)
+    if (g.space === 'hall') return hallSpot(g.story, i.id)
     return true
   })
 
@@ -381,6 +383,14 @@ const arrive = (g: Game): Game => {
     const into = g.space === 'search' ? g : enter(g, 'search')
     const way = routeOf(g.path)
     return way ? skiOff(into, way) : menuPanel(into)
+  }
+  // At the Chiefs meeting the scene's text comes up where Wade stands, and putting it away leaves him in the room: where
+  // he stands and where he walks is what he does there (chiefsMeeting.ts).
+  if (r.space === 'hall') {
+    const into = g.space === 'hall' ? g : enter(g, 'hall')
+    const at = standFor(g.story, g.space === 'hall' ? g.pos : undefined)
+    const moved = at === into.pos ? into : { ...into, pos: at, vel: zero }
+    return { ...moved, panel: storyPanel(g.story, [], [close(hallClose(g.story))]) }
   }
   if (r.space !== g.space) {
     // Back in a space with nothing to walk to, the scene plays as its menu. From the tent, Wade comes back down into
@@ -776,6 +786,13 @@ export const interact = (g: Game): Game => {
   if (g.space === 'street' && id === OFFICER_SPOT.id) return { ...g, vel: zero, panel: storyPanel(g.story, allNotes(g.story)) }
   // At the wheel the scene's menu asks what Wade does now; during the stage, interact skips to its end first.
   if (g.space === 'highway' && id === WHEEL.id) return { ...atWheel(g, stageTime(g.story)), panel: storyPanel(g.story, allNotes(g.story), [close('Sit a minute.')]) }
+  // In the hall the meeting's spots are its notes: going out the door, walking up to the front; staying at the back is
+  // held, and its note goes when the hold ends. After the meeting the door is the scene's way on.
+  const hallSends = g.space === 'hall' ? (target.note ?? hallNote(g.story, id)) : undefined
+  if (hallSends) {
+    const next = sendNote(g, hallSends)
+    return arrive({ ...next, pos: standFor(next.story, g.pos, hallSends), vel: zero })
+  }
   if (g.space === 'flood' && id === 'skiff') return { ...g, panel: storyPanel(g.story, ['continue']) }
   // A stool in the hotel bar: Wade sits and the next song starts.
   if (g.space === 'hotelBar' && g.bar && isSeat(id)) {

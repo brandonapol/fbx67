@@ -2,11 +2,6 @@
 # for a mission's ending. game/src/notesRatchet.test.ts checks this list against the story and the engine. It may only
 # shrink: when the engine starts sending a note, delete its line; a pull request that adds a line fails, unless its scene,
 # mission or act is new to the ratchet since main.
-a2_chiefs:listen
-a2_chiefs:offerHelp
-a2_chiefs:slipOut
-a2_chiefs_after:continue
-a2_chiefs_spoke:continue
 a2_flight:writeMama
 a2_let_go:carryHome
 a2_major:yesSir
