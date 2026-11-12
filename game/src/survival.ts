@@ -124,7 +124,9 @@ const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.m
 export const expose = (b: Body, e: Exposure, dt: number, reach: number = FIRE_REACH): Body => {
   const warmth = clamp(b.warmth + rate(b, e, reach) * dt, 0, WARMEST)
   const frozen = stepOf(warmth) === 'freezing'
-  const bare = b.bare + (e.mittsOff ? dt : 0)
+  // Hands held to a fire warm back: the bare-handed count starts again there (white hands stay white until a checkpoint).
+  const warmed = e.fire !== undefined && e.fire <= reach
+  const bare = warmed ? 0 : b.bare + (e.mittsOff ? dt : 0)
   return {
     warmth,
     fed: Math.max(0, b.fed - dt),
@@ -170,10 +172,16 @@ export const feed = (f: Fire, load: number): Fire => ({ fuel: Math.min(MAX_FUEL,
 
 // Lighting a fire with a first load: bare hands, which costs warmth and counts as bare-handed work. Returns the body
 // after, the fire, and the play seconds it took (slow with white hands).
+// The moment the fire catches, after the bare-handed work: the warmth it cost and the first load burning. A mission
+// played frame by frame runs the work as exposure and calls this at the end.
+export const kindle = (b: Body, load: number): Readonly<{ body: Body; fire: Fire }> => ({
+  body: { ...b, warmth: Math.max(0, b.warmth - LIGHT_COST) },
+  fire: feed({ fuel: 0 }, load),
+})
+
 export const light = (b: Body, load: number): Readonly<{ body: Body; fire: Fire; seconds: number }> => {
   const seconds = handTime(b, LIGHTING)
-  const worked = expose(b, { ...sheltered, mittsOff: true }, seconds)
-  return { body: { ...worked, warmth: Math.max(0, worked.warmth - LIGHT_COST) }, fire: feed({ fuel: 0 }, load), seconds }
+  return { ...kindle(expose(b, { ...sheltered, mittsOff: true }, seconds), load), seconds }
 }
 
 // --- Fail and retry --------------------------------------------------------------------------------------------------
