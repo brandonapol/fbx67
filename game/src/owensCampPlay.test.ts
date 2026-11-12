@@ -8,7 +8,12 @@ import type { Game } from './prologue.ts'
 import { READ_LETTER, available, canRead, canWarmHands, inWorld, interact, press, still, tick } from './prologue.ts'
 import { startFrom } from './start.ts'
 import { starts } from '../smoke/starts.ts'
-import { DIG_SPOTS, DIG_TIME, JAKE_SPOT, LETTER_TITLE, READ_TIME, SPAWN, WARM_HANDS, WARM_PROMPT, letterLine } from './owensCamp.ts'
+import { DIG_SPOTS, DIG_TIME, DRIFTS, JAKE_SPOT, LETTER_TITLE, READ_TIME, SPAWN, WARM_HANDS, WARM_PROMPT, campFooting, groundAt, letterLine } from './owensCamp.ts'
+import type { Ground } from './lucyFooting.ts'
+import { footing } from './lucyFooting.ts'
+import { JOG, WALK } from './prologue.ts'
+import type { Vec } from './world.ts'
+import { length, vec } from './world.ts'
 import { HANDS_IN_PARKA } from './lucyAid.ts'
 import { backToJake, digOut, goDig } from './digBot.ts'
 import { engineSenders, walk } from './notesRatchet.ts'
@@ -115,6 +120,48 @@ test('her white fingers warmed inside her parka: a minute of light, mitts on, an
   const next = goDig(cur, second, first)
   assert.ok(next.dig!.played < cur.dig!.played + 2 * DIG_TIME, 'warm hands dig at full speed')
   assert.doesNotMatch(WARM_PROMPT, /Wade/)
+})
+
+// Lucy set down at `at` facing `facing`, running that way for `seconds`: the grounds she crossed and her speeds.
+const run = (at: Vec, facing: number, seconds: number): Readonly<{ grounds: ReadonlySet<Ground>; top: number; last: number }> => {
+  let g: Game = { ...startFrom(`#path=${base.join(',')}`, ''), pos: at, facing }
+  const dir = vec(Math.sin(facing), Math.cos(facing))
+  const grounds = new Set<Ground>()
+  let top = 0
+  for (let t = 0; t < seconds; t += DT) {
+    g = tick(g, { dir, hold: false, run: true }, DT)
+    grounds.add(groundAt(g.pos))
+    top = Math.max(top, length(g.vel))
+  }
+  return { grounds, top, last: length(g.vel) }
+}
+
+test('sure-footed: she runs up the marker\'s rise through the snowed-over tussocks at her full run, as on the bar', () => {
+  const r = run(vec(1.0, -4.2), Math.PI, 1.2)
+  assert.ok(r.grounds.has('slope'), [...r.grounds].join() + ' top ' + r.top)
+  assert.ok(r.grounds.has('rough'), [...r.grounds].join() + ' top ' + r.top)
+  assert.ok(Math.abs(r.top - JOG) < 0.05, `top ${r.top}`)
+  const flat = run(vec(-4, 5.4), Math.PI / 2, 1.2)
+  assert.deepEqual([...flat.grounds], ['crust'])
+  assert.ok(Math.abs(flat.top - r.top) < 0.05, 'the rise costs her nothing')
+})
+
+test('a drift in the lee of the tent takes her down to a wade, but a lighter one than his', () => {
+  const d = DRIFTS[0]!
+  const r = run(vec(d.x, d.z + d.d / 2 - 0.2), Math.PI, 1.5)
+  assert.deepEqual([...r.grounds], ['drift'])
+  assert.ok(Math.abs(r.last - WALK * footing(true, 'drift').pace) < 0.05, `last ${r.last}`)
+  assert.ok(footing(false, 'drift').pace < footing(true, 'drift').pace)
+})
+
+test('on the same ground a stranger to snow would be slowed and kept from running where she is not', () => {
+  const rise = vec(1.8, -6.6)
+  assert.equal(groundAt(rise), 'slope')
+  assert.deepEqual(campFooting('lucy', rise), { pace: 1, run: true })
+  assert.equal(campFooting('wade', rise).run, false)
+  assert.ok(campFooting('wade', rise).pace < 1)
+  assert.equal(groundAt(vec(-4, 5.4)), 'crust')
+  assert.equal(groundAt(vec(-8.6, 10.4)), 'ice')
 })
 
 test('reading the letter mitts off, before any dig, shows the line for the spot Owen chose and sends nothing', () => {
