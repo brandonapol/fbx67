@@ -53,7 +53,7 @@ export const cruiser: readonly Prop[] = [
   { box: { x: CRUISER.x - 0.2, z: CRUISER.z, w: 1.6, d: CAR_W + 0.02 }, h: 0.6, y: 0.35, color: white },
   { box: { x: CRUISER.x - 0.3, z: CRUISER.z, w: 2.4, d: CAR_W - 0.2 }, h: 0.5, y: 1.15, color: black },
   { box: { x: CRUISER.x - 0.3, z: CRUISER.z, w: 0.22, d: 0.22 }, h: 0.2, y: 1.65, color: '#b3221c', shape: 'cylinder', glow: true },
-  { box: { x: CRUISER.x - CAR_L / 2 - 0.25, z: CRUISER.z + 0.5, w: 0.45, d: 0.45 }, h: 0.5, y: 0.15, color: '#e4e8ea', shape: 'cylinder' },
+  { box: { x: CRUISER.x - CAR_L / 2 - 0.2, z: CRUISER.z + 0.5, w: 0.22, d: 0.22 }, h: 0.22, y: 0.22, color: '#e4e8ea', shape: 'cylinder' },
 ]
 
 export const streetlight: readonly Prop[] = [
