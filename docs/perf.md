@@ -62,6 +62,14 @@ fails on it with no frames or no row below. The prologue run samples `search` fr
 and `owensCamp` from the `a3_camp` start, Lucy stepping off Jake's plane.
 `make generate/baselines/act3` regenerates only its baselines.
 
+Act 4 has its own run the same way (`make test/game/smoke/act4`, `game/smoke/act4.test.ts`). It opens `a4_news` where the
+Act 3 run ends and plays to `end`, every choice the first except the offer's, which takes `fake` (found by asking
+`logic.ts`), so it passes the backed wire and the stopped ice jam, with the steps `game/smoke/act4Plan.test.ts` plays
+headless. Act 4 has no space of its own and its scenes no place yet, so the whole act is panels over `story` and the beats
+are scenes: `a4_news`, `a4_offer`, `a4_wire`, `a4_curly`, `a4_jake`, `a4_icejam`, `a4_chase`, `a4_defuse` and `a4_testify`,
+each captured in each band into `game/smoke/baselines/act4/` (27 frames, all the story backdrop, so identical). No Act 4
+space is budgeted until one is built. `make generate/baselines/act4` regenerates only its baselines.
+
 `game/smoke/budget.test.ts` fails, per act, when a space in `game/src/levels.ts` has no row below, so a new space in
 any act is budgeted before it is played.
 

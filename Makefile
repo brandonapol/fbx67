@@ -54,7 +54,7 @@ check/web: ## Typecheck web
 
 check/game: check/game/typecheck check/game/main test/game/unit build/game ## Typecheck, unit-test and build the engine build
 
-.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke test/game/smoke/act1 test/game/smoke/act2 test/game/smoke/act3
+.PHONY: check/game/typecheck check/game/main test/game/unit test/game/smoke test/game/smoke/act1 test/game/smoke/act2 test/game/smoke/act3 test/game/smoke/act4
 check/game/main: ## Fetch origin/main if missing (a shallow CI checkout): the notes ratchet's allowlist only shrinks against it
 	@git rev-parse -q --verify origin/main >/dev/null || git fetch -q --depth=1 origin +main:refs/remotes/origin/main
 
@@ -76,8 +76,11 @@ test/game/smoke/act2: build/game ## Play Act 2 from its start to Act 3 in headle
 test/game/smoke/act3: build/game ## Play Act 3 from its start to Act 4 in headless Chromium; compare its frames and budgets
 	cd $(GAME) && npm run -s smoke:act3
 
-.PHONY: generate/baselines generate/baselines/act1 generate/baselines/act2 generate/baselines/act3
-generate/baselines: build/game generate/baselines/act1 generate/baselines/act2 generate/baselines/act3 ## Replay the smoke tests (prologue, Acts 1 to 3) and overwrite game/smoke/baselines with their frames
+test/game/smoke/act4: build/game ## Play Act 4 from its start to the end in headless Chromium; compare its frames
+	cd $(GAME) && npm run -s smoke:act4
+
+.PHONY: generate/baselines generate/baselines/act1 generate/baselines/act2 generate/baselines/act3 generate/baselines/act4
+generate/baselines: build/game generate/baselines/act1 generate/baselines/act2 generate/baselines/act3 generate/baselines/act4 ## Replay the smoke tests (prologue, Acts 1 to 4) and overwrite game/smoke/baselines with their frames
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke
 
 generate/baselines/act1: build/game ## Replay only the Act 1 smoke test and overwrite game/smoke/baselines/act1
@@ -88,6 +91,9 @@ generate/baselines/act2: build/game ## Replay only the Act 2 smoke test and over
 
 generate/baselines/act3: build/game ## Replay only the Act 3 smoke test and overwrite game/smoke/baselines/act3
 	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke:act3
+
+generate/baselines/act4: build/game ## Replay only the Act 4 smoke test and overwrite game/smoke/baselines/act4
+	cd $(GAME) && SMOKE_BASELINES=update npm run -s smoke:act4
 
 check/routes: ## Fail if a golden transcript or the matrix summary is stale
 	cd $(TEXT) && npm run -s golden
